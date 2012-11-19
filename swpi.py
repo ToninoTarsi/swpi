@@ -31,6 +31,7 @@ import service
 import tarfile
 import signal
 import thread
+import database
 
 #signal.signal(signal.SIGPIPE, signal.SIG_DFL) 
 
@@ -92,7 +93,7 @@ def process_sms(modem, smsID):
 		#	UPD				Update software
 		#	WSO		X		set calibration wind speed offset to X 
 		#	WSG		X		set calibration wind speed gain to X
-		#
+		#	RDB				Reset Database
 		#---------------------------------------------------------------------------------------	
 		
 		if (len(command) == 2 and cmd == "RBT" ):
@@ -102,6 +103,15 @@ def process_sms(modem, smsID):
 			log( "Receiced rebooting command  " )
 			systemRestart()
 		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "RDB" ):
+			modem.sms_del(msgID)
+			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+			conn.commit()		
+			dbCursor.execute("delete from METEO")
+			conn.commit()
+			log( "Database resetted  " )
+		#---------------------------------------------------------------------------------------	
+
 		elif (len(command) == 2 and cmd == "MDB" ):
 			modem.sms_del(msgID)
 			tarname = "db.tar.gz"
@@ -312,14 +322,17 @@ def answer_call(modem, message):
 			listOfMessages.append("./audio/silence05s.raw") 
 			if ( globalvars.meteo_data.temp_out < 0) :
 				listOfMessages.append("./audio/minus.raw") 
-				
-			intera =  int( math.floor(abs(globalvars.meteo_data.temp_out)) )
-			dec = int( (abs(globalvars.meteo_data.temp_out)-intera)*10 )
-			
+	
+#			intera =  int( math.floor(abs(globalvars.meteo_data.temp_out)) )
+#			dec = int( (abs(globalvars.meteo_data.temp_out)-intera)*10 )
+#			listOfMessages.append("./audio/temperature.raw")
+#			listOfMessages.append("./audio/" + str(intera) + ".raw")
+#			listOfMessages.append("./audio/comma.raw")
+#			listOfMessages.append("./audio/" + str(dec ) + ".raw")
+						
+			intera =  round( math.floor(abs(globalvars.meteo_data.temp_out)) )
 			listOfMessages.append("./audio/temperature.raw")
 			listOfMessages.append("./audio/" + str(intera) + ".raw")
-			listOfMessages.append("./audio/comma.raw")
-			listOfMessages.append("./audio/" + str(dec ) + ".raw")
 			listOfMessages.append("./audio/degree.raw")
 
 		# Pressure

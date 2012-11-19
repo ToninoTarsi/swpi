@@ -110,7 +110,7 @@ class Sensor_Nevio(sensor.Sensor):
             if ( n != o):
                 i = i+1
                 o = n
-        return ( ( i * self.cfg.windspeed_gain ) / self.__MEASURETIME)  + self.cfg.windspeed_offset
+        return ( ( i * self.cfg.windspeed_gain ) / ( self.__MEASURETIME * 2 ))  + self.cfg.windspeed_offset
     
     
     def live_data(self):

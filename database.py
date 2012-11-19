@@ -15,14 +15,13 @@ import ConfigParser
 import sqlite3
 
 # Open database commection and cursor
-def resetDB(filename='db/swpi.s3db'):
+def resetDB(filename='db/swpi.s3db',delete_all=False):
     conn = sqlite3.connect(filename,200)
     dbCursor = conn.cursor()
     
-    dbCursor.execute("delete from SMS")
-    dbCursor.execute("delete from CALL")
-    dbCursor.execute("delete from MEASURES")
-    dbCursor.execute("delete from DATA")
+    if delete_all :
+        dbCursor.execute("delete from SMS")
+        dbCursor.execute("delete from CALL")
     dbCursor.execute("delete from METEO")
     conn.commit()
     print "DB Resetted "
