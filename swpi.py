@@ -290,7 +290,6 @@ def answer_call(modem, message):
 		delay_seconds = int(delay.total_seconds())
 		log("Answering with data of %d seconds old" % delay_seconds	)	
 		
-
 			
 		#prepare list of messages
 		listOfMessages = []
