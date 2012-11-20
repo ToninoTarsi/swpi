@@ -275,7 +275,7 @@ def answer_call(modem, message):
 			log("Not answering because capturing camera images")
 			return
 		
-		if (  globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status == -1 ):
+		if (  globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status != 0 ):
 			log("Not answering because no valid meteo data yet")
 			return		
 				
@@ -520,9 +520,9 @@ if ( cfg.clear_all_sd_cards_at_startup):
 	camera.ClearAllCameraSDCards(cfg)		
 	
 # Start main thread
-if ( cfg.use_wind_sensor ) :
-	while ( globalvars.meteo_data.last_measure_time == None ) :
-		time.sleep(1)
+#if ( cfg.use_wind_sensor ) :
+#	while ( globalvars.meteo_data.last_measure_time == None ) :
+#		time.sleep(1)
 	
 
 	
@@ -533,7 +533,7 @@ while 1:
 		if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
 		waitForHandUP()  # do to replace with lock object
-		if ( cfg.webcamDevice1 != "none" ):
+		if ( cfg.webcamDevice1.upper() != "NONE" ):
 			webcam1 =  webcam.webcam(1,cfg)
 			img1FileName = "./img/webcam1_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
 			waitForHandUP()
@@ -541,7 +541,7 @@ while 1:
 			if ( bwebcam1 ):
 				log( "Webcam 1 Captured : ok : "  + img1FileName )
 				addTextandResizePhoto(img1FileName,cfg.webcamdevice1finalresolutionX,cfg.webcamdevice1finalresolutionY,cfg,v)
-		if ( cfg.webcamDevice2 != "none" ):
+		if ( cfg.webcamDevice2.upper() != "NONE" ):
 			webcam2 =  webcam.webcam(2,cfg)
 			img2FileName = "./img/webcam2_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
 			waitForHandUP()
@@ -570,7 +570,7 @@ while 1:
 				
 			if (  internet_on() ):
 				waitForHandUP()
-				if ( cfg.webcamDevice1.upper() != "NOME" and bwebcam1 ):
+				if ( cfg.webcamDevice1.upper() != "NONE" and bwebcam1 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
 						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
@@ -604,10 +604,10 @@ while 1:
 							os.remove(foto)
 						log("Deleted file : " + foto )
 						
-				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status != -1 ) :
+				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					logData(cfg.serverfile)
 
-				if ( cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status != -1 ) :
+				if ( cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					UploadData(cfg)			
 			
 				thenewIP = getIP()

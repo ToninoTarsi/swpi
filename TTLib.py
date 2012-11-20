@@ -305,7 +305,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     
     font = ImageFont.truetype(font_path, 13, encoding='unic')
     # Adding Meteo information
-    if (  globalvars.meteo_data.status != -1 ):
+    if (  globalvars.meteo_data.status == 0 ):
  
         delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
         delay_seconds = int(delay.total_seconds())
