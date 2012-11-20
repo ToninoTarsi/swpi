@@ -13,5 +13,5 @@ import meteodata
 
 bAnswering = False
 bCapturingCamera = False
-IP = "none"
+IP = "None"
 #meteo_data = meteodata.MeteoData()

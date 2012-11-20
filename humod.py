@@ -274,7 +274,7 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
     def __init__(self, data,audio, ctrl,cfg):
         """Open a serial connection to the modem."""
         self.cfg = cfg
-        self.IP = "none"
+        self.IP = "None"
         self.bAnswering = False
         self.data_port = ModemPort()
         self.data_port.setPort(data)
@@ -411,7 +411,7 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
 #            os.waitpid(self._pppd_pid, 2)
             self._pppd_pid = None 
 #            print self._pppd_pid
-#            self.IP = "none"
+#            self.IP = "None"
 #            log("Disconnected")
             return True
         else:

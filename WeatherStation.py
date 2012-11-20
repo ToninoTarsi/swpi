@@ -365,30 +365,30 @@ class weather_station(object):
         self.ws_type = ws_type
 
 
-    def live_dataNew(self, do_not_wait=False):
-        """Function will return data @ 30secons - tony."""
-        seconds = datetime.now().second
-        if ( (not do_not_wait) ):
-            if ( seconds < 30 ):
-                #print "sleeping" , 30-seconds
-                time.sleep(30-seconds)
-            else:
-                #print "sleeping" , 90-seconds
-                time.sleep(90-seconds)
-        
-        if ( do_not_wait ):
-            if (seconds > 45):
-                time.sleep(60-seconds+15)
-            if ( seconds < 15 ):
-                time.sleep(15-seconds)
-                
-        
-        old_ptr = self.current_pos()
-        new_data = self.get_data(old_ptr, unbuffered=True)
-        result = dict(new_data)
-        now = time.time()
-        result['idx'] = datetime.utcfromtimestamp(int(now))
-        yield result, old_ptr, True
+#    def live_dataNew(self, do_not_wait=False):
+#        """Function will return data @ 30secons - tony."""
+#        seconds = datetime.now().second
+#        if ( (not do_not_wait) ):
+#            if ( seconds < 30 ):
+#                #print "sleeping" , 30-seconds
+#                time.sleep(30-seconds)
+#            else:
+#                #print "sleeping" , 90-seconds
+#                time.sleep(90-seconds)
+#        
+#        if ( do_not_wait ):
+#            if (seconds > 45):
+#                time.sleep(60-seconds+15)
+#            if ( seconds < 15 ):
+#                time.sleep(15-seconds)
+#                
+#        
+#        old_ptr = self.current_pos()
+#        new_data = self.get_data(old_ptr, unbuffered=True)
+#        result = dict(new_data)
+#        now = time.time()
+#        result['idx'] = datetime.utcfromtimestamp(int(now))
+#        yield result, old_ptr, True
 
 
 

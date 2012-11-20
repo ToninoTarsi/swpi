@@ -570,7 +570,7 @@ while 1:
 				
 			if (  internet_on() ):
 				waitForHandUP()
-				if ( cfg.webcamDevice1 != "none" and bwebcam1 ):
+				if ( cfg.webcamDevice1.upper() != "NOME" and bwebcam1 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
 						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
@@ -580,7 +580,7 @@ while 1:
 					if ( cfg.delete_images_on_sd ):
 						os.remove(img1FileName)
 						log("Deleted file : " + img1FileName )
-				if ( cfg.webcamDevice2 != "none" and bwebcam2 ):
+				if ( cfg.webcamDevice2.upper() != "NONE" and bwebcam2 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
 						sendFileToServer(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
