@@ -72,7 +72,8 @@ class Sensor_WH1080(sensor.Sensor):
             try:
                 oldpos = self.ws.current_pos()
             except:
-                log("Error getting station ponter")
+                log("Error getting station pointer .. retrying")
+                time.sleep(1)
                 oldpos = None 
             
         found = False
@@ -83,8 +84,16 @@ class Sensor_WH1080(sensor.Sensor):
                 if ( newpos != oldpos): found = True
             except:
                 pass 
-            
-        thetime =  self.ws.get_fixed_block(['date_time'],True)
+        
+        thetime = None
+        while ( thetime == None):
+            try:
+                thetime =  self.ws.get_fixed_block(['date_time'],True)
+            except:
+                log("Error getting station time .. retrying")
+                time.sleep(1)
+                thetime = None 
+                
         #print thetime
         os.system("sudo date -s '%s'" %  thetime)   
         log("System time adjusted from WH1080")

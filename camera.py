@@ -21,7 +21,6 @@ import config
 import humod
 
 DEBUG = False
-workaround = False
 
 
 class PhotoCamera(object):
@@ -116,27 +115,29 @@ class PhotoCamera(object):
 			usbcamera = "usb:%s,%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
 			filename = "./img/camera" + str(i+self.cfg.start_camera_number) + "_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
 
-			if workaround :
+			if ( not self.cfg.gphoto2_capture_image_and_download ) :
 				# this works around --capture-image-and-download not working
 				# get rid of any existing files on the card
 				self.ClearSDCard(usbcamera)
-				
-				os.system("gphoto2 --port "+ usbcamera + " --capture-image" +  " 1>> " + logFile + " 2>> " + logFile)
-				os.system("gphoto2 --port " + usbcamera + "  --get-file=1 --filename=%s" % ( filename) +  " 1>> " + logFile + " 2>> " + logFile )
-			else :				
-				os.system("gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename %s" % (filename) +  " 1>> " + logFile + " 2>> " + logFile )
+				os.system("gphoto2 --port " + usbcamera + " --capture-image  1>> " + logFile + " 2>> " + logFile)
+				os.system("gphoto2 --port " + usbcamera + "  --get-file=1 --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile )
+			else :	
+				os.system("gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile )
 
 			if ( os.path.isfile(filename)):	
 				pictureTaken.append(filename)
 				
 		globalvars.bCapturingCamera = False
+		for name in pictureTaken :
+			log("Captured : " + name)
 		return pictureTaken
 	
 	
 	def ClearSDCard(self,usbcamera):
+		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
 		for folder, number, _ in self.list_files(usbcamera) :
-			#print folder,number
-			os.system("gphoto2 --port " + usbcamera + " -D --folder=%s" % folder)
+			print folder,number 
+			os.system("gphoto2 --port " + usbcamera + " -D --folder=" + folder + "  1>> " + logFile + " 2>> " + logFile )
 		
 		
 
