@@ -68,8 +68,7 @@ class RadioThread(threading.Thread):
             
             if (  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status != -1 ):
                 log("Radio")
-                #print globalvars.meteo_data.last_measure_time , globalvars.meteo_data.status
-                #print globalvars.meteo_data.wind_dir_code,globalvars.meteo_data.wind_ave,globalvars.meteo_data.wind_gust
+
                 delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
                 delay_seconds = int(delay.total_seconds())
                 
@@ -90,6 +89,8 @@ class RadioThread(threading.Thread):
 
 
 if __name__ == '__main__':
+    """Main only for testing"""
+    
     if os.name == 'nt':
         configfile = 'swpi_w.cfg'
     else:

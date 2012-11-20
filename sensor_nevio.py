@@ -27,7 +27,6 @@ import TTLib
 from BMP085 import BMP085
 
 
-
 def get_wind_dir_code8():
     return [ 'N','NW','NE', 'E', 'SW' , 'W',  'S' , 'SE' ]
 

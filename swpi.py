@@ -329,7 +329,7 @@ def answer_call(modem, message):
 #			listOfMessages.append("./audio/comma.raw")
 #			listOfMessages.append("./audio/" + str(dec ) + ".raw")
 						
-			intera =  round( math.floor(abs(globalvars.meteo_data.temp_out)) )
+			intera = int(round( abs(globalvars.meteo_data.temp_out) ))
 			listOfMessages.append("./audio/temperature.raw")
 			listOfMessages.append("./audio/" + str(intera) + ".raw")
 			listOfMessages.append("./audio/degree.raw")
@@ -404,7 +404,8 @@ if not os.path.isfile(configfile):
 	exit(0)
 else:
 	cfg = config.config(configfile,False)
-
+	
+# give 10 seconds for interrupt the application
 try:
 	if not ( '-i' in sys.argv ) :
 		for i in range(0,10):
@@ -416,7 +417,9 @@ except KeyboardInterrupt:
 	#print  "Stopping swpi"
 	exit(0)
 
+# Radio Voice output shoud go to the analog device
 os.system( "sudo amixer cset numid=3 1 > /dev/null " )
+
 #Make sure every executable is executable
 os.system( "sudo chmod +x ./usbreset" )
 #os.system( "sudo chmod +x ./swpi.sh" )
@@ -446,7 +449,6 @@ if cfg.usedongle :
 	call_action = (humod.actions.PATTERN['incoming callclip'], answer_call)
 	actions = [sms_action , call_action]
 	modem.prober.start(actions) # Starts the prober.
-
 	print ""
 	log( "Modem Model : "  + modem.show_model())
 	log(  "Revision : "  + modem.show_revision())
@@ -530,7 +532,7 @@ while 1:
 	try:
 		if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
-		waitForHandUP()
+		waitForHandUP()  # do to replace with lock object
 		if ( cfg.webcamDevice1 != "none" ):
 			webcam1 =  webcam.webcam(1,cfg)
 			img1FileName = "./img/webcam1_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 

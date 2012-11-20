@@ -6,7 +6,7 @@
 #     Visit http://www.vololiberomontecucco.it
 # 
 ##########################################################################
-"""Classes and methods for handling Web and Cam commands."""
+"""Classes and methods for handling  Cameras commands."""
 
 import sqlite3
 import Image
@@ -25,19 +25,14 @@ workaround = False
 
 
 class PhotoCamera(object):
-	"""Class defining generic web and cam s."""
-
+	"""Class defining generic cameras."""
 	def __init__(self, cfg):
 		self.finalresolution = cfg.cameradivicefinalresolution
 		self.finalresolutionX = cfg.cameradivicefinalresolutionX
 		self.finalresolutionY = cfg.cameradivicefinalresolutionY
 		self.cfg = cfg
 		
-
-
-		#self.reset_nikon()
 		
-
 	def detectCameras(self):
 		p = subprocess.Popen("gphoto2 --auto-detect",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 		(stdout, stderr) = p.communicate()
@@ -59,8 +54,7 @@ class PhotoCamera(object):
 		files = []
 		p = subprocess.Popen("gphoto2 --list-files --port " + usbcamera,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 		(stdout, stderr) = p.communicate()
-		
-		#print stdout
+	
 		for line in stdout.split('\n') :
 			if not line : continue
 			
@@ -68,32 +62,24 @@ class PhotoCamera(object):
 				files.append((folder, line.split()[0][1:], line.split()[1]))
 			else :
 				#print line
-				folder = line.split(" ")[-1][1:-2]
-#				m = re.match(".*'(.*)'", line)
-#				if m :
-#					folder = m.group(1)
-#					if folder[-1] != '/' :
-#						folder += '/'
-#				else :
-#					log('warning, unkown output of --list-files: ' + line)
-		
+				folder = line.split(" ")[-1][1:-2]		
 		return files
 	
 	
 	def take_pictures(self) :
-
+		"""Capture from all detected cameras and return a list of stored files"""
+		
 		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
-
-		globalvars.bCapturingCamera = True
 		pictureTaken = []
+		
 		camerasInfo = self.detectCameras()
-		#print camerasInfo
 		nCameras = len(camerasInfo)
-		#print nCameras
+
 		if ( nCameras == 0 ):
 			globalvars.bCapturingCamera = False
 			log( "No digital cameras found" )
 			return pictureTaken
+		
 		log(str(nCameras) + " Cameras found")
 		for i in range(0,nCameras):
 			log("Camera " + str(i+1) + " : "  + camerasInfo[i][0] + "USB : " + camerasInfo[i][1]  + " " + camerasInfo[i][2]  )
@@ -104,52 +90,41 @@ class PhotoCamera(object):
 			gphoto2options =[]
 			for k in range(0,nCameras):
 				gphoto2options.append("")
-				
+		
+		# Reset usb to make some Nikon model work. Do not use with Canon Cameras		
 		if ( self.cfg.reset_usb ):
 			for i in range(0,nCameras):
 	
 				usbcamera = "/dev/bus/usb/%s/%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
-				#print usbcamera
 				os.system( "./usbreset %s" % (usbcamera) )
 				
+				# whait for the camera to be detected again 
 				for i in range(1,100):
 					time.sleep(0.1)
 					camerasInfo = self.detectCameras()
 					if ( len(camerasInfo) == nCameras):
 						break
-				#print "Resetted after" + str(i)
-				
+					
+			# Update camerasInfo after reset
 			camerasInfo = self.detectCameras()
 			nCameras = len(camerasInfo)
 		
-		
-		#for i in range(0,nCameras,):
-		#	log("Camera " + str(i+1) + " : "  + camerasInfo[i][0] + "USB : " + camerasInfo[i][1]  + " " + camerasInfo[i][2]  )
-
+		# Now Capture and acquire global lock ( to do - replace with thread.lock object )
+		globalvars.bCapturingCamera = True
 		for i in range(0,nCameras):
 			log("Capturing from Camera : %d = %s" %( i+1,camerasInfo[i][0] ) )
 			usbcamera = "usb:%s,%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
-			filename = "./img/camera" + str(i+1) + "_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
+			filename = "./img/camera" + str(i+self.cfg.start_camera_number) + "_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
 
 			if workaround :
 				# this works around --capture-image-and-download not working
 				# get rid of any existing files on the card
-				for folder, number, _ in self.list_files(usbcamera) :
-					self.delete_picture(from_folder = folder)
+				self.ClearSDCard(usbcamera)
 				
-	
 				os.system("gphoto2 --port "+ usbcamera + " --capture-image" +  " 1>> " + logFile + " 2>> " + logFile)
-	
 				os.system("gphoto2 --port " + usbcamera + "  --get-file=1 --filename=%s" % ( filename) +  " 1>> " + logFile + " 2>> " + logFile )
-	
-			else :
-				#print "gphoto2 --port " + usbcamera + "  --capture-image-and-download " + self.cfg.gphoto2options + " --filename %s" % (filename)
-				
+			else :				
 				os.system("gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename %s" % (filename) +  " 1>> " + logFile + " 2>> " + logFile )
-				#if (  gphoto2options[i]  == "" ):
-				#	subprocess.Popen(["/usr/local/bin/gphoto2","--port",usbcamera,"--capture-image-and-download" , "--filename", filename],stdout=file("gphoto2.log","a"),stderr=file("gphoto2.log","a"))
-				#else:
-				#	subprocess.Popen(["/usr/local/bin/gphoto2","--port",usbcamera,gphoto2options[i] ,"--capture-image-and-download" , "--filename", filename],stdout=file("gphoto2.log","a"),stderr=file("gphoto2.log","a"))
 
 			if ( os.path.isfile(filename)):	
 				pictureTaken.append(filename)
@@ -158,24 +133,12 @@ class PhotoCamera(object):
 		return pictureTaken
 	
 	
-	def delete_picture(self,usbcamera,from_folder ) :
+	def ClearSDCard(self,usbcamera):
+		for folder, number, _ in self.list_files(usbcamera) :
+			#print folder,number
+			os.system("gphoto2 --port " + usbcamera + " -D --folder=%s" % folder)
 		
-		if from_folder :
-			#log(  'from_folder ' + from_folder )
-			os.system("gphoto2 --port " + usbcamera + " -D --folder=%s" % from_folder)
-			
-			return
-		return
-		# try deleting from all 3 known folders, in the order of most likely
-		ret, stdout, stderr = os.system("gphoto2 --port " + usbcamera + " --delete-file=1 --folder=/store_00010001")
-		if 'There are no files in folder' in stderr :
-			ret, stdout, stderr = os.system("gphoto2 --port " + usbcamera + "  --delete-file=1 --folder=/store_00010001/DCIM/100NIKON")
-			if 'There are no files in folder' in stderr :
-				ret, stdout, stderr = os.system("gphoto2 --port " + usbcamera + "  --delete-file=1 --folder=/")
 		
-		return ret
-	
-
 
 def ClearAllCameraSDCards(cfg):
 	camera = PhotoCamera(cfg)
@@ -187,39 +150,23 @@ def ClearAllCameraSDCards(cfg):
 		log("Deleting file from " + camerasInfo[i][0] )
 		usbcamera = "usb:%s,%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
 		
-		for folder, number, _ in camera.list_files(usbcamera) :
-			#print folder,number
-			os.system("gphoto2 --port " + usbcamera + " -D --folder=%s" % folder)
+		camera.ClearSDCard(usbcamera)
 				
 
 
 if __name__ == '__main__':
-
+	"""Main only for testing"""
+	
 	configfile = 'swpi.cfg'
 	
-
 	cfg = config.config(configfile)
 	
 	
 	ClearAllCameraSDCards(cfg)
 	
-	exit(0)
 
-	camera = PhotoCamera(cfg)
-	
-	camerasInfo = camera.detectCameras()
-	#print "camerasInfo" , camerasInfo
-	nCameras = len(camerasInfo)
-	
-	for i in range(0,nCameras):
-		log("Deleting file from " + camerasInfo[i][0] )
-		usbcamera = "usb:%s,%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
-		
-		for folder, number, _ in camera.list_files(usbcamera) :
-			#print folder,number
-			camera.delete_picture(usbcamera,from_folder = folder)
-			
-		#print usbcamera,camera.list_files(usbcamera)
+
+
 
 	
 	

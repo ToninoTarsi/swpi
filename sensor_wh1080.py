@@ -89,6 +89,11 @@ class Sensor_WH1080(sensor.Sensor):
                 return True,model,idd,bus
         return False,"","",""
     
+    # nead to be rewriten
+#    def live_data(self,error):
+#        self.ws.live_dataNew(self.error)
+    
+    
     def GetData(self):
         try:
             for data, ptr, ret  in self.ws.live_dataNew(self.error):            

@@ -799,9 +799,8 @@ class weather_station(object):
 
 
 if __name__ == '__main__':
-  
+    """Main only for testing"""
 
-    
     ws = weather_station()
  
     while 1:

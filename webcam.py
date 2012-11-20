@@ -17,7 +17,7 @@ import os
 from TTLib  import *
 
 class webcam(object):
-	"""Class defining generic web and cam s."""
+	"""Class defining generic webcams."""
 
 	def __init__(self, deviceNumber,cfg):
 		if (deviceNumber == 1):
@@ -46,16 +46,11 @@ class webcam(object):
 
 	def capture(self,filename):
 		try:
-			#wind = sensors.Wind(self.cfg)
-			#wind.getWind()
 
-			if os.name == 'nt':
-				snapCommand =  "ffmpeg.exe -loglevel quiet -t 1  -f vfwcap -s " + self.captureresolution + " -vframes 1 -i " + self.device + " " + filename
+			if ( self.cfg.capturewithffmpeg ):
+				snapCommand = "ffmpeg -loglevel quiet -t 1  -f video4linux2 -vframes 1 -s " + self.captureresolution + " -i " + self.device + " " + filename
 			else:
-				if ( self.cfg.capturewithffmpeg ):
-					snapCommand = "ffmpeg -loglevel quiet -t 1  -f video4linux2 -vframes 1 -s " + self.captureresolution + " -i " + self.device + " " + filename
-				else:
-					snapCommand = "uvccapture -m -S80 -B80 -C80 -G80 -x" + self.captureresolutionX + "-y" + self.captureresolutionX + " -d" + self.device + " -o " + filename
+				snapCommand = "uvccapture -m -S80 -B80 -C80 -G80 -x" + self.captureresolutionX + "-y" + self.captureresolutionX + " -d" + self.device + " -o " + filename
 				
 			#log( "Getting images with command : " + snapCommand)
 			os.system(snapCommand )
@@ -63,9 +58,7 @@ class webcam(object):
 			if ( not os.path.isfile(filename)):
 				log( "ERROR in capturing webcam image on : " + self.device )
 				return False
-				
-			#print " Adding texts"
-	
+					
 			return True
 		except ValueError:
 			log( " ERROR in capturing webcam image on : " + self.device )
