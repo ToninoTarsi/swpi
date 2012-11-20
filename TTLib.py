@@ -272,7 +272,6 @@ def getFileName(path):
     return os.path.basename(path)
 
 def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version=None):
-    
     textColor = (255,255,0)
     offsetUpper = 20
     offsetBottom = 40
@@ -325,12 +324,19 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
             width, height = font.getsize(text)
             draw.text((10, h-height),text,textColor,font=font)
             
-            if ( version != None):
-                font = ImageFont.truetype(font_path, 11, encoding='unic')
-                text = "(Sint Wind PI : " + version + ")"
-                width, height = font.getsize(text)
-                draw.text((w-width-10, h-height),text,textColor,font=font)
-                
+
+    
+    else:
+        text = "Nessun dato meteo"
+        width, height = font.getsize(text)
+        draw.text((10, h-offsetBottom),text,textColor,font=font)
+    
+    if ( version != None):
+        font = ImageFont.truetype(font_path, 11, encoding='unic')
+        text = "(Sint Wind PI : " + version + ")"
+        width, height = font.getsize(text)
+        draw.text((w-width-10, h-height),text,textColor,font=font)            
+    
     img.save(filename)
     
     if ( not os.path.isfile(filename)):
