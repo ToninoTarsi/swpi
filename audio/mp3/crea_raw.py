@@ -1,3 +1,14 @@
+###########################################################################
+#     Sint Wind PI
+#     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
+#   
+#     Please refer to the LICENSE file for conditions 
+#     Visit http://www.vololiberomontecucco.it
+# 
+##########################################################################
+
+"""Convert any file ( and file format )  to PCM 16 bit unsigned file format for huawei 3G Dongle ."""
+
 import serial
 import time
 import sys

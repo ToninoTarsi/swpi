@@ -16,7 +16,7 @@ import config
 import random
 import datetime
 import sqlite3
-from TTLib import  *
+from TTLib import *
 import WeatherStation
 import sys
 import subprocess
@@ -28,25 +28,8 @@ import sensor_wh1080
 import sensor_nevio
 
 
-
-def detectWH1080():
-
-    p = subprocess.Popen("lsusb",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    (stdout, stderr) = p.communicate()
-    ret = []
-    for line in stdout.split('\n') :
-        if not line : continue
-        if  ( line.find(' WH1080') != -1  ) :
-            model = line.split(':')[2][5:]
-            idd = line.split(' ')[1]
-            bus = line.split(' ')[3][0:3]
-            return True,model,idd,bus
-    return False,"","",""
-
-
 def log(message) :
      print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
-
 
 
 class WindSensorThread(threading.Thread):
@@ -90,9 +73,10 @@ class WindSensorThread(threading.Thread):
             log("Sensor type not implemented. Exiting")
             os.system("sudo ./killswpi.sh")
             
-        while not self._stop.isSet():
-
-            sensor.GetData()
+            
+        # mail loop    
+        #while not self._stop.isSet():
+        sensor.GetData()
                 
             
             

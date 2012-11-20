@@ -45,13 +45,13 @@ class Sensor_Nevio(sensor.Sensor):
     
     __MEASURETIME = 2
     
-    # Connections PIN - USING BMC numbering convention !!!!!!
+    # Connections PIN - USING BCM numbering convention !!!!!!
     
     __PIN_A = 23  #Anemometer
     __PIN_B1 = 17 
     __PIN_B2 = 21
     __PIN_B3 = 22
-    __PIN_B0 = 4
+    __PIN_B0 = 4    # Pin only available for NEVIO16 sensors
     
     def __init__(self,cfg ):
         

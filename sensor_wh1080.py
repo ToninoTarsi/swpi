@@ -16,7 +16,6 @@ import config
 import random
 import datetime
 import sqlite3
-from TTLib import *
 import WeatherStation
 import sys
 import subprocess
@@ -24,6 +23,7 @@ import globalvars
 import meteodata
 import sensor_thread
 import sensor
+from TTLib import *
 
 def log(message) :
     print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
