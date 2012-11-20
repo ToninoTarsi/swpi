@@ -121,7 +121,8 @@ class PhotoCamera(object):
 				self.ClearSDCard(usbcamera)
 				os.system("gphoto2 --port " + usbcamera + " --capture-image  1>> " + logFile + " 2>> " + logFile)
 				os.system("gphoto2 --port " + usbcamera + "  --get-file=1 --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile )
-			else :	
+			else:	
+				#print "gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile
 				os.system("gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile )
 
 			if ( os.path.isfile(filename)):	
@@ -136,7 +137,6 @@ class PhotoCamera(object):
 	def ClearSDCard(self,usbcamera):
 		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
 		for folder, number, _ in self.list_files(usbcamera) :
-			print folder,number 
 			os.system("gphoto2 --port " + usbcamera + " -D --folder=" + folder + "  1>> " + logFile + " 2>> " + logFile )
 		
 		

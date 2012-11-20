@@ -28,7 +28,7 @@ class MeteoData(object):
 
         # Station data
         self.idx = None
-        self.status = -1
+        self.status = -999
         self.wind_dir = None
         self.wind_ave = None
         self.wind_gust = None

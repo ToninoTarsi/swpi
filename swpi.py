@@ -520,9 +520,9 @@ if ( cfg.clear_all_sd_cards_at_startup):
 	camera.ClearAllCameraSDCards(cfg)		
 	
 # Start main thread
-#if ( cfg.use_wind_sensor ) :
-#	while ( globalvars.meteo_data.last_measure_time == None ) :
-#		time.sleep(1)
+if ( cfg.use_wind_sensor ) :
+	while ( globalvars.meteo_data.status == -999 ) :
+		time.sleep(1)
 	
 
 	

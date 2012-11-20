@@ -327,7 +327,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
 
     
     else:
-        text = "Nessun dato meteo"
+        text = "Nessun dato meteo - status = " + str(globalvars.meteo_data.status)
         width, height = font.getsize(text)
         draw.text((10, h-offsetBottom),text,textColor,font=font)
     
