@@ -75,8 +75,8 @@ class WindSensorThread(threading.Thread):
             
             
         # mail loop    
-        #while not self._stop.isSet():
-        sensor.GetData()
+        while not self._stop.isSet():
+            sensor.GetData()
                 
             
             

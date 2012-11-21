@@ -116,11 +116,11 @@ class Sensor_WH1080(sensor.Sensor):
 #        self.ws.live_dataNew(self.error)
     
     
-    def live_data(self, do_not_wait=False):
+    def live_data(self, ):
         """Function will return data @ 30secons - tony."""
         while 1:
             seconds = datetime.datetime.now().second
-            if ( (not do_not_wait) ):
+            if ( ( not self.error) ):
                 if ( seconds < 30 ):
                     #print "sleeping" , 30-seconds
                     time.sleep(30-seconds)
@@ -128,7 +128,7 @@ class Sensor_WH1080(sensor.Sensor):
                     #print "sleeping" , 90-seconds
                     time.sleep(90-seconds)
             
-            if ( do_not_wait ):
+            else :
                 if (seconds > 45):
                     time.sleep(60-seconds+15)
                 if ( seconds < 15 ):
@@ -144,53 +144,54 @@ class Sensor_WH1080(sensor.Sensor):
     
     
     def GetData(self):
-        try:
-            for data, ptr, ret  in self.live_data(self.error):            
-                if ret :
-                    
-                    globalvars.meteo_data.status = data[ "status"]
-                    
-                    if globalvars.meteo_data.status == 0:
+        while 1:
+            try:
+                for data, ptr, ret  in self.live_data():            
+                    if ret :
                         
-                        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-            
-                        globalvars.meteo_data.wind_dir = data["wind_dir"]                    
-                        globalvars.meteo_data.idx = data[ "idx"]
+                        globalvars.meteo_data.status = data[ "status"]
                         
-                        globalvars.meteo_data.hum_out = data[ "hum_out"]
-                        globalvars.meteo_data.wind_gust = (float(data[ "wind_gust"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
-                        globalvars.meteo_data.wind_ave = (float(data[ "wind_ave"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
-                        globalvars.meteo_data.rain = float(data[ "rain"])
-                        globalvars.meteo_data.temp_in = data[ "temp_in"]
-                        globalvars.meteo_data.delay = data[ "delay"]
-                        globalvars.meteo_data.abs_pressure = data[ "abs_pressure"]
-                        globalvars.meteo_data.hum_in = data[ "hum_in"]
-                        globalvars.meteo_data.temp_out = data[ "temp_out"]
-                        wind_dir = data[ "wind_dir"]
-                        globalvars.meteo_data.wind_dir = wind_dir * 22.5
-                        if (wind_dir <  16) :
-                            globalvars.meteo_data.wind_dir_code = WeatherStation.get_wind_dir_text()[wind_dir]
-                        else:
-                            globalvars.meteo_data.wind_dir_code = "ERROR"
-                        globalvars.meteo_data.illuminance = None
-                        globalvars.meteo_data.uv = None
-             
-                        globalvars.meteo_data.CalcStatistics()
-                        globalvars.meteo_data.LogDataToDB()
-                    else:
-                        log("Meteo : Error in getting data - status = " +  str(globalvars.meteo_data.status))
-                    
-                    self.error = False
+                        if globalvars.meteo_data.status == 0:
+                            
+                            globalvars.meteo_data.last_measure_time = datetime.datetime.now()
                 
-        
-        except IOError,e:
-            #raise
-            log("ERROR with PCE-FWS20  %s . Will retry ..."  % e)
-            ret,self.model,self.idd,self.bus = self.Detect()
-#            usbdevice = "/dev/bus/usb/%s/%s" % (self.idd , self.bus )
-#            os.system( "./usbreset %s" % (usbdevice) )
-            self.__init__(self.cfg)
-            self.error = True
+                            globalvars.meteo_data.wind_dir = data["wind_dir"]                    
+                            globalvars.meteo_data.idx = data[ "idx"]
+                            
+                            globalvars.meteo_data.hum_out = data[ "hum_out"]
+                            globalvars.meteo_data.wind_gust = (float(data[ "wind_gust"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
+                            globalvars.meteo_data.wind_ave = (float(data[ "wind_ave"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
+                            globalvars.meteo_data.rain = float(data[ "rain"])
+                            globalvars.meteo_data.temp_in = data[ "temp_in"]
+                            globalvars.meteo_data.delay = data[ "delay"]
+                            globalvars.meteo_data.abs_pressure = data[ "abs_pressure"]
+                            globalvars.meteo_data.hum_in = data[ "hum_in"]
+                            globalvars.meteo_data.temp_out = data[ "temp_out"]
+                            wind_dir = data[ "wind_dir"]
+                            globalvars.meteo_data.wind_dir = wind_dir * 22.5
+                            if (wind_dir <  16) :
+                                globalvars.meteo_data.wind_dir_code = WeatherStation.get_wind_dir_text()[wind_dir]
+                            else:
+                                globalvars.meteo_data.wind_dir_code = "ERROR"
+                            globalvars.meteo_data.illuminance = None
+                            globalvars.meteo_data.uv = None
+                 
+                            globalvars.meteo_data.CalcStatistics()
+                            globalvars.meteo_data.LogDataToDB()
+                        else:
+                            log("Meteo : Error in getting data - status = " +  str(globalvars.meteo_data.status))
+                        
+                        self.error = False
+                    
+            
+            except IOError,e:
+                #raise
+                log("ERROR with PCE-FWS20  %s . Will retry ..."  % e)
+    #            ret,self.model,self.idd,self.bus = self.Detect()
+    #            usbdevice = "/dev/bus/usb/%s/%s" % (self.idd , self.bus )
+    #            os.system( "./usbreset %s" % (usbdevice) )
+                self.__init__(self.cfg)
+                self.error = True
 
 
 if __name__ == '__main__':
