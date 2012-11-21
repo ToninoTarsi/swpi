@@ -20,8 +20,6 @@ import subprocess
 import config
 import humod
 
-DEBUG = False
-
 
 class PhotoCamera(object):
 	"""Class defining generic cameras."""

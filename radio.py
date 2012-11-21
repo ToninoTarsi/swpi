@@ -66,7 +66,7 @@ class RadioThread(threading.Thread):
             time.sleep(self.cfg.radiointerval/2)
             waitForHandUP()
             
-            if (  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status != -1 ):
+            if (  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ):
                 log("Radio")
 
                 delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)

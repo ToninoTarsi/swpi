@@ -274,7 +274,9 @@ def getFileName(path):
 def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version=None):
     textColor = (255,255,0)
     offsetUpper = 20
-    offsetBottom = 40
+    offsetBottom = 32
+    marginLeft = 10
+    MarginRight = 10
     bgrColor = (50, 30, 255)
     
     #font_path = "./fonts/arial.ttf"
@@ -296,13 +298,14 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     draw = ImageDraw.Draw(img)
     
     text =  cfg.webcamLogo
-    draw.text((10, 0),text,textColor,font=font)
+    draw.text((marginLeft, 0),text,textColor,font=font)
     
     text =   datetime.datetime.now().strftime(" Data : %d/%m/%Y - %H:%M:%S ")
     width, height = font.getsize(text)
-    draw.text((w-width-10, 0),text,textColor,font=font)
+    draw.text((w-width-MarginRight, 0),text,textColor,font=font)
     
     font = ImageFont.truetype(font_path, 13, encoding='unic')
+    
     # Adding Meteo information
     if (  globalvars.meteo_data.status == 0 ):
  
@@ -318,30 +321,33 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
                 text = text + " - Pressione: " + str(globalvars.meteo_data.abs_pressure) + " hpa"         
             
             width, height = font.getsize(text)
-            draw.text((10, h-offsetBottom),text,textColor,font=font)
+            draw.text((32, h-offsetBottom),text,textColor,font=font)
             
             text = "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
             width, height = font.getsize(text)
-            draw.text((10, h-height),text,textColor,font=font)
+            draw.text((marginLeft, h-height),text,textColor,font=font)
             
-
-    
     else:
         text = "Nessun dato meteo - status = " + str(globalvars.meteo_data.status)
         width, height = font.getsize(text)
-        draw.text((10, h-offsetBottom),text,textColor,font=font)
+        draw.text((marginLeft, h-offsetBottom),text,textColor,font=font)
     
     if ( version != None):
         font = ImageFont.truetype(font_path, 11, encoding='unic')
         text = "(Sint Wind PI : " + version + ")"
         width, height = font.getsize(text)
-        draw.text((w-width-10, h-height),text,textColor,font=font)            
+        draw.text((w-width-MarginRight, h-height),text,textColor,font=font)            
+    
+    im_windsock = Image.open(".fonts/windsock.png")
+    # Box for paste is (left, upper, right, lower).
+    img.paste(im_windsock,(0,offsetBottom,offsetBottom,0),im_windsock)
     
     img.save(filename)
     
     if ( not os.path.isfile(filename)):
         return False
-    log(  "Image :" + filename + " processed"  )
+    
+    log("Processed image :" + filename )
     return True
 
 

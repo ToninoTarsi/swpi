@@ -134,7 +134,6 @@ class Sensor_WH1080(sensor.Sensor):
                 if ( seconds < 15 ):
                     time.sleep(15-seconds)
                     
-            
             old_ptr = self.ws.current_pos()
             new_data = self.ws.get_data(old_ptr, unbuffered=True)
             result = dict(new_data)

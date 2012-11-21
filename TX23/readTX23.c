@@ -39,7 +39,7 @@ void printWindSpeedAndDirection(void)
 	if (RPi_TX23_GetReading(&WindDirection,&WindSpeed)==TRUE)
 	{
 		RPi_TX23_GetDateTimeLocal(thetime);
-		printf("Dir = %d , Speed = %d \%\n", WindDirection, WindSpeed);
+		printf("(%d , %d )", WindDirection, WindSpeed);
 //		printf("%s,Wind Direction,%0.1f\n",thetime,((double)WindDirection)*22.5);
 //		printf("%s,Wind Speed,%d\n",thetime,WindSpeed);
 
