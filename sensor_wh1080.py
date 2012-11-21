@@ -79,7 +79,7 @@ class Sensor_WH1080(sensor.Sensor):
         found = False
         while ( not found ):
             try:
-                time.sleep(0.1)
+                time.sleep(2)
                 newpos = self.ws.current_pos()
                 if ( newpos != oldpos): found = True
             except:

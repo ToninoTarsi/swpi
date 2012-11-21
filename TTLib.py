@@ -321,11 +321,11 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
                 text = text + " - Pressione: " + str(globalvars.meteo_data.abs_pressure) + " hpa"         
             
             width, height = font.getsize(text)
-            draw.text((32, h-offsetBottom),text,textColor,font=font)
+            draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
             
             text = "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
             width, height = font.getsize(text)
-            draw.text((marginLeft, h-height),text,textColor,font=font)
+            draw.text((32+marginLeft, h-height),text,textColor,font=font)
             
     else:
         text = "Nessun dato meteo - status = " + str(globalvars.meteo_data.status)
@@ -338,9 +338,9 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
         width, height = font.getsize(text)
         draw.text((w-width-MarginRight, h-height),text,textColor,font=font)            
     
-    im_windsock = Image.open(".fonts/windsock.png")
+    im_windsock = Image.open("./fonts/windsock.png")
     # Box for paste is (left, upper, right, lower).
-    img.paste(im_windsock,(0,offsetBottom,offsetBottom,0),im_windsock)
+    img.paste(im_windsock,(0,h-offsetBottom),im_windsock)
     
     img.save(filename)
     

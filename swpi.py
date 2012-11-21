@@ -514,18 +514,16 @@ if bConnected:
 	log("Try to disconnect")
 	modem.disconnectwvdial()
 	
-	
-# clear all sd cards at startup
-if ( cfg.clear_all_sd_cards_at_startup):
-	camera.ClearAllCameraSDCards(cfg)		
-	
-# Start main thread
+# Wait for valid data
 if ( cfg.use_wind_sensor ) :
 	while ( globalvars.meteo_data.status == -999 ) :
 		time.sleep(1)
-	
 
-	
+# clear all sd cards at startup
+if ( cfg.clear_all_sd_cards_at_startup):
+	camera.ClearAllCameraSDCards(cfg)		
+
+# Start main thread
 ############################ MAIN  LOOP###############################################
 
 while 1:
