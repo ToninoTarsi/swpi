@@ -409,10 +409,10 @@ def sendFileToServer(filename,name,server,destFolder,login,password):
 
 def internet_on():
     try:
-        #urllib2.urlopen('http://74.125.113.99',timeout=1)
-        urllib2.urlopen('http://74.125.113.99')
+        urllib2.urlopen('http://74.125.113.99',timeout=1)
+        #urllib2.urlopen('http://74.125.113.99')
         return True
-    except urllib2.URLError:
+    except :
         pass	
         return False
     
@@ -483,8 +483,10 @@ def SendMail(cfg, subject, text, attach):
         mailServer.sendmail(cfg.gmail_user, cfg.mail_to, msg.as_string())
         # Should be mailServer.quit(), but that crashes...
         mailServer.close()
+        log("Mail sent to :" + cfg.mail_to)
         return True
     except Exception as e:
+        log ("ERROR sending mail" )
         print "Exeption", e
         return False
     

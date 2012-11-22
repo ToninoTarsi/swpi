@@ -481,17 +481,20 @@ else:
 	log("Running without internet connection")
 
 
-# Set Time from NTP ( using a thread to avoid starnge freeze )
+# Set Time from NTP ( using a thread to avoid strange freezing )
 if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 
+# Send mail with IP information ( using a thread to avoid strange freezing )
+if ( IP != None and cfg.use_mail and cfg.mail_ip ):
+	thread.start_new_thread(SendMail,(cfg,"IP","My IP today is : " + IP ,"")) 
 	
 # Send mail with IP information
-if ( IP != None and cfg.use_mail and cfg.mail_ip ):
-	if ( SendMail(cfg,"IP","My IP today is : " + IP ,"") ):
-		log ("Mail sent to :" + cfg.mail_to )
-	else:
-		log ("ERROR sending mail" )
+#if ( IP != None and cfg.use_mail and cfg.mail_ip ):
+#	if ( SendMail(cfg,"IP","My IP today is : " + IP ,"") ):
+#		log ("Mail sent to :" + cfg.mail_to )
+#	else:
+#		log ("ERROR sending mail" )
 
 # Send SMS with IP information
 if ( IP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
