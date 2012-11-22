@@ -323,7 +323,11 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
             width, height = font.getsize(text)
             draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
             
-            text = "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
+            text = ""
+            if (globalvars.meteo_data.hum_out  != None) : 
+                text = text + "Umidita : " + str(globalvars.meteo_data.hum_out) + " % - "
+            
+            text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
             width, height = font.getsize(text)
             draw.text((32+marginLeft, h-height),text,textColor,font=font)
             
@@ -340,7 +344,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     
     im_windsock = Image.open("./fonts/windsock.png")
     # Box for paste is (left, upper, right, lower).
-    img.paste(im_windsock,(0,h-offsetBottom),im_windsock)
+    img.paste(im_windsock,(int(marginLeft/2),h-offsetBottom+2),im_windsock)
     
     img.save(filename)
     

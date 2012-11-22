@@ -65,8 +65,9 @@ class Sensor_Nevio(sensor.Sensor):
         GPIO.setup(self.__PIN_B1, GPIO.IN)  # B1
         GPIO.setup(self.__PIN_B2, GPIO.IN)  # B2
         GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
-        if ( self.cfg.sensor_type == "NEVIO16 ") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B-1
-                
+        if ( self.cfg.sensor_type.upper() == "NEVIO16") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B-1
+
+
         if ( self.cfg.use_bmp085 ):
             self.bmp085 = BMP085(0x77,3)  
         else:
@@ -83,9 +84,9 @@ class Sensor_Nevio(sensor.Sensor):
         b1 = GPIO.input(self.__PIN_B1)
         b2 = GPIO.input(self.__PIN_B2)
         b3 = GPIO.input(self.__PIN_B3)
-        if ( self.cfg.sensor_type == "NEVIO16"): b0 = GPIO.input(self.__PIN_B0)
+        if ( self.cfg.sensor_type.upper() == "NEVIO16"): b0 = GPIO.input(self.__PIN_B0)
         
-        if ( self.cfg.sensor_type != "NEVIO16"):
+        if ( self.cfg.sensor_type.upper() != "NEVIO16"):
             wind_dir8  =   b1 + b2*2 + b3*4 
             wind_dir = get_wind_dir8()[wind_dir8]
             wind_dir_code = get_wind_dir_code8()[wind_dir8]   
