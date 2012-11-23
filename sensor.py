@@ -25,7 +25,7 @@ import globalvars
 import meteodata
 
 
-class Sensor(object):
+class Sensor(threading.Thread):
     
     def __init__(self ,cfg):
         self.cfg = cfg

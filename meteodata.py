@@ -149,6 +149,7 @@ class MeteoData(object):
         self.wind_dir_ave = self.rb_wind_dir.getMean()
 
         self.previous_measure_time = self.last_measure_time
+        
         self.previous_rain = self.rain
         
         

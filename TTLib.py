@@ -302,7 +302,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     
     text =   datetime.datetime.now().strftime("Data : %d/%m/%Y - %H:%M:%S ")
     width, height = font.getsize(text)
-    draw.text((w-width-MarginRight-17, 0),text,textColor,font=font)
+    draw.text((w-width-MarginRight-10, 0),text,textColor,font=font)
     
     font = ImageFont.truetype(font_path, 13, encoding='unic')
     

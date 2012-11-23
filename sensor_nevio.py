@@ -56,6 +56,8 @@ class Sensor_Nevio(sensor.Sensor):
     
     def __init__(self,cfg ):
         
+        threading.Thread.__init__(self)
+
         sensor.Sensor.__init__(self,cfg )        
         
         self.cfg = cfg
@@ -74,14 +76,18 @@ class Sensor_Nevio(sensor.Sensor):
         else:
             self.bmp085 = None
             
-        rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
-        #thread.start_new_thread(self.run)
+        
+        self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
+        
+        self.start()
+
     
     def run(self):
         sleeptime = self.cfg.windmeasureinterval - self.__MEASURETIME
-        if sleeptime < 0 : sleeptime = 0
+        if sleeptime < 0 : sleeptime = 1
         while 1:
             currentWind = self.GetCurretWindSpeed()
+            #TTLib.log( "currentWind : " +  str(currentWind))
             self.rb_WindSpeed.append(currentWind)
             time.sleep(sleeptime)
             
@@ -125,39 +131,20 @@ class Sensor_Nevio(sensor.Sensor):
                 o = n
         return ( ( i * self.cfg.windspeed_gain ) / ( self.__MEASURETIME * 2 ))  + self.cfg.windspeed_offset
     
-    
-    def live_data(self):
-        """Get data every minutes @ 30."""
-        rb = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)
+
+    def GetData(self):
         
-        while 1:    
-                 
-            currentWind = self.GetCurretWindSpeed()
-            rb.append(currentWind)
+        seconds = datetime.datetime.now().second
+        if ( seconds < 30 ):
+            time.sleep(30-seconds)
+        else:
+            time.sleep(90-seconds)  
             
-            seconds = datetime.datetime.now().second
-            #print   seconds,   currentWind
-            if (seconds > 30-self.__MEASURETIME and seconds < 30+self.__MEASURETIME ):
-                wind_dir, wind_dir_code =  self.GetCurretWindDir() 
-                wind_ave,wind_gust = rb.getMeanMax()
-                yield wind_dir, wind_dir_code,wind_ave,wind_gust
-            else :
-                seconds = datetime.datetime.now().second
-                if ( seconds < 30 ):
-                    secondsleft = 30-seconds
-                else:
-                    secondsleft = 90-seconds
-                if ( secondsleft > self.cfg.windmeasureinterval+self.__MEASURETIME  ):
-                    time.sleep(self.cfg.windmeasureinterval)
+        wind_ave,wind_gust = self.rb_WindSpeed.getMeanMax()
+        if ( wind_ave != None) :
+
+            wind_dir, wind_dir_code =  self.GetCurretWindDir()
             
-    def GetData(self):     
-        
-        for wind_dir, wind_dir_code,wind_ave,wind_gust in self.live_data():
-                    
-            if ( self.bmp085 != None ):
-                globalvars.meteo_data.temp_out = self.bmp085.readTemperature()
-                globalvars.meteo_data.abs_pressure = self.bmp085.readPressure() / 100
-                
             globalvars.meteo_data.status = 0
                         
             globalvars.meteo_data.last_measure_time = datetime.datetime.now()
@@ -168,42 +155,13 @@ class Sensor_Nevio(sensor.Sensor):
             globalvars.meteo_data.wind_dir = wind_dir
             globalvars.meteo_data.wind_dir_code = wind_dir_code
              
+            if ( self.bmp085 != None ):
+                globalvars.meteo_data.temp_out = self.bmp085.readTemperature()
+                globalvars.meteo_data.abs_pressure = self.bmp085.readPressure() / 100 
+                
             globalvars.meteo_data.CalcStatistics()
             
             globalvars.meteo_data.LogDataToDB()
-            
-
-    def GetDataNew(self):
-        
-       while 1:   
-            seconds = datetime.datetime.now().second
-            if ( seconds < 30 ):
-                time.sleep(30-seconds)
-            else:
-                time.sleep(90-seconds)  
-                
-            wind_ave,wind_gust = self.rb_WindSpeed.getMeanMax()
-            if ( wind_ave != None) :
-
-                wind_dir, wind_dir_code =  self.GetCurretWindDir()
-                
-                globalvars.meteo_data.status = 0
-                            
-                globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-                globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
-                
-                globalvars.meteo_data.wind_ave     = wind_ave
-                globalvars.meteo_data.wind_gust    = wind_gust
-                globalvars.meteo_data.wind_dir = wind_dir
-                globalvars.meteo_data.wind_dir_code = wind_dir_code
-                 
-                if ( self.bmp085 != None ):
-                    globalvars.meteo_data.temp_out = self.bmp085.readTemperature()
-                    globalvars.meteo_data.abs_pressure = self.bmp085.readPressure() / 100 
-                    
-                globalvars.meteo_data.CalcStatistics()
-                
-                globalvars.meteo_data.LogDataToDB()
                 
 
 
