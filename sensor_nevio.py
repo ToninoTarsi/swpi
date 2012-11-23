@@ -25,6 +25,7 @@ import sensor
 import RPi.GPIO as GPIO
 import TTLib
 from BMP085 import BMP085
+import thread
 
 
 def get_wind_dir_code8():
@@ -43,7 +44,7 @@ def get_wind_dir16():
 
 class Sensor_Nevio(sensor.Sensor):
     
-    __MEASURETIME = 2
+    __MEASURETIME = 2 # Number of seconds for pulse recording
     
     # Connections PIN - USING BCM numbering convention !!!!!!
     
@@ -59,7 +60,7 @@ class Sensor_Nevio(sensor.Sensor):
         
         self.cfg = cfg
         self.bTimerRun = 0
-        
+
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.__PIN_A, GPIO.IN)   # wind Speed
         GPIO.setup(self.__PIN_B1, GPIO.IN)  # B1
@@ -72,6 +73,18 @@ class Sensor_Nevio(sensor.Sensor):
             self.bmp085 = BMP085(0x77,3)  
         else:
             self.bmp085 = None
+            
+        rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
+        #thread.start_new_thread(self.run)
+    
+    def run(self):
+        sleeptime = self.cfg.windmeasureinterval - self.__MEASURETIME
+        if sleeptime < 0 : sleeptime = 0
+        while 1:
+            currentWind = self.GetCurretWindSpeed()
+            self.rb_WindSpeed.append(currentWind)
+            time.sleep(sleeptime)
+            
                      
     def Detect(self):
         return True,"","",""
@@ -160,6 +173,38 @@ class Sensor_Nevio(sensor.Sensor):
             globalvars.meteo_data.LogDataToDB()
             
 
+    def GetDataNew(self):
+        
+       while 1:   
+            seconds = datetime.datetime.now().second
+            if ( seconds < 30 ):
+                time.sleep(30-seconds)
+            else:
+                time.sleep(90-seconds)  
+                
+            wind_ave,wind_gust = self.rb_WindSpeed.getMeanMax()
+            if ( wind_ave != None) :
+
+                wind_dir, wind_dir_code =  self.GetCurretWindDir()
+                
+                globalvars.meteo_data.status = 0
+                            
+                globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+                globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
+                
+                globalvars.meteo_data.wind_ave     = wind_ave
+                globalvars.meteo_data.wind_gust    = wind_gust
+                globalvars.meteo_data.wind_dir = wind_dir
+                globalvars.meteo_data.wind_dir_code = wind_dir_code
+                 
+                if ( self.bmp085 != None ):
+                    globalvars.meteo_data.temp_out = self.bmp085.readTemperature()
+                    globalvars.meteo_data.abs_pressure = self.bmp085.readPressure() / 100 
+                    
+                globalvars.meteo_data.CalcStatistics()
+                
+                globalvars.meteo_data.LogDataToDB()
+                
 
 
 if __name__ == '__main__':
