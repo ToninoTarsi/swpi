@@ -300,9 +300,9 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     text =  cfg.webcamLogo
     draw.text((marginLeft, 0),text,textColor,font=font)
     
-    text =   datetime.datetime.now().strftime(" Data : %d/%m/%Y - %H:%M:%S ")
+    text =   datetime.datetime.now().strftime("Data : %d/%m/%Y - %H:%M:%S ")
     width, height = font.getsize(text)
-    draw.text((w-width-MarginRight, 0),text,textColor,font=font)
+    draw.text((w-width-MarginRight-17, 0),text,textColor,font=font)
     
     font = ImageFont.truetype(font_path, 13, encoding='unic')
     
@@ -342,9 +342,16 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
         width, height = font.getsize(text)
         draw.text((w-width-MarginRight, h-height),text,textColor,font=font)            
     
-    im_windsock = Image.open("./fonts/windsock.png")
-    # Box for paste is (left, upper, right, lower).
-    img.paste(im_windsock,(int(marginLeft/2),h-offsetBottom+2),im_windsock)
+    
+    if ( os.path.isfile("./fonts/windsock.png") ):
+        im_windsock = Image.open("./fonts/windsock.png")
+        # Box for paste is (left, upper, right, lower).
+        img.paste(im_windsock,(int(marginLeft/2),h-offsetBottom+2),im_windsock)
+    
+    if ( os.path.isfile("./fonts/rpi_logo.png") ):
+        im_logo = Image.open("./fonts/rpi_logo.png")
+        # Box for paste is (left, upper, right, lower).
+        img.paste(im_logo,(w-17,0),im_logo)   
     
     img.save(filename)
     
