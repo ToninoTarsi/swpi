@@ -172,9 +172,9 @@ class MeteoData(object):
             if self.temp_out != None :
                 msg = msg + " - T: " + str(self.temp_out)     
             if self.abs_pressure != None :
-                msg = msg + " - P: " + str(self.abs_pressure)   
+                msg = msg + " - P: %.1f" % self.abs_pressure   
             if self.hum_out != None :
-                msg = msg + " - U: " + str(self.hum_out)                                             
+                msg = msg + " - U: %d" % self.hum_out                                             
             TTLib.log(msg)
 
 

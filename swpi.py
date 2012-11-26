@@ -618,6 +618,11 @@ while 1:
 					if ( cfg.use_mail and cfg.mail_ip ):
 						SendMail(cfg,"IP",IP,"")
 				
+				
+				# Set Time from NTP ( using a thread to avoid strange freezing )
+				if ( cfg.set_system_time_from_ntp_server_at_startup ):
+					thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
+				
 				if bConnected:
 					log("Try to disconnect")
 					modem.disconnectwvdial()

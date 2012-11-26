@@ -94,7 +94,7 @@ def swpi_update():
 def SetTimeFromNTP(ntp_server):
     try:
         c = ntplib.NTPClient()
-        date_str = c.request(ntp_server, version=3)
+        date_str = c.request(ntp_server, version=3,timeout=10)
         if (date_str != None ):
             os.system("sudo date -s '%s'" %  time.ctime(date_str.tx_time))
             log("System time adjusted from NPT server : " + ntp_server)
@@ -314,18 +314,18 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
         
         if (delay_seconds < 900 ):    
 
-            text = "Direzione del vento: " + globalvars.meteo_data.wind_dir_code + " - Intensita: " + str(globalvars.meteo_data.wind_ave) + " km/h  - Raffica: " + str(globalvars.meteo_data.wind_gust)  + " km/h" 
+            text = "Direzione del vento: " + globalvars.meteo_data.wind_dir_code + " - Intensita: %.1f" % globalvars.meteo_data.wind_ave + " km/h  - Raffica: %.1f" % globalvars.meteo_data.wind_gust  + " km/h" 
             if (globalvars.meteo_data.temp_out  != None) : 
-                text = text + " - Temperatura: " + str(globalvars.meteo_data.temp_out) + " C"
+                text = text + " - Temperatura: %.1f" % globalvars.meteo_data.temp_out + " C"
             if (globalvars.meteo_data.abs_pressure != None ) : 
-                text = text + " - Pressione: " + str(globalvars.meteo_data.abs_pressure) + " hpa"         
+                text = text + " - Pressione: %.1f" % globalvars.meteo_data.abs_pressure + " hpa"         
             
             width, height = font.getsize(text)
             draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
             
             text = ""
             if (globalvars.meteo_data.hum_out  != None) : 
-                text = text + "Umidita : " + str(globalvars.meteo_data.hum_out) + " % - "
+                text = text + "Umidita : %d" % (globalvars.meteo_data.hum_out) + " % - "
             
             text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
             width, height = font.getsize(text)

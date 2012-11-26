@@ -55,7 +55,6 @@ class Sensor(threading.Thread):
     def ReadBMP085(self):
                 temp = self.bmp085.readTemperature()
                 p = self.bmp085.readPressure()
-
                 p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
                 globalvars.meteo_data.temp_out = temp
                 globalvars.meteo_data.abs_pressure = p0 / 100 
