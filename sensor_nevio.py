@@ -24,7 +24,6 @@ import sensor_thread
 import sensor 
 import RPi.GPIO as GPIO
 import TTLib
-from BMP085 import BMP085
 import thread
 
 
@@ -71,10 +70,7 @@ class Sensor_Nevio(sensor.Sensor):
         if ( self.cfg.sensor_type.upper() == "NEVIO16") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B-1
 
 
-        if ( self.cfg.use_bmp085 ):
-            self.bmp085 = BMP085(0x77,3)  
-        else:
-            self.bmp085 = None
+
             
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
@@ -155,13 +151,8 @@ class Sensor_Nevio(sensor.Sensor):
             globalvars.meteo_data.wind_dir = wind_dir
             globalvars.meteo_data.wind_dir_code = wind_dir_code
              
-            if ( self.bmp085 != None ):
-                globalvars.meteo_data.temp_out = self.bmp085.readTemperature()
-                globalvars.meteo_data.abs_pressure = self.bmp085.readPressure() / 100 
-                
-            globalvars.meteo_data.CalcStatistics()
             
-            globalvars.meteo_data.LogDataToDB()
+        sensor.Sensor.GetData(self)
                 
 
 

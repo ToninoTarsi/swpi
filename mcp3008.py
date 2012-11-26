@@ -4,39 +4,13 @@
 
 import RPi.GPIO as GPIO, time, os
 
-DEBUG = 1
-GPIO.setmode(GPIO.BCM)
 
-# this function is not used, its for future reference!
-def slowspiwrite(clockpin, datapin, byteout):
-	GPIO.setup(clockpin, GPIO.OUT)
-	GPIO.setup(datapin, GPIO.OUT)
-	for i in range(8):
-		if (byteout & 0x80):
-			GPIO.output(datapin, True)
-		else:
-			GPIO.output(datapin, False)
-		byteout <<= 1
-		GPIO.output(clockpin, True)
-		GPIO.output(clockpin, False)
-
-# this function is not used, its for future reference!
-def slowspiread(clockpin, datapin):
-	GPIO.setup(clockpin, GPIO.OUT)
-	GPIO.setup(datapin, GPIO.IN)
-	byteout = 0
-	for i in range(8):
-		GPIO.output(clockpin, False)
-		GPIO.output(clockpin, True)
-		byteout <<= 1
-		if (GPIO.input(datapin)):
-			byteout = byteout | 0x1
-	return byteout
 
 # read SPI data from MCP3008 chip, 8 possible adc's (0 thru 7)
 def readadc(adcnum, clockpin, mosipin, misopin, cspin):
 	if ((adcnum > 7) or (adcnum < 0)):
 		return -1
+		
 	GPIO.output(cspin, True)
 
 	GPIO.output(clockpin, False)  # start clock low
@@ -69,9 +43,12 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
 	return adcout
 
 if __name__ == '__main__':	
+
+	DEBUG = 1
+	GPIO.setmode(GPIO.BCM)
 	
 	# change these as desired
-	SPICLK = 0
+	SPICLK = 11
 	SPIMOSI = 10
 	SPIMISO = 9
 	SPICS = 8
