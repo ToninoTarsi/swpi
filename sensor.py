@@ -62,7 +62,10 @@ class Sensor(threading.Thread):
                     time.sleep(0.02)
                     
                 if ( p != None): 
-                    p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+                    if ( self.cfg.location_altitude != 0 ):
+                        p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+                    else:
+                        p0 = p
                     globalvars.meteo_data.temp_out = temp
                     globalvars.meteo_data.abs_pressure = p0 / 100 
                 
