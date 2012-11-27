@@ -35,6 +35,7 @@ class I2C :
       self.bus.write_byte_data(self.address, reg, value)
       if (self.debug):
         print("I2C: Wrote 0x%02X to register 0x%02X" % (value, reg))
+      return 0
     except IOError, err:
       print "Error accessing 0x%02X: Check your I2C address" % self.address
       return -1

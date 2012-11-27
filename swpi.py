@@ -337,9 +337,10 @@ def answer_call(modem, message):
 		# Pressure
 		if ( globalvars.meteo_data.abs_pressure != None ):
 			thousands, rem = divmod(globalvars.meteo_data.abs_pressure, 1000) 
-			thousands = thousands * 1000
+			thousands = int(thousands * 1000)
 			hundreds, tens = divmod(rem, 100)
-			hundreds = hundreds * 100
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))
 			listOfMessages.append("./audio/silence05s.raw") 
 			listOfMessages.append("./audio/pressure.raw")
 			if ( thousands != 0):
