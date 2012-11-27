@@ -99,35 +99,43 @@ class BMP085 :
       print "DBG: MD  = %6d" % (self._cal_MD)
 
   def readRawTemp(self):
-    "Reads the raw (uncompensated) temperature from the sensor"
-    ret = self.i2c.write8(self.__BMP085_CONTROL, self.__BMP085_READTEMPCMD)
-    if ( ret != 0) :
-        return -1
-    time.sleep(0.005)  # Wait 5ms
-    raw = self.i2c.readU16(self.__BMP085_TEMPDATA)
-    if (self.debug):
-      print "DBG: Raw Temp: 0x%04X (%d)" % (raw & 0xFFFF, raw)
-    return raw
+    try:
+        "Reads the raw (uncompensated) temperature from the sensor"
+        ret = self.i2c.write8(self.__BMP085_CONTROL, self.__BMP085_READTEMPCMD)
+        if ( ret != 0) :
+            return -1
+        time.sleep(0.005)  # Wait 5ms
+        raw = self.i2c.readU16(self.__BMP085_TEMPDATA)
+        if (self.debug):
+          print "DBG: Raw Temp: 0x%04X (%d)" % (raw & 0xFFFF, raw)
+        return raw
+    except IOError, err:
+      print "Error readRawTemp" 
+      return -1
 
   def readRawPressure(self):
-    "Reads the raw (uncompensated) pressure level from the sensor"
-    self.i2c.write8(self.__BMP085_CONTROL, self.__BMP085_READPRESSURECMD + (self.mode << 6))
-    if (self.mode == self.__BMP085_ULTRALOWPOWER):
-      time.sleep(0.005)
-    elif (self.mode == self.__BMP085_HIGHRES):
-      time.sleep(0.014)
-    elif (self.mode == self.__BMP085_ULTRAHIGHRES):
-      time.sleep(0.026)
-    else:
-      time.sleep(0.008)
-    msb = self.i2c.readU8(self.__BMP085_PRESSUREDATA)
-    lsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA+1)
-    xlsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA+2)
-    raw = ((msb << 16) + (lsb << 8) + xlsb) >> (8 - self.mode)
-    if (self.debug):
-      print "DBG: Raw Pressure: 0x%04X (%d)" % (raw & 0xFFFF, raw)
-    return raw
-
+    try:
+        "Reads the raw (uncompensated) pressure level from the sensor"
+        self.i2c.write8(self.__BMP085_CONTROL, self.__BMP085_READPRESSURECMD + (self.mode << 6))
+        if (self.mode == self.__BMP085_ULTRALOWPOWER):
+          time.sleep(0.005)
+        elif (self.mode == self.__BMP085_HIGHRES):
+          time.sleep(0.014)
+        elif (self.mode == self.__BMP085_ULTRAHIGHRES):
+          time.sleep(0.026)
+        else:
+          time.sleep(0.008)
+        msb = self.i2c.readU8(self.__BMP085_PRESSUREDATA)
+        lsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA+1)
+        xlsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA+2)
+        raw = ((msb << 16) + (lsb << 8) + xlsb) >> (8 - self.mode)
+        if (self.debug):
+          print "DBG: Raw Pressure: 0x%04X (%d)" % (raw & 0xFFFF, raw)
+        return raw
+    except IOError, err:
+      print "Error readRawPressure" 
+      return -1
+  
   def readTemperature(self):
     "Gets the compensated temperature in degrees celcius"
     UT = 0
@@ -237,7 +245,7 @@ class BMP085 :
     if (self.debug):
       print "DBG: Pressure = %d Pa" % (p)
 
-    return p,temp
+    return p
 
   def readPressureTemperature(self):
     "Gets the compensated pressure in pascal and temperature in C"
@@ -258,6 +266,9 @@ class BMP085 :
     if (UT == -1 ):
         return None,None
     UP = self.readRawPressure()
+    if (UP == -1):
+        return None,None
+    
 
     # You can use the datasheet values to test the conversion results
     # dsValues = True
@@ -284,6 +295,7 @@ class BMP085 :
     X1 = ((UT - self._cal_AC6) * self._cal_AC5) >> 15
     X2 = (self._cal_MC << 11) / (X1 + self._cal_MD)
     B5 = X1 + X2
+    temp = ((B5 + 8) >> 4) / 10.0
     if (self.debug):
       print "DBG: X1 = %d" % (X1)
       print "DBG: X2 = %d" % (X2)
@@ -330,7 +342,7 @@ class BMP085 :
     if (self.debug):
       print "DBG: Pressure = %d Pa" % (p)
 
-    return p
+    return p,temp
 
 
 

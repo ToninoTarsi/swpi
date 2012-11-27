@@ -25,9 +25,9 @@ class MCPADC():
 
 	def readadc(self,adcnum):
 		if (self.type == "MCP3002"):
-			return self.readadc3002(self,adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)
+			return self.readadc3002(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)
 		elif (self.type == "MCP3008"):
-			return self.readadc3008(self,adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)	
+			return self.readadc3008(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)	
 		else:
 			return None
 
@@ -123,3 +123,4 @@ if __name__ == '__main__':
 			ret = adc.readadc(adcnum) 
 			print ret,"\t",
 		print "|"
+		time.sleep(1)
