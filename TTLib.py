@@ -6,7 +6,7 @@
 #     Visit http://www.vololiberomontecucco.it
 # 
 ##########################################################################
-
+#                      Generic function Library
 import ftplib
 import urllib2
 import os
@@ -81,6 +81,22 @@ class RingBuffer(object):
             return None,None
         else:
             return (s/float(i)),maxval
+
+def getrevision():
+    # Extract board revision from cpuinfo file
+    myrevision = "0000"
+    try:
+        f = open('/proc/cpuinfo','r')
+        for line in f:
+            if line[0:8]=='Revision':
+                myrevision = line[11:-1]
+        f.close()
+    except:
+        myrevision = "0000"
+    
+    return myrevision
+
+
 
 
 def swpi_update():
