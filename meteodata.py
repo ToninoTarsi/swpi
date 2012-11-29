@@ -178,10 +178,6 @@ class MeteoData(object):
             TTLib.log(msg)
 
 
-
-            
-        
-
     def getLastTodayFromDB(self):
         conn = sqlite3.connect('db/swpi.s3db',200)
         

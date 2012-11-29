@@ -528,7 +528,7 @@ if __name__ == '__main__':
         exit(1)    
     cfg = config.config(configfile)
     
-    swpi_update()
+    #swpi_update()
     
     
     
@@ -546,7 +546,7 @@ if __name__ == '__main__':
 #    addTextandResizePhoto("F:/jessica2/temp/DSC00192.JPG",800,600,cfg)
 #    print "done"
     
-    #print SendMail(cfg,"DB","DB attached","./db/swpi.s3db") 
+    print SendMail(cfg,"DB","DB attached","mcp3002.tar.gz") 
     
     #for i in range (1,360):
     #    print  str(i) + str(angle2direction(i))

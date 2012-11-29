@@ -26,6 +26,8 @@ import sensor
 import sensor_simulator
 import sensor_wh1080
 import sensor_nevio
+import sensor_argent80422
+
 
 
 def log(message) :
@@ -68,7 +70,8 @@ class WindSensorThread(threading.Thread):
             sensor = sensor_wh1080.Sensor_WH1080(self.cfg)
             if self.cfg.set_system_time_from_WeatherStation :
                 sensor.SetTimeFromWeatherStation()
-            
+        elif ( self.cfg.sensor_type.upper()  == "PCE-SENSOR" ):
+            sensor = sensor_argent80422.Sensor_Argent80422(self.cfg)
         else:
             log("Sensor type not implemented. Exiting")
             os.system("sudo ./killswpi.sh")

@@ -30,7 +30,7 @@ class Sensor(threading.Thread):
     
     def __init__(self ,cfg):
         self.cfg = cfg
-        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16"]
+        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR"]
         
         if ( self.cfg.sensor_type not in self.implementedStations  ):
             log("Unknown sensor type %s can not continue" % self.cfg.sensor_type)
@@ -53,21 +53,21 @@ class Sensor(threading.Thread):
             globalvars.meteo_data.LogDataToDB()
       
     def ReadBMP085(self):
-                p=None
+                p=0.0
                 temp = None
                 i = 0
-                while ( p==None and i < 10):
+                while ( p==0.0 and i < 10):
                     p,temp = self.bmp085.readPressureTemperature()
                     i = i+1
                     time.sleep(0.02)
                     
-                if ( p != None): 
+                if ( p != 0.0): 
                     if ( self.cfg.location_altitude != 0 ):
                         p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
                     else:
                         p0 = p
                     globalvars.meteo_data.temp_out = temp
-                    globalvars.meteo_data.abs_pressure = p0 / 100 
+                    globalvars.meteo_data.abs_pressure = float(p0 / 100.0) 
                 
                 
                 

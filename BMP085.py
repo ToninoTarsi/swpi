@@ -10,7 +10,7 @@
 
 import time
 from I2C import I2C
-from TTLib  import *
+import TTLib
 
 
 class BMP085 :
@@ -56,7 +56,7 @@ class BMP085 :
   # Constructor
   def __init__(self, address=0x77, mode=1, debug=False):
     
-    myrevision = getrevision()
+    myrevision = TTLib.getrevision()
     if myrevision == "0002" or myrevision == "0003" :
         self.i2c = I2C(address,0)
     else:
@@ -267,6 +267,7 @@ class BMP085 :
     B4 = 0
     B7 = 0
     temp = 0.0
+    p = 0.0
 
     UT = self.readRawTemp()
     if (UT == -1 ):

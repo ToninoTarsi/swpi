@@ -25,33 +25,26 @@ import sensor
 import RPi.GPIO as GPIO
 import TTLib
 import thread
+from ctypes import *
+import intervalmap
+
+def get_wind_dir_text():
+    """Return an array to convert wind direction integer to a string.
+
+    """
+    ##_ = Localisation.translation.gettext
+    return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
 
-def get_wind_dir_code8():
-    return [ 'N','NW','NE', 'E', 'SW' , 'W',  'S' , 'SE' ]
 
-def get_wind_dir_code16():
-    return [ 'N','NNE','NNW','NW','ENE','NE','E','ESE','WSW','SW','W','WNW','S','SSW','SSE','SE' ]
-
-
-def get_wind_dir8():
-    return [ 0,315,45,90,225,270,180,135 ]
-
-def get_wind_dir16():
-    return [ 0,22.5,337.5,315,67.5,45,90,112.5,247.5,225,270,292.5,180,202.5,157.5,135 ]
-
-
-class Sensor_Nevio(sensor.Sensor):
+class Sensor_Argent80422(sensor.Sensor):
     
     __MEASURETIME = 2 # Number of seconds for pulse recording
     
     # Connections PIN - USING BCM numbering convention !!!!!!
     
     __PIN_A = 23  #Anemometer
-    __PIN_B1 = 17 
-    __PIN_B2 = 21
-    __PIN_B3 = 22
-    __PIN_B0 = 4    # Pin only available for NEVIO16 sensors
+   
     
     def __init__(self,cfg ):
         
@@ -64,12 +57,29 @@ class Sensor_Nevio(sensor.Sensor):
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.__PIN_A, GPIO.IN)   # wind Speed
-        GPIO.setup(self.__PIN_B1, GPIO.IN)  # B1
-        GPIO.setup(self.__PIN_B2, GPIO.IN)  # B2
-        GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
-        if ( self.cfg.sensor_type.upper() == "NEVIO16") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B-1
+ 
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
+        
+        self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
+
+        self.map = intervalmap.intervalmap()
+        self.map[0:68]    = 5
+        self.map[68:80]   = 3
+        self.map[80:100]  = 4
+        self.map[100:141] = 7
+        self.map[141:195] = 6
+        self.map[195:242] = 9
+        self.map[242:315] = 8
+        self.map[315:394] = 1
+        self.map[394:482] = 2
+        self.map[482:559] = 11
+        self.map[559:606] = 10
+        self.map[606:677] = 15
+        self.map[677:733] = 0
+        self.map[733:779] = 13
+        self.map[779:833] = 14
+        self.map[833:1024]= 12
         
         self.start()
 
@@ -91,22 +101,14 @@ class Sensor_Nevio(sensor.Sensor):
         self.bTimerRun = 0
     
     def GetCurretWindDir(self):
-        """Get wind direction decoding Nevio table."""
-        b1 = GPIO.input(self.__PIN_B1)
-        b2 = GPIO.input(self.__PIN_B2)
-        b3 = GPIO.input(self.__PIN_B3)
-        if ( self.cfg.sensor_type.upper() == "NEVIO16"): b0 = GPIO.input(self.__PIN_B0)
+        """Get wind direction reading MCP3002 channel 0."""
         
-        if ( self.cfg.sensor_type.upper() != "NEVIO16"):
-            wind_dir8  =   b1 + b2*2 + b3*4 
-            wind_dir = get_wind_dir8()[wind_dir8]
-            wind_dir_code = get_wind_dir_code8()[wind_dir8]   
-        else:
-            wind_dir16  =   b0 + b1*2 + b2*4 + b3*16
-            wind_dir = get_wind_dir16()[wind_dir16]
-            wind_dir_code = get_wind_dir_code16()[wind_dir16]                   
+        ch0 = self.libMCP.read_channel(0)    
         
-        return wind_dir, wind_dir_code
+        wind_dir = self.map[ch0]
+        winddir_code = get_wind_dir_text()[wind_dir]
+        
+        return wind_dir*22.5, winddir_code
     
     def GetCurretWindSpeed(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
@@ -121,7 +123,7 @@ class Sensor_Nevio(sensor.Sensor):
             if ( n != o):
                 i = i+1
                 o = n
-        return ( ( i * self.cfg.windspeed_gain ) / ( self.__MEASURETIME * 2 ))  + self.cfg.windspeed_offset
+        return ( i  / ( self.__MEASURETIME * 2 )) * 2.4 * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
 
     def GetData(self):
@@ -161,10 +163,10 @@ if __name__ == '__main__':
     
     globalvars.meteo_data = meteodata.MeteoData(cfg)
 
-    ss = Sensor_Nevio(cfg)
+    ss = Sensor_Argent80422(cfg)
     
     while ( 1 ) :
-        print ss.GetCurretWindSpeed()
+        print ss.GetCurretWindSpeed() , ss.GetCurretWindDir()
         
         
 #        ss.GetData()

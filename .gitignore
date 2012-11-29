@@ -1,6 +1,7 @@
 *.cfg
 *.log
 *.pyc
+*.o
 
 
 # Mr Developer

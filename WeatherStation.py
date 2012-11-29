@@ -64,7 +64,7 @@ import math
 import sys
 import time
 
-import Localisation
+#import Localisation
 # import USBDevice later, when we know which USB library to use
 USBDevice = None
 logFile = datetime.now().strftime("log/wh1080_%d%m%Y.log")
@@ -113,13 +113,15 @@ def get_wind_dir_text():
     """Return an array to convert wind direction integer to a string.
 
     """
-    _ = Localisation.translation.gettext
-    return [
-        _('N'), _('NNE'), _('NE'), _('ENE'),
-        _('E'), _('ESE'), _('SE'), _('SSE'),
-        _('S'), _('SSW'), _('SW'), _('WSW'),
-        _('W'), _('WNW'), _('NW'), _('NNW'),
-        ]
+    return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
+
+    ##_ = Localisation.translation.gettext
+#    return [
+#        _('N'), _('NNE'), _('NE'), _('ENE'),
+#        _('E'), _('ESE'), _('SE'), _('SSE'),
+#        _('S'), _('SSW'), _('SW'), _('WSW'),
+#        _('W'), _('WNW'), _('NW'), _('NNW'),
+#        ]
 
 
 
@@ -128,7 +130,7 @@ def pressure_trend_text(trend):
     office.
 
     """
-    _ = Localisation.translation.gettext
+    #_ = Localisation.translation.gettext
     if trend > 6.0:
         return _('rising very rapidly')
     elif trend > 3.5:
