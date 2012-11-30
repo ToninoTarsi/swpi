@@ -805,9 +805,13 @@ if __name__ == '__main__':
 
     ws = weather_station()
  
-    while 1:
-        print ws.get_fixed_block(['date_time'],True) , ws.current_pos()
-        time.sleep(1)
+
+    print ws.get_fixed_block(['date_time'],True) , ws.current_pos()
+    
+    for data, ptr, logged in ws.live_data():
+        print data
+    
+ 
         
         
     
