@@ -48,6 +48,7 @@ class Sensor(threading.Thread):
            
             if ( self.bmp085 != None ):
                 self.ReadBMP085()
+             
                 
             globalvars.meteo_data.CalcStatistics()
             globalvars.meteo_data.LogDataToDB()

@@ -36,7 +36,6 @@ def get_wind_dir_text():
     return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
 
-
 class Sensor_Argent80422(sensor.Sensor):
     
     __MEASURETIME = 2 # Number of seconds for pulse recording
@@ -123,7 +122,7 @@ class Sensor_Argent80422(sensor.Sensor):
             if ( n != o):
                 i = i+1
                 o = n
-        return ( i  / ( self.__MEASURETIME * 2 )) * 2.4 * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
+        return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
 
     def GetData(self):
@@ -150,6 +149,12 @@ class Sensor_Argent80422(sensor.Sensor):
             globalvars.meteo_data.wind_dir_code = wind_dir_code
              
             
+        if ( self.cfg.use_tmp36 ):
+            ch1 = self.libMCP.read_channel(1)
+            v1 = ch1 * (3300.0/1024.0)
+            temp = (v1 - 500.0) / 10.0
+            globalvars.meteo_data.temp_out = temp
+                
         sensor.Sensor.GetData(self)
                 
 
@@ -161,14 +166,18 @@ if __name__ == '__main__':
    
     cfg = config.config(configfile)
     
-    globalvars.meteo_data = meteodata.MeteoData(cfg)
 
     ss = Sensor_Argent80422(cfg)
     
     while ( 1 ) :
-        print ss.GetCurretWindSpeed() , ss.GetCurretWindDir()
+        print "Speed",ss.GetCurretWindSpeed() 
+        print "Dir" , ss.GetCurretWindDir()
         
-        
+        if ( cfg.use_tmp36 ):
+            ch1 = ss.libMCP.read_channel(1)
+            v1 = ch1 * (3300.0/1024.0)
+            temp = (v1 - 500.0) / 10.0
+            print "temp",temp
 #        ss.GetData()
 #        log( "Meteo Data -  D : " + globalvars.meteo_data.wind_dir_code + " S : " + str(globalvars.meteo_data.wind_ave) +   + " G : " + str(globalvars.meteo_data.wind_gust) )
 #        #print logData("http://localhost/swpi_logger.php")

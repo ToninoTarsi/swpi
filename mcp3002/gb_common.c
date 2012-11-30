@@ -1,38 +1,11 @@
-//=============================================================================
-//
-//
-// Gertboard Common code
-//
-// This file is part of the gertboard test suite
-//
-//
-// Copyright (C) Gert Jan van Loo & Myra VanInwegen 2012
-// No rights reserved
-// You may treat this program as if it was in the public domain
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-//
-// Notes:
-// 1/ In some Linux systems (e.g. Debian) the UART is used by Linux.
-//    So for now do not demo the UART.
-// 2/ At the moment (16-March-2012) there is no Linux driver for
-//    the audio yet so the PWM is free.
-//    This is likely to change and in that case the Linux
-//    audio/PWM driver must be disabled.
-//
-// This file contains code use by all the test programs for individual 
-// capabilities.
+/*###########################################################################
+#     Sint Wind PI
+#     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
+#
+#     Please refer to the LICENSE file for conditions
+#     Visit http://www.vololiberomontecucco.it
+#
+##########################################################################*/
 
 #include "gb_common.h"
 
