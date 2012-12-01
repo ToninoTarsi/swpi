@@ -30,12 +30,13 @@ import thread
 def get_wind_dir_code8():
     return [ 'N','NW','NE', 'E', 'SW' , 'W',  'S' , 'SE' ]
 
+def get_wind_dir8():
+    return [ 0,315,45,90,225,270,180,135 ]
+
+
 def get_wind_dir_code16():
     return [ 'N','NNE','NNW','NW','ENE','NE','E','ESE','WSW','SW','W','WNW','S','SSW','SSE','SE' ]
 
-
-def get_wind_dir8():
-    return [ 0,315,45,90,225,270,180,135 ]
 
 def get_wind_dir16():
     return [ 0,22.5,337.5,315,67.5,45,90,112.5,247.5,225,270,292.5,180,202.5,157.5,135 ]
@@ -88,6 +89,7 @@ class Sensor_Nevio(sensor.Sensor):
         return True,"","",""
     
     def SetTimer(self):
+        #print "resetting",datetime.datetime.now()
         self.bTimerRun = 0
     
     def GetCurretWindDir(self):
@@ -102,17 +104,21 @@ class Sensor_Nevio(sensor.Sensor):
             wind_dir = get_wind_dir8()[wind_dir8]
             wind_dir_code = get_wind_dir_code8()[wind_dir8]   
         else:
-            wind_dir16  =   b0 + b1*2 + b2*4 + b3*16
+            wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
             wind_dir = get_wind_dir16()[wind_dir16]
             wind_dir_code = get_wind_dir_code16()[wind_dir16]                   
+        
+        
         
         return wind_dir, wind_dir_code
     
     def GetCurretWindSpeed(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
+        #while self.bTimerRun: time.sleep(0.1)
         self.bTimerRun = 1
         t = threading.Timer(self.__MEASURETIME, self.SetTimer)
         t.start()
+        #print "statring" ,datetime.datetime.now()
         i = 0
         o = GPIO.input(self.__PIN_A)
         while self.bTimerRun:
@@ -163,13 +169,28 @@ if __name__ == '__main__':
 
     ss = Sensor_Nevio(cfg)
     
+
+    
+    
     while ( 1 ) :
-        print ss.GetCurretWindSpeed()
         
+#        b1 = GPIO.input(17)
+#        b2 = GPIO.input(21)
+#        b3 = GPIO.input(22)
+#        b0 = GPIO.input(4)
+#        a = GPIO.input(23)
         
+#        print "a",a,"b0",b0,"b1",b1,"b2",b2,"b3",b3
+        #print "GetCurretWindSpeed"
+        speed = ss.GetCurretWindSpeed() 
+        #print "done"
+        dir = ss.GetCurretWindDir()
+        print "Speed :" , speed , "Dir :" , dir
+
+                
 #        ss.GetData()
 #        log( "Meteo Data -  D : " + globalvars.meteo_data.wind_dir_code + " S : " + str(globalvars.meteo_data.wind_ave) +   + " G : " + str(globalvars.meteo_data.wind_gust) )
 #        #print logData("http://localhost/swpi_logger.php")
-        time.sleep(0.5)
+        time.sleep(0.2)
     
     
