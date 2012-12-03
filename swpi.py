@@ -62,7 +62,7 @@ def process_sms(modem, smsID):
 		msgSender = message[2]
 		msgDate = message[4]
 		log( "Processind SMS : " + str(msgID) + " - Text:  " +  msgText + "  - Sender :" + msgSender)
-
+	
 		command = msgText.split()
 		if ( len(command) < 2 ):
 			log( "Bad Command .. Deleting")
@@ -111,7 +111,7 @@ def process_sms(modem, smsID):
 			conn.commit()
 			log( "Database resetted  " )
 		#---------------------------------------------------------------------------------------	
-
+	
 		elif (len(command) == 2 and cmd == "MDB" ):
 			modem.sms_del(msgID)
 			tarname = "db.tar.gz"
@@ -210,21 +210,21 @@ def process_sms(modem, smsID):
 					log("Error sending IP by SMS")
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
-			log( "UseDongleNet set to : " + cfg.UseDongleNet )
+			log( "Sent IP" )
 		#----------------------------------------------------------------------------		
 		elif (len(command) == 3 and cmd == "WSO" ):
 			modem.sms_del(msgID)
 			cfg.setWindSpeed_offset(param)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
-			log( "Wind Speed offset set to : " + cfg.windspeed_offset )
+			log( "Wind Speed offset set to : " + str(cfg.windspeed_offset ))
 		#---------------------------------------------------------------------------------------		
 		elif (len(command) == 3 and cmd == "WSG" ):
 			modem.sms_del(msgID)
 			cfg.setWindSpeed_gain(param)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
-			log( "Wind Speed gain set to : " + cfg.windspeed_gain )
+			log( "Wind Speed gain set to : " + str(cfg.windspeed_gain ))
 		#---------------------------------------------------------------------------------------		
 		elif (len(command) == 2 and cmd == "UPD" ):
 			modem.sms_del(msgID)
@@ -247,7 +247,7 @@ def process_sms(modem, smsID):
 				log("Try to disconnect")
 				modem.disconnectwvdial()
 				
-
+	
 			log( "SWPI-UPDATE" )
 			systemRestart()
 		#----------------------------------------------------------------------------	
