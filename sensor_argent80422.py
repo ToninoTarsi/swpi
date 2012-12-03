@@ -29,10 +29,8 @@ from ctypes import *
 import intervalmap
 
 def get_wind_dir_text():
-    """Return an array to convert wind direction integer to a string.
+    """Return an array to convert wind direction integer to a string."""
 
-    """
-    ##_ = Localisation.translation.gettext
     return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
 
@@ -51,6 +49,11 @@ class Sensor_Argent80422(sensor.Sensor):
 
         sensor.Sensor.__init__(self,cfg )        
         
+        
+        self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
+        if ( self.libMCP.init() != 0 ):
+            log("Error initializing mcp3002 library.Try to continue")
+        
         self.cfg = cfg
         self.bTimerRun = 0
 
@@ -60,33 +63,33 @@ class Sensor_Argent80422(sensor.Sensor):
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
         
-        self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
 
         self.map = intervalmap.intervalmap()
-        self.map[0:68]    = 5
-        self.map[68:80]   = 3
-        self.map[80:100]  = 4
-        self.map[100:141] = 7
-        self.map[141:195] = 6
-        self.map[195:242] = 9
-        self.map[242:315] = 8
-        self.map[315:394] = 1
-        self.map[394:482] = 2
-        self.map[482:559] = 11
-        self.map[559:606] = 10
-        self.map[606:677] = 15
-        self.map[677:733] = 0
-        self.map[733:779] = 13
-        self.map[779:833] = 14
-        self.map[833:1024]= 12
-        
+        self.map[0:75]    = 5
+        self.map[75:89]   = 3
+        self.map[89:111]  = 4
+        self.map[111:156] = 7
+        self.map[156:214] = 6
+        self.map[214:264] = 9
+        self.map[264:342] = 8
+        self.map[342:424] = 1
+        self.map[424:514] = 2
+        self.map[514:593] = 11
+        self.map[593:640] = 10
+        self.map[640:712] = 15
+        self.map[712:769] = 0
+        self.map[769:815] = 13
+        self.map[815:870] = 14
+        self.map[870:1024]= 12
+                
+        self.active = True
         self.start()
 
     
     def run(self):
         sleeptime = self.cfg.windmeasureinterval - self.__MEASURETIME
-        if sleeptime < 0 : sleeptime = 1
-        while 1:
+        if sleeptime < 0 : sleeptime = 0
+        while self.active :
             currentWind = self.GetCurretWindSpeed()
             #TTLib.log( "currentWind : " +  str(currentWind))
             self.rb_WindSpeed.append(currentWind)
@@ -94,7 +97,7 @@ class Sensor_Argent80422(sensor.Sensor):
             
                      
     def Detect(self):
-        return True,"","",""
+        return True
     
     def SetTimer(self):
         self.bTimerRun = 0
@@ -102,8 +105,14 @@ class Sensor_Argent80422(sensor.Sensor):
     def GetCurretWindDir(self):
         """Get wind direction reading MCP3002 channel 0."""
         
-        ch0 = self.libMCP.read_channel(0)    
+        ch0 = -1
+        while ch0 == -1 :
+            ch0 = self.libMCP.read_channel(0)
+            if  ( ch0 == -1 ) :
+                log("Error reading mcp3002 channel 0. Retrying ")
+                time.sleep(0.1) 
         
+        #print "ch0",ch0
         wind_dir = self.map[ch0]
         winddir_code = get_wind_dir_text()[wind_dir]
         
@@ -168,19 +177,22 @@ if __name__ == '__main__':
     
 
     ss = Sensor_Argent80422(cfg)
+    ss.active = False
+    
     
     while ( 1 ) :
-        print "Speed",ss.GetCurretWindSpeed() 
-        print "Dir" , ss.GetCurretWindDir()
-        
+        speed =  ss.GetCurretWindSpeed() 
+        dir =   ss.GetCurretWindDir()
+        temp = None
         if ( cfg.use_tmp36 ):
             ch1 = ss.libMCP.read_channel(1)
             v1 = ch1 * (3300.0/1024.0)
             temp = (v1 - 500.0) / 10.0
-            print "temp",temp
+           
+        print "Speed:",speed,"Dir:",dir,"Temp;",temp
 #        ss.GetData()
 #        log( "Meteo Data -  D : " + globalvars.meteo_data.wind_dir_code + " S : " + str(globalvars.meteo_data.wind_ave) +   + " G : " + str(globalvars.meteo_data.wind_gust) )
 #        #print logData("http://localhost/swpi_logger.php")
-        time.sleep(0.5)
+     
     
     

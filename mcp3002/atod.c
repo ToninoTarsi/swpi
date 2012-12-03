@@ -84,7 +84,7 @@ void main(void)
   // simply printing out the value isn't very useful. The bar graph
   // is better because this hides the noise in the signal.
 
-  for (r=0; r<100000; r++)
+  while (1)
   {
     v= read_adc(chan);
     // V should be in range 0-1023

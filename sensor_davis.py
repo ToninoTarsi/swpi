@@ -7,7 +7,7 @@
 # 
 ##########################################################################
 
-"""This module defines the base sensor Nevio ."""
+"""This module defines the base sensor Davis 7911, 7913, 7914,  6410 ."""
 
 import threading
 import time
@@ -25,34 +25,22 @@ import sensor
 import RPi.GPIO as GPIO
 import TTLib
 import thread
+from ctypes import *
+
+def get_wind_dir_text():
+    """Return an array to convert wind direction integer to a string."""
+
+    return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N']
 
 
-def get_wind_dir_code8():
-    return [ 'N','NW','NE', 'E', 'SW' , 'W',  'S' , 'SE' ]
-
-def get_wind_dir8():
-    return [ 0,315,45,90,225,270,180,135 ]
-
-
-def get_wind_dir_code16():
-    return [ 'N','NNE','NNW','NW','ENE','NE','E','ESE','WSW','SW','W','WNW','S','SSW','SSE','SE' ]
-
-
-def get_wind_dir16():
-    return [ 0,22.5,337.5,315,67.5,45,90,112.5,247.5,225,270,292.5,180,202.5,157.5,135 ]
-
-
-class Sensor_Nevio(sensor.Sensor):
+class Sensor_Davis(sensor.Sensor):
     
     __MEASURETIME = 2 # Number of seconds for pulse recording
     
     # Connections PIN - USING BCM numbering convention !!!!!!
     
     __PIN_A = 23  #Anemometer
-    __PIN_B1 = 17 
-    __PIN_B2 = 21
-    __PIN_B3 = 22
-    __PIN_B0 = 4    # Pin only available for NEVIO16 sensors
+   
     
     def __init__(self,cfg ):
         
@@ -60,18 +48,21 @@ class Sensor_Nevio(sensor.Sensor):
 
         sensor.Sensor.__init__(self,cfg )        
         
+        
+        self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
+        if ( self.libMCP.init() != 0 ):
+            log("Error initializing mcp3002 library.Try to continue")
+        
         self.cfg = cfg
         self.bTimerRun = 0
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.__PIN_A, GPIO.IN)   # wind Speed
-        GPIO.setup(self.__PIN_B1, GPIO.IN)  # B1
-        GPIO.setup(self.__PIN_B2, GPIO.IN)  # B2
-        GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
-        if ( self.cfg.sensor_type.upper() == "NEVIO16") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B-1
+ 
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
-        
+    
+                
         self.active = True
         self.start()
 
@@ -79,7 +70,7 @@ class Sensor_Nevio(sensor.Sensor):
     def run(self):
         sleeptime = self.cfg.windmeasureinterval - self.__MEASURETIME
         if sleeptime < 0 : sleeptime = 0
-        while self.active:
+        while self.active :
             currentWind = self.GetCurretWindSpeed()
             #TTLib.log( "currentWind : " +  str(currentWind))
             self.rb_WindSpeed.append(currentWind)
@@ -90,36 +81,32 @@ class Sensor_Nevio(sensor.Sensor):
         return True
     
     def SetTimer(self):
-        #print "resetting",datetime.datetime.now()
         self.bTimerRun = 0
     
     def GetCurretWindDir(self):
-        """Get wind direction decoding Nevio table."""
-        b1 = GPIO.input(self.__PIN_B1)
-        b2 = GPIO.input(self.__PIN_B2)
-        b3 = GPIO.input(self.__PIN_B3)
-        if ( self.cfg.sensor_type.upper() == "NEVIO16"): b0 = GPIO.input(self.__PIN_B0)
+        """Get wind direction reading MCP3002 channel 0."""
         
-        if ( self.cfg.sensor_type.upper() != "NEVIO16"):
-            wind_dir8  =   b1 + b2*2 + b3*4 
-            wind_dir = get_wind_dir8()[wind_dir8]
-            wind_dir_code = get_wind_dir_code8()[wind_dir8]   
-        else:
-            wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
-            wind_dir = get_wind_dir16()[wind_dir16]
-            wind_dir_code = get_wind_dir_code16()[wind_dir16]                   
+        ch0 = -1
+        while ch0 == -1 :
+            ch0 = self.libMCP.read_channel(0)
+            if  ( ch0 == -1 ) :
+                log("Error reading mcp3002 channel 0. Retrying ")
+                time.sleep(0.1) 
         
+        #print "ch0",ch0
         
+        wind_dir = (350.0/1023.0)*ch0+5
         
-        return wind_dir, wind_dir_code
+        val=int((wind_dir/22.5)+.5)
+        winddir_code = get_wind_dir_text()[val]
+        
+        return wind_dir, winddir_code
     
     def GetCurretWindSpeed(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
-        #while self.bTimerRun: time.sleep(0.1)
         self.bTimerRun = 1
         t = threading.Timer(self.__MEASURETIME, self.SetTimer)
         t.start()
-        #print "statring" ,datetime.datetime.now()
         i = 0
         o = GPIO.input(self.__PIN_A)
         while self.bTimerRun:
@@ -128,7 +115,7 @@ class Sensor_Nevio(sensor.Sensor):
             if ( n != o):
                 i = i+1
                 o = n
-        return (  ( i  / ( self.__MEASURETIME * 2 )) ) * self.cfg.windspeed_gain  + self.cfg.windspeed_offset
+        return ( ( i  / ( self.__MEASURETIME * 2 ))  * 2.25 * 1.609344 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
 
     def GetData(self):
@@ -155,6 +142,12 @@ class Sensor_Nevio(sensor.Sensor):
             globalvars.meteo_data.wind_dir_code = wind_dir_code
              
             
+        if ( self.cfg.use_tmp36 ):
+            ch1 = self.libMCP.read_channel(1)
+            v1 = ch1 * (3300.0/1024.0)
+            temp = (v1 - 500.0) / 10.0
+            globalvars.meteo_data.temp_out = temp
+                
         sensor.Sensor.GetData(self)
                 
 
@@ -166,24 +159,12 @@ if __name__ == '__main__':
    
     cfg = config.config(configfile)
     
-    globalvars.meteo_data = meteodata.MeteoData(cfg)
 
-    ss = Sensor_Nevio(cfg)
+    ss = Sensor_Davis(cfg)
     ss.active = False
-
-
     
     
     while ( 1 ) :
-        
-#        b1 = GPIO.input(17)
-#        b2 = GPIO.input(21)
-#        b3 = GPIO.input(22)
-#        b0 = GPIO.input(4)
-#        a = GPIO.input(23)
-        
-#        print "a",a,"b0",b0,"b1",b1,"b2",b2,"b3",b3
-        #print "GetCurretWindSpeed"
         speed =  ss.GetCurretWindSpeed() 
         dir =   ss.GetCurretWindDir()
         temp = None
@@ -193,10 +174,9 @@ if __name__ == '__main__':
             temp = (v1 - 500.0) / 10.0
            
         print "Speed:",speed,"Dir:",dir,"Temp;",temp
-                
 #        ss.GetData()
 #        log( "Meteo Data -  D : " + globalvars.meteo_data.wind_dir_code + " S : " + str(globalvars.meteo_data.wind_ave) +   + " G : " + str(globalvars.meteo_data.wind_gust) )
 #        #print logData("http://localhost/swpi_logger.php")
-
+     
     
     

@@ -10,12 +10,8 @@
 #include "gb_common.h"
 #include "gb_spi.h"
 
-
-
-int read_channel(int chan)
+int init()
 {
-	int v;
-
 	if ( setup_io() == 0 )
 	{
 		return -1;
@@ -29,6 +25,14 @@ int read_channel(int chan)
 
 	// Setup SPI bus
 	setup_spi();
+
+	return 0;
+
+}
+
+int read_channel(int chan)
+{
+	int v;
 
 	// The value returned by the A to D can jump around quite a bit, so
 	// simply printing out the value isn't very useful. The bar graph
