@@ -39,3 +39,6 @@ USB library:
 •	hidapi
 •	cython-hidapi
 •	cython
+
+
+Main program : sudo python swpi.py

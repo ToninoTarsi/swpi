@@ -1,4 +1,12 @@
-# -*- coding: utf-8 -*-
+###########################################################################
+#     Sint Wind PI
+#     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
+#     Modem comunications based on Slawek Ligus pyhumod-0.03 module
+#   
+#     Please refer to the LICENSE file for conditions 
+#     Visit http://www.vololiberomontecucco.it
+# 
+##########################################################################
 
 
 from bisect import bisect_left, bisect_right
