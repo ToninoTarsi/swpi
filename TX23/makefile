@@ -16,7 +16,7 @@ readTX23 : bcm2835.o RPi_TX23.o readTX23.o
 	gcc -o readTX23 bcm2835.o RPi_TX23.o readTX23.o -lrt
 
 libTX23.so : libTX23.o bcm2835.o RPi_TX23.o 
-	gcc --shared -o libTX23.so libTX23.so bcm2835.o RPi_TX23.o libTX23.o -lrt
+	gcc --shared -o libTX23.so libTX23.o bcm2835.o RPi_TX23.o  -lrt
 
 # The next lines generate the various object files
 
