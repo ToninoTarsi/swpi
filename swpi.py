@@ -347,7 +347,8 @@ def answer_call(modem, message):
 				listOfMessages.append("./audio/" + str(thousands) + ".raw")
 			if ( hundreds != 0):
 				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
-			listOfMessages.append("./audio/" + str(tens) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")
 			listOfMessages.append("./audio/hpa.raw")
 			
 		# Humidity
