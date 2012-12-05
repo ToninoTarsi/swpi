@@ -30,7 +30,7 @@ class Sensor(threading.Thread):
     
     def __init__(self ,cfg):
         self.cfg = cfg
-        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR"]
+        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23"]
         
         if ( self.cfg.sensor_type not in self.implementedStations  ):
             log("Unknown sensor type %s can not continue" % self.cfg.sensor_type)

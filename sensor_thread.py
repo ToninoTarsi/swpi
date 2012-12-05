@@ -28,6 +28,7 @@ import sensor_wh1080
 import sensor_nevio
 import sensor_argent80422
 import sensor_davis
+import sensor_lacrossTX23
 
 
 def log(message) :
@@ -70,12 +71,15 @@ class WindSensorThread(threading.Thread):
             sensor = sensor_wh1080.Sensor_WH1080(self.cfg)
             if self.cfg.set_system_time_from_WeatherStation :
                 sensor.SetTimeFromWeatherStation()
+                
         elif ( self.cfg.sensor_type.upper()  == "PCE-SENSOR" ):
             sensor = sensor_argent80422.Sensor_Argent80422(self.cfg)
             
         elif ( self.cfg.sensor_type.upper()  == "DAVIS-SENSOR" ):
-            sensor = sensor_davis.Sensor_Argent80422(self.cfg)            
-            
+            sensor = sensor_davis.Sensor_Argent80422(self.cfg)           
+             
+        elif ( self.cfg.sensor_type.upper()  == "LACROSS-TX23" ):
+            sensor = sensor_lacrossTX23.Sensor_LacrossTX23(self.cfg)                       
             
         else:
             log("Sensor type not implemented. Exiting")

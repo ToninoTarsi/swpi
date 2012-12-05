@@ -20,12 +20,19 @@ TX23 Wires:
 #include <time.h>
 #include "RPi_TX23.h"
 
+int init()
+{
+	Rpi_TX23_Option_Verbose = 0;
+	if(bcm2835_init())
+		return 1;
+	else
+		return 0;
+}
+
 
 int getData(int *iDir, int *iSpeed,int verbose)
 {
 	Rpi_TX23_Option_Verbose = verbose;
-	if(!bcm2835_init())
-		exit(1);
 
 	if (RPi_TX23_GetReading(iDir,iSpeed)==TRUE)
 	{
