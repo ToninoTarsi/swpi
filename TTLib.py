@@ -329,12 +329,18 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
         delay_seconds = int(delay.total_seconds())
         
         if (delay_seconds < 900 ):    
-
-            text = "Direzione del vento: " + globalvars.meteo_data.wind_dir_code + " - Intensita: %.1f" % globalvars.meteo_data.wind_ave + " km/h  - Raffica: %.1f" % globalvars.meteo_data.wind_gust  + " km/h" 
+            
+            if ( len(globalvars.meteo_data.wind_dir_code) == 3 ):
+                dir = globalvars.meteo_data.wind_dir_code
+            elif ( len(globalvars.meteo_data.wind_dir_code) == 2 ):
+                dir = " " + globalvars.meteo_data.wind_dir_code
+            else:
+                dir = "  " + globalvars.meteo_data.wind_dir_code
+            text = "Direzione del vento: " + dir + " - Intensita:%5.1f" % globalvars.meteo_data.wind_ave + " km/h  - Raffica:%5.1f" % globalvars.meteo_data.wind_gust  + " km/h" 
             if (globalvars.meteo_data.temp_out  != None) : 
-                text = text + " - Temperatura: %.1f" % globalvars.meteo_data.temp_out + " C"
+                text = text + " - Temperatura:%4.1f" % globalvars.meteo_data.temp_out + " C"
             if (globalvars.meteo_data.abs_pressure != None ) : 
-                text = text + " - Pressione: %.1f" % globalvars.meteo_data.abs_pressure + " hpa"         
+                text = text + " - Pressione:%6.1f" % globalvars.meteo_data.abs_pressure + " hpa"         
             
             width, height = font.getsize(text)
             draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)

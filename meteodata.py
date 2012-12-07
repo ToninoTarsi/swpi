@@ -28,7 +28,7 @@ class MeteoData(object):
 
         # Station data
         self.idx = None
-        self.status = -999
+        self.status = -9999
         self.wind_dir = None
         self.wind_ave = None
         self.wind_gust = None
@@ -133,12 +133,10 @@ class MeteoData(object):
             if (  self.UmInMax == None or self.hum_in > self.UmInMax ) : 
                 self.UmInMax  = self.hum_in                       
                     
-                    
             if ( self.UmOutMin == None or self.hum_out < self.UmOutMin ) : 
                 self.UmOutMin  = self.hum_out
             if ( self.UmOutMax == None or self.hum_out > self.UmOutMax ) : 
                 self.UmOutMax  = self.hum_out                       
-                    
                     
             if ( self.PressureMin == None or  self.abs_pressure < self.PressureMin ) : 
                 self.PressureMin  = self.abs_pressure

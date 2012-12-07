@@ -521,7 +521,7 @@ if bConnected:
 	
 # Wait for valid data
 if ( cfg.use_wind_sensor ) :
-	while ( globalvars.meteo_data.status == -999 ) :
+	while ( globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status == -9999 ) :
 		time.sleep(1)
 
 # clear all sd cards at startup
