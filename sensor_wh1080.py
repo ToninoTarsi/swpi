@@ -146,7 +146,8 @@ class Sensor_WH1080(sensor.Sensor):
     def GetData(self):
         while 1:
             try:
-                for data, ptr, ret  in self.live_data():            
+                for data, ptr, ret  in self.live_data():
+                    
                     if ret :
                         
                         globalvars.meteo_data.status = data[ "status"]
@@ -175,6 +176,10 @@ class Sensor_WH1080(sensor.Sensor):
                                 globalvars.meteo_data.wind_dir_code = "ERROR"
                             globalvars.meteo_data.illuminance = None
                             globalvars.meteo_data.uv = None
+                            
+                            # TO REMOVE
+                            if ( self.cfg.use_bmp085 ):
+                                sensor.Sensor.ReadBMP085(self)
                  
                             globalvars.meteo_data.CalcStatistics()
                             globalvars.meteo_data.LogDataToDB()
