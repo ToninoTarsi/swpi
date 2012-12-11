@@ -94,7 +94,7 @@ class MeteoData(object):
         
         self.wind_chill = WeatherStation.wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = WeatherStation.apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
-        self.dew_point = WeatherStation.dew_point(self.temp_out, self.temp_out)
+        self.dew_point = WeatherStation.dew_point(self.temp_out, self.hum_out)
         
         if ( self.previous_rain != None and self.previous_measure_time != None ):
             self.rain_rate = self.rain - self.previous_rain

@@ -319,6 +319,7 @@ def answer_call(modem, message):
 		# Temperature
 		if ( globalvars.meteo_data.temp_out != None ):
 			listOfMessages.append("./audio/silence05s.raw") 
+			listOfMessages.append("./audio/temperature.raw")
 			if ( globalvars.meteo_data.temp_out < 0) :
 				listOfMessages.append("./audio/minus.raw") 
 	
@@ -330,7 +331,6 @@ def answer_call(modem, message):
 #			listOfMessages.append("./audio/" + str(dec ) + ".raw")
 						
 			intera = int(round( abs(globalvars.meteo_data.temp_out) ))
-			listOfMessages.append("./audio/temperature.raw")
 			listOfMessages.append("./audio/" + str(intera) + ".raw")
 			listOfMessages.append("./audio/degree.raw")
 
@@ -535,6 +535,11 @@ while 1:
 	try:
 		if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
+		if (cfg.use_wind_sensor and cfg.sensor_type == "PCE-FWS20"):
+			seconds = datetime.datetime.now().second
+			if ( seconds < 45 ):
+				time.sleep(45-seconds)
+		
 		waitForHandUP()  # do to replace with lock object
 		if ( cfg.webcamDevice1.upper() != "NONE" ):
 			webcam1 =  webcam.webcam(1,cfg)

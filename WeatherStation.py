@@ -65,11 +65,11 @@ import sys
 import time
 
 #import Localisation
-# import USBDevice later, when we know which USB library to use
-USBDevice = None
 logFile = datetime.now().strftime("log/wh1080_%d%m%Y.log")
 logging.basicConfig(filename=logFile,filemode='w',level=logging.DEBUG)
-#logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
+
+# import USBDevice later, when we know which USB library to use
+USBDevice = None
 
 
 def dew_point(temp, hum):
@@ -115,15 +115,13 @@ def get_wind_dir_text():
     """
     return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
-    ##_ = Localisation.translation.gettext
+#    _ = Localisation.translation.gettext
 #    return [
 #        _('N'), _('NNE'), _('NE'), _('ENE'),
 #        _('E'), _('ESE'), _('SE'), _('SSE'),
 #        _('S'), _('SSW'), _('SW'), _('WSW'),
 #        _('W'), _('WNW'), _('NW'), _('NNW'),
 #        ]
-
-
 
 def pressure_trend_text(trend):
     """Convert pressure trend to a string, as used by the UK met
@@ -194,7 +192,7 @@ def _decode(raw, format):
             return None
         return (hi * 256 * 256) + (md * 256) + lo
     def _bcd_decode(byte):
-        hi = (byte / 16) & 0x0F
+        hi = (byte // 16) & 0x0F
         lo = byte & 0x0F
         return (hi * 10) + lo
     def _date_time(raw, offset):
@@ -276,7 +274,7 @@ class CUSBDrive(object):
 
     def __init__(self, library):
         global USBDevice
-        self.logger = logging.getLogger('CUSBDrive')
+        self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
         if not USBDevice and library in ('auto', 'cython-hidapi'):
             try:
                 from device_cython_hidapi import USBDevice
@@ -304,11 +302,11 @@ class CUSBDrive(object):
         """
         buf = [
             self.ReadCommand,
-            address / 256,
+            address // 256,
             address % 256,
             self.EndMark,
             self.ReadCommand,
-            address / 256,
+            address // 256,
             address % 256,
             self.EndMark,
             ]
@@ -334,7 +332,7 @@ class CUSBDrive(object):
         """
         buf = [
             self.WriteCommandWord,
-            address / 256,
+            address // 256,
             address % 256,
             self.EndMark,
             self.WriteCommandWord,
@@ -354,45 +352,31 @@ class CUSBDrive(object):
 
 class weather_station(object):
     """Class that represents the weather station to user program."""
-    def __init__(self, ws_type='1080', library='auto'):
+    # avoid USB activity this number of seconds each side of time when
+    # station screen is believed to be writing to the memory
+    avoid = 3.0
+    # minimum interval between polling for data change
+    min_pause = 0.5
+    def __init__(self, ws_type='1080', library='auto', params=None):
         """Connect to weather station and prepare to read data."""
-        self.logger = logging.getLogger('weather_station')
+        self.logger = logging.getLogger('pywws.weather_station')
         # create basic IO object
         self.cusb = CUSBDrive(library)
         # init variables
+        self.params = params
         self._fixed_block = None
         self._data_block = None
         self._data_pos = None
         self._current_ptr = None
+        if self.params:
+            self._station_clock = eval(
+                self.params.get('fixed', 'station clock', 'None'))
+            self._sensor_clock = eval(
+                self.params.get('fixed', 'sensor clock', 'None'))
+        else:
+            self._station_clock = None
+            self._sensor_clock = None
         self.ws_type = ws_type
-
-
-#    def live_dataNew(self, do_not_wait=False):
-#        """Function will return data @ 30secons - tony."""
-#        seconds = datetime.now().second
-#        if ( (not do_not_wait) ):
-#            if ( seconds < 30 ):
-#                #print "sleeping" , 30-seconds
-#                time.sleep(30-seconds)
-#            else:
-#                #print "sleeping" , 90-seconds
-#                time.sleep(90-seconds)
-#        
-#        if ( do_not_wait ):
-#            if (seconds > 45):
-#                time.sleep(60-seconds+15)
-#            if ( seconds < 15 ):
-#                time.sleep(15-seconds)
-#                
-#        
-#        old_ptr = self.current_pos()
-#        new_data = self.get_data(old_ptr, unbuffered=True)
-#        result = dict(new_data)
-#        now = time.time()
-#        result['idx'] = datetime.utcfromtimestamp(int(now))
-#        yield result, old_ptr, True
-
-
 
     def live_data(self, logged_only=False):
         # There are two things we want to synchronise to - the data is
@@ -407,143 +391,127 @@ class weather_station(object):
         old_ptr = self.current_pos()
         old_data = self.get_data(old_ptr, unbuffered=True)
         now = time.time()
-        next_log = None
-        next_live = None
-        live_overdue = now + 3600.0
-        no_op_count = 0
+        if self._sensor_clock:
+            next_live = now
+            next_live -= (next_live - self._sensor_clock) % live_interval
+            next_live += live_interval
+        else:
+            next_live = None
+        if self._station_clock and next_live:
+            # set next_log
+            next_log = next_live - live_interval
+            next_log -= (next_log - self._station_clock) % 60
+            next_log -= old_data['delay'] * 60
+            next_log += log_interval
+        else:
+            next_log = None
+            self._station_clock = None
         while True:
+            last_time = now
+            if not self._station_clock:
+                next_log = None
+            if not self._sensor_clock:
+                next_live = None
             # wake up just before next reading is due
             now = time.time()
+            advance = now + max(self.avoid, self.min_pause) + self.min_pause
             pause = 600.0
             if next_live:
-                pause = min(pause, (next_live - 2.0) - now)
-            elif not logged_only:
-                pause = 0.0
+                if not logged_only:
+                    pause = min(pause, next_live - advance)
+            else:
+                pause = self.min_pause
             if next_log:
-                pause = min(pause, (next_log - 4.0) - now)
-            elif (old_data['delay'] is None or
-                  old_data['delay'] >= read_period - 1):
-                pause = 0.0
-            elif not next_live:
-                pause = min(pause,
-                            ((read_period - old_data['delay']) * 60.0) - 110.0)
-            pause = max(pause, 2.0)
-            self.logger.debug('delay %s, pause %g', str(old_data['delay']), pause)
-            #print self.logger.debug('delay %s, pause %g', str(old_data['delay']), pause)
+                pause = min(pause, next_log - advance)
+            elif old_data['delay'] < read_period - 1:
+                pause = min(
+                    pause, ((read_period - old_data['delay']) * 60.0) - 110.0)
+            else:
+                pause = self.min_pause
+            pause = max(pause, self.min_pause)
+            self.logger.debug(
+                'delay %s, pause %g', str(old_data['delay']), pause)
             time.sleep(pause)
+            # first look for data changes
             new_data = self.get_data(old_ptr, unbuffered=True)
             now = time.time()
-            while next_live and next_live < now - live_interval:
-                self.logger.warning('live_data missed')
-                #print 'live_data missed'
-                next_live += live_interval
-                live_overdue += live_interval
-            if (new_data['delay'] is not None and
-                new_data['delay'] < read_period):
+            # 'good' time stamp if we haven't just woken up from long
+            # pause and data read wasn't delayed
+            valid_now = now - last_time < (self.min_pause * 2.0) - 0.1
+            # make sure changes because of logging interval aren't
+            # mistaken for new live data
+            old_data['delay'] = new_data['delay']
+            if next_live and not logged_only:
+                while now > next_live + live_interval:
+                    self.logger.info('live_data missed')
+                    next_live += live_interval
+            if new_data != old_data:
+                self.logger.debug('live_data new data')
+                result = dict(new_data)
+                if valid_now:
+                    # data has just changed, so definitely at a 48s update time
+                    self._sensor_clock = now
+                    self.logger.warning(
+                        'setting sensor clock %g', now % live_interval)
+                    if self.params:
+                        self.params.set(
+                            'fixed', 'sensor clock', str(self._sensor_clock))
+                        self.params.flush()
+                    if not next_live:
+                        self.logger.warning('live_data live synchronised')
+                    next_live = now
+                elif next_live and now < next_live - self.min_pause:
+                    self.logger.warning(
+                        'live_data lost sync %g', now - next_live)
+                    next_live = None
+                    self._sensor_clock = None
+                if next_live and not logged_only:
+                    result['idx'] = datetime.utcfromtimestamp(int(next_live))
+                    next_live += live_interval
+                    yield result, old_ptr, False
+                old_data = new_data
+            # now look for pointer changes
+            if new_data['delay'] < read_period:
                 # pointer won't have changed
-                new_ptr = old_ptr
-            else:
-                if no_op_count > 1 and next_log and next_log < now - 12.0:
-                    self.logger.warning('live_data log extended')
-                    #print 'live_data log extended'
-                    next_log += 60.0
-                new_ptr = self.current_pos()
-                # make sure changes because of logging interval aren't
-                # mistaken for new live data
-                old_data['delay'] = new_data['delay']
+                continue
+            new_ptr = self.current_pos()
+            now2 = time.time()
+            valid_now = now2 - last_time < (self.min_pause * 2.0) - 0.1
+            while valid_now and next_log and now2 > next_log + 12.0:
+                self.logger.warning('live_data log extended')
+                next_log += 60.0
             if new_ptr != old_ptr:
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
-                #print 'live_data new ptr: %06x', new_ptr
                 # re-read data, to be absolutely sure it's the last
                 # logged data before the pointer was updated
                 new_data = self.get_data(old_ptr, unbuffered=True)
                 result = dict(new_data)
-                if no_op_count > 0:
-                    # normal in-sync behaviour
-                    result['idx'] = datetime.utcfromtimestamp(int(now))
+                if valid_now:
+                    # pointer has just changed, so definitely at a logging time
+                    self._station_clock = now2
+                    self.logger.warning(
+                        'setting station clock %g', now2 % 60.0)
+                    if self.params:
+                        self.params.set(
+                            'fixed', 'station clock', str(self._station_clock))
+                        self.params.flush()
                     if not next_log:
                         self.logger.warning('live_data log synchronised')
-                        #print 'live_data log synchronised'
-                    next_log = now + log_interval
-                elif next_log:
-                    # found change immediately on waking up
-                    pred = next_log
-                    if result['delay']:
-                        pred += float(result['delay'] * 60) - log_interval
-                    result['idx'] = datetime.utcfromtimestamp(int(pred))
-                    if now > pred + 30.0:
-                        # woke up very late
-                        self.logger.warning('live_data lost log sync')
-                        #print 'live_data lost log sync'
-                        result = None
-                        next_log = None
-                    elif now > pred:
-                        # woke up late
-                        next_log = pred + log_interval
-                    elif now > pred - 4.0:
-                        # woke up just in time
-                        next_log = now + log_interval
-                    else:
-                        self.logger.warning('live_data lost log sync')
-                        #print 'live_data lost log sync'
-                        result = None
-                        next_log = None
-                else:
-                    result = None
-                if result:
+                    next_log = now2
+                elif next_log and now2 < next_log - self.min_pause:
+                    self.logger.warning(
+                        'live_data lost log sync %g', now2 - next_log)
+                    next_log = None
+                    self._station_clock = None
+                if next_log:
+                    result['idx'] = datetime.utcfromtimestamp(int(next_log))
+                    next_log += log_interval
                     yield result, old_ptr, True
-                if result and new_ptr != self.inc_ptr(old_ptr):
+                if new_ptr != self.inc_ptr(old_ptr):
                     self.logger.error(
                         'live_data unexpected ptr change %06x -> %06x',
                         old_ptr, new_ptr)
                 old_ptr = new_ptr
-                old_data['delay'] = 0
-                no_op_count = 0
-            elif logged_only:
-                old_data = new_data
-                no_op_count += 1
-            elif new_data != old_data:
-                result = dict(new_data)
-                if no_op_count > 0:
-                    # normal in-sync behaviour
-                    result['idx'] = datetime.utcfromtimestamp(int(now))
-                    if not next_live:
-                        self.logger.warning('live_data synchronised')
-                    next_live = now + live_interval
-                elif next_live:
-                    # found change immediately on wake up
-                    result['idx'] = datetime.utcfromtimestamp(int(next_live))
-                    if now > next_live:
-                        # woke up late
-                        next_live += live_interval
-                    elif now > next_live - 2.0:
-                        # woke up just in time
-                        next_live += live_interval - 2.0
-                    else:
-                        self.logger.warning('live_data lost sync')
-                        result = None
-                        next_live = None
-                else:
-                    result = None
-                if next_live:
-                    live_overdue = next_live + 6.0
-                else:
-                    live_overdue = now + 3600.0
-                if result:
-                    yield result, old_ptr, False
-                old_data = new_data
-                no_op_count = 0
-            elif now > live_overdue:
-                self.logger.info('live_data %.2fs overdue', now - next_live)
-                result = dict(new_data)
-                result['idx'] = datetime.utcfromtimestamp(int(next_live))
-                next_live += live_interval
-                live_overdue = next_live + 6.0
-                yield result, old_ptr, False
-                old_data = new_data
-                no_op_count = 0
-            else:
-                no_op_count += 1
 
     def inc_ptr(self, ptr):
         """Get next circular buffer data pointer."""
@@ -633,11 +601,35 @@ class weather_station(object):
             format = format[key]
         return _decode(self._fixed_block, format)
 
+    def _wait_for_station(self):
+        # avoid times when station is writing to memory
+        while True:
+            pause = 60.0
+            if self._station_clock:
+                phase = time.time() - self._station_clock
+                if phase > 24 * 3600:
+                    # station clock was last measured a day ago, so reset it
+                    self._station_clock = None
+                else:
+                    pause = min(pause, (self.avoid - phase) % 60)
+            if self._sensor_clock:
+                phase = time.time() - self._sensor_clock
+                if phase > 24 * 3600:
+                    # sensor clock was last measured 6 hrs ago, so reset it
+                    self._sensor_clock = None
+                else:
+                    pause = min(pause, (self.avoid - phase) % 48)
+            if pause > self.avoid * 2.0:
+                return
+            self.logger.debug('avoid %s', str(pause))
+            time.sleep(pause)
+
     def _read_block(self, ptr, retry=True):
         # Read block repeatedly until it's stable. This avoids getting corrupt
         # data when the block is read as the station is updating it.
         old_block = None
         while True:
+            self._wait_for_station()
             new_block = self.cusb.read_block(ptr)
             if new_block:
                 if (new_block == old_block) or not retry:
@@ -659,6 +651,7 @@ class weather_station(object):
         return result
 
     def _write_byte(self, ptr, value):
+        self._wait_for_station()
         if not self.cusb.write_byte(ptr, value):
             raise IOError('_write_byte failed')
 
@@ -798,8 +791,7 @@ class weather_station(object):
         '1080'  : 16,
         '3080'  : 20,
         }
-
-
+        
 if __name__ == '__main__':
     """Main only for testing"""
 
@@ -810,8 +802,4 @@ if __name__ == '__main__':
     
     for data, ptr, logged in ws.live_data():
         print data
-    
- 
-        
-        
     

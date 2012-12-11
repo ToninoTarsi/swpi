@@ -139,6 +139,7 @@ class Sensor_WH1080(sensor.Sensor):
             result = dict(new_data)
             now = time.time()
             result['idx'] = datetime.datetime.utcfromtimestamp(int(now))
+            #print result
             yield result, old_ptr, True    
     
     
@@ -159,15 +160,15 @@ class Sensor_WH1080(sensor.Sensor):
                             globalvars.meteo_data.wind_dir = data["wind_dir"]                    
                             globalvars.meteo_data.idx = data[ "idx"]
                             
-                            globalvars.meteo_data.hum_out = data[ "hum_out"]
-                            globalvars.meteo_data.wind_gust = (float(data[ "wind_gust"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
-                            globalvars.meteo_data.wind_ave = (float(data[ "wind_ave"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
-                            globalvars.meteo_data.rain = float(data[ "rain"])
-                            globalvars.meteo_data.temp_in = data[ "temp_in"]
-                            globalvars.meteo_data.delay = data[ "delay"]
-                            globalvars.meteo_data.abs_pressure = data[ "abs_pressure"]
-                            globalvars.meteo_data.hum_in = data[ "hum_in"]
-                            globalvars.meteo_data.temp_out = data[ "temp_out"]
+                            globalvars.meteo_data.hum_out = data["hum_out"]
+                            globalvars.meteo_data.wind_gust = (float(data["wind_gust"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
+                            globalvars.meteo_data.wind_ave = (float(data["wind_ave"])*3.6)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
+                            globalvars.meteo_data.rain = float(data["rain"])
+                            globalvars.meteo_data.temp_in = float(data["temp_in"])
+                            globalvars.meteo_data.delay = float(data["delay"])
+                            globalvars.meteo_data.abs_pressure = float(data["abs_pressure"])
+                            globalvars.meteo_data.hum_in = float(data["hum_in"])
+                            globalvars.meteo_data.temp_out = float(data["temp_out"])
                             wind_dir = data[ "wind_dir"]
                             globalvars.meteo_data.wind_dir = wind_dir * 22.5
                             if (wind_dir <  16) :
