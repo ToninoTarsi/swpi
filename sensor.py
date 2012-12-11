@@ -45,31 +45,46 @@ class Sensor(threading.Thread):
         object.__init__(self)
         
     def GetData(self):
-           
-            if ( self.bmp085 != None ):
-                self.ReadBMP085()
-             
-                
-            globalvars.meteo_data.CalcStatistics()
-            globalvars.meteo_data.LogDataToDB()
+        
+        if ( self.bmp085 != None ):
+            self.ReadBMP085()
+         
+            
+        globalvars.meteo_data.CalcStatistics()
+        globalvars.meteo_data.LogDataToDB()
       
     def ReadBMP085(self):
-                p=0.0
-                temp = None
-                i = 0
-                while ( p==0.0 and i < 10):
-                    p,temp = self.bmp085.readPressureTemperature()
-                    i = i+1
-                    time.sleep(0.02)
-                    
-                if ( p != 0.0): 
-                    if ( self.cfg.location_altitude != 0 ):
-                        p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
-                    else:
-                        p0 = p
-                    globalvars.meteo_data.temp_out = temp
-                    globalvars.meteo_data.abs_pressure = float(p0 / 100.0) 
+        p=0.0
+        temp = None
+        i = 0
+        while ( p==0.0 and i < 10):
+            p,temp = self.bmp085.readPressureTemperature()
+            i = i+1
+            time.sleep(0.02)
+            
+        if ( p != 0.0): 
+            if ( self.cfg.location_altitude != 0 ):
+                p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+            else:
+                p0 = p
+            globalvars.meteo_data.temp_out = temp
+            globalvars.meteo_data.abs_pressure = float(p0 / 100.0) 
                 
                 
-                
+    def ReadBMP085_temp_in(self):
+        p=0.0
+        temp = None
+        i = 0
+        while ( p==0.0 and i < 10):
+            p,temp = self.bmp085.readPressureTemperature()
+            i = i+1
+            time.sleep(0.02)
+            
+        if ( p != 0.0): 
+            if ( self.cfg.location_altitude != 0 ):
+                p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+            else:
+                p0 = p
+            globalvars.meteo_data.temp_in = temp
+            globalvars.meteo_data.abs_pressure = float(p0 / 100.0)              
  
