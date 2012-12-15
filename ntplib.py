@@ -27,7 +27,9 @@ import datetime
 import socket
 import struct
 import time
-
+import config
+import os
+from TTLib import *
    
 class NTPException(Exception):
     """Exception raised by this module."""
@@ -436,3 +438,17 @@ def ref_id_to_text(ref_id, stratum=2):
         return '%d.%d.%d.%d' % fields
     else:
         raise NTPException("Invalid stratum.")
+    
+    
+    
+if __name__ == '__main__':
+
+    configfile = 'swpi.cfg'
+        
+    
+    if not os.path.isfile(configfile):
+        "Configuration file not found"
+        exit(1)    
+    cfg = config.config(configfile)
+
+    SetTimeFromNTP(cfg.ntp_server)
