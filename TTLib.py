@@ -30,6 +30,8 @@ import tempfile
 import sensor_simulator
 import ntplib
 import tarfile
+import thread
+
 
 
 class RingBuffer(object):
@@ -237,7 +239,7 @@ def UploadData(cfg):
     f.close()
     
     
-    sendFileToServer(objects_file,'meteo.txt',cfg.ftpserver,cfg.upload_folder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
+    sendFileToServer1(objects_file,'meteo.txt',cfg.ftpserver,cfg.upload_folder,cfg.ftpserverLogin,cfg.ftpserverPassowd,True)
 
     
     
@@ -426,7 +428,7 @@ def isnumeric(s):
     except ValueError:
         return False
 
-def sendFileToServer(filename,name,server,destFolder,login,password):
+def sendFileToServer(filename,name,server,destFolder,login,password,delete):
     try:
         s = ftplib.FTP(server,login,password) 	# Connect
         f = open(filename,'rb')                # file to send
@@ -435,10 +437,19 @@ def sendFileToServer(filename,name,server,destFolder,login,password):
         f.close()                                # Close file and FTP
         s.quit() 
         log("Sent file to server : " + name)
+        if delete : 
+            os.remove(filename)
+            log("Deleted file : " + filename )
         return True
     except:
         log("Error sending  file to server : " + name)
+        if delete : 
+            os.remove(filename)
+            log("Deleted file : " + filename )
         return False
+
+def sendFileToServer1(filename,name,server,destFolder,login,password,delete):
+    thread.start_new_thread(sendFileToServer, (filename,name,server,destFolder,login,password,delete))
 
 def internet_on():
     try:

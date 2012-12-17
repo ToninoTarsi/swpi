@@ -535,12 +535,14 @@ while 1:
 	try:
 		if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
+		# Wait till 45 seconds in case of PCE-FWS20 to avoid USB overload
 		if (cfg.use_wind_sensor and cfg.sensor_type == "PCE-FWS20"):
 			seconds = datetime.datetime.now().second
 			if ( seconds < 45 ):
 				time.sleep(45-seconds)
 		
 		waitForHandUP()  # do to replace with lock object
+		# WebCam 1
 		if ( cfg.webcamDevice1.upper() != "NONE" ):
 			webcam1 =  webcam.webcam(1,cfg)
 			img1FileName = "./img/webcam1_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
@@ -549,6 +551,7 @@ while 1:
 			if ( bwebcam1 ):
 				log( "Webcam 1 Captured : ok : "  + img1FileName )
 				addTextandResizePhoto(img1FileName,cfg.webcamdevice1finalresolutionX,cfg.webcamdevice1finalresolutionY,cfg,v)
+		# WebCam 2
 		if ( cfg.webcamDevice2.upper() != "NONE" ):
 			webcam2 =  webcam.webcam(2,cfg)
 			img2FileName = "./img/webcam2_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
@@ -556,7 +559,9 @@ while 1:
 			bwebcam2 = webcam2.capture(img2FileName)
 			if ( bwebcam2):
 				log( "Webcam 2 Capruterd : "  + img2FileName	)	
-				addTextandResizePhoto(img2FileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)			
+				addTextandResizePhoto(img2FileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)	
+				
+		# Cameras			
 		if ( cfg.usecameradivice ):
 			waitForHandUP()
 			cameras = camera.PhotoCamera(cfg)
@@ -581,36 +586,29 @@ while 1:
 				if ( cfg.webcamDevice1.upper() != "NONE" and bwebcam1 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
+						sendFileToServer1(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
 					else:
 						waitForHandUP()
-						sendFileToServer(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
-					if ( cfg.delete_images_on_sd ):
-						os.remove(img1FileName)
-						log("Deleted file : " + img1FileName )
+						sendFileToServer1(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
+
 				if ( cfg.webcamDevice2.upper() != "NONE" and bwebcam2 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						sendFileToServer(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
+						sendFileToServer1(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
 					else:
 						waitForHandUP()
-						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
-					if ( cfg.delete_images_on_sd ):
-						os.remove(img2FileName)
-						log("Deleted file : " + img2FileName )
+						sendFileToServer1(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
+	
 				if ( cfg.usecameradivice   ):
 					nCamera = 0
 					for foto in fotos:
 						nCamera = nCamera + 1
 						if (cfg.sendallimagestoserver ):
 							waitForHandUP()
-							sendFileToServer(foto,getFileName(foto),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)
+							sendFileToServer1(foto,getFileName(foto),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
 						else:
 							waitForHandUP()
-							sendFileToServer(foto,"camera"+str(nCamera)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd)				
-						if ( cfg.delete_images_on_sd ):
-							os.remove(foto)
-						log("Deleted file : " + foto )
+							sendFileToServer1(foto,"camera"+str(nCamera)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)				
 						
 				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					logData(cfg.serverfile)
@@ -623,7 +621,7 @@ while 1:
 					IP = thenewIP
 					log("IP has changed - New IP is : " + IP)
 					if ( cfg.use_mail and cfg.mail_ip ):
-						SendMail(cfg,"IP",IP,"")
+						SendMail(cfg,"My IP has changed",IP,"")
 				
 				
 				# Set Time from NTP ( using a thread to avoid strange freezing )

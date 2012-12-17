@@ -179,6 +179,8 @@ class Sensor_WH1080(sensor.Sensor):
                             globalvars.meteo_data.uv = None
                             
                             # TO REMOVE
+                            if ( globalvars.meteo_data.abs_pressure == 0 ) : 
+                                globalvars.meteo_data.abs_pressure = None
                             if ( self.cfg.use_bmp085 ):
                                 sensor.Sensor.ReadBMP085_temp_in(self)
                  
