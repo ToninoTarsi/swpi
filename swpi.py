@@ -94,6 +94,15 @@ def process_sms(modem, smsID):
 		#	WSO		X		set calibration wind speed offset to X 
 		#	WSG		X		set calibration wind speed gain to X
 		#	RDB				Reset Database
+		#   CRES    x       Change camera resolution 	0	640x480    
+		#												1	800x600
+		#												2	1024x768
+		#												3	1280x960
+		#												4	1400x1050
+		#												5	1600x1200
+		#												6	2048x1536
+	
+	
 		#---------------------------------------------------------------------------------------	
 		
 		if (len(command) == 2 and cmd == "RBT" ):
@@ -225,6 +234,13 @@ def process_sms(modem, smsID):
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
 			log( "Wind Speed gain set to : " + str(cfg.windspeed_gain ))
+		#---------------------------------------------------------------------------------------		
+		elif (len(command) == 3 and cmd == "CRES" ):
+			modem.sms_del(msgID)
+			cfg.setCamera_resolution(param)
+			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+			conn.commit()		
+			log( "Camera_resolution : " + str(cfg.cameradivicefinalresolution ))
 		#---------------------------------------------------------------------------------------		
 		elif (len(command) == 2 and cmd == "UPD" ):
 			modem.sms_del(msgID)
