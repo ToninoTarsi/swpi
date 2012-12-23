@@ -33,6 +33,8 @@ import signal
 import thread
 import database
 
+
+
 #signal.signal(signal.SIGPIPE, signal.SIG_DFL) 
 
 ################################  functions############################
@@ -47,6 +49,7 @@ def process_sms(modem, smsID):
 	"""Parse SMS number smsID"""
 	try:	
 		global cfg
+		global logFileDate
 		msgID = smsID
 		smslist = modem.sms_list()
 		bFound = False
@@ -67,6 +70,7 @@ def process_sms(modem, smsID):
 		if ( len(command) < 2 ):
 			log( "Bad Command .. Deleting")
 			modem.sms_del(msgID)
+			return False
 		pwd = command[0]
 		if ( pwd != cfg.SMSPwd ):
 			log( "Bad SMS Password .. deleting")
@@ -84,6 +88,7 @@ def process_sms(modem, smsID):
 		#	RBT				reboot	
 		#	MDB				mail database to sender
 		#	MCFG			mail cfg to sender
+		#	MLOG			mail currnt logfiles
 		#	CAM		X		set camera/logging interval to X seconds
 		#	LOG		[0/1]	enable [1] or disable [0] internet logging
 		#	UPL		[0/1]	enable [1] or disable [0] internet uploading
@@ -104,7 +109,6 @@ def process_sms(modem, smsID):
 	
 	
 		#---------------------------------------------------------------------------------------	
-		
 		if (len(command) == 2 and cmd == "RBT" ):
 			modem.sms_del(msgID)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
@@ -120,7 +124,6 @@ def process_sms(modem, smsID):
 			conn.commit()
 			log( "Database resetted  " )
 		#---------------------------------------------------------------------------------------	
-	
 		elif (len(command) == 2 and cmd == "MDB" ):
 			modem.sms_del(msgID)
 			tarname = "db.tar.gz"
@@ -141,6 +144,23 @@ def process_sms(modem, smsID):
 			tar.close()
 			if SendMail(cfg, "CFG", "Here your CFG", tarname):
 				log("CFG sent by mail")
+			os.remove(tarname)
+			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+			conn.commit()		
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 2 and cmd == "MLOG" ):
+			modem.sms_del(msgID)
+			tarname = "log.tar.gz"
+			tar = tarfile.open(tarname, "w:gz")
+			filetoadd = "log/log"+logFileDate+".log"
+			if ( os.path.isfile(filetoadd) ) :  
+				tar.add(filetoadd)
+			filetoadd = "log/gphoto2"+logFileDate+".log"
+			if ( os.path.isfile(filetoadd) ) :  
+				tar.add(filetoadd)				
+			tar.close()
+			if SendMail(cfg, "LOF", "Here your LOG", tarname):
+				log("LOG sent by mail")
 			os.remove(tarname)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
@@ -267,7 +287,7 @@ def process_sms(modem, smsID):
 			log( "SWPI-UPDATE" )
 			systemRestart()
 		#----------------------------------------------------------------------------	
-			
+		
 		if conn:
 			conn.close()
 		
@@ -422,6 +442,9 @@ if not os.path.isfile(configfile):
 	exit(0)
 else:
 	cfg = config.config(configfile,False)
+	
+# Get curret log file
+logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 	
 # give 10 seconds for interrupt the application
 try:
@@ -589,7 +612,7 @@ while 1:
 		
 		if ( cfg.sendImagesToServer or cfg.logdata ):
 			waitForHandUP()
-			if ( (not internet_on()) and cfg.UseDongleNet and modem._pppd_pid == None): # connect if not
+			if ( cfg.UseDongleNet and ( not internet_on())  and modem._pppd_pid == None): # connect if not
 				log( "Trying to connect to internet with 3G dongle")
 				modem.connectwvdial()
 				IP = waitForIP()
@@ -598,6 +621,7 @@ while 1:
 					bConnected = True
 				
 			if (  internet_on() ):
+				log("Sending to server ...")
 				waitForHandUP()
 				if ( cfg.webcamDevice1.upper() != "NONE" and bwebcam1 ):
 					if (cfg.sendallimagestoserver ):

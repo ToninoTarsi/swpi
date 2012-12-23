@@ -453,8 +453,10 @@ def sendFileToServer1(filename,name,server,destFolder,login,password,delete):
 
 def internet_on():
     try:
+        log("Checking internet connetion ...")
         urllib2.urlopen('http://74.125.113.99',timeout=1)
         #urllib2.urlopen('http://74.125.113.99')
+        log("Internet ok")
         return True
     except :
         pass	
