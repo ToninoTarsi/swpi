@@ -34,9 +34,6 @@ import thread
 import database
 
 
-
-#signal.signal(signal.SIGPIPE, signal.SIG_DFL) 
-
 ################################  functions############################
 
 def new_sms(modem, message):
@@ -88,7 +85,8 @@ def process_sms(modem, smsID):
 		#	RBT				reboot	
 		#	MDB				mail database to sender
 		#	MCFG			mail cfg to sender
-		#	MLOG			mail currnt logfiles
+		#	MLOG			mail current logfiles
+		#	MALOG			mail all logfiles
 		#	CAM		X		set camera/logging interval to X seconds
 		#	LOG		[0/1]	enable [1] or disable [0] internet logging
 		#	UPL		[0/1]	enable [1] or disable [0] internet uploading
@@ -106,8 +104,6 @@ def process_sms(modem, smsID):
 		#												4	1400x1050
 		#												5	1600x1200
 		#												6	2048x1536
-	
-	
 		#---------------------------------------------------------------------------------------	
 		if (len(command) == 2 and cmd == "RBT" ):
 			modem.sms_del(msgID)
@@ -161,6 +157,18 @@ def process_sms(modem, smsID):
 			tar.close()
 			if SendMail(cfg, "LOF", "Here your LOG", tarname):
 				log("LOG sent by mail")
+			os.remove(tarname)
+			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+			conn.commit()		
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 2 and cmd == "MALOG" ):
+			modem.sms_del(msgID)
+			tarname = "alog.tar.gz"
+			tar = tarfile.open(tarname, "w:gz")
+			tar.add("log")				
+			tar.close()
+			if SendMail(cfg, "LOF", "Here your LOG", tarname):
+				log("All LOG sent by mail")
 			os.remove(tarname)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
@@ -523,6 +531,7 @@ else:
 
 
 # Set Time from NTP ( using a thread to avoid strange freezing )
+
 if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 
@@ -572,7 +581,7 @@ if ( cfg.clear_all_sd_cards_at_startup):
 
 while 1:
 	try:
-		if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
+		#if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
 		# Wait till 45 seconds in case of PCE-FWS20 to avoid USB overload
 		if (cfg.use_wind_sensor and cfg.sensor_type == "PCE-FWS20"):
@@ -604,7 +613,7 @@ while 1:
 		if ( cfg.usecameradivice ):
 			waitForHandUP()
 			cameras = camera.PhotoCamera(cfg)
-			fotos = cameras.take_pictures()
+			fotos = cameras.take_pictures1()
 			for foto in fotos:
 				addTextandResizePhoto(foto,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 					
@@ -665,7 +674,7 @@ while 1:
 				
 				
 				# Set Time from NTP ( using a thread to avoid strange freezing )
-				if ( cfg.set_system_time_from_ntp_server_at_startup ):
+				if ( ( not globalvars.TimeSetFromNTP )  and cfg.set_system_time_from_ntp_server_at_startup ):
 					thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 				
 				if bConnected:
@@ -686,9 +695,10 @@ while 1:
 				systemRestart()		
 				
 		if ( cfg.WebCamInterval != 0):
+			log("Sleeping %s seconds" % cfg.WebCamInterval)
 			time.sleep(cfg.WebCamInterval)
-			
 		else:
+			log("Sleeping 1000 seconds")
 			time.sleep(1000)	
 		
 	except KeyboardInterrupt:

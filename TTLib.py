@@ -116,6 +116,7 @@ def SetTimeFromNTP(ntp_server):
         if (date_str != None ):
             os.system("sudo date -s '%s'" %  time.ctime(date_str.tx_time))
             log("System time adjusted from NPT server : " + ntp_server)
+            globalvars.TimeSetFromNTP = True 
             return True
         return False
     except:
