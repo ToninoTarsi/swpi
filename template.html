@@ -1,0 +1,790 @@
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title></title>
+    <style type="text/css">
+        .style2
+        {
+            height: 26px;
+                text-align: left;
+        }
+        .style3
+        {
+            width: 203px;
+        }
+        .style4
+        {
+            width: 557px;
+        }
+        .style5
+        {
+            width: 203px;
+            height: 33px;
+        }
+        .style6
+        {
+            width: 557px;
+            height: 33px;
+        }
+        #Select1
+        {
+            width: 176px;
+            height: 70px;
+        }
+        #set_system_time_from_ntp_server_at_startup
+        {
+            width: 176px;
+        }
+        .style7
+        {
+            height: 26px;
+            text-align: center;
+        }
+        #set_system_time_from_ntp_server_at_startup0
+        {
+            width: 176px;
+        }
+        #Submit1
+        {
+            width: 114px;
+        }
+        .style8
+        {
+            height: 32px;
+            text-align: left;
+        }
+        #upload_data
+        {
+            width: 460px;
+        }
+        #upload_folder
+        {
+            width: 459px;
+        }
+        .style10
+        {
+            height: 26px;
+            text-align: left;
+            width: 343px;
+        }
+        .style11
+        {
+            width: 343px;
+        }
+        .style12
+        {
+            width: 343px;
+            height: 33px;
+        }
+        .style13
+        {
+            height: 26px;
+            width: 269px;
+        }
+        .style14
+        {
+            width: 269px;
+        }
+        .style15
+        {
+            width: 269px;
+            height: 33px;
+        }
+        .style16
+        {
+            height: 26px;
+            width: 557px;
+        }
+        .style17
+        {
+            height: 26px;
+            width: 559px;
+        }
+        .style19
+        {
+            height: 32px;
+            width: 556px;
+        }
+        .style20
+        {
+            height: 26px;
+            width: 556px;
+        }
+        .style21
+        {
+            height: 26px;
+            width: 525px;
+        }
+        .style22
+        {
+            height: 32px;
+            width: 525px;
+        }
+        .style23
+        {
+            height: 26px;
+            text-align: left;
+            width: 60px;
+        }
+        .style24
+        {
+            height: 32px;
+            text-align: left;
+            width: 60px;
+        }
+        #upload_data0
+        {
+            width: 460px;
+        }
+        #upload_folder0
+        {
+            width: 459px;
+        }
+        #upload_folder1
+        {
+            width: 459px;
+        }
+        #upload_folder2
+        {
+            width: 459px;
+        }
+        #upload_folder3
+        {
+            width: 459px;
+        }
+        #upload_folder4
+        {
+            width: 459px;
+        }
+        #upload_folder5
+        {
+            width: 459px;
+        }
+        #upload_folder6
+        {
+            width: 459px;
+        }
+        #upload_folder7
+        {
+            width: 459px;
+        }
+        .style25
+        {
+            height: 28px;
+            text-align: center;
+        }
+        .style26
+        {
+            height: 31px;
+            text-align: left;
+        }
+        .style27
+        {
+            height: 31px;
+            width: 371px;
+        }
+        .style28
+        {
+            height: 31px;
+            width: 325px;
+        }
+        .style30
+        {
+            height: 26px;
+            width: 184px;
+        }
+        .style31
+        {
+            height: 32px;
+            width: 184px;
+        }
+        .style32
+        {
+            height: 26px;
+            width: 332px;
+        }
+        .style33
+        {
+            height: 26px;
+            width: 371px;
+        }
+        .style34
+        {
+            height: 26px;
+            width: 325px;
+        }
+        .style36
+        {
+            width: 491px;
+        }
+        .style37
+        {
+            width: 491px;
+            height: 33px;
+        }
+        .style38
+        {
+            height: 26px;
+            width: 491px;
+        }
+        .style39
+        {
+            height: 26px;
+            width: 547px;
+        }
+        .style40
+        {
+            width: 547px;
+        }
+    </style>
+
+</head>
+<body>
+    <form id="ConfigForm" action="swpi_webconfig.py" method="post">
+    <div id="General">
+        <img alt="swpi" src="swpi-banner.jpg" width="650" />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    General</td>
+            </tr>
+            <tr>
+                <td class="style10">
+                    location latitude </td>
+                <td class="style13">
+                    &nbsp;<input id="location_latitude" type="text" name="location_latitude" 
+                        value=$location_latitude style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style11">
+                    location_longitude    <td class="style14">
+                    &nbsp;<input id="location_longitude" type="text" name="location_longitude" 
+                        value=${location_longitude} onclick="return location_longitude_onclick()" 
+                        style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style11" width="650">
+                    location_altitude</td>
+                <td class="style14">
+                    &nbsp;<input id="location_altitude" type="text" name="location_altitude" 
+                        value=$location_altitude style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style12">
+                    reboot_at</td>
+                <td class="style15">
+                    <input id="reboot_at" type="text" name="reboot_at" 
+                        value=$reboot_at style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style12">
+                    shutdown_at</td>
+                <td class="style15">
+                    <input id="shutdown_at" type="text" name="shutdown_at" 
+                        value=$shutdown_at style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style12">
+                    shutdown_hour_before_sunset</td>
+                <td class="style15">
+                    <input id="shutdown_hour_before_sunset" type="text" name="shutdown_hour_before_sunset" 
+                        value=$shutdown_hour_before_sunset style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style12">
+                    set_system_time_from_ntp_server_at_startup</td>
+                <td class="style15">
+                    <select id="set_system_time_from_ntp_server_at_startup" 
+                        name="set_system_time_from_ntp_server_at_startup" 
+                        value=$set_system_time_from_ntp_server_at_startup style="width: 100%"> 
+                         <option value=True $selected_True_set_system_time_from_ntp_server_at_startup>True</option>
+                         <option value=False $selected_False_set_system_time_from_ntp_server_at_startup>False</option>
+                    </select></td>
+                    
+            </tr>
+            <tr>
+                <td class="style12">
+                    ntp_server</td>
+                <td class="style15">
+                    <input id="ntp_server" type="text" name="ntp_server" 
+                        value=$ntp_server style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style12">
+                    config_web_server</td>
+                <td class="style15">
+                    <input id="config_web_server" type="text" name="config_web_server" 
+                        value=$config_web_server style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style12">
+                    wifi_reset_if_down</td>
+                <td class="style15">
+                    <input id="wifi_reset_if_down" type="text" name="wifi_reset_if_down" 
+                        value=$wifi_reset_if_down style="width: 100%" /></td>
+            </tr>
+        </table>
+        &nbsp;</div>
+    
+    
+    
+    
+    
+
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    Dongle</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Use dongle </td>
+                <td class="style16">
+                    <input id="usedongle" type="text" name="usedongle" 
+                        value=$usedongle style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    Always On Internet<td class="style4">
+                    <input id="AlwaysOnInternet" type="text" name="AlwaysOnInternet" 
+                        value=$AlwaysOnInternet onclick="return location_longitude_onclick()" 
+                        style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    Use Dongle Net</td>
+                <td class="style4">
+                    <input id="UseDongleNet" type="text" name="UseDongleNet" 
+                        value=$UseDongleNet style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style5">
+                    Operator</td>
+                <td class="style6">
+                    <input id="operator" type="text" name="operator" 
+                        value=$operator style="width: 100%" /></td>
+            </tr>
+            </table>
+        <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    Security</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    SMSPwd </td>
+                <td class="style17">
+                    <input id="SMSPwd" type="text" name="SMSPwd" 
+                        value=$SMSPwd style="width: 100%" /></td>
+            </tr>
+            </table>
+        <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    DataLogging</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    logdata</td>
+                <td class="style20">
+                    <input id="logdata" type="text" name="logdata" 
+                        value=$logdata style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style8">
+                    serverfile</td>
+                <td class="style19">
+                    <input id="serverfile" type="text" name="serverfile" 
+                        value=$serverfile style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" 
+        style="width: 646px; margin-right: 0px">
+            <tr>
+                <td class="style7" colspan="2">
+                    Upload</td>
+            </tr>
+            <tr>
+                <td class="style23">
+                    upload_data</td>
+                <td class="style21">
+                    <input id="upload_data" type="text" name="upload_data" 
+                        value=$upload_data style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    upload_folder</td>
+                <td class="style22">
+                    <input id="upload_folder" type="text" name="upload_folder" 
+                        value=$upload_folder style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" 
+        style="width: 646px; margin-right: 0px">
+            <tr>
+                <td class="style25" colspan="2">
+                    Sensors</td>
+            </tr>
+            <tr>
+                <td class="style23">
+                    sensor_type</td>
+                <td class="style30">
+                    <input id="sensor_type" type="text" name="sensor_type" 
+                        value=$sensor_type style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    use_wind_sensor</td>
+                <td class="style31">
+                    <input id="use_wind_sensor" type="text" name="use_wind_sensor" 
+                        value=$use_wind_sensor style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    number_of_measure_for_wind_dir_average</td>
+                <td class="style31">
+                    <input id="number_of_measure_for_wind_dir_average" type="text" name="number_of_measure_for_wind_dir_average" 
+                        value=$number_of_measure_for_wind_dir_average style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    windspeed_gain</td>
+                <td class="style31">
+                    <input id="windspeed_gain" type="text" name="windspeed_gain" 
+                        value=$windspeed_gain style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    windspeed_offset</td>
+                <td class="style31">
+                    <input id="windspeed_offset" type="text" name="windspeed_offset" 
+                        value=$windspeed_offset style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    windmeasureinterval</td>
+                <td class="style31">
+                    <input id="windmeasureinterval" type="text" name="windmeasureinterval" 
+                        value=$windmeasureinterval style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    use_bmp085</td>
+                <td class="style31">
+                    <input id="use_bmp085" type="text" name="use_bmp085" 
+                        value=$use_bmp085 style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    use_tmp36</td>
+                <td class="style31">
+                    <input id="use_tmp36" type="text" name="use_tmp36" 
+                        value=$use_tmp36 style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    number_of_measure_for_wind_average_gust_calculation</td>
+                <td class="style31">
+                    <input id="number_of_measure_for_wind_average_gust_calculation" type="text" name="number_of_measure_for_wind_average_gust_calculation" 
+                        value=$number_of_measure_for_wind_average_gust_calculation 
+                        style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style24">
+                    upload_folder</td>
+                <td class="style31">
+                    <input id="upload_folder7" type="text" name="upload_folder7" 
+                        value=$upload_folder style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style25" colspan="2">
+                    Sensor_PCE-FWS20</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    set_system_time_from_WeatherStation</td>
+                <td class="style32">
+                    <input id="set_system_time_from_WeatherStation" type="text" name="set_system_time_from_WeatherStation" 
+                        value=$set_system_time_from_WeatherStation style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style25" colspan="2">
+                    WebCam - Camera</td>
+            </tr>
+            <tr>
+                <td class="style26">
+                    WebCamInterval</td>
+                <td class="style27">
+                    <input id="WebCamInterval" type="text" name="WebCamInterval" 
+                        value=$WebCamInterval style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    sendallimagestoserver</td>
+                <td class="style33">
+                    <input id="sendallimagestoserver" type="text" name="sendallimagestoserver" 
+                        value=$sendallimagestoserver style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    delete_images_on_sd</td>
+                <td class="style33">
+                    <input id="delete_images_on_sd" type="text" name="delete_images_on_sd" 
+                        value=$delete_images_on_sd style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    webcamDevice1</td>
+                <td class="style33">
+                    <input id="webcamDevice1" type="text" name="webcamDevice1" 
+                        value=$webcamDevice1 style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    webcamDevice2</td>
+                <td class="style33">
+                    <input id="webcamDevice2" type="text" name="webcamDevice2" 
+                        value=$webcamDevice2 style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    webcamLogo</td>
+                <td class="style33">
+                    <input id="webcamLogo" type="text" name="webcamLogo" 
+                        value=$webcamLogo style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    sendImagesToServer</td>
+                <td class="style33">
+                    <input id="sendImagesToServer" type="text" name="sendImagesToServer" 
+                        value=$sendImagesToServer style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    webcamdevice1captureresolution</td>
+                <td class="style33">
+                    <input id="webcamdevice1captureresolution" type="text" name="webcamdevice1captureresolution" 
+                        value=$webcamdevice1captureresolution style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    webcamdevice2captureresolution</td>
+                <td class="style33">
+                    <input id="webcamdevice2captureresolution" type="text" name="webcamdevice2captureresolution" 
+                        value=$webcamdevice2captureresolution style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    webcamdevice1finalresolution</td>
+                <td class="style33">
+                    <input id="webcamdevice1finalresolution" type="text" name="webcamdevice1finalresolution" 
+                        value=$webcamdevice1finalresolution style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    webcamdevice2finalresolution</td>
+                <td class="style33">
+                    <input id="webcamdevice2finalresolution" type="text" name="webcamdevice2finalresolution" 
+                        value=$webcamdevice2finalresolution style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    capturewithffmpeg</td>
+                <td class="style33">
+                    <input id="capturewithffmpeg" type="text" name="capturewithffmpeg" 
+                        value=$capturewithffmpeg style="width: 100%" /></td>
+            </tr>
+            </table>
+            <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style25" colspan="2">
+                    Camera</td>
+            </tr>
+            <tr>
+                <td class="style26">
+                    usecameradivice</td>
+                <td class="style28">
+                    <input id="usecameradivice" type="text" name="usecameradivice" 
+                        value=$usecameradivice style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    cameradivicefinalresolution</td>
+                <td class="style34">
+                    <input id="cameradivicefinalresolution" type="text" name="cameradivicefinalresolution" 
+                        value=$cameradivicefinalresolution style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    gphoto2options</td>
+                <td class="style34">
+                    <input id="gphoto2options" type="text" name="gphoto2options" 
+                        value=$gphoto2options style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    reset_usb</td>
+                <td class="style34">
+                    <input id="reset_usb" type="text" name="reset_usb" 
+                        value=$reset_usb style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    clear_all_sd_cards_at_startup</td>
+                <td class="style34">
+                    <input id="clear_all_sd_cards_at_startup" type="text" name="clear_all_sd_cards_at_startup" 
+                        value=$clear_all_sd_cards_at_startup style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    start_camera_number</td>
+                <td class="style34">
+                    <input id="start_camera_number" type="text" name="start_camera_number" 
+                        value=$start_camera_number style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    gphoto2_capture_image_and_download</td>
+                <td class="style34">
+                    <input id="gphoto2_capture_image_and_download" type="text" name="gphoto2_capture_image_and_download" 
+                        value=$gphoto2_capture_image_and_download style="width: 100%" /></td>
+            </tr>
+            </table>
+            <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    ftp</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    ftpserver</td>
+                <td class="style38">
+                    <input id="ftpserver" type="text" name="ftpserver" 
+                        value=$ftpserver style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    ftpserverDestFolder<td class="style36">
+                    <input id="ftpserverDestFolder" type="text" name="ftpserverDestFolder" 
+                        value=$ftpserverDestFolder onclick="return location_longitude_onclick()" 
+                        style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    ftpserverLogin</td>
+                <td class="style36">
+                    <input id="ftpserverLogin" type="text" name="ftpserverLogin" 
+                        value=$ftpserverLogin style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style5">
+                    ftpserverPassowd</td>
+                <td class="style37">
+                    <input id="ftpserverPassowd" type="text" name="ftpserverPassowd" 
+                        value=$ftpserverPassowd style="width: 100%" /></td>
+            </tr>
+            </table>
+        <p>
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    Radio</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    useradio</td>
+                <td class="style39">
+                    <input id="useradio" type="text" name="useradio" 
+                        value=$useradio style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    radiointerval<td class="style40">
+                    <input id="radiointerval" type="text" name="radiointerval" 
+                        value=$radiointerval onclick="return location_longitude_onclick()" 
+                        style="width: 100%" /></td>
+            </tr>
+            </table>
+        </p>
+        <p>
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    Mail</td>
+            </tr>
+            <tr>
+                <td class="style5">
+                    use_mail</td>
+                <td class="style37">
+                    <input id="use_mail" type="text" name="use_mail" 
+                        value=$use_mail style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    gmail_user</td>
+                <td class="style38">
+                    <input id="gmail_user" type="text" name="gmail_user" 
+                        value=$gmail_user style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    gmail_pwd<td class="style36">
+                    <input id="gmail_pwd" type="text" name="gmail_pwd" 
+                        value=$gmail_pwd onclick="return location_longitude_onclick()" 
+                        style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    mail_to</td>
+                <td class="style36">
+                    <input id="mail_to" type="text" name="mail_to" 
+                        value=$mail_to style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style5">
+                    mail_ip</td>
+                <td class="style37">
+                    <input id="mail_ip" type="text" name="mail_ip" 
+                        value=$mail_ip style="width: 100%" /></td>
+            </tr>
+            </table>
+        </p>
+        <table bgcolor="#FF99FF" border="1" frame="box" width="650">
+            <tr>
+                <td class="style7" colspan="2">
+                    SMS</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    send_IP_by_sms</td>
+                <td class="style39">
+                    <input id="send_IP_by_sms" type="text" name="send_IP_by_sms" 
+                        value=$send_IP_by_sms style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    number_to_send<td class="style40">
+                    <input id="number_to_send" type="text" name="number_to_send" 
+                        value=$number_to_send onclick="return location_longitude_onclick()" 
+                        style="width: 100%" /></td>
+            </tr>
+            </table>
+        <p>
+            <input id="Submit1" type="submit" value="submit" /></p>
+            
+             </form>   
+            
+        </body>
+</html>

@@ -32,12 +32,14 @@ import tarfile
 import signal
 import thread
 import database
+import web_server
 
 
 ################################  functions############################
 
 def new_sms(modem, message):
 	"""Event Function for new incoming SMS"""
+	waitForHandUP()
 	log( 'New message arrived: %r' % message)
 	msg_num = int(message[12:].strip())
 	process_sms(modem,msg_num)
@@ -472,9 +474,10 @@ os.system( "sudo amixer cset numid=3 1 > /dev/null " )
 
 #Make sure every executable is executable
 os.system( "sudo chmod +x ./usbreset" )
-#os.system( "sudo chmod +x ./swpi.sh" )
-#os.system( "sudo chmod +x ./swpi-update.sh" )
-#os.system( "sudo chmod +x ./killswpi.sh" )
+os.system( "sudo chmod +x ./wifi_reset.sh" )
+os.system( "sudo chmod +x ./swpi.sh" )
+os.system( "sudo chmod +x ./swpi-update.sh" )
+os.system( "sudo chmod +x ./killswpi.sh" )
 
 # Some Globasl :-(
 globalvars.bAnswering = False
@@ -555,6 +558,12 @@ if ( IP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
 	except:
 		log("Error sending IP by SMS")
 
+# start config eweb server
+if ( cfg.config_web_server ):
+	webserver = web_server.config_webserver(None)
+	webserver.start()
+
+
 
 # Start radio thread
 if ( cfg.useradio ):
@@ -584,6 +593,9 @@ while 1:
 	try:
 		#if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
+		if ( cfg.wifi_reset_if_down ) :
+			os.system("sudo ./wifi_reset.sh")
+		
 		# Wait till 45 seconds in case of PCE-FWS20 to avoid USB overload
 		if (cfg.use_wind_sensor and cfg.sensor_type == "PCE-FWS20"):
 			seconds = datetime.datetime.now().second
