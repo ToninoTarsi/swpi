@@ -153,6 +153,10 @@ class MeteoData(object):
         
         
     def LogDataToDB(self):
+        
+            if ( self.last_measure_time == None ):
+                return
+            
             conn = sqlite3.connect('db/swpi.s3db',200)
             dbCursor = conn.cursor()
             #dbCursor.execute("insert into METEO(TIMESTAMP_LOCAL,TIMESTAMP_IDX,WINDIR_CODE,WIND_DIR,WIND_AVE,WIND_GUST,TEMP,PRESSURE,HUM,RAIN,RAIN_RATE,TEMPINT,HUMINT,WIND_CHILL,TEMP_APPARENT,DEW_POINT,UV_INDEX,SOLAR_RAD,WIND_DAY_MIN,WIND_DAY_MAX) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (self.last_measure_time,self.last_measure_time,self.wind_dir_code,self.wind_dir,self.wind_ave,self.wind_gust,self.temp_out,self.abs_pressure,self.hum_out,self.rain,0,self.temp_in,self.hum_in,self.wind_chill,self.temp_apparent,self.dew_point,self.uv,self.illuminance,self.winDayMin,self.winDayMax))                        

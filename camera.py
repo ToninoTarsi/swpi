@@ -195,26 +195,26 @@ class PhotoCamera(object):
 				for line in stdout.split('\n') :
 					if ( len(line) != 0 ): log(line)
 					if (line[:3] == "***"):
-						log("ERRORRRRRRRRRRRRRRRRRRRRRR")
-						systemRestart()
+						log("Error capturing camera .. reseting")
 						bError = True
+						systemRestart()
 				for line in stderr.split('\n') :
 					if ( len(line) != 0 ): log(line)
 					if (line[:3] == "***"):
-						log("ERRORRRRRRRRRRRRRRRRRRRRRR")
-						systemRestart()
+						log("Error capturing camera .. reseting")
 						bError = True								
-				
-				#print "gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile
-				#os.system("gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile )
+						systemRestart()
 
 			if ( not bError and os.path.isfile(filename)):	
 				pictureTaken.append(filename)
 				
 		globalvars.bCapturingCamera = False
+		
 		for name in pictureTaken :
 			log("Captured : " + name)
+			
 		return pictureTaken
+
 
 	def ClearSDCard(self,usbcamera):
 		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")

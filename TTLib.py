@@ -455,22 +455,24 @@ def sendFileToServer1(filename,name,server,destFolder,login,password,delete):
 def internet_on():
     try:
         log("Checking internet connetion ...")
-        urllib2.urlopen('http://74.125.113.99',timeout=1)
+        urllib2.urlopen('http://74.125.113.99',timeout=10)
         #urllib2.urlopen('http://74.125.113.99')
         log("Internet ok")
         return True
     except :
-        pass	
+        log("No Internet")	
         return False
     
 def systemRestart():
     if os.name != 'nt':
+        log("Rebooting system ..")
         os.system("sudo reboot")
     else:
         print " Sorry can not rebbot windows"
         
 def systemHalt():
     if os.name != 'nt':
+        log("Halting system ..")
         os.system("sudo halt")
     else:
         print " Sorry can not rebbot windows"        

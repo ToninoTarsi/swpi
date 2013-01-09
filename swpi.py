@@ -453,12 +453,13 @@ else:
 	
 # Get curret log file
 logFileDate = datetime.datetime.now().strftime("%d%m%Y")
-	
+
+SecondsToWait = 3	
 # give 10 seconds for interrupt the application
 try:
 	if not ( '-i' in sys.argv ) :
-		for i in range(0,10):
-			sys.stdout.write(str(10-i) + ".....")
+		for i in range(0,SecondsToWait):
+			sys.stdout.write(str(SecondsToWait-i) + ".....")
 			sys.stdout.flush()
 			time.sleep(1)
 		print ""
