@@ -19,16 +19,26 @@ import re
 import subprocess
 import config
 import humod
+import RPi.GPIO as GPIO
 
 
 class PhotoCamera(object):
 	"""Class defining generic cameras."""
+	
+	__PIN_RESET = 24
+
+	
 	def __init__(self, cfg):
 		self.finalresolution = cfg.cameradivicefinalresolution
 		self.finalresolutionX = cfg.cameradivicefinalresolutionX
 		self.finalresolutionY = cfg.cameradivicefinalresolutionY
 		self.cfg = cfg
 		
+		if ( self.cfg.use_camera_resetter ):
+			GPIO.setmode(GPIO.BCM)
+			GPIO.setup(self.__PIN_RESET, GPIO.OUT) 
+			GPIO.output(self.__PIN_RESET, True)
+
 		
 	def detectCameras(self):
 		p = subprocess.Popen("gphoto2 --auto-detect",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -63,7 +73,7 @@ class PhotoCamera(object):
 		return files
 	
 	
-	def take_pictures(self) :
+	def take_pictures_old(self) :
 		"""Capture from all detected cameras and return a list of stored files"""
 		
 		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
@@ -131,7 +141,7 @@ class PhotoCamera(object):
 			log("Captured : " + name)
 		return pictureTaken
 	
-	def take_pictures1(self) :
+	def take_pictures(self) :
 		"""Capture from all detected cameras and return a list of stored files"""
 		
 		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
@@ -188,22 +198,37 @@ class PhotoCamera(object):
 				self.ClearSDCard(usbcamera)
 				os.system("gphoto2 --port " + usbcamera + " --capture-image  1>> " + logFile + " 2>> " + logFile)
 				os.system("gphoto2 --port " + usbcamera + "  --get-file=1 --filename=" + filename +  " 1>> " + logFile + " 2>> " + logFile )
-			else:	
+			else:
+				nTry = 0
+				bError = True
 				cmd = "gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename 
-				p = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-				(stdout, stderr) = p.communicate()
-				for line in stdout.split('\n') :
-					if ( len(line) != 0 ): log(line)
-					if (line[:3] == "***"):
-						log("Error capturing camera .. reseting")
-						bError = True
-						systemRestart()
-				for line in stderr.split('\n') :
-					if ( len(line) != 0 ): log(line)
-					if (line[:3] == "***"):
-						log("Error capturing camera .. reseting")
-						bError = True								
-						systemRestart()
+				while ( nTry < 3 and bError == True):
+					bError = False	
+					p = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+					(stdout, stderr) = p.communicate()
+					for line in stdout.split('\n') :
+						if ( len(line) != 0 ): log("gphoto2-stdout " + line)
+						if (line[:3] == "***"):
+							bError = True
+					for line in stderr.split('\n') :
+						if ( len(line) != 0 ): log("gphoto2-stderr + " + line)
+						if (line[:3] == "***"):
+							bError = True	
+					nTry = nTry + 1
+					if ( bError ):
+						log("Error capturing camera .. retrying")
+						if ( self.cfg.use_camera_resetter ):
+							log("Resetting Camerara ... ")
+							GPIO.output(self.__PIN_RESET, False)
+							time.sleep(10)
+							GPIO.output(self.__PIN_RESET, True)
+						time.sleep(1)
+						
+				if ( bError ):		
+					log("Error capturing camera .. rebooting") 	
+					usbcamera_to_reset = "/dev/bus/usb/%s/%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
+					os.system( "./usbreset %s" % (usbcamera_to_reset) )								
+
 
 			if ( not bError and os.path.isfile(filename)):	
 				pictureTaken.append(filename)

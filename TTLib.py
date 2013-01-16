@@ -452,7 +452,20 @@ def sendFileToServer(filename,name,server,destFolder,login,password,delete):
 def sendFileToServer1(filename,name,server,destFolder,login,password,delete):
     thread.start_new_thread(sendFileToServer, (filename,name,server,destFolder,login,password,delete))
 
+
 def internet_on():
+    log("Checking internet connetion ...")
+    ret = os.system("ping -c 1 8.8.8.8 1> /dev/null")
+    if ( ret >= 1 ):
+        log("No Internet")    
+        return False
+    else:
+        log("Internet ok")
+        return True
+
+
+
+def internet_on1():
     try:
         log("Checking internet connetion ...")
         urllib2.urlopen('http://74.125.113.99',timeout=10)

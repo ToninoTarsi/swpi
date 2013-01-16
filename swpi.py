@@ -626,7 +626,7 @@ while 1:
 		if ( cfg.usecameradivice ):
 			waitForHandUP()
 			cameras = camera.PhotoCamera(cfg)
-			fotos = cameras.take_pictures1()
+			fotos = cameras.take_pictures()
 			for foto in fotos:
 				addTextandResizePhoto(foto,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 					
@@ -641,7 +641,7 @@ while 1:
 				log("Connected with IP :" + IP)
 				if ( IP != None ):
 					bConnected = True
-				
+
 			if (  internet_on() ):
 				log("Sending to server ...")
 				waitForHandUP()
@@ -684,7 +684,10 @@ while 1:
 					log("IP has changed - New IP is : " + IP)
 					if ( cfg.use_mail and cfg.mail_ip ):
 						SendMail(cfg,"My IP has changed",IP,"")
-				
+						
+				if ( cfg.config_web_server ) :
+					log("Rereading config file ..")
+					cfg.readCfg(False)
 				
 				# Set Time from NTP ( using a thread to avoid strange freezing )
 				if ( ( not globalvars.TimeSetFromNTP )  and cfg.set_system_time_from_ntp_server_at_startup ):

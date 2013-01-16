@@ -21,6 +21,7 @@ import Cookie
 import SocketServer
 import threading
 import time
+from TTLib import *
 
 chars = string.ascii_letters + string.digits
 sessionDict = {} # dictionary mapping session id's to session objects
@@ -46,7 +47,7 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		if fileExtension == ".cfg" :
 			return
 
-		print fileName, fileExtension
+		#print fileName, fileExtension
 		self.body = {}
 		if self.path.find('?')>-1:
 			qs = self.path.split('?',1)[1]
@@ -140,6 +141,7 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 		# redirect standard output so that the "print" statements 
 		# in the script will be sent to the web browser
+		SAVEOUT = sys.stdout
 		sys.stdout = cStringIO.StringIO()
 
 		# build the namespace in which the script will be run
@@ -167,8 +169,10 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 				os.path.basename(script), cgi.escape(msg))
 			print '<br>Line %s' %line
 			print '<br><pre><b>%s</b></pre>' %cgi.escape(text)
+			sys.stdout = SAVEOUT
 		self.resp_headers['Content-length'] = sys.stdout.tell()
 		self.done(200,sys.stdout)
+		sys.stdout = SAVEOUT
 
 	def run_tpl(self,script):
 		"""Templating system with the string substitution syntax
@@ -213,15 +217,14 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		return sessionObject
 
 class config_webserver(threading.Thread):
-    
     def __init__(self,cfg):
         self.cfg = cfg
         threading.Thread.__init__(self)
         
     def run(self):
 		port = 80
-		s=SocketServer.TCPServer(("localhost",port),ScriptRequestHandler)
-		print "Config Server running on port %s" %port
+		s=SocketServer.TCPServer(("",port),ScriptRequestHandler)
+		log( "Config Server running on port %s" %port)
 		s.serve_forever()
 		
 if __name__=="__main__":
