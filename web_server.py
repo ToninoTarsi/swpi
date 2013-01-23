@@ -21,7 +21,11 @@ import Cookie
 import SocketServer
 import threading
 import time
-from TTLib import *
+#from TTLib import *
+import datetime
+
+def log(message) :
+    print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
 chars = string.ascii_letters + string.digits
 sessionDict = {} # dictionary mapping session id's to session objects

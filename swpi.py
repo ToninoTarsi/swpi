@@ -648,18 +648,18 @@ while 1:
 				if ( cfg.webcamDevice1.upper() != "NONE" and bwebcam1 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						sendFileToServer1(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
+						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
-						sendFileToServer1(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
+						sendFileToServer(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 
 				if ( cfg.webcamDevice2.upper() != "NONE" and bwebcam2 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						sendFileToServer1(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
+						sendFileToServer(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
-						sendFileToServer1(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
+						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 	
 				if ( cfg.usecameradivice   ):
 					nCamera = 0
@@ -667,10 +667,10 @@ while 1:
 						nCamera = nCamera + 1
 						if (cfg.sendallimagestoserver ):
 							waitForHandUP()
-							sendFileToServer1(foto,getFileName(foto),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)
+							sendFileToServer(foto,getFileName(foto),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 						else:
 							waitForHandUP()
-							sendFileToServer1(foto,"camera"+str(nCamera)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd)				
+							sendFileToServer(foto,"camera"+str(nCamera)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)				
 						
 				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					logData(cfg.serverfile)

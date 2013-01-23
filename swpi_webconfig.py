@@ -2,7 +2,7 @@ import config
 import string
 
 def str2bool(v):
-    return v.lower() in ("yes", "true", "t", "1")
+	return v.lower() in ("yes", "true", "t", "1")
 
 def outputPage(cfg):
 
@@ -84,6 +84,8 @@ def outputPage(cfg):
 	d.update(ftpserverDestFolder=cfg.ftpserverDestFolder)
 	d.update(ftpserverLogin=cfg.ftpserverLogin)
 	d.update(ftpserverPassowd=cfg.ftpserverPassowd)
+	d.update(use_thread_for_sending_to_server=cfg.use_thread_for_sending_to_server)
+
 
 
 	d.update(useradio=cfg.useradio)
@@ -179,7 +181,8 @@ if ( len(request) != 0 ):
 	cfg.ftpserver = request['ftpserver'][0]																		   
 	cfg.ftpserverDestFolder = request['ftpserverDestFolder'][0]																 
 	cfg.ftpserverLogin = request['ftpserverLogin'][0]																	  
-	cfg.ftpserverPassowd = request['ftpserverPassowd'][0]																 
+	cfg.ftpserverPassowd = request['ftpserverPassowd'][0]		
+	cfg.use_thread_for_sending_to_server = request['use_thread_for_sending_to_server'][0]		
 
 	cfg.useradio = request['useradio'][0]																		   
 	cfg.radiointerval = request['radiointerval'][0]																	  

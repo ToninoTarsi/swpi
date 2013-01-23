@@ -240,12 +240,9 @@ def UploadData(cfg):
     f.close()
     
     
-    sendFileToServer1(objects_file,'meteo.txt',cfg.ftpserver,cfg.upload_folder,cfg.ftpserverLogin,cfg.ftpserverPassowd,True)
+    sendFileToServer(objects_file,'meteo.txt',cfg.ftpserver,cfg.upload_folder,cfg.ftpserverLogin,cfg.ftpserverPassowd,True,cfg.use_thread_for_sending_to_server)
 
     
-    
-
-
 def NoneToNull(var):
     if ( var == None ):
         return "Null"
@@ -429,7 +426,7 @@ def isnumeric(s):
     except ValueError:
         return False
 
-def sendFileToServer(filename,name,server,destFolder,login,password,delete):
+def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
     try:
         s = ftplib.FTP(server,login,password) 	# Connect
         f = open(filename,'rb')                # file to send
@@ -449,8 +446,11 @@ def sendFileToServer(filename,name,server,destFolder,login,password,delete):
             log("Deleted file : " + filename )
         return False
 
-def sendFileToServer1(filename,name,server,destFolder,login,password,delete):
-    thread.start_new_thread(sendFileToServer, (filename,name,server,destFolder,login,password,delete))
+def sendFileToServer(filename,name,server,destFolder,login,password,delete,usethread):
+    if ( not usethread ):
+        sendFileToFTPServer(filename,name,server,destFolder,login,password,delete)
+    else:
+        thread.start_new_thread(sendFileToFTPServer, (filename,name,server,destFolder,login,password,delete))
 
 
 def internet_on():
