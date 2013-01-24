@@ -65,8 +65,8 @@ import sys
 import time
 
 #import Localisation
-logFile = datetime.now().strftime("log/wh1080_%d%m%Y.log")
-logging.basicConfig(filename=logFile,filemode='w',level=logging.DEBUG)
+#logFile = datetime.now().strftime("log/wh1080_%d%m%Y.log")
+#logging.basicConfig(filename=logFile,filemode='w',level=logging.DEBUG)
 
 # import USBDevice later, when we know which USB library to use
 USBDevice = None

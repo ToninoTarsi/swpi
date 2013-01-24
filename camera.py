@@ -138,23 +138,25 @@ class PhotoCamera(object):
 					bError = False	
 					p = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 					(stdout, stderr) = p.communicate()
-					for line in stdout.split('\n') :
-						if ( len(line) != 0 ): log("gphoto2-stdout " + line)
-						if (line[:3] == "***"):
-							bError = True
+#					for line in stdout.split('\n') :
+#						if ( len(line) != 0 ): log("gphoto2-stdout " + line)
+#						if (line[:3] == "***"):
+#							bError = True
 					for line in stderr.split('\n') :
-						if ( len(line) != 0 ): log("gphoto2-stderr + " + line)
+						if ( len(line) != 0 ): log(line)
 						if (line[:3] == "***"):
 							bError = True	
 					nTry = nTry + 1
 					if ( bError ):
 						log("Error capturing camera .. retrying")
 						if ( self.cfg.use_camera_resetter ):
-							log("Resetting Camerara ... ")
+							log("Switching off Camera ... ")
 							GPIO.output(self.__PIN_RESET, 0)
-							time.sleep(3)
+							time.sleep(4)
+							log("Switching on Camera ... ")
 							GPIO.output(self.__PIN_RESET, 1)
-						time.sleep(3)
+							time.sleep(4)
+						time.sleep(1)
 						
 				if ( bError ):		
 					log("Error capturing camera .. rebooting") 	
