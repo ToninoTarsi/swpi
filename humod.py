@@ -41,6 +41,9 @@ class Interpreter(threading.Thread):
         """Keep interpreting messages while active attribute is set."""
         while self.active:
             self.interpret(self.queue.get())
+            
+    def stop(self):
+        self.active = False
 
     def interpret(self, message):
         """Match message pattern with an action to take.
@@ -368,8 +371,6 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
             return False		
 
 
-
-
     def connectwvdial(self):
         if ( self._pppd_pid != None ) :
             self.disconnectwvdial()
@@ -386,19 +387,6 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
             except:
                 raise errors.PppdError('An error while starting wvdial.')
             
-                #wvdialargs = ["/usr/bin/wvdial", "-C", "./wvdial.conf" , self.cfg.operator]
-                #print "D- running " 
-                #print  wvdialargs
-                #os.execl("/usr/bin/wvdial","/usr/bin/wvdial", "-C", "./wvdial.conf" , self.cfg.operator)
-                  #subprocess.Popen(["/usr/bin/wvdial","-C","./" + self.cfg.operator + ".conf"],stderr=file("log/wvdial.log","w"
-                 #os.system("wvdial  >& wvdial.log"  )
-
-
-
-                #os.execl('/usr/bin/wvdial',wvdialargs) 
-
-            
-
 
     def disconnectwvdial(self):
         """Disconnect the modem."""

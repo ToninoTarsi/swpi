@@ -124,7 +124,7 @@ class config(object):
 		self.wifi_reset_if_down = config.getboolean('General', 'wifi_reset_if_down',True)
 
 		# [Dongle]
-		self.usedongle = config.getboolean('Dongle', 'usedongle',True)
+		self.usedongle = config.getboolean('Dongle', 'usedongle',False)
 		self.AlwaysOnInternet = config.getboolean('Dongle', 'alwaysoninternet',True)
 		self.dongleCtrlPort = config.get('Dongle', 'dongleCtrlPort',"/dev/ttyUSB2")
 		self.dongleAudioPort = config.get('Dongle', 'dongleAudioPort',"/dev/ttyUSB1")
@@ -139,7 +139,7 @@ class config(object):
 		self.pppd_path = config.get('Dongle', 'pppd_path',"/usr/sbin/pppd")
 
 		#[Security]
-		self.SMSPwd = config.get('Security', 'SMSPwd',"PASSWORD")
+		self.SMSPwd = config.get('Security', 'SMSPwd',"admin")
 
 		#[DataLogging]
 		self.logdata = config.getboolean('DataLogging', 'logdata',False)

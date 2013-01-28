@@ -9,7 +9,7 @@ so = Session()
 so.user = request['user'][0]
 so.password = request['password'][0]
 
-if ( so.user.upper() == "ADMIN" and so.password.upper() == cfg.SMSPwd ):
+if ( so.user.upper() == "ADMIN" and so.password == cfg.SMSPwd ):
 	# redirect to the home page
 	raise HTTP_REDIRECTION,"swpi_webconfig.py"
 else:

@@ -107,6 +107,8 @@ def swpi_update():
     t = tarfile.open('swpi-src.tar.gz', 'r:gz')
     t.extractall('../')  
     os.remove("swpi-src.tar.gz")
+    os.system( "sudo chown pi mcp3002/" )
+    os.system( "sudo chown pi TX23/" )
 
 
 def SetTimeFromNTP(ntp_server):

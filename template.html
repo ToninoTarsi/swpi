@@ -234,6 +234,11 @@ Content-Type: text/html
             height: 36px;
             width: 371px;
         }
+        .style52
+        {
+            width: 405px;
+            height: 33px;
+        }
         </style>
 
 </head>
@@ -482,53 +487,53 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style10" width="800">
-                    <b>Latitude of the Sint Wind PI in decimal degree</b> (location_latitude)</td>
+                    Latitude of the Sint Wind PI in decimal degree (<b>location_latitude</b>)</td>
                 <td class="style45">
                     &nbsp;<input id="location_latitude" type="text" name="location_latitude" 
                         value=$location_latitude style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style11" width="800">
-                    <b>Longitude of the Sint Wind PI in decimal degree</b> (location_longitude)<td class="style45">
+                    Longitude of the Sint Wind PI in decimal degree (<b>location_longitude</b>)<td class="style45">
                     &nbsp;<input id="location_longitude" type="text" name="location_longitude" 
                         value=${location_longitude} onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style11" width="800">
-                    &nbsp;<b>Altitude of the Sint Wind PI in meters</b> (location_altitude)</td>
+                    Altitude of the Sint Wind PI in meters (<b>location_altitude</b>)</td>
                 <td class="style45">
                     &nbsp;<input id="location_altitude" type="text" name="location_altitude" 
                         value=$location_altitude style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    &nbsp;<b>Reboot system every days at specified time. Ex 08:00</b> <b>or &quot;None&quot; 
-                    for not rebooting </b>(reboot_at)</td>
+                    Reboot system every days at specified time. Ex 08:00 or &quot;None&quot; 
+                    for not rebooting<b> </b>(<b>reboot_at</b>)</td>
                 <td class="style45">
                     <input id="reboot_at" type="text" name="reboot_at" 
                         value=$reboot_at style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    <b>Shutdown</b> <b>system every days at specified time. Ex&nbsp; 08:00</b>&nbsp;
-                    <b>or &quot;None&quot; for not shutdown&nbsp; </b>(shutdown_at )</td>
+                    Shutdown system every days at specified time. Ex&nbsp; 08:00&nbsp;
+                    or &quot;None&quot; for not shutdown&nbsp; (<b>shutdown_at</b> )</td>
                 <td class="style45">
                     <input id="shutdown_at" type="text" name="shutdown_at" 
                         value=$shutdown_at style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    <b>Shutdown</b> <b>system every days at the specified hours before sunset. For 
-                    example -2 will shutdown two hours after sunset. Use &quot;None&quot; for not using this 
-                    function. (</b>shutdown_hour_before_sunset)</td>
+                    Shutdown system every days at the specified hours before sunset. For example -2 
+                    will shutdown two hours after sunset. Use &quot;None&quot; for not using this function.<b> 
+                    (shutdown_hour_before_sunset</b>)</td>
                 <td class="style45">
                     <input id="shutdown_hour_before_sunset" type="text" name="shutdown_hour_before_sunset" 
                         value=$shutdown_hour_before_sunset style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    &nbsp;<b>Adjust system time from a NTP internt server at system startup</b> (set_system_time_from_ntp_server_at_startup)</td>
+                    Adjust system time from a NTP internt server at system startup (<b>set_system_time_from_ntp_server_at_startup</b>)</td>
                 <td class="style45">
                     <select id="set_system_time_from_ntp_server_at_startup" 
                         name="set_system_time_from_ntp_server_at_startup" 
@@ -541,14 +546,14 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    <b>NTP servet for time adjustemnt.</b> (ntp_server)</td>
+                    NTP servet for time adjustemnt. (<b>ntp_server</b>)</td>
                 <td class="style45">
                     <input id="ntp_server" type="text" name="ntp_server" 
                         value=$ntp_server style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    <b>Activate the config WebServer</b> (config_web_server)</td>
+                    Activate the config WebServer (<b>config_web_server</b>)</td>
                 <td class="style45">
                     <select id="config_web_server" type="text" name="config_web_server" 
                         value=$config_web_server style="width: 100%" >
@@ -559,14 +564,14 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    <b>Port of the config WebServer</b> (config_web_server_port)</td>
+                    Port of the config WebServer (<b>config_web_server_port</b>)</td>
                 <td class="style45">
                     <input id="config_web_server_port" type="text" name="config_web_server_port" 
                         value=$config_web_server_port style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800">
-                    <b>Reset the wifi interface if detecting a connection problem</b> (wifi_reset_if_down)</td>
+                    Reset the wifi interface if detecting a connection problem (<b>wifi_reset_if_down</b>)</td>
                 <td class="style45">
                     <select id="wifi_reset_if_down" type="text" name="wifi_reset_if_down" 
                         value=$wifi_reset_if_down style="width: 100%" >
@@ -591,8 +596,8 @@ Content-Type: text/html
                     Sensors</td>
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Use a wind sensor</b> (use_wind_sensor)</td>
+                <td class="style52">
+                    Use a wind sensor (<b>use_wind_sensor</b>)</td>
                 <td class="style31">
                     <select id="use_wind_sensor" type="text" name="use_wind_sensor" 
                         value=$use_wind_sensor style="width: 100%" >
@@ -601,8 +606,8 @@ Content-Type: text/html
                     </select>       </td>
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Type of wind sensor connected</b> (sensor_type)</td>
+                <td class="style52">
+                    Type of wind sensor connected (<b>sensor_type</b>)</td>
                 <td class="style49">
                     <select id="sensor_type" type="text" name="sensor_type" 
                         value=$sensor_type style="width: 100%" >
@@ -618,44 +623,44 @@ Content-Type: text/html
                     </td>  
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Number of measure for wind average gust calculation.</b> (number_of_measure_for_wind_average_gust_calculation)</td>
+                <td class="style52">
+                    Number of measure for wind average gust calculation. (<b>number_of_measure_for_wind_average_gust_calculation</b>)</td>
                 <td class="style31">
                     <input id="number_of_measure_for_wind_average_gust_calculation" type="text" name="number_of_measure_for_wind_average_gust_calculation" 
                         value=$number_of_measure_for_wind_average_gust_calculation 
                         style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Number of measure for wind dir average calculation.</b> (number_of_measure_for_wind_dir_average)</td>
+                <td class="style52">
+                    Number of measure for wind dir average calculation. (<b>number_of_measure_for_wind_dir_average</b>)</td>
                 <td class="style31">
                     <input id="number_of_measure_for_wind_dir_average" type="text" name="number_of_measure_for_wind_dir_average" 
                         value=$number_of_measure_for_wind_dir_average style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Caligration gain for wind intensity calculation</b> (windspeed_gain)</td>
+                <td class="style52">
+                    Caligration gain for wind intensity calculation (<b>windspeed_gain</b>)</td>
                 <td class="style31">
                     <input id="windspeed_gain" type="text" name="windspeed_gain" 
                         value=$windspeed_gain style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Caligration offset for wind intensity calculation</b> (windspeed_offset)</td>
+                <td class="style52">
+                    Caligration offset for wind intensity calculation (<b>windspeed_offset</b>)</td>
                 <td class="style31">
                     <input id="windspeed_offset" type="text" name="windspeed_offset" 
                         value=$windspeed_offset style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Interval between measurements</b> (windmeasureinterval)</td>
+                <td class="style52">
+                    Interval between measurements (<b>windmeasureinterval</b>)</td>
                 <td class="style31">
                     <input id="windmeasureinterval" type="text" name="windmeasureinterval" 
                         value=$windmeasureinterval style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12">
-                    <b>Use a BMP085 sensor for pressure and</b> temperature (use_bmp085)</td>
+                <td class="style52">
+                    Use a BMP085 sensor for pressure and temperature (<b>use_bmp085</b>)</td>
                 <td class="style31">
                     <select id="use_bmp085" type="text" name="use_bmp085" 
                         value=$use_bmp085 style="width: 100%" >
@@ -664,8 +669,8 @@ Content-Type: text/html
                     </select>    </td>
             </tr>
             <tr>   
-                <td class="style12">
-                    U<b>se a TMP36 sensor for temperature</b> (use_tmp36)</td>
+                <td class="style52">
+                    Use a TMP36 sensor for temperature (<b>use_tmp36</b>)</td>
                 <td class="style31">
                     <select id="use_tmp36" type="text" name="use_tmp36" 
                         value=$use_tmp36 style="width: 100%" >
@@ -687,7 +692,7 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style41">
-                    <b>Use a 3G dongle for telephone and SMS</b>(usedongle)</td>
+                    Use a 3G dongle for telephone and SMS(<b>usedongle</b>)</td>
                 <td class="style17">
                     <select id="usedongle" type="text" name="usedongle" 
                         value=$usedongle style="width: 100%" >
@@ -698,7 +703,7 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style42">
-                    <b>Use the 3G dongle also for internet connection</b> (Use_Dongle_Net)</td>
+                    Use the 3G dongle also for internet connection (<b>Use_Dongle_Net</b>)</td>
                 <td class="style17">
                     <select id="UseDongleNet" type="text" name="UseDongleNet" 
                         value=$UseDongleNet style="width: 100%" >
@@ -709,7 +714,7 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style42">
-                    <b>Stay always connected</b> (Always_On_Internet)<td class="style17">
+                    Stay always connected (<b>Always_On_Internet</b>)<td class="style17">
                     <select id="AlwaysOnInternet" type="text" name="AlwaysOnInternet" 
                         value=$AlwaysOnInternet      style="width: 100%" >
                         <option value=True >True</option>
@@ -719,8 +724,8 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style43">
-                    <b>Operator for internet connection</b> (
-                    Operator)</td>
+                    Operator for internet connection (
+                    <b>Operator</b>)</td>
                 <td class="style17">
                     <select id="operator" type="text" name="operator" 
                         value=$operator style="width: 100%" >
@@ -739,7 +744,7 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Password of the SMS of configuratione</b> (SMSPwd)</td>
+                    Password of the SMS of configuratione <b>(SMSPwd)</b></td>
                 <td class="style17">
                     <input id="SMSPwd" type="text" name="SMSPwd" 
                         value=$SMSPwd style="width: 100%" /></td>
@@ -753,7 +758,7 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Log all meteo data to a PHP web server</b> (logdata)</td>
+                    Log all meteo data to a PHP web server (<b>logdata</b>)</td>
                 <td class="style20">
                     <select id="logdata" type="text" name="logdata" 
                         value=$logdata style="width: 100%" >
@@ -764,7 +769,7 @@ Content-Type: text/html
             </tr>
             <tr> 
                 <td class="style8">
-                    <b>Http address of the PHP web server file</b> (serverfile)</td>
+                    Http address of the PHP web server file (<b>serverfile</b>)</td>
                 <td class="style19">
                     <input id="serverfile" type="text" name="serverfile" 
                         value=$serverfile style="width: 100%" /></td>
@@ -779,13 +784,13 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style47">
-                    <b>Upload all meteo data to a FTP server
+                    Upload all meteo data to a FTP server
                     <span lang="EN-US" style="font-size:11.0pt;
 line-height:115%;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;mso-ascii-theme-font:minor-latin;
 mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:
 minor-latin;mso-bidi-font-family:&quot;Times New Roman&quot;;mso-bidi-theme-font:minor-bidi;
 mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw </span>a json 
-                    file. Will use credential of the FTP section.</b> (upload_data)</td>
+                    file. Will use credential of the FTP section. (<b>upload_data</b>)</td>
                 <td class="style17">
                     <select id="upload_data" type="text" name="upload_data" 
                         value=$upload_data style="width: 100%" >
@@ -795,7 +800,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style48">
-                    <b>FTP folder to upoad</b> (upload_folder)</td>
+                    FTP folder to upoad (<b>upload_folder</b>)</td>
                 <td class="style17">
                     <input id="upload_folder" type="text" name="upload_folder" 
                         value=$upload_folder style="width: 100%" /></td>
@@ -810,7 +815,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Sincronize system time from PCE station</b> (set_system_time_from_WeatherStation)</td>
+                    Sincronize system time from PCE station (<b>set_system_time_from_WeatherStation</b>)</td>
                 <td class="style32">
                     <select  id="set_system_time_from_WeatherStation" type="text" name="set_system_time_from_WeatherStation" 
                         value=$set_system_time_from_WeatherStation style="width: 100%" >
@@ -827,19 +832,18 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style26">
-                    <b>Time interval between webcam and Cameras captures</b> (WebCamInterval)<td class="style27">
+                    Time interval between webcam and Cameras<b> </b> captures (<b>WebCamInterval</b>)<td class="style27">
                     <input id="WebCamInterval" type="text" name="WebCamInterval" 
                         value=$WebCamInterval style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Send captured images to a web server
+                                        Send captured images to a web server
                     <span lang="EN-US" style="font-size:11.0pt;
 line-height:115%;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;mso-ascii-theme-font:minor-latin;
 mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:
 minor-latin;mso-bidi-font-family:&quot;Times New Roman&quot;;mso-bidi-theme-font:minor-bidi;
-mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw FTP (</span></b>
-                    sendImagesToServer)</td>
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw FTP<b> (</b></span><b>sendImagesToServer</b>)</td>
                 <td class="style33">
                     <select  id="sendImagesToServer" type="text" name="sendImagesToServer" 
                         value=$sendImagesToServer style="width: 100%" >
@@ -850,8 +854,8 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Send all captured images to re server . This require a dinamic web server 
-                    with PHP</b> (sendallimagestoserver)</td>
+                    Send all captured images to re server . This require a dinamic web server 
+                    with PHP (<b>sendallimagestoserver</b>)</td>
                 <td class="style33">
                     <select  id="sendallimagestoserver" type="text" name="sendallimagestoserver" 
                         value=$sendallimagestoserver style="width: 100%" >
@@ -862,7 +866,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style50"> 
-                    <b>Delete images after sent to server</b> (delete_images_on_sd)</td>
+                    Delete images after sent to server (<b>delete_images_on_sd</b>)</td>
                 <td class="style51">
                     <select  id="delete_images_on_sd" type="text" name="delete_images_on_sd" 
                         value=$delete_images_on_sd style="width: 100%" >
@@ -872,57 +876,57 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Webcam device 1. Tipicaly /dev/video0 or None to not use a webcam</b> (webcamDevice1)</td>
+                    Webcam device 1. Tipicaly /dev/video0 or None to not use a webcam (<b>webcamDevice1</b>)</td>
                 <td class="style33">
                     <input id="webcamDevice1" type="text" name="webcamDevice1" 
                         value=$webcamDevice1 style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Webcam device 2. Tipicaly /dev/video1 or None to not use a webcam</b> 
-                    (webcamDevice2)</td>
+                    Webcam device 2. Tipicaly /dev/video1 or None to not use a webcam 
+                    (<b>webcamDevice2</b>)</td>
                 <td class="style33">
                     <input id="webcamDevice2" type="text" name="webcamDevice2" 
                         value=$webcamDevice2 style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    Logo to write to the images (webcamLogo)</td>
+                    <b>Logo to write to the images </b>(<b>webcamLogo</b>)</td>
                 <td class="style33">
                     <input id="webcamLogo" type="text" name="webcamLogo" 
                         value=$webcamLogo style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Webcam 1 capture resolution. ex 800x600</b>. (webcamdevice1captureresolution)</td>
+                    Webcam 1 capture resolution. ex 800x600. (<b>webcamdevice1captureresolution</b>)</td>
                 <td class="style33">
                     <input id="webcamdevice1captureresolution" type="text" name="webcamdevice1captureresolution" 
                         value=$webcamdevice1captureresolution style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Webcam 2 capture resolution. ex 800x600</b>. (webcamdevice2captureresolution)</td>
+                    Webcam 2 capture resolution. ex 800x600.<b> (webcamdevice2captureresolution)</b></td>
                 <td class="style33">
                     <input id="webcamdevice2captureresolution" type="text" name="webcamdevice2captureresolution" 
                         value=$webcamdevice2captureresolution style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Webcam 1 final resolution. ex 800x600</b>. (webcamdevice1finalresolution)</td>
+                    Webcam 1 final resolution. ex 800x600. (<b>webcamdevice1finalresolution</b>)</td>
                 <td class="style33">
                     <input id="webcamdevice1finalresolution" type="text" name="webcamdevice1finalresolution" 
                         value=$webcamdevice1finalresolution style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Webcam 2 final resolution. ex 800x600</b>. (webcamdevice2finalresolution)</td>
+                    Webcam 2 final resolution. ex 800x600. (<b>webcamdevice2finalresolution</b>)</td>
                 <td class="style33">
                     <input id="webcamdevice2finalresolution" type="text" name="webcamdevice2finalresolution" 
                         value=$webcamdevice2finalresolution style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Use ffmpeg for capturing. Otherwise use uvcapture</b> (capturewithffmpeg)</td>
+                    Use ffmpeg for capturing. Otherwise use<b> </b> uvcapture (<b>capturewithffmpeg</b>)</td>
                 <td class="style33">
                     <select id="capturewithffmpeg" type="text" name="capturewithffmpeg" 
                         value=$capturewithffmpeg style="width: 100%" >
@@ -939,7 +943,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>   
                 <td class="style26">
-                    <b>Use Camera. If True the system will try to detect</b> (usecameradivice)<td class="style28">
+                    Use Camera. If True the system will try to detect (<b>usecameradivice</b>)<td class="style28">
                     <select  id="usecameradivice" type="text" name="usecameradivice" 
                         value=$usecameradivice style="width: 100%" >
                         <option value=True >True</option>
@@ -948,21 +952,21 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Camera final resolution. ex 800x600</b> (cameradivicefinalresolution)</td>
+                    Camera final resolution. ex 800x600<b> (cameradivicefinalresolution)</b></td>
                 <td class="style34">
                     <input id="cameradivicefinalresolution" type="text" name="cameradivicefinalresolution" 
                         value=$cameradivicefinalresolution style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Capture option. Use an element list for each camera</b> (gphoto2options)</td>
+                    Capture option. Use an element list for each camera (<b>gphoto2options</b>)</td>
                 <td class="style34">
                     <input id="gphoto2options" type="text" name="gphoto2options" 
                         value=$gphoto2options style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Before capturing reset the USB. For Nikon cameras</b> (reset_usb)</td>
+                    Before capturing reset the USB. For Nikon cameras<b> (reset_usb</b>)</td>
                 <td class="style34">
                     <select  id="reset_usb" type="text" name="reset_usb" 
                         value=$reset_usb style="width: 100%" >
@@ -972,7 +976,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Clear cameras SD card at startup</b> (clear_all_sd_cards_at_startup)</td>
+                    Clear cameras SD card at startup (<b>clear_all_sd_cards_at_startup</b>)</td>
                 <td class="style34">
                     <select id="clear_all_sd_cards_at_startup" type="text" name="clear_all_sd_cards_at_startup" 
                         value=$clear_all_sd_cards_at_startup style="width: 100%" >
@@ -982,14 +986,14 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Stat numbering cameras from</b> (start_camera_number)</td>
+                    Stat numbering cameras from (<b>start_camera_number</b>)</td>
                 <td class="style34">
                     <input id="start_camera_number" type="text" name="start_camera_number" 
                         value=$start_camera_number style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Use gphoto2 capture_and_download</b> (gphoto2_capture_image_and_download)</td> 
+                    Use gphoto2 capture_and_download (<b>gphoto2_capture_image_and_download</b>)</td> 
                 <td class="style34">
                     <select id="gphoto2_capture_image_and_download" type="text" name="gphoto2_capture_image_and_download" 
                         value=$gphoto2_capture_image_and_download style="width: 100%" >
@@ -999,7 +1003,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Use a camera resetter connected to the GPIO</b> (use_camera_resetter)</td>
+                    Use a camera resetter connected to the GPIO (<b>use_camera_resetter</b>)</td>
                 <td class="style34">
                     <select id="use_camera_resetter" type="text" name="use_camera_resetter" 
                         value=$use_camera_resetter style="width: 100%" >
@@ -1016,34 +1020,34 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>FTP Server</b> (ftpserver )<td class="style38">
+                    FTP Server <b>(ftpserver )</b><td class="style38">
                     <input id="ftpserver" type="text" name="ftpserver" 
                         value=$ftpserver style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style3">
-                    <b>Destination folder</b> (ftpserverDestFolder)<td class="style36">
+                    Destination folder (<b>ftpserverDestFolder</b>)<td class="style36">
                     <input id="ftpserverDestFolder" type="text" name="ftpserverDestFolder" 
                         value=$ftpserverDestFolder onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style3">
-                    <b>Login </b>(ftpserverLogin)</td>
+                    Login<b> </b>(<b>ftpserverLogin</b>)</td>
                 <td class="style36">
                     <input id="ftpserverLogin" type="text" name="ftpserverLogin" 
                         value=$ftpserverLogin style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style5">
-                    <b>Password</b> (ftpserverPassowd)</td>
+                    Password (<b>ftpserverPassowd</b>)</td>
                 <td class="style37">
                     <input id="ftpserverPassowd" type="text" name="ftpserverPassowd" 
                         value=$ftpserverPassowd style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style5">
-                    <b>Use a thread for sending</b> (use_thread_for_sending_to_server)</td> 
+                    Use a thread for sending (<b>use_thread_for_sending_to_server</b>)</td> 
                 <td class="style37">
                     <select id="use_thread_for_sending_to_server" type="text" name="use_thread_for_sending_to_server" 
                         value=$use_thread_for_sending_to_server style="width: 100%" >
@@ -1060,7 +1064,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Use a Radio to transmit wind conditions</b> (useradio)<td class="style39">
+                    Use a Radio to transmit wind conditions (<b>useradio</b>)<td class="style39">
                     <select id="useradio" type="text" name="useradio" 
                         value=$useradio style="width: 100%" >
                         <option value=True >True</option>
@@ -1069,7 +1073,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style3">
-                    <b>Radio interval</b> (radiointerval)<td class="style40">
+                    Radio interval (<b>radiointerval</b>)<td class="style40">
                     <input id="radiointerval" type="text" name="radiointerval" 
                         value=$radiointerval onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
@@ -1084,7 +1088,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style5">
-                    <b>Use mail to comunicate</b> (use_mail)<td class="style17">
+                    Use mail to comunicate<b> (use_mail)</b><td class="style17">
                     <select id="use_mail" type="text" name="use_mail" 
                         value=$use_mail style="width: 100%" >
                         <option value=True >True</option>
@@ -1093,28 +1097,27 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>User</b> (gmail_user)</td>
-                <td class="style17">
+                    User (   <td class="style17">
                     <input id="gmail_user" type="text" name="gmail_user" 
                         value=$gmail_user style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style3">
-                    <b>Password</b> (gmail_pwd)<td class="style17">
+                    Password (<b>gmail_pwd</b>)<td class="style17">
                     <input id="gmail_pwd" type="text" name="gmail_pwd" 
                         value=$gmail_pwd onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style3">
-                    <b>Address to send to</b> (mail_to)</td>
+                    Address to send to (<b>mail_to</b>)</td>
                 <td class="style17">
                     <input id="mail_to" type="text" name="mail_to" 
                         value=$mail_to style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style5">
-                    <b>Mail IP at statup</b>&nbsp; (mail_ip)</td>
+                    Mail IP at statup&nbsp; (<b>mail_ip</b>)</td>
                 <td class="style17">
                     <select id="mail_ip" type="text" name="mail_ip" 
                         value=$mail_ip style="width: 100%" >
@@ -1131,7 +1134,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    <b>Send IP by SMS at statup</b> (send_IP_by_sms)<td class="style39">
+                    Send IP by SMS at statup (<b>send_IP_by_sms</b>)<td class="style39">
                     <select id="send_IP_by_sms" type="text" name="send_IP_by_sms" 
                         value=$send_IP_by_sms style="width: 100%" >
                         <option value=True >True</option>
@@ -1140,7 +1143,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style3">
-                    <b>Number to send SMS</b> (number_to_send)<td class="style40">
+                    Number to send SMS (<b>number_to_send</b>)<td class="style40">
                     <input id="number_to_send" type="text" name="number_to_send" 
                         value=$number_to_send onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>

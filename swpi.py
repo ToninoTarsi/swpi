@@ -448,6 +448,8 @@ print "************************************************************************"
 configfile = 'swpi.cfg'
 if not os.path.isfile(configfile):
 	cfg = config.config(configfile,False)
+	os.system( "sudo chown pi swpi.cfg" )
+
 	log("Configurantion file created. Now edit the file :  %s and restart with command  : swpi "  % (configfile))
 	exit(0)
 else:
@@ -478,6 +480,8 @@ os.system( "sudo chmod +x ./wifi_reset.sh" )
 os.system( "sudo chmod +x ./swpi.sh" )
 os.system( "sudo chmod +x ./swpi-update.sh" )
 os.system( "sudo chmod +x ./killswpi.sh" )
+os.system( "sudo chown pi mcp3002/" )
+os.system( "sudo chown pi TX23/" )
 
 # Some Globasl :-(
 globalvars.bAnswering = False
@@ -560,7 +564,7 @@ if ( IP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
 
 # start config eweb server
 if ( cfg.config_web_server ):
-	webserver = web_server.config_webserver(None)
+	webserver = web_server.config_webserver(cfg)
 	webserver.start()
 
 
