@@ -35,6 +35,7 @@ class PhotoCamera(object):
 		self.cfg = cfg
 		
 		if ( self.cfg.use_camera_resetter ):
+			GPIO.setwarnings(False)
 			GPIO.setmode(GPIO.BCM)
 			GPIO.setup(self.__PIN_RESET, GPIO.OUT) 
 			GPIO.output(self.__PIN_RESET, True)
@@ -152,10 +153,10 @@ class PhotoCamera(object):
 						if ( self.cfg.use_camera_resetter ):
 							log("Switching off Camera ... ")
 							GPIO.output(self.__PIN_RESET, 0)
-							time.sleep(4)
+							time.sleep(2)
 							log("Switching on Camera ... ")
 							GPIO.output(self.__PIN_RESET, 1)
-							time.sleep(4)
+							time.sleep(10)
 						time.sleep(1)
 						
 				if ( bError ):		
@@ -176,7 +177,8 @@ class PhotoCamera(object):
 
 
 	def ClearSDCard(self,usbcamera):
-		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
+		#logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
+		logFile = "/dev/null"
 		for folder, number, _ in self.list_files(usbcamera) :
 			os.system("gphoto2 --port " + usbcamera + " -D --folder=" + folder + "  1>> " + logFile + " 2>> " + logFile )
 		

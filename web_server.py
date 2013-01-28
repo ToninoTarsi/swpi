@@ -23,6 +23,7 @@ import threading
 import time
 #from TTLib import *
 import datetime
+import config
 
 def log(message) :
     print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
@@ -222,18 +223,21 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 class config_webserver(threading.Thread):
     def __init__(self,cfg):
-        self.cfg = cfg
-        threading.Thread.__init__(self)
-        
+		self.cfg = cfg
+		threading.Thread.__init__(self)
+
     def run(self):
-		port = 80
+		port = self.cfg.config_web_server_port
 		s=SocketServer.TCPServer(("",port),ScriptRequestHandler)
 		log( "Config Server running on port %s" %port)
 		s.serve_forever()
 		
 if __name__=="__main__":
 	# launch the server on the specified port
+	configfile = 'swpi.cfg'
 
-	ws = config_webserver(None)
+	cfg = config.config(configfile)
+
+	ws = config_webserver(cfg)
 	ws.start()
 

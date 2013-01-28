@@ -19,15 +19,16 @@ def outputPage(cfg):
 	d.update(shutdown_at=cfg.shutdown_at)
 	d.update(shutdown_hour_before_sunset=cfg.shutdown_hour_before_sunset)
 	d.update(set_system_time_from_ntp_server_at_startup=cfg.set_system_time_from_ntp_server_at_startup)
-	if (cfg.set_system_time_from_ntp_server_at_startup ):
-		d.update(selected_True_set_system_time_from_ntp_server_at_startup='selected')
-		d.update(selected_False_set_system_time_from_ntp_server_at_startup='')
-	else:
-		d.update(selected_True_set_system_time_from_ntp_server_at_startup='')
-		d.update(selected_False_set_system_time_from_ntp_server_at_startup='selected')
+#	if (cfg.set_system_time_from_ntp_server_at_startup ):
+#		d.update(selected_True_set_system_time_from_ntp_server_at_startup='selected')
+#		d.update(selected_False_set_system_time_from_ntp_server_at_startup='')
+#	else:
+#		d.update(selected_True_set_system_time_from_ntp_server_at_startup='')
+#		d.update(selected_False_set_system_time_from_ntp_server_at_startup='selected')
 	d.update(ntp_server=cfg.ntp_server)
 	d.update(config_web_server=cfg.config_web_server)
 	d.update(wifi_reset_if_down=cfg.wifi_reset_if_down)
+	d.update(config_web_server_port=cfg.config_web_server_port)
 
 
 
@@ -79,6 +80,8 @@ def outputPage(cfg):
 	d.update(clear_all_sd_cards_at_startup=cfg.clear_all_sd_cards_at_startup)
 	d.update(start_camera_number=cfg.start_camera_number)
 	d.update(gphoto2_capture_image_and_download=cfg.gphoto2_capture_image_and_download)
+	d.update(use_camera_resetter=cfg.use_camera_resetter)
+
 
 	d.update(ftpserver=cfg.ftpserver)
 	d.update(ftpserverDestFolder=cfg.ftpserverDestFolder)
@@ -128,7 +131,9 @@ if ( len(request) != 0 ):
 	cfg.location_latitude = request['location_latitude'][0]																 
 	cfg.location_longitude = request['location_longitude'][0]																 
 	cfg.location_altitude = request['location_altitude'][0]																 
-	cfg.wifi_reset_if_down = request['wifi_reset_if_down'][0]                                                                 
+	cfg.wifi_reset_if_down = request['wifi_reset_if_down'][0]       
+	cfg.config_web_server_port = request['config_web_server_port'][0]                                                                 
+                                                          
 
 
 	cfg.usedongle = request['usedongle'][0]																		   
@@ -177,6 +182,8 @@ if ( len(request) != 0 ):
 	cfg.clear_all_sd_cards_at_startup = request['clear_all_sd_cards_at_startup'][0]												  
 	cfg.start_camera_number = request['start_camera_number'][0]																 
 	cfg.gphoto2_capture_image_and_download = request['gphoto2_capture_image_and_download'][0]											 
+	cfg.use_camera_resetter = request['use_camera_resetter'][0]											 
+
 
 	cfg.ftpserver = request['ftpserver'][0]																		   
 	cfg.ftpserverDestFolder = request['ftpserverDestFolder'][0]																 

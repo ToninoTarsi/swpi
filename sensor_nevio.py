@@ -64,6 +64,7 @@ class Sensor_Nevio(sensor.Sensor):
         self.bTimerRun = 0
 
         GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         GPIO.setup(self.__PIN_A, GPIO.IN)   # wind Speed
         GPIO.setup(self.__PIN_B1, GPIO.IN)  # B1
         GPIO.setup(self.__PIN_B2, GPIO.IN)  # B2

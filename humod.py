@@ -80,7 +80,7 @@ class QueueFeeder(threading.Thread):
                 self.ctrl_lock.release()
                 # Putting the thread on idle between releasing
                 # and acquiring the lock for 100ms
-                time.sleep(1)
+                time.sleep(3)
                 #while bAnswering:
                     #time.sleep(10)
 

@@ -86,19 +86,19 @@ def process_sms(modem, smsID):
 		#
 		#	RBT				reboot	
 		#	MDB				mail database to sender
+		#	RDB				Reset Database
 		#	MCFG			mail cfg to sender
 		#	MLOG			mail current logfiles
 		#	MALOG			mail all logfiles
 		#	CAM		X		set camera/logging interval to X seconds
-		#	LOG		[0/1]	enable [1] or disable [0] internet logging
-		#	UPL		[0/1]	enable [1] or disable [0] internet uploading
+		#	LOG		[0/1]	enable [1] or disable [0] internet data logging
+		#	UPL		[0/1]	enable [1] or disable [0] internet data uploading
 		#	AON		[0/1]	set [1] or reset [0] always on internet parameter
 		#	UDN		[0/1]	set [1] or reset [0] use dongle net parameter
 		#	IP				send sms with current IP to sender
 		#	UPD				Update software
 		#	WSO		X		set calibration wind speed offset to X 
 		#	WSG		X		set calibration wind speed gain to X
-		#	RDB				Reset Database
 		#   CRES    x       Change camera resolution 	0	640x480    
 		#												1	800x600
 		#												2	1024x768

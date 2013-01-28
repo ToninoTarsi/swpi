@@ -58,6 +58,7 @@ class Sensor_Argent80422(sensor.Sensor):
         self.bTimerRun = 0
 
         GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         GPIO.setup(self.__PIN_A, GPIO.IN)   # wind Speed
  
         

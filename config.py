@@ -1,6 +1,6 @@
 ###########################################################################
 #     Sint Wind PI
-# 	  Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
+#     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
 #   
 #     Please refer to the LICENSE file for conditions 
 #     Visit http://www.vololiberomontecucco.it
@@ -111,7 +111,8 @@ class config(object):
 			config.read(self.cfgName)
 
 		#[General]
-		self.config_web_server = config.getboolean('General', 'config_web_server',False)
+		self.config_web_server = config.getboolean('General', 'config_web_server',True)
+		self.config_web_server_port = config.getint('General', 'config_web_server_port',80)
 		self.set_system_time_from_ntp_server_at_startup = config.getboolean('General', 'set_sistem_time_from_ntp_server_at_startup',True)
 		self.ntp_server = config.get('General', 'ntp_server',"europe.pool.ntp.org")
 		self.reboot_at = config.get('General', 'reboot_at',"None")
@@ -130,7 +131,7 @@ class config(object):
 		self.dongleDataPort = config.get('Dongle', 'dongleDataPort',"/dev/ttyUSB0")
 		self.UseDongleNet = config.getboolean('Dongle', 'UseDongleNet',False)
 		self.operator = config.get('Dongle', 'operator',"tim")
-		self.prober_timeout = config.getfloat('Dongle', 'prober_timeout',0.5)
+		self.prober_timeout = config.getfloat('Dongle', 'prober_timeout',2)
 		self.modem_baudrate = config.getint('Dongle', 'modem_baudrate',460800)
 		self.audio_baudrate = config.getint('Dongle', 'audio_baudrate',115200)
 		self.ctrl__baudrate = config.getint('Dongle', 'ctrl__baudrate',9600)
@@ -243,6 +244,9 @@ class config(object):
 		config.setfloat('General', 'location_longitude',self.location_longitude)
 		config.setfloat('General', 'location_altitude',self.location_altitude)
 		config.setboolean('General', 'wifi_reset_if_down',self.wifi_reset_if_down)
+		config.setint('General', 'config_web_server_port',self.config_web_server_port)
+
+
 
 		# [Dongle]
 		config.setboolean('Dongle', 'usedongle',self.usedongle)
@@ -404,7 +408,7 @@ class config(object):
 		ires = int(newres)
 		config = ConfigParser.SafeConfigParser()
 		config.read(self.cfgName)
-		if   (ires == 0 ):
+		if (ires == 0 ):
 			self.cameradivicefinalresolution = "640x480"
 		elif (ires == 1 ):
 			self.cameradivicefinalresolution = "800x600"
