@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head runat="server">
+<title>Sint wind PI</title>
+    <style type="text/css">
+        #File1
+        {
+            width: 280px;
+        }
+    </style>
+
+<body onload="init()">
+    <script>
+        function init() 
+    {
+    }
+
+    </script>
+    
+    
+    
+    <div id="General">
+        <img alt="swpi" src="swpi-banner.jpg" width="800" /><br />
+
+        </div>
+        <form enctype="multipart/form-data" action="upload_cfg.py" method="post" 
+    style="width: 800px">
+<p>Configuration file :<input type="file" name="file" ></p>
+<p><input type="submit" value="Upload"></p>
+</form>
+
+        </body>
+</html>

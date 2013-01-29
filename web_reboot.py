@@ -7,12 +7,20 @@
 # 
 ##########################################################################
 
-"""Global vars"""
-#import meteodata
+"""reboot ."""
+
+import config
+import string
+import os
 
 
-bAnswering = False
-bCapturingCamera = False
-TimeSetFromNTP = False
-IP = "None"
-#meteo_data = meteodata.MeteoData()
+so = Session()
+if not hasattr(so,'loggedin'):
+    raise HTTP_REDIRECTION,"index.html"
+
+
+if os.name != 'nt':
+    os.system("sudo reboot")
+else:
+    print " Sorry can not rebbot windows"
+

@@ -1,7 +1,7 @@
 Content-Type: text/html
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
-    <title></title>
+    <title>Sint wind PI</title>
     <style type="text/css">
         .style2
         {
@@ -239,6 +239,14 @@ Content-Type: text/html
             width: 405px;
             height: 33px;
         }
+        #Button1
+        {
+            width: 112px;
+        }
+        #ButtonLog
+        {
+            height: 29px;
+        }
         </style>
 
 </head>
@@ -475,11 +483,38 @@ Content-Type: text/html
 
                                       
 	}
+	function ButtonLog_onclick() {
+	    window.location = '/log/'
+	}
+
+	function ButtonDownloadCFG_onclick() {
+	    window.location = '/download_cfg.py'
+	}
+
+	function ButtonUploadCFG_onclick() {
+	    window.location = '/upload_cfg.html'
+	}
+
+	function ButtonReboot_onclick() {
+	    window.location = '/web_reboot.py'
+	}
+
+	function ButtonStatus_onclick() {
+	    window.location = '/web_status.py'
+	}
+
     </script>
     
-    <form id="ConfigForm" action="swpi_webconfig.py" method="post">
+    
+    
     <div id="General">
-        <img alt="swpi" src="swpi-banner.jpg" width="800" />
+        <img alt="swpi" src="swpi-banner.jpg" width="800" /><br />
+        <input id="ButtonLog" type="button" value="View Log Files" onclick="return ButtonLog_onclick()" />
+        <input id="ButtonDownloadCFG" type="button" value=" Download Config File" onclick="return ButtonDownloadCFG_onclick()" /><input 
+            id="ButtonUploadCFG" type="button" value="Upload Config File" onclick="return ButtonUploadCFG_onclick()" /><input 
+            id="ButtonReboot" type="button" value="Reboot" onclick="return ButtonReboot_onclick()" /><input 
+            id="ButtonStatus" type="button" value="Status" onclick="return ButtonStatus_onclick()" />
+        <form id="ConfigForm" action="swpi_webconfig.py" method="post">
         <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
             <tr>
                 <td class="style46" colspan="2" style="font-size: large; color: #0000FF;">

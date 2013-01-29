@@ -1,9 +1,9 @@
 ###########################################################################
-#     Sint Wind PI
-#     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
+#	 Sint Wind PI
+#	 Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
 #   
-#     Please refer to the LICENSE file for conditions 
-#     Visit http://www.vololiberomontecucco.it
+#	 Please refer to the LICENSE file for conditions 
+#	 Visit http://www.vololiberomontecucco.it
 # 
 ##########################################################################
 
@@ -26,14 +26,17 @@ import datetime
 import config
 
 def log(message) :
-    print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
+	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
 chars = string.ascii_letters + string.digits
 sessionDict = {} # dictionary mapping session id's to session objects
 
+_enabled_path = ("/","/index.html","/login.py","/swpi_webconfig.py","/swpi-banner.jpg","/log/","/download_cfg.py","/swpi.cfg","/upload_cfg.py","/upload_cfg.html","/web_reboot.py","/web_status.py")
+
+
 class SessionElement(object):
-   """Arbitrary objects, referenced by the session id"""
-   pass
+	"""Arbitrary objects, referenced by the session id"""
+	pass
 
 def generateRandom(length):
 	"""Return a random string of specified length (used for session id's)"""
@@ -49,10 +52,15 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		"""Begin serving a GET request"""
 		# build self.body from the query string
 		fileName, fileExtension = os.path.splitext(self.path)
-		if fileExtension == ".cfg" :
-			return
+#		if fileExtension == ".cfg" :
+#			return
 
-		#print fileName, fileExtension
+		#print self.path,fileName, fileExtension
+
+
+		if not self.path in _enabled_path and fileExtension != ".log":
+			return
+		
 		self.body = {}
 		if self.path.find('?')>-1:
 			qs = self.path.split('?',1)[1]
@@ -222,11 +230,11 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		return sessionObject
 
 class config_webserver(threading.Thread):
-    def __init__(self,cfg):
+	def __init__(self,cfg):
 		self.cfg = cfg
 		threading.Thread.__init__(self)
 
-    def run(self):
+	def run(self):
 		port = self.cfg.config_web_server_port
 		s=SocketServer.TCPServer(("",port),ScriptRequestHandler)
 		log( "Config Server running on port %s" %port)

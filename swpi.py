@@ -456,6 +456,7 @@ else:
 	cfg = config.config(configfile,False)
 	
 # Get curret log file
+globalvars.logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 
 SecondsToWait = 3	

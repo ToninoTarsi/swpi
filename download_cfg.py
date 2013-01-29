@@ -7,12 +7,20 @@
 # 
 ##########################################################################
 
-"""Global vars"""
-#import meteodata
+"""get cfg file ."""
+
+import config
+import string
+
+so = Session()
 
 
-bAnswering = False
-bCapturingCamera = False
-TimeSetFromNTP = False
-IP = "None"
-#meteo_data = meteodata.MeteoData()
+if not hasattr(so,'loggedin'):
+    raise HTTP_REDIRECTION,"index.html"
+#else:
+#    if ( not so['loggedin'] ):
+#        raise HTTP_REDIRECTION,"index.html"    
+#    
+
+raise HTTP_REDIRECTION,"swpi.cfg"
+
