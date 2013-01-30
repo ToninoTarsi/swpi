@@ -31,7 +31,7 @@ def log(message) :
 chars = string.ascii_letters + string.digits
 sessionDict = {} # dictionary mapping session id's to session objects
 
-_enabled_path = ("/","/index.html","/login.py","/swpi_webconfig.py","/swpi-banner.jpg","/log/","/download_cfg.py","/swpi.cfg","/upload_cfg.py","/upload_cfg.html","/web_reboot.py","/web_status.py")
+_enabled_path = ("/","/index.html","/login.py","/swpi_webconfig.py","/swpi-banner.jpg","/log/","/download_cfg.py","/swpi.cfg","/upload_cfg.py","/upload_cfg.html","/web_reboot.py","/web_status.py","/web_swpi_update.py","/favicon.ico")
 
 
 class SessionElement(object):
@@ -58,13 +58,16 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		#print self.path,fileName, fileExtension
 
 
-		if not self.path in _enabled_path and fileExtension != ".log":
+		if not self.path.split('?',1)[0] in _enabled_path and fileExtension != ".log":
+			print "Access denied",self.path.split('?',1)[0]
 			return
 		
 		self.body = {}
 		if self.path.find('?')>-1:
 			qs = self.path.split('?',1)[1]
 			self.body = cgi.parse_qs(qs, keep_blank_values=1)
+			
+			
 		self.handle_data()
 		
 	def do_POST(self):

@@ -503,17 +503,26 @@ Content-Type: text/html
 	    window.location = '/web_status.py'
 	}
 
+	function Button1_onclick() {
+	    window.location = '/web_swpi_update.py'
+	}
+
     </script>
     
     
     
     <div id="General">
         <img alt="swpi" src="swpi-banner.jpg" width="800" /><br />
-        <input id="ButtonLog" type="button" value="View Log Files" onclick="return ButtonLog_onclick()" />
-        <input id="ButtonDownloadCFG" type="button" value=" Download Config File" onclick="return ButtonDownloadCFG_onclick()" /><input 
-            id="ButtonUploadCFG" type="button" value="Upload Config File" onclick="return ButtonUploadCFG_onclick()" /><input 
+        <input id="ButtonLog" type="button" value="Download Log Files" 
+            onclick="return ButtonLog_onclick()" />
+        <input id="ButtonDownloadCFG" type="button" value="Save Configuration File" 
+            onclick="return ButtonDownloadCFG_onclick()" /><input 
+            id="ButtonUploadCFG" type="button" value="Upload Configuration File" 
+            onclick="return ButtonUploadCFG_onclick()" /><input 
             id="ButtonReboot" type="button" value="Reboot" onclick="return ButtonReboot_onclick()" /><input 
-            id="ButtonStatus" type="button" value="Status" onclick="return ButtonStatus_onclick()" />
+            id="Button1" type="button" value="Check for Update" onclick="return Button1_onclick()" /><input 
+            id="ButtonStatus" type="button" value="View Status" 
+            onclick="return ButtonStatus_onclick()" />
         <form id="ConfigForm" action="swpi_webconfig.py" method="post">
         <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
             <tr>
@@ -779,7 +788,7 @@ Content-Type: text/html
             </tr>
             <tr>
                 <td class="style2">
-                    Password of the SMS of configuratione <b>(SMSPwd)</b></td>
+                    Password of the SMS and web-config <b>(SMSPwd)</b></td>
                 <td class="style17">
                     <input id="SMSPwd" type="text" name="SMSPwd" 
                         value=$SMSPwd style="width: 100%" /></td>
