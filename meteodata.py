@@ -89,6 +89,7 @@ class MeteoData(object):
             self.PressureMin = None
             self.PressureMax = None
             
+            self.previous_rain = self.rain
       
     def CalcStatistics(self):
         
@@ -148,7 +149,7 @@ class MeteoData(object):
 
         self.previous_measure_time = self.last_measure_time
         
-        self.previous_rain = self.rain
+        #self.previous_rain = self.rain
         
         
         
@@ -202,7 +203,7 @@ class MeteoData(object):
 #        self.temp_out = (data[0][6])
 #        self.abs_pressure = (data[0][7])
 #        self.hum_out = (data[0][8])
-#        self.rain = (data[0][9])
+        self.rain = (data[0][9])
 #        self.rain_rate = (data[0][10])
 #        self.temp_in = (data[0][11])
 #        self.hum_in = (data[0][12])
@@ -226,7 +227,13 @@ class MeteoData(object):
         self.PressureMin = (data[0][30])
         self.PressureMax = (data[0][31])
 
-#        self.previous_rain = self.rain
+
+        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','-1 day') order by rowid desc limit 1")
+        data = dbCursor.fetchall()
+        if ( len(data) == 1):
+            self.previous_rain = (data[0][9])
+        else:
+            self.previous_rain = None
 #        self.previous_measure_time = self.last_measure_time
 
         

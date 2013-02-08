@@ -81,7 +81,7 @@ if ( os.path.isfile(filetoadd) ) :
     f.close()
 
     if update == "1" :
-        d.update(reloadfunction="setTimeout(function() {window.location.reload(1);}, 2000);") 
+        d.update(reloadfunction="setTimeout(function() {window.location.reload(1);}, 5000);") 
         d.update(checked='checked="checked"')
     else:
         d.update(reloadfunction="") 

@@ -459,7 +459,7 @@ else:
 globalvars.logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 
-SecondsToWait = 3	
+SecondsToWait = 10	
 # give 10 seconds for interrupt the application
 try:
 	if not ( '-i' in sys.argv ) :
@@ -546,7 +546,9 @@ if ( cfg.set_system_time_from_ntp_server_at_startup ):
 
 # Send mail with IP information ( using a thread to avoid strange freezing )
 if ( IP != None and cfg.use_mail and cfg.mail_ip ):
-	thread.start_new_thread(SendMail,(cfg,"IP","My IP today is : " + IP ,"")) 
+	publicIP = getPublicIP()
+	log("Local IP :" + IP + " Public IP : " + publicIP)
+	thread.start_new_thread(SendMail,(cfg,"My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")) 
 	
 # Send mail with IP information
 #if ( IP != None and cfg.use_mail and cfg.mail_ip ):
@@ -686,9 +688,11 @@ while 1:
 				thenewIP = getIP()
 				if ( thenewIP != None and IP != thenewIP ):
 					IP = thenewIP
+					publicIP = getPublicIP()
+					log("Local IP :" + IP + " Public IP : " + publicIP)
 					log("IP has changed - New IP is : " + IP)
 					if ( cfg.use_mail and cfg.mail_ip ):
-						SendMail(cfg,"My IP has changed",IP,"")
+						SendMail(cfg,"My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")
 						
 				if ( cfg.config_web_server ) :
 					log("Rereading config file ..")

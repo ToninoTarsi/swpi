@@ -504,6 +504,13 @@ def getIP():
     return ip
 
 
+def getPublicIP():
+    try:
+        ip = urllib.urlopen("http://www.vololiberomontecucco.it/ip.php").read()
+        return ip
+    except Exception, e:
+        return None    
+
 def waitForIP():
     # wait maximum 2 minute for a valid IP
     log("Waiting for a valid IP ...")
