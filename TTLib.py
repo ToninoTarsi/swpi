@@ -16,6 +16,7 @@ import Image
 import ImageFont
 import ImageDraw
 import time
+import datetime
 import config    
 import globalvars
 import smtplib
@@ -31,6 +32,8 @@ import sensor_simulator
 import ntplib
 import tarfile
 import thread
+
+
 
 
 
@@ -125,8 +128,36 @@ def SetTimeFromNTP(ntp_server):
         log("ERROR - Failed to set time system from ntp server")
         return False
 
+def logDataToWunderground(ID,password):
 
+    serverfile = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?action=updateraw&ID=%s&PASSWORD=%s&dateutc=%s" %(ID,password,str(datetime.datetime.utcnow()))
 
+    parameters = {}
+    if globalvars.meteo_data.wind_dir != None :  parameters['winddir'] = globalvars.meteo_data.wind_dir
+    if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = globalvars.meteo_data.wind_ave *  0.621371192
+    if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = globalvars.meteo_data.wind_gust * 0.621371192
+    if globalvars.meteo_data.hum_out != None :  parameters['humidity'] = globalvars.meteo_data.hum_out 
+    if globalvars.meteo_data.temp_out != None :  parameters['tempf'] = ( globalvars.meteo_data.temp_out * 1.8 ) + 32
+    if globalvars.meteo_data.abs_pressure != None :  parameters['baromin'] = globalvars.meteo_data.abs_pressure  * 0.0296133971008484
+    if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = globalvars.meteo_data.rain_rate  * 0.0393700787
+    if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = ( globalvars.meteo_data.dew_point * 1.8 ) + 32
+    
+    parameters['softwaretype'] = "Sint Wind PI"
+    
+    for key in parameters:
+        serverfile = (serverfile + "&" + str(key) + "=" +  str(parameters[key]) )
+     
+    try:
+        #print serverfile
+        req=urllib2.Request(serverfile)
+        req.add_header("Content-type", "application/x-www-form-urlencoded")
+        page=urllib2.urlopen(req).read()
+        log( "Log to Wunderground : " + page )
+    except:
+        log(  "Error Logging to Wunderground : " + serverfile )
+        pass     
+     
+      
 
 def logData(serverfile):
     mydata = []
@@ -138,6 +169,7 @@ def logData(serverfile):
     mydata.append(('wind_gust',NoneToNull(globalvars.meteo_data.wind_gust)))
     mydata.append(('temp_out',NoneToNull(globalvars.meteo_data.temp_out)))
     mydata.append(('abs_pressure',NoneToNull(globalvars.meteo_data.abs_pressure)))
+    mydata.append(('rel_pressure',NoneToNull(globalvars.meteo_data.rel_pressure)))
     mydata.append(('hum_out',NoneToNull(globalvars.meteo_data.hum_out)))
     mydata.append(('rain',NoneToNull(globalvars.meteo_data.rain)))
     mydata.append(('rain_rate',NoneToNull(globalvars.meteo_data.rain_rate)))
@@ -175,10 +207,10 @@ def logData(serverfile):
     
     mydata=urllib.urlencode(mydata)
     
-    req=urllib2.Request(serverfile, mydata)
     
-    req.add_header("Content-type", "application/x-www-form-urlencoded")
     try:
+        req=urllib2.Request(serverfile, mydata)
+        req.add_header("Content-type", "application/x-www-form-urlencoded")
         page=urllib2.urlopen(req).read()
         log( "Data sent to server : " + page )
     except:
@@ -196,6 +228,7 @@ def UploadData(cfg):
     mydata['wind_gust'] = (globalvars.meteo_data.wind_gust)
     mydata['temp_out'] = (globalvars.meteo_data.temp_out)
     mydata['abs_pressure'] = (globalvars.meteo_data.abs_pressure)
+    mydata['rel_pressure'] = (globalvars.meteo_data.rel_pressure)
     mydata['hum_out'] = (globalvars.meteo_data.hum_out)
     mydata['rain'] = (globalvars.meteo_data.rain)
     mydata['rain_rate'] = (globalvars.meteo_data.rain_rate)
@@ -341,8 +374,8 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
             text = "Direzione del vento: " + dir + " - Intensita:%5.1f" % globalvars.meteo_data.wind_ave + " km/h  - Raffica:%5.1f" % globalvars.meteo_data.wind_gust  + " km/h" 
             if (globalvars.meteo_data.temp_out  != None) : 
                 text = text + " - Temperatura:%4.1f" % globalvars.meteo_data.temp_out + " C"
-            if (globalvars.meteo_data.abs_pressure != None ) : 
-                text = text + " - Pressione:%6.1f" % globalvars.meteo_data.abs_pressure + " hpa"         
+            if (globalvars.meteo_data.rel_pressure != None ) : 
+                text = text + " - Pressione:%6.1f" % globalvars.meteo_data.rel_pressure + " hpa"         
             
             width, height = font.getsize(text)
             draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)

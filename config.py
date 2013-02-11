@@ -20,7 +20,7 @@ import urllib2
 import time
 
 def str2bool(v):
-  return str(v).lower() in ("yes", "true", "t", "1")
+	return str(v).lower() in ("yes", "true", "t", "1")
 
 class myConfigParser(ConfigParser.SafeConfigParser):
 	"""Class extendig  ConfigParser."""
@@ -225,6 +225,11 @@ class config(object):
 		self.send_IP_by_sms = config.getboolean('SMS', 'send_IP_by_sms',False)
 		self.number_to_send = config.get('SMS', 'number_to_send',"+393330000000")
 
+		#[WeatherUnderground]
+		self.WeatherUnderground_logdata = config.getboolean('WeatherUnderground', 'WeatherUnderground_logdata',False)
+		self.WeatherUnderground_ID = config.get('WeatherUnderground', 'WeatherUnderground_ID',"KCASANFR5")
+		self.WeatherUnderground_password = config.get('WeatherUnderground', 'WeatherUnderground_password',"XXXXXXXX")
+
 		f = open(self.cfgName,"w")
 		config.write(f)					
 
@@ -338,6 +343,13 @@ class config(object):
 		config.setboolean('SMS', 'send_IP_by_sms',self.send_IP_by_sms)
 		config.setstr('SMS', 'number_to_send',self.number_to_send)
 
+		#[WeatherUnderground]
+		config.setboolean('WeatherUnderground', 'WeatherUnderground_logdata',self.WeatherUnderground_logdata)
+		config.setstr('WeatherUnderground', 'WeatherUnderground_ID',self.WeatherUnderground_ID)		
+		config.setstr('WeatherUnderground', 'WeatherUnderground_password',self.WeatherUnderground_password)		
+		
+		
+		
 		f = open(self.cfgName,"w")
 		config.write(f)			
 

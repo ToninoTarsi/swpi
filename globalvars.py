@@ -8,7 +8,7 @@
 ##########################################################################
 
 """Global vars"""
-#import meteodata
+import meteodata
 
 
 bAnswering = False

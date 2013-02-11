@@ -20,7 +20,28 @@ import subprocess
 import config
 import humod
 import RPi.GPIO as GPIO
+import threading
 
+class CameraWatchDogClass(threading.Thread):
+
+	def __init__(self,cfg):
+		self.cfg = cfg
+		self.resetted = False
+		self.bCacturing = 1
+		threading.Thread.__init__(self)
+		
+	def run(self):
+		while (1) :
+			time.sleep(self.cfg.WebCamInterval * 3 )
+			if ( not self.resetted ) :            
+				log("CameraWatchDog: System will Reboot " )
+				systemRestart()
+			else:
+				print "self.resetted = False"
+				self.resetted = False
+				
+	def reset(self):
+		self.resetted = True
 
 class PhotoCamera(object):
 	"""Class defining generic cameras."""
@@ -33,13 +54,18 @@ class PhotoCamera(object):
 		self.finalresolutionX = cfg.cameradivicefinalresolutionX
 		self.finalresolutionY = cfg.cameradivicefinalresolutionY
 		self.cfg = cfg
+		self.bCaturing = 0
+		
+#		self.CameraWatchDog = CameraWatchDogClass(cfg)
+#		if len(self.detectCameras()) > 0 :
+#			log("Starting camera Watch Dog")
+#			self.CameraWatchDog.run()
 		
 		if ( self.cfg.use_camera_resetter ):
 			GPIO.setwarnings(False)
 			GPIO.setmode(GPIO.BCM)
 			GPIO.setup(self.__PIN_RESET, GPIO.OUT) 
 			GPIO.output(self.__PIN_RESET, True)
-
 		
 	def detectCameras(self):
 		p = subprocess.Popen("gphoto2 --auto-detect",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -73,9 +99,21 @@ class PhotoCamera(object):
 				folder = line.split(" ")[-1][1:-2]		
 		return files
 	
+	def SetTimer(self):
+		time.sleep(60)
+		if ( self.bCaturing ) :            
+			log("CameraWatchDog: System will Reboot " )
+			systemRestart()
+		else:
+			self.bCacturing = 0
+	
+	
 	
 	def take_pictures(self) :
 		"""Capture from all detected cameras and return a list of stored files"""
+
+		self.bCaturing = 1
+		thread.start_new_thread(self.SetTimer,()) 
 		
 		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
 		pictureTaken = []
@@ -172,7 +210,9 @@ class PhotoCamera(object):
 		
 		for name in pictureTaken :
 			log("Captured : " + name)
-			
+		
+		self.bCaturing = 0
+
 		return pictureTaken
 
 

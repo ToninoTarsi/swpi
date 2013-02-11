@@ -114,6 +114,14 @@ def outputPage(cfg):
 	d.update(send_IP_by_sms=cfg.send_IP_by_sms)
 	d.update(number_to_send=cfg.number_to_send)
 
+	d.update(WeatherUnderground_logdata=cfg.WeatherUnderground_logdata)
+	d.update(WeatherUnderground_ID=cfg.WeatherUnderground_ID)
+	d.update(WeatherUnderground_password=cfg.WeatherUnderground_password)
+
+
+		
+
+
 
 	html = html_template.safe_substitute(d)
 
@@ -219,6 +227,14 @@ if ( len(request) != 0 ):
 	cfg.send_IP_by_sms = request['send_IP_by_sms'][0]																	  
 	cfg.number_to_send = request['number_to_send'][0]	  
 	
+	cfg.WeatherUnderground_logdata = request['WeatherUnderground_logdata'][0]																	  
+	cfg.WeatherUnderground_ID = request['WeatherUnderground_ID'][0]	  	
+	cfg.WeatherUnderground_password = request['WeatherUnderground_password'][0]	  	
+	
+
+
+
+		
 	# cfg.AlwaysOnInternet = request['AlwaysOnInternet'][0]
 	# cfg.UseDongleNet = request['UseDongleNet'][0]
 

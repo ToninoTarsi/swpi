@@ -60,19 +60,21 @@ class Sensor(threading.Thread):
         while ( p==0.0 and i < 10):
             p,temp = self.bmp085.readPressureTemperature()
             i = i+1
-            time.sleep(0.02)
+            if p == 0.0 :
+                time.sleep(0.5)
             
-        if ( p == None):
-            globalvars.meteo_data.temp_out = None
-            globalvars.meteo_data.abs_pressure = None
-        elif ( p != 0.0): 
-            if ( self.cfg.location_altitude != 0 ):
-                p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
-            else:
-                p0 = p
-            globalvars.meteo_data.temp_out = temp
-            globalvars.meteo_data.abs_pressure = float(p0 / 100.0) 
-                
+        globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+        globalvars.meteo_data.temp_out = temp
+
+#        if ( p == None):
+#            globalvars.meteo_data.temp_out = None
+#            globalvars.meteo_data.abs_pressure = None
+#        elif ( p != 0.0): 
+#            if ( self.cfg.location_altitude != 0 ):
+#                p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+#            else:
+#                p0 = p
+#            globalvars.meteo_data.rel_pressure = float(p0 / 100.0)
                 
     def ReadBMP085_temp_in(self):
         p=0.0
@@ -83,11 +85,19 @@ class Sensor(threading.Thread):
             i = i+1
             time.sleep(0.02)
             
-        if ( p != 0.0): 
-            if ( self.cfg.location_altitude != 0 ):
-                p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
-            else:
-                p0 = p
-            globalvars.meteo_data.temp_in = temp
-            globalvars.meteo_data.abs_pressure = float(p0 / 100.0)              
+        globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+        globalvars.meteo_data.temp_in = temp
+
+#        if ( p == None):
+#            globalvars.meteo_data.temp_out = None
+#            globalvars.meteo_data.abs_pressure = None
+#        elif ( p != 0.0): 
+#            if ( self.cfg.location_altitude != 0 ):
+#                p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+#            else:
+#                p0 = p
+#            globalvars.meteo_data.rel_pressure = float(p0 / 100.0)
+                
+            
+                        
  

@@ -36,6 +36,7 @@ class MeteoData(object):
         self.temp_out = None
         self.hum_out = None
         self.abs_pressure = None
+        self.rel_pressure = None
         self.rain = None
         self.rain_rate = None
         self.temp_in = None
@@ -96,6 +97,16 @@ class MeteoData(object):
         self.wind_chill = WeatherStation.wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = WeatherStation.apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = WeatherStation.dew_point(self.temp_out, self.hum_out)
+        
+
+        if ( self.abs_pressure != None and self.abs_pressure != 0.0): 
+            if ( self.cfg.location_altitude != 0 ):
+                p0 = (self.abs_pressure*100) / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+            else:
+                p0 = self.abs_pressure*100
+            self.rel_pressure = float(p0/100 )
+            #print self.abs_pressure,self.rel_pressure
+        
         
         if ( self.previous_rain != None and self.previous_measure_time != None ):
             self.rain_rate = self.rain - self.previous_rain
@@ -162,7 +173,7 @@ class MeteoData(object):
             dbCursor = conn.cursor()
             #dbCursor.execute("insert into METEO(TIMESTAMP_LOCAL,TIMESTAMP_IDX,WINDIR_CODE,WIND_DIR,WIND_AVE,WIND_GUST,TEMP,PRESSURE,HUM,RAIN,RAIN_RATE,TEMPINT,HUMINT,WIND_CHILL,TEMP_APPARENT,DEW_POINT,UV_INDEX,SOLAR_RAD,WIND_DAY_MIN,WIND_DAY_MAX) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (self.last_measure_time,self.last_measure_time,self.wind_dir_code,self.wind_dir,self.wind_ave,self.wind_gust,self.temp_out,self.abs_pressure,self.hum_out,self.rain,0,self.temp_in,self.hum_in,self.wind_chill,self.temp_apparent,self.dew_point,self.uv,self.illuminance,self.winDayMin,self.winDayMax))                        
             #print self.last_measure_time,self.last_measure_time,self.wind_dir_code,self.wind_dir,self.wind_ave,self.wind_gust,self.temp_out,self.abs_pressure,self.hum_out,self.rain,0,self.temp_in,self.hum_in,self.wind_chill,self.temp_apparent,self.dew_point,self.uv,self.illuminance,self.winDayMin,self.winDayMax,self.winDayGustMin,self.winDayGustMax,self.TempOutMin,self.TempOutMax,self.TempInMin,self.TempInMax,self.UmOutMin,self.UmOutMax,self.UmInMin,self.UmInMax,self.PressureMin,self.PressureMax,self.wind_dir_ave
-            dbCursor.execute("insert into METEO(TIMESTAMP_LOCAL,TIMESTAMP_IDX,WINDIR_CODE,WIND_DIR,WIND_AVE,WIND_GUST,TEMP,PRESSURE,HUM,RAIN,RAIN_RATE,TEMPINT,HUMINT,WIND_CHILL,TEMP_APPARENT,DEW_POINT,UV_INDEX,SOLAR_RAD,WIND_DAY_MIN,WIND_DAY_MAX,WIND_DAY_GUST_MIN ,WIND_DAY_GUST_MAX ,TEMP_OUT_DAY_MIN ,TEMP_OUT_DAY_MAX,TEMP_IN_DAY_MIN ,TEMP_IN_DAY_MAX ,HUM_OUT_DAY_MIN ,HUM_OUT_DAY_MAX ,HUM_IN_DAY_MIN ,HUM_IN_DAY_MAX ,PRESSURE_DAY_MIN ,PRESSURE_DAY_MAX,WIND_DIR_AVE ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (self.last_measure_time,self.last_measure_time,self.wind_dir_code,self.wind_dir,self.wind_ave,self.wind_gust,self.temp_out,self.abs_pressure,self.hum_out,self.rain,0,self.temp_in,self.hum_in,self.wind_chill,self.temp_apparent,self.dew_point,self.uv,self.illuminance,self.winDayMin,self.winDayMax,self.winDayGustMin,self.winDayGustMax,self.TempOutMin,self.TempOutMax,self.TempInMin,self.TempInMax,self.UmOutMin,self.UmOutMax,self.UmInMin,self.UmInMax,self.PressureMin,self.PressureMax,self.wind_dir_ave))                        
+            dbCursor.execute("insert into METEO(TIMESTAMP_LOCAL,TIMESTAMP_IDX,WINDIR_CODE,WIND_DIR,WIND_AVE,WIND_GUST,TEMP,PRESSURE,HUM,RAIN,RAIN_RATE,TEMPINT,HUMINT,WIND_CHILL,TEMP_APPARENT,DEW_POINT,UV_INDEX,SOLAR_RAD,WIND_DAY_MIN,WIND_DAY_MAX,WIND_DAY_GUST_MIN ,WIND_DAY_GUST_MAX ,TEMP_OUT_DAY_MIN ,TEMP_OUT_DAY_MAX,TEMP_IN_DAY_MIN ,TEMP_IN_DAY_MAX ,HUM_OUT_DAY_MIN ,HUM_OUT_DAY_MAX ,HUM_IN_DAY_MIN ,HUM_IN_DAY_MAX ,PRESSURE_DAY_MIN ,PRESSURE_DAY_MAX,WIND_DIR_AVE ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (self.last_measure_time,self.last_measure_time,self.wind_dir_code,self.wind_dir,self.wind_ave,self.wind_gust,self.temp_out,self.rel_pressure,self.hum_out,self.rain,self.rain_rate,self.temp_in,self.hum_in,self.wind_chill,self.temp_apparent,self.dew_point,self.uv,self.illuminance,self.winDayMin,self.winDayMax,self.winDayGustMin,self.winDayGustMax,self.TempOutMin,self.TempOutMax,self.TempInMin,self.TempInMax,self.UmOutMin,self.UmOutMax,self.UmInMin,self.UmInMax,self.PressureMin,self.PressureMax,self.wind_dir_ave))                        
             conn.commit()
             conn.close()
             msg = ""
@@ -174,8 +185,8 @@ class MeteoData(object):
                 msg = msg + " - Gst: " + str(self.wind_gust) 
             if self.temp_out != None :
                 msg = msg + " - T: " + str(self.temp_out)     
-            if self.abs_pressure != None :
-                msg = msg + " - P: %.1f" % self.abs_pressure   
+            if self.rel_pressure != None :
+                msg = msg + " - P: %.1f" % self.rel_pressure   
             if self.hum_out != None :
                 msg = msg + " - U: %d" % self.hum_out                                             
             TTLib.log(msg)

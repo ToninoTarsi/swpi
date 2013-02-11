@@ -381,8 +381,8 @@ def answer_call(modem, message):
 			listOfMessages.append("./audio/degree.raw")
 
 		# Pressure
-		if ( globalvars.meteo_data.abs_pressure != None ):
-			thousands, rem = divmod(round(globalvars.meteo_data.abs_pressure), 1000) 
+		if ( globalvars.meteo_data.rel_pressure != None ):
+			thousands, rem = divmod(round(globalvars.meteo_data.rel_pressure), 1000) 
 			thousands = int(thousands * 1000)
 			hundreds, tens = divmod(rem, 100)
 			hundreds = int(hundreds * 100)
@@ -590,8 +590,12 @@ if ( cfg.use_wind_sensor ) :
 		time.sleep(1)
 
 # clear all sd cards at startup
-if ( cfg.clear_all_sd_cards_at_startup):
-	camera.ClearAllCameraSDCards(cfg)		
+if ( cfg.usecameradivice ):
+	cameras = camera.PhotoCamera(cfg)
+	if ( cfg.clear_all_sd_cards_at_startup):
+		camera.ClearAllCameraSDCards(cfg)		
+
+		
 
 # Start main thread
 ############################ MAIN  LOOP###############################################
@@ -632,14 +636,13 @@ while 1:
 		# Cameras			
 		if ( cfg.usecameradivice ):
 			waitForHandUP()
-			cameras = camera.PhotoCamera(cfg)
 			fotos = cameras.take_pictures()
 			for foto in fotos:
 				addTextandResizePhoto(foto,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 					
 		bConnected = False
 		
-		if ( cfg.sendImagesToServer or cfg.logdata ):
+		if ( cfg.sendImagesToServer or cfg.logdata or cfg.upload_data or cfg.WeatherUnderground_logdata ):
 			waitForHandUP()
 			if ( cfg.UseDongleNet and ( not internet_on())  and modem._pppd_pid == None): # connect if not
 				log( "Trying to connect to internet with 3G dongle")
@@ -681,6 +684,10 @@ while 1:
 						
 				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					logData(cfg.serverfile)
+					
+				if ( cfg.WeatherUnderground_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+					logDataToWunderground(cfg.WeatherUnderground_ID,cfg.WeatherUnderground_password)	
+					
 
 				if ( cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					UploadData(cfg)			

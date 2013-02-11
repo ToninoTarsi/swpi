@@ -480,7 +480,13 @@ Content-Type: text/html
             }
         }
 
-
+        dd = document.getElementById('WeatherUnderground_logdata');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$WeatherUnderground_logdata') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
                                       
 	}
 	function ButtonLog_onclick() {
@@ -820,6 +826,38 @@ Content-Type: text/html
             </tr>
             </table>
            <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    Weather Underground</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Log data to Weather Underground PWS (<strong>WeatherUnderground_logdata</strong>)</td>
+                <td class="style20">
+                    <select id="WeatherUnderground_logdata" type="text" name="WeatherUnderground_logdata" 
+                        style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>       
+                    </td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    Weather Underground station ID (<strong>WeatherUnderground_ID</strong>)</td>
+                <td class="style19">
+                    <input id="WeatherUnderground_ID" type="text" name="WeatherUnderground_ID" 
+                        value=$WeatherUnderground_ID style="width: 100%" /></td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    Weather Underground password (WeatherUnderground_password)</td>
+                <td class="style19">
+                    <input id="WeatherUnderground_password" type="text" name="WeatherUnderground_password" 
+                        value=$WeatherUnderground_password style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
         <table bgcolor="#FF99FF" border="1" frame="box" 
         style="width: 800px; margin-right: 0px">
             <tr>
@@ -850,7 +888,6 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         value=$upload_folder style="width: 100%" /></td>
             </tr>
             </table>
-           <br />
            <br />
         <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
             <tr>
