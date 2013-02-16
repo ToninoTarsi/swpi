@@ -2,6 +2,7 @@
 #     Sint Wind PI
 #     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
 #   
+#     USB comunication based pywws by 'Jim Easterbrook' <jim@jim-easterbrook.me.uk>
 #     Please refer to the LICENSE file for conditions 
 #     Visit http://www.vololiberomontecucco.it
 # 
