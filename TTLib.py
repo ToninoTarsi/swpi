@@ -34,9 +34,6 @@ import tarfile
 import thread
 
 
-
-
-
 class RingBuffer(object):
     def __init__(self, size):
         self.data = [None for i in xrange(size)]
@@ -141,6 +138,8 @@ def logDataToWunderground(ID,password):
     if globalvars.meteo_data.abs_pressure != None :  parameters['baromin'] = globalvars.meteo_data.abs_pressure  * 0.0296133971008484
     if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = globalvars.meteo_data.rain_rate  * 0.0393700787
     if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = ( globalvars.meteo_data.dew_point * 1.8 ) + 32
+    if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin '] = globalvars.meteo_data.rain_rate_1h  * 0.0393700787
+
     
     parameters['softwaretype'] = "Sint Wind PI"
     
@@ -205,6 +204,10 @@ def logData(serverfile):
     mydata.append(('wind_dir_ave',NoneToNull(globalvars.meteo_data.wind_dir_ave)))
 
     
+    mydata.append(('rain_rate_24h',NoneToNull(globalvars.meteo_data.rain_rate_24h)))
+    mydata.append(('rain_rate_1h',NoneToNull(globalvars.meteo_data.rain_rate_1h)))
+        
+    
     mydata=urllib.urlencode(mydata)
     
     
@@ -263,6 +266,9 @@ def UploadData(cfg):
        
     mydata['wind_dir_ave'] = (globalvars.meteo_data.wind_dir_ave)
     
+    mydata['rain_rate_24h'] = (globalvars.meteo_data.rain_rate_24h)
+    mydata['rain_rate_1h'] = (globalvars.meteo_data.rain_rate_1h)
+        
     #print mydata
     
 

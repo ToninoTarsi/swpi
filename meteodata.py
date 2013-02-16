@@ -39,6 +39,9 @@ class MeteoData(object):
         self.rel_pressure = None
         self.rain = None
         self.rain_rate = None
+        self.rain_rate_24h = None
+        self.rain_rate_1h= None
+        
         self.temp_in = None
         self.hum_in = None
         self.uv = None
@@ -161,6 +164,28 @@ class MeteoData(object):
         self.previous_measure_time = self.last_measure_time
         
         #self.previous_rain = self.rain
+        
+        # Rain 24h - rain 1h
+        if ( self.rain != None ):
+            try:
+                conn = sqlite3.connect('db/swpi.s3db',200)    
+                dbCursor = conn.cursor()
+                dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")
+                data = dbCursor.fetchall()
+                if ( len(data) == 1):
+                    therain = (data[0][9])    
+                    self.rain_rate_24h = self.rain - therain
+                dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour') order by rowid asc limit 1")
+                data = dbCursor.fetchall()
+                if ( len(data) == 1):
+                    therain = (data[0][9])    
+                    self.rain_rate_1h = self.rain - therain  
+                if conn:        
+                    conn.close()
+            except:
+                pass
+            
+
         
         
         
@@ -313,12 +338,26 @@ if __name__ == '__main__':
     
     mt = MeteoData(cfg)
     
-    mt.wind_dir = 10
-    a = mt.CalcMeanWindDir()
-    print a.next()
- 
-    mt.wind_dir = 2
-    print a.next()
+    conn = sqlite3.connect('db/swpi.s3db',200)    
+    dbCursor = conn.cursor()
+    dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")
+    data = dbCursor.fetchall()
+    if ( len(data) == 1):
+        therain = (data[0][9])    
+        mt.rain_rate_24h = therain
+        print  mt.rain_rate_24h
+    else : print " nodara"
+    dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour') order by rowid asc limit 1")
+    data = dbCursor.fetchall()
+    if ( len(data) == 1):
+        therain = (data[0][9])    
+        mt.rain_rate_1h = therain  
+        print  mt.rain_rate_1h
+    else : print " nodara" 
+    if conn:        
+        conn.close()
+#        except:
+#            pass
     
 #    mt.getLastFromDB()
 #    mt.getLastTodayFromDB()

@@ -100,12 +100,13 @@ class PhotoCamera(object):
 		return files
 	
 	def SetTimer(self):
-		time.sleep(60)
-		if ( self.bCaturing ) :            
-			log("CameraWatchDog: System will Reboot " )
-			systemRestart()
-		else:
-			self.bCacturing = 0
+		if ( self.cfg.WebCamInterval  >= 60 ) :
+			time.sleep(60)
+			if ( self.bCaturing ) :            
+				log("CameraWatchDog problem: System will Reboot " )
+				systemRestart()
+			else:
+				self.bCacturing = 0
 	
 	
 	

@@ -349,7 +349,7 @@ def answer_call(modem, message):
 		if (delay_seconds > 600 ):
 			listOfMessages.append("./audio/some_problem.raw") 
 
-		if( globalvars.meteo_data.rain_rate != None and globalvars.meteo_data.rain_rate >= 0.001 ):
+		if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
 			listOfMessages.append("./audio/raining.raw")
 		
 		# Wind Speed and Direction
@@ -677,19 +677,24 @@ while 1:
 						nCamera = nCamera + 1
 						if (cfg.sendallimagestoserver ):
 							waitForHandUP()
+							log("Sending :" + getFileName(foto))
 							sendFileToServer(foto,getFileName(foto),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 						else:
 							waitForHandUP()
-							sendFileToServer(foto,"camera"+str(nCamera)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)				
+							log("Sending :" + "camera" + str(nCamera+cfg.start_camera_number-1) + ".jpg")
+							sendFileToServer(foto,"camera"+str(nCamera+cfg.start_camera_number-1)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)				
 						
 				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+					log("Logging data ...")
 					logData(cfg.serverfile)
 					
 				if ( cfg.WeatherUnderground_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+					log("Logging data to Wunderground ...")
 					logDataToWunderground(cfg.WeatherUnderground_ID,cfg.WeatherUnderground_password)	
 					
 
 				if ( cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+					log("Uploading data ...")
 					UploadData(cfg)			
 			
 				thenewIP = getIP()
