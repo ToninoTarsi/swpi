@@ -171,11 +171,13 @@ class Sensor_WH1080(sensor.Sensor):
                             globalvars.meteo_data.hum_in = float(data["hum_in"])
                             globalvars.meteo_data.temp_out = float(data["temp_out"])
                             wind_dir = data[ "wind_dir"]
-                            globalvars.meteo_data.wind_dir = wind_dir * 22.5
-                            if (wind_dir <  16) :
+                            if ( wind_dir < 16 ):
+                                globalvars.meteo_data.wind_dir = wind_dir * 22.5
                                 globalvars.meteo_data.wind_dir_code = WeatherStation.get_wind_dir_text()[wind_dir]
                             else:
-                                globalvars.meteo_data.wind_dir_code = "ERROR"
+                                globalvars.meteo_data.wind_dir_code = None
+                                globalvars.meteo_data.wind_dir_code = None
+                                
                             globalvars.meteo_data.illuminance = None
                             globalvars.meteo_data.uv = None
                             

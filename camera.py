@@ -21,6 +21,9 @@ import config
 import humod
 import RPi.GPIO as GPIO
 import threading
+import sun
+import math
+
 
 class CameraWatchDogClass(threading.Thread):
 
@@ -55,6 +58,7 @@ class PhotoCamera(object):
 		self.finalresolutionY = cfg.cameradivicefinalresolutionY
 		self.cfg = cfg
 		self.bCaturing = 0
+		self.god=sun.sun(lat=cfg.location_latitude,long=cfg.location_longitude)
 		
 #		self.CameraWatchDog = CameraWatchDogClass(cfg)
 #		if len(self.detectCameras()) > 0 :
@@ -113,6 +117,7 @@ class PhotoCamera(object):
 	def take_pictures(self) :
 		"""Capture from all detected cameras and return a list of stored files"""
 
+		
 		self.bCaturing = 1
 		thread.start_new_thread(self.SetTimer,()) 
 		
@@ -122,16 +127,24 @@ class PhotoCamera(object):
 		camerasInfo = self.detectCameras()
 		nCameras = len(camerasInfo)
 
+
 		if ( nCameras == 0 ):
 			globalvars.bCapturingCamera = False
 			log( "No digital cameras found" )
+			self.bCaturing = 0
 			return pictureTaken
+		
+		if ( self.god.daylight() ):
+			gphoto2options = self.cfg.gphoto2options.split(',')
+			log("Using Dayligth settings" + self.cfg.gphoto2options)
+		else:
+			gphoto2options = self.cfg.gphoto2options_Night.split(',')
+			log("Using Nigth settings" + self.cfg.gphoto2options_Night)
 		
 		log(str(nCameras) + " Cameras found")
 		for i in range(0,nCameras):
 			log("Camera " + str(i+1) + " : "  + camerasInfo[i][0] + "USB : " + camerasInfo[i][1]  + " " + camerasInfo[i][2]  )
-
-		gphoto2options = self.cfg.gphoto2options.split(',') 
+		 
 		if ( len(gphoto2options) < nCameras ):
 			log("Problem with configuration file !!!. gphoto2options does not have information for all cameras")
 			gphoto2options =[]

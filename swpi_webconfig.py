@@ -87,11 +87,14 @@ def outputPage(cfg):
 	d.update(usecameradivice=cfg.usecameradivice)
 	d.update(cameradivicefinalresolution=cfg.cameradivicefinalresolution)
 	d.update(gphoto2options=cfg.gphoto2options)
+	d.update(gphoto2options_Night=cfg.gphoto2options_Night)
 	d.update(reset_usb=cfg.reset_usb)
 	d.update(clear_all_sd_cards_at_startup=cfg.clear_all_sd_cards_at_startup)
 	d.update(start_camera_number=cfg.start_camera_number)
 	d.update(gphoto2_capture_image_and_download=cfg.gphoto2_capture_image_and_download)
 	d.update(use_camera_resetter=cfg.use_camera_resetter)
+
+
 
 
 	d.update(ftpserver=cfg.ftpserver)
@@ -201,7 +204,8 @@ if ( len(request) != 0 ):
 
 	cfg.usecameradivice = request['usecameradivice'][0]																	  
 	cfg.cameradivicefinalresolution = request['cameradivicefinalresolution'][0]													   
-	cfg.gphoto2options = request['gphoto2options'][0]																	  
+	cfg.gphoto2options = request['gphoto2options'][0]		
+	cfg.gphoto2options_Night = request['gphoto2options_Night'][0]																	  
 	cfg.reset_usb = request['reset_usb'][0]																		   
 	cfg.clear_all_sd_cards_at_startup = request['clear_all_sd_cards_at_startup'][0]												  
 	cfg.start_camera_number = request['start_camera_number'][0]																 

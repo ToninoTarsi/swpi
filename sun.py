@@ -1,6 +1,8 @@
 from math import cos,sin,acos,asin,tan
 from math import degrees as deg, radians as rad
-from datetime import date,datetime,time
+from datetime import date,datetime,time,timedelta
+
+import time as t
 
 # this module is not provided here. See text.
 from timezone import LocalTimezone
@@ -20,6 +22,22 @@ class sun:
  def __init__(self,lat=52.37,long=4.90): # default Amsterdam
   self.lat=lat
   self.long=long
+ 
+ def daylight(self):
+     sunset = self.sunset()
+     sunrise = self.sunrise()
+     time_sunrise = timedelta(hours=sunrise.hour, minutes=sunrise.minute, seconds=sunrise.second)
+     time_sunset  = timedelta(hours=sunset.hour, minutes=sunset.minute, seconds=sunset.second)
+     time_now = timedelta(hours=datetime.now().hour, minutes=datetime.now().minute, seconds=datetime.now().second)
+     if ( ( time_now  - time_sunrise  ).total_seconds()  < 0 ):
+         return False
+     if ( ( time_now - time_sunset  ).total_seconds()  > 0 ):
+         return False   
+     return True  
+     
+
+    
+ 
   
  def sunrise(self,when=None):
   """
@@ -120,3 +138,5 @@ if __name__ == "__main__":
  s=sun(lat=43.351983,long=12.743187)
  print(datetime.today())
  print(s.sunrise(),s.solarnoon(),s.sunset())
+ 
+ print s.daylight()

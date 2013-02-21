@@ -167,23 +167,27 @@ class MeteoData(object):
         
         # Rain 24h - rain 1h
         if ( self.rain != None ):
-            try:
-                conn = sqlite3.connect('db/swpi.s3db',200)    
-                dbCursor = conn.cursor()
-                dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")
-                data = dbCursor.fetchall()
-                if ( len(data) == 1):
-                    therain = (data[0][9])    
-                    self.rain_rate_24h = self.rain - therain
-                dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour') order by rowid asc limit 1")
-                data = dbCursor.fetchall()
-                if ( len(data) == 1):
-                    therain = (data[0][9])    
-                    self.rain_rate_1h = self.rain - therain  
-                if conn:        
-                    conn.close()
-            except:
-                pass
+            #try:
+            conn = sqlite3.connect('db/swpi.s3db',200)    
+            dbCursor = conn.cursor()
+            dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")
+            data = dbCursor.fetchall()
+            if ( len(data) == 1):
+                therain = (data[0][9])    
+                self.rain_rate_24h = self.rain - therain
+                #print "Rain24h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
+            #else: print"Nodata"
+            dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour') order by rowid asc limit 1")
+            data = dbCursor.fetchall()
+            if ( len(data) == 1):
+                therain = (data[0][9])    
+                self.rain_rate_1h = self.rain - therain  
+                #print "Rain1h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
+            #else: print"Nodata"
+            if conn:        
+                conn.close()
+#            except:
+#                pass
             
 
         
@@ -213,7 +217,9 @@ class MeteoData(object):
             if self.rel_pressure != None :
                 msg = msg + " - P: %.1f" % self.rel_pressure   
             if self.hum_out != None :
-                msg = msg + " - U: %d" % self.hum_out                                             
+                msg = msg + " - U: %d" % self.hum_out        
+            if self.rain != None :
+                msg = msg + " - R: %d" % self.rain                                            
             TTLib.log(msg)
 
 
