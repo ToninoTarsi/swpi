@@ -16,6 +16,7 @@ Content-Type: text/html
         {
             width: 203px;
             height: 33px;
+            font-weight: 700;
         }
         #Select1
         {
@@ -246,6 +247,10 @@ Content-Type: text/html
         #ButtonLog
         {
             height: 29px;
+        }
+        .style53
+        {
+            font-weight: normal;
         }
         </style>
 
@@ -487,6 +492,16 @@ Content-Type: text/html
                 break;
             }
         }
+
+
+        dd = document.getElementById('use_DNSExit');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$use_DNSExit') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+        
                                       
 	}
 	function ButtonLog_onclick() {
@@ -1235,10 +1250,49 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                 <td class="style3">
                     Number to send SMS (<b>number_to_send</b>)<td class="style40">
                     <input id="number_to_send" type="text" name="number_to_send" 
-                        value=$number_to_send onclick="return location_longitude_onclick()" 
+                        value=$number_to_send  
                         style="width: 100%" /></td>
             </tr>
             </table>
+            
+        <br >
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    DNS Exit</td>
+            </tr>
+            <tr>
+                <td class="style5">
+                    <span class="style53">Send ip information to DNS Exit</span><b> (use_DNSExit)</b><td class="style17">
+                    <select id="use_DNSExit" type="text" name="use_DNSExit" 
+                        value=$use_mail style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    User (   <b>DNSExit_uname</b> )<td class="style17">
+                    <input id="DNSExit_uname" type="text" name="DNSExit_uname" 
+                        value=$DNSExit_uname style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    Password (<b>DNSExit_pwd</b>)<td class="style17">
+                    <input id="DNSExit_pwd" type="text" name="DNSExit_pwd" 
+                        value=$DNSExit_pwd  style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style5">
+                    <span class="style53">Hostname</span>&nbsp; (DNSExit_hname )</td>
+                <td class="style17">
+                    <input id="DNSExit_hname" type="text" name="DNSExit_hname" 
+                        value=$DNSExit_hname  style="width: 100%" /></td>
+            </tr>
+            </table>
+        
+            
+            
         <p>
             <input id="Submit1" type="submit" value="Save" /></p>
             </form>   

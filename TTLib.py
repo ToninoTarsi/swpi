@@ -125,6 +125,42 @@ def SetTimeFromNTP(ntp_server):
         log("ERROR - Failed to set time system from ntp server")
         return False
 
+
+def DNSExit(uname,pwd,hname):
+    
+    params = {
+        'login':uname,
+        'password':pwd,
+        'host':hname}
+    req = urllib2.Request("http://www.dnsexit.com/RemoteUpdate.sv",urllib.urlencode(params))
+    try:
+        resp= urllib2.urlopen(req)
+        page= resp.read()
+        tolog = True
+        try:
+                status,msg = page.split('\n')
+                status_code = status.split()[1]
+                msg_code,msg_content = msg.split('=')
+                if msg_code == "0":
+                        log("DNS Exit - Successfully Updated IP for host:%s"%hname)
+                        return True
+                elif msg_code in ["2","3","10"]:
+                        log("DNS Exit -Error Updating Dynamic IP:%s"%msg_content)
+                        return False
+                else:
+                        log("DNS Exit - Error with Connection:%s"%msg_content)
+                        return False
+
+        except Exception,err:
+                log("DNS Exit - Unexpected Error occured with the service")
+                return False
+    except Exception, err:
+            print "Exception"
+            if tolog:
+                    print '%s' % str(err)
+                        
+    return True
+
 def logDataToWunderground(ID,password):
 
     serverfile = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?action=updateraw&ID=%s&PASSWORD=%s&dateutc=%s" %(ID,password,str(datetime.datetime.utcnow()))
@@ -611,6 +647,8 @@ if __name__ == '__main__':
         exit(1)    
     cfg = config.config(configfile)
     
+    
+    print DNSExit(cfg.DNSExit_uname,cfg.DNSExit_pwd,cfg.DNSExit_hname)
     #swpi_update()
     
     
@@ -629,7 +667,7 @@ if __name__ == '__main__':
 #    addTextandResizePhoto("F:/jessica2/temp/DSC00192.JPG",800,600,cfg)
 #    print "done"
     
-    print SendMail(cfg,"DB","DB attached","mcp3002.tar.gz") 
+    #print SendMail(cfg,"DB","DB attached","mcp3002.tar.gz") 
     
     #for i in range (1,360):
     #    print  str(i) + str(angle2direction(i))

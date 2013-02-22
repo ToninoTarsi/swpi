@@ -489,6 +489,7 @@ globalvars.bAnswering = False
 globalvars.bCapturingCamera = False
 globalvars.meteo_data = meteodata.MeteoData(cfg)
 IP = None
+publicIP = None
 
 # Start sensors thread ##
 if ( cfg.use_wind_sensor ):
@@ -533,8 +534,9 @@ if cfg.usedongle :
 # Get network IP
 if (internet_on() ):
 	IP = getIP()
-	if IP != None:
-		log("Connected with IP :" + IP)
+	publicIP = getPublicIP()
+	if publicIP != None:
+		log("Connected with IP :" + publicIP)
 else:
 	log("Running without internet connection")
 
@@ -545,10 +547,13 @@ if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 
 # Send mail with IP information ( using a thread to avoid strange freezing )
-if ( IP != None and cfg.use_mail and cfg.mail_ip ):
-	publicIP = getPublicIP()
+if ( publicIP != None and cfg.use_mail and cfg.mail_ip ):
 	log("Local IP :" + IP + " Public IP : " + publicIP)
 	thread.start_new_thread(SendMail,(cfg,"My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")) 
+	
+if ( publicIP != None and cfg.use_DNSExit) :
+	DNSExit(cfg.DNSExit_uname,cfg.DNSExit_pwd,cfg.DNSExit_hname)
+	
 	
 # Send mail with IP information
 #if ( IP != None and cfg.use_mail and cfg.mail_ip ):
@@ -558,9 +563,9 @@ if ( IP != None and cfg.use_mail and cfg.mail_ip ):
 #		log ("ERROR sending mail" )
 
 # Send SMS with IP information
-if ( IP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
+if ( publicIP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
 	try:
-		modem.sms_send(cfg.number_to_send, IP)
+		modem.sms_send(cfg.number_to_send, publicIP)
 		log ("SMS sent to %s" % cfg.number_to_send)
 	except:
 		log("Error sending IP by SMS")
@@ -697,14 +702,15 @@ while 1:
 					log("Uploading data ...")
 					UploadData(cfg)			
 			
-				thenewIP = getIP()
-				if ( thenewIP != None and IP != thenewIP ):
-					IP = thenewIP
+				thenewIP = getPublicIP()
+				if ( thenewIP != None and publicIP != thenewIP ):
+					publicIP = thenewIP
 					publicIP = getPublicIP()
-					log("Local IP :" + IP + " Public IP : " + publicIP)
-					log("IP has changed - New IP is : " + IP)
+					log("Public IP : " + publicIP)
 					if ( cfg.use_mail and cfg.mail_ip ):
 						SendMail(cfg,"My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")
+					if ( cfg.use_DNSExit):
+						DNSExit(cfg.DNSExit_uname,cfg.DNSExit_pwd,cfg.DNSExit_hname)
 						
 				if ( cfg.config_web_server ) :
 					log("Rereading config file ..")

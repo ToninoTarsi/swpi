@@ -121,16 +121,14 @@ def outputPage(cfg):
 	d.update(WeatherUnderground_ID=cfg.WeatherUnderground_ID)
 	d.update(WeatherUnderground_password=cfg.WeatherUnderground_password)
 
-
-		
-
-
-
+	d.update(use_DNSExit=cfg.use_DNSExit)
+	d.update(DNSExit_uname=cfg.DNSExit_uname)
+	d.update(DNSExit_pwd=cfg.DNSExit_pwd)
+	d.update(DNSExit_hname=cfg.DNSExit_hname)		
+	
 	html = html_template.safe_substitute(d)
 
 	print html
-
-
 
 so = Session()
 
@@ -160,8 +158,6 @@ if ( len(request) != 0 ):
 	cfg.location_altitude = request['location_altitude'][0]																 
 	cfg.wifi_reset_if_down = request['wifi_reset_if_down'][0]       
 	cfg.config_web_server_port = request['config_web_server_port'][0]                                                                 
-                                                          
-
 
 	cfg.usedongle = request['usedongle'][0]																		   
 	cfg.AlwaysOnInternet = request['AlwaysOnInternet'][0]																 
@@ -188,7 +184,6 @@ if ( len(request) != 0 ):
 
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]											 
 
-
 	cfg.webcamDevice1 = request['webcamDevice1'][0]																	  
 	cfg.webcamDevice2 = request['webcamDevice2'][0]																	  
 	cfg.webcamLogo = request['webcamLogo'][0]																		   
@@ -211,7 +206,6 @@ if ( len(request) != 0 ):
 	cfg.start_camera_number = request['start_camera_number'][0]																 
 	cfg.gphoto2_capture_image_and_download = request['gphoto2_capture_image_and_download'][0]											 
 	cfg.use_camera_resetter = request['use_camera_resetter'][0]											 
-
 
 	cfg.ftpserver = request['ftpserver'][0]																		   
 	cfg.ftpserverDestFolder = request['ftpserverDestFolder'][0]																 
@@ -236,6 +230,10 @@ if ( len(request) != 0 ):
 	cfg.WeatherUnderground_password = request['WeatherUnderground_password'][0]	  	
 	
 
+	cfg.use_DNSExit = request['use_DNSExit'][0]																		   
+	cfg.DNSExit_uname = request['DNSExit_uname'][0]																				
+	cfg.DNSExit_pwd = request['DNSExit_pwd'][0]																		   
+	cfg.DNSExit_hname = request['DNSExit_hname'][0]		
 
 
 		

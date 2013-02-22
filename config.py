@@ -231,6 +231,12 @@ class config(object):
 		self.WeatherUnderground_ID = config.get('WeatherUnderground', 'WeatherUnderground_ID',"KCASANFR5")
 		self.WeatherUnderground_password = config.get('WeatherUnderground', 'WeatherUnderground_password',"XXXXXXXX")
 
+		#[DNS Exit]
+		self.use_DNSExit = config.getboolean('DNSExit', 'use_DNSExit',False)
+		self.DNSExit_uname = config.get('DNSExit', 'DNSExit_uname',"user")
+		self.DNSExit_pwd = config.get('DNSExit', 'DNSExit_pwd',"pwd")
+		self.DNSExit_hname = config.get('DNSExit', 'DNSExit_hname',"http://xxxx.linkpc.net")		
+		
 		f = open(self.cfgName,"w")
 		config.write(f)					
 
@@ -350,6 +356,11 @@ class config(object):
 		config.setstr('WeatherUnderground', 'WeatherUnderground_ID',self.WeatherUnderground_ID)		
 		config.setstr('WeatherUnderground', 'WeatherUnderground_password',self.WeatherUnderground_password)		
 		
+		#[DNS Exit]
+		config.setboolean('DNSExit', 'use_DNSExit',self.use_DNSExit)
+		config.setstr('DNSExit', 'DNSExit_uname',self.DNSExit_uname)		
+		config.setstr('DNSExit', 'DNSExit_pwd',self.DNSExit_pwd)	
+		config.setstr('DNSExit', 'DNSExit_hname ',self.DNSExit_hname)	
 		
 		
 		f = open(self.cfgName,"w")
