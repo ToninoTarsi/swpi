@@ -185,8 +185,8 @@ if ( len(request) != 0 ):
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]											 
 
 	cfg.webcamDevice1 = request['webcamDevice1'][0]																	  
-	cfg.webcamDevice2 = request['webcamDevice2'][0]																	  
-	cfg.webcamLogo = request['webcamLogo'][0]																		   
+	cfg.webcamDevice2 = request['webcamDevice2'][0]		
+	cfg.webcamLogo = request['webcamLogo'][0]													   
 	cfg.sendImagesToServer = request['sendImagesToServer'][0]																 
 	cfg.WebCamInterval = request['WebCamInterval'][0]																	  
 	cfg.webcamdevice1captureresolution = request['webcamdevice1captureresolution'][0]												  

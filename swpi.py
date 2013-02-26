@@ -459,7 +459,7 @@ else:
 globalvars.logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 
-SecondsToWait = 10	
+SecondsToWait = 10
 # give 10 seconds for interrupt the application
 try:
 	if not ( '-i' in sys.argv ) :

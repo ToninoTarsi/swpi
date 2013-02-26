@@ -516,7 +516,9 @@ def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
             os.remove(filename)
             log("Deleted file : " + filename )
         return True
-    except:
+    except Exception, err:
+        print "Exception"
+        print '%s' % str(err)    
         log("Error sending  file to server : " + name)
         if delete : 
             os.remove(filename)

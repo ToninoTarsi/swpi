@@ -235,7 +235,7 @@ class config(object):
 		self.use_DNSExit = config.getboolean('DNSExit', 'use_DNSExit',False)
 		self.DNSExit_uname = config.get('DNSExit', 'DNSExit_uname',"user")
 		self.DNSExit_pwd = config.get('DNSExit', 'DNSExit_pwd',"pwd")
-		self.DNSExit_hname = config.get('DNSExit', 'DNSExit_hname',"http://xxxx.linkpc.net")		
+		self.DNSExit_hname = config.get('DNSExit', 'DNSExit_hname',"xxxx.linkpc.net")		
 		
 		f = open(self.cfgName,"w")
 		config.write(f)					
