@@ -736,6 +736,14 @@ while 1:
 			if ( not wind_sensor_thread.isAlive()):
 				log("Error : Something wrong with sensors .. restarting ws")
 				systemRestart()		
+			
+		#Check disk space
+		disk_space = disk_free()
+		if ( disk_space < 500000000L ):
+			log("Clearing /var/log/")
+			os.system( "sudo rm -r /var/log/*" )
+		else:
+			log("Disk space left = %s" % disk_space)	
 				
 		if ( cfg.WebCamInterval != 0):
 			log("Sleeping %s seconds" % cfg.WebCamInterval)
@@ -743,6 +751,8 @@ while 1:
 		else:
 			log("Sleeping 1000 seconds")
 			time.sleep(1000)	
+			
+
 		
 	except KeyboardInterrupt:
 		if cfg.usedongle:
