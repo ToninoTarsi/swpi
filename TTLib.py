@@ -431,7 +431,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
             delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
             delay_seconds = int(delay.total_seconds())
             
-            if (delay_seconds < 900 ):    
+            if (globalvars.meteo_data.wind_dir_code != None and globalvars.meteo_data.wind_ave != None and globalvars.meteo_data.wind_gust != None):    
                 
                 if ( len(globalvars.meteo_data.wind_dir_code) == 3 ):
                     dir = globalvars.meteo_data.wind_dir_code
@@ -448,10 +448,11 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
                 width, height = font.getsize(text)
                 draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
                 
-                text = ""
-                if (globalvars.meteo_data.hum_out  != None) : 
-                    text = text + "Umidita : %d" % (globalvars.meteo_data.hum_out) + " % - "
-                
+            text = ""
+            if (globalvars.meteo_data.hum_out  != None) : 
+                text = text + "Umidita : %d" % (globalvars.meteo_data.hum_out) + " % - "
+            
+            if ( globalvars.meteo_data.last_measure_time != None ):
                 text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
                 width, height = font.getsize(text)
                 draw.text((32+marginLeft, h-height),text,textColor,font=font)

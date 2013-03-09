@@ -29,7 +29,7 @@ import sensor_nevio
 import sensor_argent80422
 import sensor_davis
 import sensor_lacrossTX23
-import sensor_wmr200
+import sensor_wmr100
 
 
 def log(message) :
@@ -82,8 +82,8 @@ class WindSensorThread(threading.Thread):
         elif ( self.cfg.sensor_type.upper()  == "LACROSS-TX23" ):
             sensor = sensor_lacrossTX23.Sensor_LacrossTX23(self.cfg)     
                               
-        elif ( self.cfg.sensor_type.upper()  == "WMR200" ):
-            sensor = sensor_wmr200.Sensor_WMR200(self.cfg)       
+        elif ( self.cfg.sensor_type.upper()  == "WMR100" ):
+            sensor = sensor_wmr100.Sensor_WMR100(self.cfg)       
                        
         else:
             log("Sensor type not implemented. Exiting")
