@@ -303,7 +303,7 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
         self.ctrl_port.send_at("Z","",False) # Echo Disabled
         self.ctrl_port.send_at("E0","",False) # Echo Disabled
         self.ctrl_port.send_at("^CURC=0","",False) # disable periodic message
-        self.ctrl_port.send_at("+CVHU=0","",False) # enable hang-up voice call 
+        #self.ctrl_port.send_at("+CVHU=0","",False) # enable hang-up voice call 
         self.ctrl_port.send_at("H","",False)	
         
 

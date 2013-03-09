@@ -349,8 +349,8 @@ def answer_call(modem, message):
 		if (delay_seconds > 600 ):
 			listOfMessages.append("./audio/some_problem.raw") 
 
-		if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
-			listOfMessages.append("./audio/raining.raw")
+#		if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
+#			listOfMessages.append("./audio/raining.raw")
 		
 		# Wind Speed and Direction
 		listOfMessages.append("./audio/winddirection.raw")
@@ -691,7 +691,7 @@ while 1:
 						
 				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					log("Logging data ...")
-					logData(cfg.serverfile)
+					logData(cfg.serverfile,cfg.SMSPwd)
 					
 				if ( cfg.WeatherUnderground_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					log("Logging data to Wunderground ...")
@@ -732,7 +732,7 @@ while 1:
 			if ( not radio.isAlive()):
 				log("Error : Something wrong with radio .. restarting")
 				systemRestart()
-		if True:
+		if cfg.use_wind_sensor:
 			if ( not wind_sensor_thread.isAlive()):
 				log("Error : Something wrong with sensors .. restarting ws")
 				systemRestart()		

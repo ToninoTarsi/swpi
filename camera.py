@@ -106,7 +106,14 @@ class PhotoCamera(object):
 	def SetTimer(self):
 		if ( self.cfg.WebCamInterval  >= 120 ) :
 			time.sleep(120)
-			if ( self.bCaturing ) :            
+			if ( self.bCaturing ) : 
+				if ( self.cfg.use_camera_resetter ):
+					log("Switching off Camera ... ")
+					GPIO.output(self.__PIN_RESET, 0)
+					time.sleep(2)
+					log("Switching on Camera ... ")
+					GPIO.output(self.__PIN_RESET, 1)
+					time.sleep(10)           
 				log("CameraWatchDog problem: System will Reboot " )
 				systemRestart()
 			else:
@@ -259,8 +266,15 @@ if __name__ == '__main__':
 	
 	cfg = config.config(configfile)
 	
-	
-	ClearAllCameraSDCards(cfg)
+	if ( cfg.use_camera_resetter ):
+		log("Switching off Camera ... ")
+		GPIO.output(24, 0)
+		time.sleep(2)
+		log("Switching on Camera ... ")
+		GPIO.output(24, 1)
+		time.sleep(10)     
+		      
+	#ClearAllCameraSDCards(cfg)
 	
 
 

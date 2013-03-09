@@ -30,7 +30,7 @@ class Sensor(threading.Thread):
     
     def __init__(self ,cfg):
         self.cfg = cfg
-        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23"]
+        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23","WMR200"]
         
         if ( self.cfg.sensor_type not in self.implementedStations  ):
             log("Unknown sensor type %s can not continue" % self.cfg.sensor_type)
@@ -62,8 +62,12 @@ class Sensor(threading.Thread):
             i = i+1
             if p == 0.0 :
                 time.sleep(0.5)
+                
+        if ( p != None )  :  
+            globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+        else:
+            globalvars.meteo_data.abs_pressure = None
             
-        globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
         globalvars.meteo_data.temp_out = temp
 
 #        if ( p == None):
@@ -85,7 +89,12 @@ class Sensor(threading.Thread):
             i = i+1
             time.sleep(0.02)
             
-        globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+        if ( p != None )  :  
+            globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+        else:
+            globalvars.meteo_data.abs_pressure = None 
+        
+        
         globalvars.meteo_data.temp_in = temp
 
 #        if ( p == None):

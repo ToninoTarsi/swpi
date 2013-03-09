@@ -211,8 +211,13 @@ def logDataToWunderground(ID,password):
      
       
 
-def logData(serverfile):
+def logData(serverfile,SMSPwd):
+    
     mydata = []
+    
+    mydata.append(('pwd', SMSPwd))
+
+    
     mydata.append(('last_measure_time',NoneToNull(globalvars.meteo_data.last_measure_time)))
     mydata.append(('idx',NoneToNull(globalvars.meteo_data.idx)))
     mydata.append(('wind_dir_code',NoneToNull(globalvars.meteo_data.wind_dir_code)))
@@ -275,6 +280,8 @@ def logData(serverfile):
 
 def UploadData(cfg):
     mydata = {} 
+    
+
     
     mydata['last_measure_time'] = (globalvars.meteo_data.last_measure_time.strftime("[%d/%m/%Y-%H:%M:%S]"))
     mydata['idx'] = (globalvars.meteo_data.idx.strftime("[%d/%m/%Y-%H:%M:%S]"))
@@ -382,6 +389,7 @@ def getFileName(path):
     return os.path.basename(path)
 
 def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version=None):
+    log("Processing image :" + filename )
     textColor = (255,255,0)
     offsetUpper = 20
     offsetBottom = 32
@@ -417,40 +425,41 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     font = ImageFont.truetype(font_path, 13, encoding='unic')
     
     # Adding Meteo information
-    if (  globalvars.meteo_data.status == 0 ):
- 
-        delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
-        delay_seconds = int(delay.total_seconds())
-        
-        if (delay_seconds < 900 ):    
+    if ( cfg.use_wind_sensor ):
+        if (  globalvars.meteo_data.status == 0 ):
+     
+            delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+            delay_seconds = int(delay.total_seconds())
             
-            if ( len(globalvars.meteo_data.wind_dir_code) == 3 ):
-                dir = globalvars.meteo_data.wind_dir_code
-            elif ( len(globalvars.meteo_data.wind_dir_code) == 2 ):
-                dir = " " + globalvars.meteo_data.wind_dir_code
-            else:
-                dir = "  " + globalvars.meteo_data.wind_dir_code
-            text = "Direzione del vento: " + dir + " - Intensita:%5.1f" % globalvars.meteo_data.wind_ave + " km/h  - Raffica:%5.1f" % globalvars.meteo_data.wind_gust  + " km/h" 
-            if (globalvars.meteo_data.temp_out  != None) : 
-                text = text + " - Temperatura:%4.1f" % globalvars.meteo_data.temp_out + " C"
-            if (globalvars.meteo_data.rel_pressure != None ) : 
-                text = text + " - Pressione:%6.1f" % globalvars.meteo_data.rel_pressure + " hpa"         
-            
+            if (delay_seconds < 900 ):    
+                
+                if ( len(globalvars.meteo_data.wind_dir_code) == 3 ):
+                    dir = globalvars.meteo_data.wind_dir_code
+                elif ( len(globalvars.meteo_data.wind_dir_code) == 2 ):
+                    dir = " " + globalvars.meteo_data.wind_dir_code
+                else:
+                    dir = "  " + globalvars.meteo_data.wind_dir_code
+                text = "Direzione del vento: " + dir + " - Intensita:%5.1f" % globalvars.meteo_data.wind_ave + " km/h  - Raffica:%5.1f" % globalvars.meteo_data.wind_gust  + " km/h" 
+                if (globalvars.meteo_data.temp_out  != None) : 
+                    text = text + " - Temperatura:%4.1f" % globalvars.meteo_data.temp_out + " C"
+                if (globalvars.meteo_data.rel_pressure != None ) : 
+                    text = text + " - Pressione:%6.1f" % globalvars.meteo_data.rel_pressure + " hpa"         
+                
+                width, height = font.getsize(text)
+                draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
+                
+                text = ""
+                if (globalvars.meteo_data.hum_out  != None) : 
+                    text = text + "Umidita : %d" % (globalvars.meteo_data.hum_out) + " % - "
+                
+                text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
+                width, height = font.getsize(text)
+                draw.text((32+marginLeft, h-height),text,textColor,font=font)
+                
+        else:
+            text = "Nessun dato meteo - status = " + str(globalvars.meteo_data.status)
             width, height = font.getsize(text)
-            draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
-            
-            text = ""
-            if (globalvars.meteo_data.hum_out  != None) : 
-                text = text + "Umidita : %d" % (globalvars.meteo_data.hum_out) + " % - "
-            
-            text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
-            width, height = font.getsize(text)
-            draw.text((32+marginLeft, h-height),text,textColor,font=font)
-            
-    else:
-        text = "Nessun dato meteo - status = " + str(globalvars.meteo_data.status)
-        width, height = font.getsize(text)
-        draw.text((marginLeft, h-offsetBottom),text,textColor,font=font)
+            draw.text((marginLeft, h-offsetBottom),text,textColor,font=font)
     
     if ( version != None):
         font = ImageFont.truetype(font_path, 11, encoding='unic')
@@ -472,6 +481,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     img.save(filename)
     
     if ( not os.path.isfile(filename)):
+        log("Problem processing image :" + filename )
         return False
     
     log("Processed image :" + filename )
