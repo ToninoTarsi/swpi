@@ -121,7 +121,7 @@ class config(object):
 		self.location_latitude = config.getfloat('General', 'location_latitude',43.351983)
 		self.location_longitude = config.getfloat('General', 'location_longitude',12.743187)
 		self.location_altitude = config.getfloat('General', 'location_altitude',0)
-		self.wifi_reset_if_down = config.getboolean('General', 'wifi_reset_if_down',True)
+		self.wifi_reset_if_down = config.getboolean('General', 'wifi_reset_if_down',False)
 
 		# [Dongle]
 		self.usedongle = config.getboolean('Dongle', 'usedongle',False)
@@ -162,6 +162,9 @@ class config(object):
 
 		# [Sensor_PCE-FWS20]
 		self.set_system_time_from_WeatherStation = config.getboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',False)
+
+		# [Sensor_serial]
+		self.sensor_serial_port = config.get('Sensor_serial', 'sensor_serial_port',"/dev/ttyUSB0")
 
 		# [Sensor_NEVIO8-16]
 
@@ -258,8 +261,6 @@ class config(object):
 		config.setboolean('General', 'wifi_reset_if_down',self.wifi_reset_if_down)
 		config.setint('General', 'config_web_server_port',self.config_web_server_port)
 
-
-
 		# [Dongle]
 		config.setboolean('Dongle', 'usedongle',self.usedongle)
 		config.setboolean('Dongle', 'alwaysoninternet',self.AlwaysOnInternet)
@@ -299,6 +300,10 @@ class config(object):
 
 		# [Sensor_PCE-FWS20]
 		config.setboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',self.set_system_time_from_WeatherStation)
+
+		# [Sensor_serial]
+		config.setstr('Sensor_serial', 'sensor_serial_port',self.sensor_serial_port)
+
 
 		# [Sensor_NEVIO8-16]
 

@@ -30,7 +30,7 @@ class Sensor(threading.Thread):
     
     def __init__(self ,cfg):
         self.cfg = cfg
-        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23","WMR100"]
+        self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23","WMR100","WMR200","WMR918","WM918"]
         
         if ( self.cfg.sensor_type not in self.implementedStations  ):
             log("Unknown sensor type %s can not continue" % self.cfg.sensor_type)
@@ -49,7 +49,6 @@ class Sensor(threading.Thread):
         if ( self.bmp085 != None ):
             self.ReadBMP085()
          
-            
         globalvars.meteo_data.CalcStatistics()
         globalvars.meteo_data.LogDataToDB()
       
@@ -108,5 +107,63 @@ class Sensor(threading.Thread):
 #            globalvars.meteo_data.rel_pressure = float(p0 / 100.0)
                 
             
-                        
+    def _report_rain(self,total, rate):
+        #print "report_rain",total, rate
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.rain = total
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
+            
+            
+    def _report_wind(self,dir, dirDeg, dirStr, gustSpeed, avgSpeed):
+        #print "report_wind",dirDeg, avgSpeed, gustSpeed      
+        globalvars.meteo_data.wind_ave     = avgSpeed
+        globalvars.meteo_data.wind_gust    = gustSpeed
+        globalvars.meteo_data.wind_dir     = dirDeg
+        globalvars.meteo_data.wind_dir_code = dirStr
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
+        
+        globalvars.meteo_data.CalcStatistics()
+        globalvars.meteo_data.LogDataToDB()
+
+    def _report_barometer_absolute(self,pressure):
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
+        globalvars.meteo_data.abs_pressure = pressure
+
+    def _report_temperature(self,temp, humidity, sensor):
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
+        if ( sensor == 1 ) :
+            globalvars.meteo_data.hum_out  = humidity   
+            globalvars.meteo_data.temp_out   = temp      
+        elif( sensor == 0 ):
+            globalvars.meteo_data.hum_in  = humidity   
+            globalvars.meteo_data.temp_in   = temp     
+
+    def _report_temperature_inout(self,temp_in, temp_out):
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
+        globalvars.meteo_data.temp_out   = temp_out      
+        globalvars.meteo_data.temp_in   = temp_in    
+
+    def _report_humidity(self, hum_in, hum_out):
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
+
+        globalvars.meteo_data.hum_out  = hum_out   
+        globalvars.meteo_data.hum_in  = hum_in   
+  
+                                
+    def _report_uv(self,uv):
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
+        globalvars.meteo_data.uv = uv                   
  

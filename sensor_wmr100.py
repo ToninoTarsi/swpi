@@ -18,7 +18,6 @@ import config
 import random
 import datetime
 import sqlite3
-import wmr100
 import sys
 import subprocess
 import globalvars
@@ -88,46 +87,7 @@ class Sensor_WMR100(sensor.Sensor):
                 if dev.idVendor == vendor_id and dev.idProduct == product_id:
                     return dev
 
-    def _report_rain(self,total, rate):
-        #print "report_rain",total, rate
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.rain = total
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
-            
-            
-    def _report_wind(self,dir, dirDeg, dirStr, gustSpeed, avgSpeed):
-        #print "report_wind",dirDeg, avgSpeed, gustSpeed      
-        globalvars.meteo_data.wind_ave     = avgSpeed
-        globalvars.meteo_data.wind_gust    = gustSpeed
-        globalvars.meteo_data.wind_dir     = dirDeg
-        globalvars.meteo_data.wind_dir_code = dirStr
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
-
-    def _report_barometer_absolute(self,pressure):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
-        globalvars.meteo_data.abs_pressure = pressure
-
-    def _report_temperature(self,temp, humidity, sensor):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
-        if ( sensor == 1 ) :
-            globalvars.meteo_data.hum_out  = humidity   
-            globalvars.meteo_data.temp_out   = temp      
-        elif( sensor == 0 ):
-            globalvars.meteo_data.hum_in  = humidity   
-            globalvars.meteo_data.temp_in   = temp     
-                                  
-    def _report_uv(self,uv):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
-        globalvars.meteo_data.uv = uv        
+ 
 
     def GetData(self ):
         import usb
@@ -320,8 +280,7 @@ class Sensor_WMR100(sensor.Sensor):
 
         # Log
         log("Clock %s, power: %s, Powered: %s, Battery: %s, RF: %s" % ( consoleDate, power, powered, batteryOK, rf))
-        globalvars.meteo_data.CalcStatistics()
-        globalvars.meteo_data.LogDataToDB()
+
 
     def _parse_rain_record(self, record):
         """

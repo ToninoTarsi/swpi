@@ -19,7 +19,7 @@ import config
 
 class MeteoData(object):
     
-    def __init__(self,cfg):
+    def __init__(self,cfg=None):
         
         self.cfg = cfg
         
@@ -47,7 +47,8 @@ class MeteoData(object):
         self.uv = None
         self.illuminance = None        
         
-        self.rb_wind_dir = TTLib.RingBuffer(cfg.number_of_measure_for_wind_dir_average)
+        if ( cfg != None):
+            self.rb_wind_dir = TTLib.RingBuffer(cfg.number_of_measure_for_wind_dir_average)
         
         #calculated values
         self.wind_dir_code = None

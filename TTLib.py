@@ -191,7 +191,7 @@ def logDataToWunderground(ID,password):
     if globalvars.meteo_data.abs_pressure != None :  parameters['baromin'] = globalvars.meteo_data.abs_pressure  * 0.0296133971008484
     if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = globalvars.meteo_data.rain_rate  * 0.0393700787
     if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = ( globalvars.meteo_data.dew_point * 1.8 ) + 32
-    if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin '] = globalvars.meteo_data.rain_rate_1h  * 0.0393700787
+    if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = globalvars.meteo_data.rain_rate_1h  * 0.0393700787
 
     
     parameters['softwaretype'] = "Sint Wind PI"

@@ -381,6 +381,6 @@ if __name__ == '__main__':
         pressure,temp = bmp.readPressureTemperature()
         
         print "Temperature: %.2f C" % temp + "Pressure:    %.2f hPa" % (pressure / 100.0) 
-        time.sleep(0.2)
+        time.sleep(1)
         
         

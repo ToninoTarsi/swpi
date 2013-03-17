@@ -30,6 +30,9 @@ import sensor_argent80422
 import sensor_davis
 import sensor_lacrossTX23
 import sensor_wmr100
+import sensor_wmr200
+import sensor_wmr918
+import sensor_wm918
 
 
 def log(message) :
@@ -84,7 +87,15 @@ class WindSensorThread(threading.Thread):
                               
         elif ( self.cfg.sensor_type.upper()  == "WMR100" ):
             sensor = sensor_wmr100.Sensor_WMR100(self.cfg)       
-                       
+            
+        elif ( self.cfg.sensor_type.upper()  == "WMR200" ):
+            sensor = sensor_wmr200.Sensor_WMR200(self.cfg)             
+                        
+        elif ( self.cfg.sensor_type.upper()  == "WMR918" ):
+            sensor = sensor_wmr918.Sensor_WMR918(self.cfg)     
+                               
+        elif ( self.cfg.sensor_type.upper()  == "WM918" ):
+            sensor = sensor_wm918.Sensor_WM918(self.cfg)                                  
         else:
             log("Sensor type not implemented. Exiting")
             os.system("sudo ./killswpi.sh")

@@ -47,6 +47,11 @@ def outputPage(cfg):
 	d.update(AlwaysOnInternet=cfg.AlwaysOnInternet)
 	d.update(UseDongleNet=cfg.UseDongleNet)
 	d.update(operator=cfg.operator)
+	d.update(dongledataport=cfg.dongleDataPort)
+	d.update(dongleaudioport=cfg.dongleAudioPort)
+	d.update(donglectrlport=cfg.dongleCtrlPort)
+
+
 
 	d.update(SMSPwd=cfg.SMSPwd)
 
@@ -68,6 +73,8 @@ def outputPage(cfg):
 	d.update(number_of_measure_for_wind_average_gust_calculation=cfg.number_of_measure_for_wind_average_gust_calculation)
 
 	d.update(set_system_time_from_WeatherStation=cfg.set_system_time_from_WeatherStation)
+
+	d.update(sensor_serial_port=cfg.sensor_serial_port)
 
 
 	d.update(webcamDevice1=cfg.webcamDevice1)
@@ -163,6 +170,11 @@ if ( len(request) != 0 ):
 	cfg.AlwaysOnInternet = request['AlwaysOnInternet'][0]																 
 	cfg.UseDongleNet = request['UseDongleNet'][0]																	  
 	cfg.operator = request['operator'][0]																		   
+	cfg.dongleDataPort = request['dongledataport'][0]																		   
+	cfg.dongleAudioPort = request['dongleaudioport'][0]																		   
+	cfg.dongleCtrlPort = request['donglectrlport'][0]																		   
+
+
 
 	cfg.SMSPwd = request['SMSPwd'][0]																				
 
@@ -183,6 +195,9 @@ if ( len(request) != 0 ):
 	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]						 
 
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]											 
+
+	cfg.sensor_serial_port = request['sensor_serial_port'][0]											 
+
 
 	cfg.webcamDevice1 = request['webcamDevice1'][0]																	  
 	cfg.webcamDevice2 = request['webcamDevice2'][0]		

@@ -134,11 +134,6 @@ Content-Type: text/html
             height: 31px;
             width: 371px;
         }
-        .style28
-        {
-            height: 31px;
-            width: 325px;
-        }
         .style32
         {
             height: 26px;
@@ -148,11 +143,6 @@ Content-Type: text/html
         {
             height: 26px;
             width: 371px;
-        }
-        .style34
-        {
-            height: 26px;
-            width: 325px;
         }
         .style36
         {
@@ -251,6 +241,16 @@ Content-Type: text/html
         .style53
         {
             font-weight: normal;
+        }
+        .style28
+        {
+            height: 31px;
+            width: 325px;
+        }
+        .style34
+        {
+            height: 26px;
+            width: 325px;
         }
         </style>
 
@@ -679,6 +679,9 @@ Content-Type: text/html
                         <option value="SIMULATE" >SIMULATE</option>
                         <option value="PCE-FWS20" >PCE-FWS20</option>
 						<option value="WMR100" >WMR100</option>
+						<option value="WMR200" >WMR200</option>
+						<option value="WMR918" >WMR918</option>
+						<option value="WM918" >WM918</option>						
                         <option value="NEVIO8" >NEVIO8</option>
                         <option value="NEVIO16" >NEVIO16</option>                        
                         <option value="PCE-SENSOR" >PCE-SENSOR</option>
@@ -748,6 +751,40 @@ Content-Type: text/html
     
     
     <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
+                    Sensor_PCE-FWS20</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Sincronize system time from PCE station (<b>set_system_time_from_WeatherStation</b>)</td>
+                <td class="style32">
+                    <select  id="set_system_time_from_WeatherStation" type="text" name="set_system_time_from_WeatherStation" 
+                        value=$set_system_time_from_WeatherStation style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>   </td>
+            </tr>
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
+                    Sensor Serial</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Serial port of serial sensors ( WM918, WMR918 )&nbsp; (<b>sensor_serial_port </b>)</td>
+                <td class="style32">
+                    &nbsp;<input id="sensor_serial_port" type="text" name="sensor_serial_port" 
+                        value="$sensor_serial_port" style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
+    
+    
+    <br />
     
     
 
@@ -801,127 +838,29 @@ Content-Type: text/html
                         <option value="tre" >tre</option>
                         </td>
             </tr>
+            <tr>
+                <td class="style43">
+                    Data port (<b>dongledataport</b>)</td>
+                <td class="style17">
+                    <input id="dongledataport" type="text" name="dongledataport" 
+                        value=$dongledataport style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style43">
+                    Audio Port(<b>dongleaudioport</b>)</td>
+                <td class="style17">
+                    <input id="dongleaudioport" type="text" name="dongleaudioport" 
+                        value=$dongleaudioport style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style43">
+                    Control Port (<b>donglectrlport</b>)</td>
+                <td class="style17">
+                    <input id="donglectrlport" type="text" name="donglectrlport" 
+                        value=$donglectrlport style="width: 100%" /></td>
+            </tr>
             </table>
         <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
-            <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
-                    Security</td>
-            </tr>
-            <tr>
-                <td class="style2">
-                    Password of the SMS and web-config <b>(SMSPwd)</b></td>
-                <td class="style17">
-                    <input id="SMSPwd" type="text" name="SMSPwd" 
-                        value=$SMSPwd style="width: 100%" /></td>
-            </tr>
-            </table>
-        <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
-            <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
-                    DataLogging</td>
-            </tr>
-            <tr>
-                <td class="style2">
-                    Log all meteo data to a PHP web server (<b>logdata</b>)</td>
-                <td class="style20">
-                    <select id="logdata" type="text" name="logdata" 
-                        value=$logdata style="width: 100%" >
-                        <option value=True >True</option>
-                        <option value=False >False</option>
-                    </select>       
-                    </td>
-            </tr>
-            <tr> 
-                <td class="style8">
-                    Http address of the PHP web server file (<b>serverfile</b>)</td>
-                <td class="style19">
-                    <input id="serverfile" type="text" name="serverfile" 
-                        value=$serverfile style="width: 100%" /></td>
-            </tr>
-            </table>
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
-            <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
-                    Weather Underground</td>
-            </tr>
-            <tr>
-                <td class="style2">
-                    Log data to Weather Underground PWS (<strong>WeatherUnderground_logdata</strong>)</td>
-                <td class="style20">
-                    <select id="WeatherUnderground_logdata" type="text" name="WeatherUnderground_logdata" 
-                        style="width: 100%" >
-                        <option value=True >True</option>
-                        <option value=False >False</option>
-                    </select>       
-                    </td>
-            </tr>
-            <tr> 
-                <td class="style8">
-                    Weather Underground station ID (<strong>WeatherUnderground_ID</strong>)</td>
-                <td class="style19">
-                    <input id="WeatherUnderground_ID" type="text" name="WeatherUnderground_ID" 
-                        value=$WeatherUnderground_ID style="width: 100%" /></td>
-            </tr>
-            <tr> 
-                <td class="style8">
-                    Weather Underground password (WeatherUnderground_password)</td>
-                <td class="style19">
-                    <input id="WeatherUnderground_password" type="text" name="WeatherUnderground_password" 
-                        value=$WeatherUnderground_password style="width: 100%" /></td>
-            </tr>
-            </table>
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" 
-        style="width: 800px; margin-right: 0px">
-            <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
-                    Upload</td>
-            </tr>
-            <tr>
-                <td class="style47">
-                    Upload all meteo data to a FTP server
-                    <span lang="EN-US" style="font-size:11.0pt;
-line-height:115%;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;mso-ascii-theme-font:minor-latin;
-mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:
-minor-latin;mso-bidi-font-family:&quot;Times New Roman&quot;;mso-bidi-theme-font:minor-bidi;
-mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw </span>a json 
-                    file. Will use credential of the FTP section. (<b>upload_data</b>)</td>
-                <td class="style17">
-                    <select id="upload_data" type="text" name="upload_data" 
-                        value=$upload_data style="width: 100%" >
-                        <option value=True >True</option>
-                        <option value=False >False</option>
-                    </select>       </td>
-            </tr>
-            <tr>
-                <td class="style48">
-                    FTP folder to upoad (<b>upload_folder</b>)</td>
-                <td class="style17">
-                    <input id="upload_folder" type="text" name="upload_folder" 
-                        value=$upload_folder style="width: 100%" /></td>
-            </tr>
-            </table>
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
-            <tr>
-                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
-                    Sensor_PCE-FWS20</td>
-            </tr>
-            <tr>
-                <td class="style2">
-                    Sincronize system time from PCE station (<b>set_system_time_from_WeatherStation</b>)</td>
-                <td class="style32">
-                    <select  id="set_system_time_from_WeatherStation" type="text" name="set_system_time_from_WeatherStation" 
-                        value=$set_system_time_from_WeatherStation style="width: 100%" >
-                        <option value=True >True</option>
-                        <option value=False >False</option>
-                    </select>   </td>
-            </tr>
-            </table>
-           <br />
         <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
             <tr>
                 <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
@@ -1118,6 +1057,109 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             </table>
+        <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    Security</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Password of the SMS and web-config <b>(SMSPwd)</b></td>
+                <td class="style17">
+                    <input id="SMSPwd" type="text" name="SMSPwd" 
+                        value=$SMSPwd style="width: 100%" /></td>
+            </tr>
+            </table>
+        <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    DataLogging</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Log all meteo data to a PHP web server (<b>logdata</b>)</td>
+                <td class="style20">
+                    <select id="logdata" type="text" name="logdata" 
+                        value=$logdata style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>       
+                    </td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    Http address of the PHP web server file (<b>serverfile</b>)</td>
+                <td class="style19">
+                    <input id="serverfile" type="text" name="serverfile" 
+                        value=$serverfile style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    Weather Underground</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Log data to Weather Underground PWS (<strong>WeatherUnderground_logdata</strong>)</td>
+                <td class="style20">
+                    <select id="WeatherUnderground_logdata" type="text" name="WeatherUnderground_logdata" 
+                        style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>       
+                    </td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    Weather Underground station ID (<strong>WeatherUnderground_ID</strong>)</td>
+                <td class="style19">
+                    <input id="WeatherUnderground_ID" type="text" name="WeatherUnderground_ID" 
+                        value=$WeatherUnderground_ID style="width: 100%" /></td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    Weather Underground password (WeatherUnderground_password)</td>
+                <td class="style19">
+                    <input id="WeatherUnderground_password" type="text" name="WeatherUnderground_password" 
+                        value=$WeatherUnderground_password style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" 
+        style="width: 800px; margin-right: 0px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    Upload</td>
+            </tr>
+            <tr>
+                <td class="style47">
+                    Upload all meteo data to a FTP server
+                    <span lang="EN-US" style="font-size:11.0pt;
+line-height:115%;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;mso-ascii-theme-font:minor-latin;
+mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:
+minor-latin;mso-bidi-font-family:&quot;Times New Roman&quot;;mso-bidi-theme-font:minor-bidi;
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw </span>a json 
+                    file. Will use credential of the FTP section. (<b>upload_data</b>)</td>
+                <td class="style17">
+                    <select id="upload_data" type="text" name="upload_data" 
+                        value=$upload_data style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>       </td>
+            </tr>
+            <tr>
+                <td class="style48">
+                    FTP folder to upoad (<b>upload_folder</b>)</td>
+                <td class="style17">
+                    <input id="upload_folder" type="text" name="upload_folder" 
+                        value=$upload_folder style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
             <br />
         <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
             <tr>

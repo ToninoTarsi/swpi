@@ -107,14 +107,17 @@ uint16_t cmd_status = CMD_STATUS;
 
 // Expected bit rate: 95 = 1959, 99 = 1700, 9c = 1500, a1 = 1268, aa = 1000, b8 - 756, d5 = 500
 uint16_t cmd_drate = CMD_DRATE|0xaa;	// drate is c8xx rather than c6xx
-uint16_t cmd_freq	= CMD_FREQ|0x67c; //  868.3 MHz
+// uint16_t cmd_freq	= CMD_FREQ|0x620; // 433.92 MHz
+uint16_t cmd_freq = CMD_FREQ|0x67c; // 868.3 MHz Tony
 
 #ifdef RFM01
 	uint16_t cmd_afc	= CMD_AFC|AFC_ON|AFC_OUT_ON|AFC_MANUAL|AFC_FINE|AFC_RL_7;
 	uint16_t cmd_dcycle = CMD_LOWDUTY|0x00;
 	uint16_t cmd_fifo	= CMD_FIFO|0x00;
 
-	uint16_t cmd_config	= CMD_CONFIG|BAND_868|LOAD_CAP_12C0|BW_67;
+	//uint16_t cmd_config	= CMD_CONFIG|BAND_433|LOAD_CAP_12C0|BW_67;
+	uint16_t cmd_config = CMD_CONFIG|BAND_868|LOAD_CAP_12C0|BW_67; // Tony
+	
 	uint16_t cmd_rcon = (CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|RSSI_91);
 	uint16_t cmd_dfilter = (CMD_DFILTER|CR_LOCK_FAST|FILTER_OOK);
 #endif
@@ -185,7 +188,7 @@ int main(int argc, char *argv[])
 	//calculate_values(bytes2);
 	//return -1;
 	
-	uint8_t device_id = 0xa1;
+	uint8_t packet_sig = 0xfa;
 
 	if(map_peripheral(&gpio) == -1 || map_peripheral(&timer_arm) == -1) {
 		printf("Failed to map the GPIO or TIMER registers into the virtual memory space.\n");
@@ -198,7 +201,7 @@ int main(int argc, char *argv[])
 							|TIMER_ARM_C_FPS(0xf9);
 	
 	// Init GPIO21 (on pin 13) as input (DATA), GPIO22 (pin 15) as output (nRES)
-	*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6);
+	//*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6); Tony
 
 	#ifdef RFM01
 		printf("Initialising RFM01\n");
@@ -318,7 +321,8 @@ int main(int argc, char *argv[])
 	do {
 
 		// Read the GPIO pin for clocked DATA value
-		status = ((*(gpio.addr + 13)) >> 21) & 1;
+		//status = ((*(gpio.addr + 13)) >> 21) & 1;
+		status = ((*(gpio.addr + 13)) >> 27) & 1; // Tony
 		rssi = status;
 		rssitime = TIMER_ARM_COUNT;
 		// Check if the pin transitioned
@@ -338,24 +342,24 @@ int main(int argc, char *argv[])
 		now = TIMER_ARM_COUNT;
 		if(!timeout && (now - oldrssitime) > 5000) { // && count > 0
 
+			uint8_t sig_matched = 0;
+		
 			if(count > 60) { // then maybe something at least interesting
 				// Look for device_id
-				int idx, matchcount = 0;
-				uint8_t bit;
+				int idx;
+				uint8_t bit, sig_in = 0;
 				for(idx=0; idx < count; idx++) {
 					bit = rssitime_buf[idx] < g_low_threshold ? 1 : 0;
-					if( bit == (device_id & (0x80 >> matchcount)) >> (7-matchcount) ) {
-						matchcount++;
-					} else {
-						matchcount = 0;
-					}
-					if(matchcount == 8) {
-						packet_offset = idx - 7;
+					sig_in = (sig_in << 1) | bit;
+
+					if((sig_matched = (sig_in == packet_sig))) {
+						packet_offset = idx - 3;
 						break;
 					}
 				}
-				printf("\rData bits = %d   (offset %d) (%d short)\n", count, packet_offset, shorts);
-				if(count == 88 && matchcount == 8) { // then probably a data packet
+				printf("\rData bits = %d   (offset %d) (%d short) %s\n",
+					count, packet_offset, shorts, sig_matched ? "Packet signature found" : "No packet signature found");
+				if(count == 88 && sig_matched) { // then probably a data packet
 
 					// LED on
 					*(gpio.addr + (0x1c >> 2)) = 1 << 22;

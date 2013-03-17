@@ -432,7 +432,16 @@ def answer_call(modem, message):
 
 
 
+# Load Configuration
+configfile = 'swpi.cfg'
+if not os.path.isfile(configfile):
+	cfg = config.config(configfile,False)
+	os.system( "sudo chown pi swpi.cfg" )
 
+	log("Configurantion file created with default option. Now edit the file :  %s and restart with command  : swpi "  % (configfile))
+	#exit(0)
+else:
+	cfg = config.config(configfile,False)
 ##################################################################################
 v = version.Version("VERSION").getVersion()
 log( "Starting SINT WIND PI  ... ")
@@ -444,17 +453,6 @@ print "*            2012 by Tonino Tarsi  <tony.tarsi@gmail.com>              *"
 print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
-# Load Configuration
-configfile = 'swpi.cfg'
-if not os.path.isfile(configfile):
-	cfg = config.config(configfile,False)
-	os.system( "sudo chown pi swpi.cfg" )
-
-	log("Configurantion file created. Now edit the file :  %s and restart with command  : swpi "  % (configfile))
-	exit(0)
-else:
-	cfg = config.config(configfile,False)
-	
 # Get curret log file
 globalvars.logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 logFileDate = datetime.datetime.now().strftime("%d%m%Y")
