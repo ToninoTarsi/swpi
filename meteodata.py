@@ -154,10 +154,10 @@ class MeteoData(object):
             if ( self.UmOutMax == None or self.hum_out > self.UmOutMax ) : 
                 self.UmOutMax  = self.hum_out                       
                     
-            if ( self.PressureMin == None or  self.abs_pressure < self.PressureMin ) : 
-                self.PressureMin  = self.abs_pressure
-            if ( self.PressureMax == None or self.abs_pressure > self.PressureMax ) : 
-                self.PressureMax  = self.abs_pressure                       
+            if ( self.PressureMin == None or  self.rel_pressure < self.PressureMin ) : 
+                self.PressureMin  = self.rel_pressure
+            if ( self.PressureMax == None or self.rel_pressure > self.PressureMax ) : 
+                self.PressureMax  = self.rel_pressure                       
                 
         self.rb_wind_dir.append(self.wind_dir)
         self.wind_dir_ave = self.rb_wind_dir.getMean()

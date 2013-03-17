@@ -322,12 +322,13 @@ class Sensor_WMR100(sensor.Sensor):
 
         # Report data
         self._report_rain(total, rate)
+
         #print "report_rain",total, rate
         
         
 
         # Log
-        log("Rain Battery Ok: %s Rate %g, This Hr %g, This Day %g, Total %g since %4d/%2d/%2d %2d:%2d" %  (batteryOk, rate, thisHour, thisDay, total, yearT, monthT, dayT, hourT, minuteT))
+        #log("Rain Battery Ok: %s Rate %g, This Hr %g, This Day %g, Total %g since %4d/%2d/%2d %2d:%2d" %  (batteryOk, rate, thisHour, thisDay, total, yearT, monthT, dayT, hourT, minuteT))
 
     def _parse_wind_record(self, record):
         """
@@ -356,9 +357,9 @@ class Sensor_WMR100(sensor.Sensor):
 
         # Report Data
         self._report_wind(dir, dirDeg, dirStr, gustSpeed, avgSpeed)
-
+        self._logData()
         # Log
-        log("Wind Battery Ok: %s direction: %d (%g/%s), gust: %g m/s, avg. speed: %g m/s" %  (batteryOk, dir, dirDeg, dirStr, gustSpeed, avgSpeed))
+        #log("Wind Battery Ok: %s direction: %d (%g/%s), gust: %g m/s, avg. speed: %g m/s" %  (batteryOk, dir, dirDeg, dirStr, gustSpeed, avgSpeed))
 
     def _parse_barometer_record(self, record):
         """
@@ -392,7 +393,7 @@ class Sensor_WMR100(sensor.Sensor):
             #print "report_barometer_absolute",pressure + self.pressure_cal
 
         # Log
-        log("Barometer Forecast: %s, Absolute pressure: %.1f mb, Sea Level Pressure: %.1f" % (forecastTxt, pressure, seaLevelPressure))
+        #log("Barometer Forecast: %s, Absolute pressure: %.1f mb, Sea Level Pressure: %.1f" % (forecastTxt, pressure, seaLevelPressure))
 
     def _parse_temperature_record(self, record):
         """
@@ -442,7 +443,7 @@ class Sensor_WMR100(sensor.Sensor):
         #print "report_temperature",temp, humidity, sensor
 
         # Log
-        log("Temp Battery Ok: %s Sensor %s  Temperature: %g C (%s), Humidity: %d %% (%s, %s), Dew Point: %g C" % (batteryOk, sensorName, temp, ttrendTxt, humidity, comfortLevelTxt, htrendTxt, dewPoint))
+        #log("Temp Battery Ok: %s Sensor %s  Temperature: %g C (%s), Humidity: %d %% (%s, %s), Dew Point: %g C" % (batteryOk, sensorName, temp, ttrendTxt, humidity, comfortLevelTxt, htrendTxt, dewPoint))
 
     def _parse_uv_record(self, record):
         """
@@ -464,7 +465,7 @@ class Sensor_WMR100(sensor.Sensor):
         #print "report_uv",uv
 
         # Log
-        log("UV   Battery Ok: %s UV Index: %d" % (batteryOk, uv))   
+        #log("UV   Battery Ok: %s UV Index: %d" % (batteryOk, uv))   
     
     
 if __name__ == '__main__':

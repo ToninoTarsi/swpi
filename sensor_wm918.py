@@ -130,10 +130,9 @@ class Sensor_WM918(sensor.Sensor):
                     self.prCF( c + s)
                     flags[4] = 1
 
-#                if flags[0] and flags[1] and flags[2] and flags[3] and flags[4]:
-#                    globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-#                    globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
-#                    flags = [0,0,0,0,0]
+                if flags[0] and flags[1] and flags[2] and flags[3] and flags[4]:
+                    self._logData()
+                    flags = [0,0,0,0,0]
     
             else:
                 pass
@@ -177,7 +176,7 @@ class Sensor_WM918(sensor.Sensor):
         buffer = self.toBinary(buffer)
         total = (buffer[6] & 0xf)*100. + fromBCD(buffer[5])
         
-        log("Rain :  Total %g " % ( total) )
+        #log("Rain :  Total %g " % ( total) )
         self._report_rain(total, None)
         
 
@@ -188,7 +187,7 @@ class Sensor_WM918(sensor.Sensor):
 #    log("prAF", self.hexBuffer(buffer))
         buffer = self.toBinary(buffer)
         abs_pressure = (fromBCD(buffer[2]) * 100 + fromBCD(buffer[1]))
-        log("Pressure : %f " %  abs_pressure )
+        #log("Pressure : %f " %  abs_pressure )
 
         self._report_barometer_absolute(abs_pressure)
 #    log(barometer_local)
@@ -200,7 +199,7 @@ class Sensor_WM918(sensor.Sensor):
         buffer = self.toBinary(buffer)
         outside_humidity = float(fromBCD(buffer[20]))
         inside_humidity = float(fromBCD(buffer[8]))
-        log("Umidity : inside %f outside %f" % (inside_humidity, outside_humidity))
+        #log("Umidity : inside %f outside %f" % (inside_humidity, outside_humidity))
         self._report_humidity( inside_humidity, outside_humidity)
         
     def prCF(self,  buffer):
@@ -227,7 +226,7 @@ class Sensor_WM918(sensor.Sensor):
         dirStr = windDirMap[dir]
 
         #print wind_direction,wind_speed,wind_gust_speed
-        log("Wind : direction: %d, gust: %f kmh, avg. speed: %f kmh" % (wind_direction, wind_gust_speed, wind_speed ))
+        #log("Wind : direction: %d, gust: %f kmh, avg. speed: %f kmh" % (wind_direction, wind_gust_speed, wind_speed ))
         self._report_wind(dir, wind_direction, dirStr, wind_gust_speed, wind_speed)
 
 
@@ -238,7 +237,7 @@ class Sensor_WM918(sensor.Sensor):
         inside_temp = self.pd2int3(buffer[1:3]) / 10.0
         outside_temp = fromBCD(buffer[16]) / 10. + ((buffer[17] & 0xf)*10)
         
-        log("Temperature : inside %f outside %f" % (inside_temp, outside_temp))
+        #log("Temperature : inside %f outside %f" % (inside_temp, outside_temp))
         self._report_temperature_inout(inside_temp, outside_temp)
     
 if __name__ == '__main__':

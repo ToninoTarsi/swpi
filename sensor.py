@@ -109,10 +109,8 @@ class Sensor(threading.Thread):
             
     def _report_rain(self,total, rate):
         #print "report_rain",total, rate
-        globalvars.meteo_data.status = 0
         globalvars.meteo_data.rain = total
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
+ 
             
             
     def _report_wind(self,dir, dirDeg, dirStr, gustSpeed, avgSpeed):
@@ -121,23 +119,14 @@ class Sensor(threading.Thread):
         globalvars.meteo_data.wind_gust    = gustSpeed
         globalvars.meteo_data.wind_dir     = dirDeg
         globalvars.meteo_data.wind_dir_code = dirStr
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
         
-        globalvars.meteo_data.CalcStatistics()
-        globalvars.meteo_data.LogDataToDB()
+#        globalvars.meteo_data.CalcStatistics()
+#        globalvars.meteo_data.LogDataToDB()
 
     def _report_barometer_absolute(self,pressure):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
         globalvars.meteo_data.abs_pressure = pressure
 
     def _report_temperature(self,temp, humidity, sensor):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
         if ( sensor == 1 ) :
             globalvars.meteo_data.hum_out  = humidity   
             globalvars.meteo_data.temp_out   = temp      
@@ -146,24 +135,27 @@ class Sensor(threading.Thread):
             globalvars.meteo_data.temp_in   = temp     
 
     def _report_temperature_inout(self,temp_in, temp_out):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
         globalvars.meteo_data.temp_out   = temp_out      
         globalvars.meteo_data.temp_in   = temp_in    
 
     def _report_humidity(self, hum_in, hum_out):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
-
         globalvars.meteo_data.hum_out  = hum_out   
         globalvars.meteo_data.hum_in  = hum_in   
   
                                 
     def _report_uv(self,uv):
-        globalvars.meteo_data.status = 0
-        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time    
-        globalvars.meteo_data.uv = uv                   
+        globalvars.meteo_data.uv = uv    
+        
+        
+    def _logData(self):
+        #print "report_wind",dirDeg, avgSpeed, gustSpeed 
+#        if ( globalvars.meteo_data.last_measure_time != None):
+#            print (datetime.datetime.now()-globalvars.meteo_data.last_measure_time).seconds
+        if ( globalvars.meteo_data.last_measure_time == None or (datetime.datetime.now()-globalvars.meteo_data.last_measure_time).seconds >= 60 ) :   
+            globalvars.meteo_data.status = 0
+            globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+            globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
+        
+            globalvars.meteo_data.CalcStatistics()
+            globalvars.meteo_data.LogDataToDB()                      
  
