@@ -479,8 +479,12 @@ os.system( "sudo chmod +x ./wifi_reset.sh" )
 os.system( "sudo chmod +x ./swpi.sh" )
 os.system( "sudo chmod +x ./swpi-update.sh" )
 os.system( "sudo chmod +x ./killswpi.sh" )
+os.system( "sudo chmod +x ./DHT/DHT" )
 os.system( "sudo chown pi mcp3002/" )
 os.system( "sudo chown pi TX23/" )
+
+
+
 
 # Some Globasl :-(
 globalvars.bAnswering = False

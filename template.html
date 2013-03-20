@@ -501,6 +501,15 @@ Content-Type: text/html
                 break;
             }
         }
+
+        dd = document.getElementById('use_dht');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$use_dht') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+
         
                                       
 	}
@@ -621,7 +630,7 @@ Content-Type: text/html
                     Activate the config WebServer (<b>config_web_server</b>)</td>
                 <td class="style45">
                     <select id="config_web_server" type="text" name="config_web_server" 
-                        value=$config_web_server style="width: 100%" >
+                        value="$config_web_server" style="width: 100%" >
                          <option value=True >True</option>
                          <option value=False >False</option>
                     </select>
@@ -632,14 +641,14 @@ Content-Type: text/html
                     Port of the config WebServer (<b>config_web_server_port</b>)</td>
                 <td class="style45">
                     <input id="config_web_server_port" type="text" name="config_web_server_port" 
-                        value=$config_web_server_port style="width: 100%" /></td>
+                        value="$config_web_server_port" style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800">
                     Reset the wifi interface if detecting a connection problem (<b>wifi_reset_if_down</b>)</td>
                 <td class="style45">
                     <select id="wifi_reset_if_down" type="text" name="wifi_reset_if_down" 
-                        value=$wifi_reset_if_down style="width: 100%" >
+                        value="$wifi_reset_if_down" style="width: 100%" >
                         <option value=True >True</option>
                          <option value=False >False</option>
                     </select>                        
@@ -746,6 +755,16 @@ Content-Type: text/html
                         <option value=True >True</option>
                         <option value=False >False</option>
                     </select>    </td>
+            </tr>
+            <tr>   
+                <td class="style52">
+                    Use DHT humidity-Temperature sensor ( <b>use_dht </b>)</td>
+                <td class="style31">
+                    <select id="use_dht" type="text" name="use_dht" 
+                        value=$use_tmp36 style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
             </tr>
             </table>
     

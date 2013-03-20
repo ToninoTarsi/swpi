@@ -158,6 +158,7 @@ class config(object):
 		self.windmeasureinterval = config.getint('Sensors', 'windmeasureinterval',5)
 		self.use_bmp085 = config.getboolean('Sensors', 'use_bmp085',False)
 		self.use_tmp36 = config.getboolean('Sensors', 'use_tmp36',False)
+		self.use_dht = config.getboolean('Sensors', 'use_dht',False)
 		self.number_of_measure_for_wind_average_gust_calculation =  config.getint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',10)
 
 		# [Sensor_PCE-FWS20]
@@ -296,6 +297,9 @@ class config(object):
 		config.setint('Sensors', 'windmeasureinterval',self.windmeasureinterval)
 		config.setboolean('Sensors', 'use_bmp085',self.use_bmp085)
 		config.setboolean('Sensors', 'use_tmp36',self.use_tmp36)
+		config.setboolean('Sensors', 'use_dht',self.use_dht)
+
+
 		config.setint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',self.number_of_measure_for_wind_average_gust_calculation)
 
 		# [Sensor_PCE-FWS20]

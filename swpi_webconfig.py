@@ -70,6 +70,10 @@ def outputPage(cfg):
 	d.update(windmeasureinterval=cfg.windmeasureinterval)
 	d.update(use_bmp085=cfg.use_bmp085)
 	d.update(use_tmp36=cfg.use_tmp36)
+	d.update(use_dht=cfg.use_dht)
+
+	
+	
 	d.update(number_of_measure_for_wind_average_gust_calculation=cfg.number_of_measure_for_wind_average_gust_calculation)
 
 	d.update(set_system_time_from_WeatherStation=cfg.set_system_time_from_WeatherStation)
@@ -191,7 +195,10 @@ if ( len(request) != 0 ):
 	cfg.windspeed_gain = request['windspeed_gain'][0]																	  
 	cfg.windmeasureinterval = request['windmeasureinterval'][0]																 
 	cfg.use_bmp085 = request['use_bmp085'][0]																		   
-	cfg.use_tmp36 = request['use_tmp36'][0]																		   
+	cfg.use_tmp36 = request['use_tmp36'][0]		
+	cfg.use_dht = request['use_dht'][0]		
+	
+																	   
 	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]						 
 
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]											 
