@@ -116,9 +116,12 @@ uint16_t cmd_freq = CMD_FREQ|0x67c; // 868.3 MHz Tony
 	uint16_t cmd_fifo	= CMD_FIFO|0x00;
 
 	//uint16_t cmd_config	= CMD_CONFIG|BAND_433|LOAD_CAP_12C0|BW_67;
+
+	// Enviroment
 	uint16_t cmd_config = CMD_CONFIG|BAND_868|LOAD_CAP_12C0|BW_67; // Tony
+	uint16_t cmd_rcon = (CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|RSSI_97);
 	
-	uint16_t cmd_rcon = (CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|RSSI_91);
+
 	uint16_t cmd_dfilter = (CMD_DFILTER|CR_LOCK_FAST|FILTER_OOK);
 #endif
 
@@ -202,6 +205,12 @@ int main(int argc, char *argv[])
 	
 	// Init GPIO21 (on pin 13) as input (DATA), GPIO22 (pin 15) as output (nRES)
 	//*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6); Tony
+
+	// RPi (Rev1) Init GPIO21 (on pin 13) as input (DATA), GPIO22 (pin 15) as output (nRES)
+	//*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6);
+
+	// RPi (Rev2) Init GPIO27 (on pin 13) as input (DATA)
+	*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xff1fffff)|(0x001 << 6)
 
 	#ifdef RFM01
 		printf("Initialising RFM01\n");

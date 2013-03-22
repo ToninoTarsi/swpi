@@ -15,7 +15,8 @@ import config
 import random
 import datetime
 import sqlite3
-from TTLib import *
+#from TTLib import *
+import TTLib
 import sys
 import subprocess
 import globalvars
@@ -26,6 +27,19 @@ import RPi.GPIO as GPIO
 import TTLib
 import thread
 
+def getrevision():
+    # Extract board revision from cpuinfo file
+    myrevision = "0000"
+    try:
+        f = open('/proc/cpuinfo','r')
+        for line in f:
+            if line[0:8]=='Revision':
+                myrevision = line[11:-1]
+        f.close()
+    except:
+        myrevision = "0000"
+    
+    return myrevision
 
 def get_wind_dir_code8():
     return [ 'N','NW','NE', 'E', 'SW' , 'W',  'S' , 'SE' ]
@@ -50,7 +64,13 @@ class Sensor_Nevio(sensor.Sensor):
     
     __PIN_A = 23  #Anemometer
     __PIN_B1 = 17 
-    __PIN_B2 = 21
+    
+    myrevision = getrevision()
+    if myrevision == "0002" or myrevision == "0003" :
+        __PIN_B2 = 21
+    else:
+        __PIN_B2 = 27
+        
     __PIN_B3 = 22
     __PIN_B0 = 4    # Pin only available for NEVIO16 sensors
     

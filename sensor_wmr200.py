@@ -68,7 +68,8 @@ class Sensor_WMR200(sensor.Sensor):
     logger = logging.getLogger('station.wmr200')
 
     name = "Oregon Scientific WMR200"
-    def __init__(self ):
+    def __init__(self ,cfg):
+      self.cfg = cfg
       # The delay between data requests. This value will be adjusted
       # automatically.
       self.pollDelay = 2.5

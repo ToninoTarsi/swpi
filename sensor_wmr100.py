@@ -279,7 +279,7 @@ class Sensor_WMR100(sensor.Sensor):
         consoleDate = "%d/%d/%d %d:%d" % (day, month, year, hour, minute)
 
         # Log
-        log("Clock %s, power: %s, Powered: %s, Battery: %s, RF: %s" % ( consoleDate, power, powered, batteryOK, rf))
+        #log("Clock %s, power: %s, Powered: %s, Battery: %s, RF: %s" % ( consoleDate, power, powered, batteryOK, rf))
 
 
     def _parse_rain_record(self, record):
@@ -357,7 +357,13 @@ class Sensor_WMR100(sensor.Sensor):
 
         # Report Data
         self._report_wind(dir, dirDeg, dirStr, gustSpeed, avgSpeed)
-        self._logData()
+        
+        #if ( globalvars.meteo_data.last_measure_time == None or (datetime.datetime.now()-globalvars.meteo_data.last_measure_time).seconds >= 60 ) :   
+        globalvars.meteo_data.status = 0
+        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
+        #print "_logData1"
+        sensor.Sensor.GetData(self)  
         # Log
         #log("Wind Battery Ok: %s direction: %d (%g/%s), gust: %g m/s, avg. speed: %g m/s" %  (batteryOk, dir, dirDeg, dirStr, gustSpeed, avgSpeed))
 
@@ -470,7 +476,11 @@ class Sensor_WMR100(sensor.Sensor):
     
 if __name__ == '__main__':
     """Main only for testing"""
+    configfile = 'swpi.cfg'
     
-    ws = Sensor_WMR100()
+    cfg = config.config(configfile)    
+    globalvars.meteo_data = meteodata.MeteoData(cfg)  
+      
+    ws = Sensor_WMR100(cfg)
     ws.GetData()
     

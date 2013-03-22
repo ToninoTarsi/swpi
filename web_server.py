@@ -31,7 +31,7 @@ def log(message) :
 chars = string.ascii_letters + string.digits
 sessionDict = {} # dictionary mapping session id's to session objects
 
-_enabled_path = ("/","/index.html","/login.py","/swpi_webconfig.py","/swpi-banner.jpg","/log/","/db/","/download_cfg.py","/swpi.cfg","/upload_cfg.py","/upload_cfg.html","/web_reboot.py","/web_status.py","/web_swpi_update.py","/favicon.ico")
+_enabled_path = ("/reset_camera.py","/","/index.html","/login.py","/swpi_webconfig.py","/swpi-banner.jpg","/log/","/db/","/download_cfg.py","/swpi.cfg","/upload_cfg.py","/upload_cfg.html","/web_reboot.py","/web_status.py","/web_swpi_update.py","/favicon.ico")
 
 
 class SessionElement(object):

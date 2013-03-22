@@ -104,6 +104,7 @@ def outputPage(cfg):
 	d.update(start_camera_number=cfg.start_camera_number)
 	d.update(gphoto2_capture_image_and_download=cfg.gphoto2_capture_image_and_download)
 	d.update(use_camera_resetter=cfg.use_camera_resetter)
+	d.update(camera_resetter_normaly_on=cfg.camera_resetter_normaly_on)
 
 
 
@@ -228,6 +229,9 @@ if ( len(request) != 0 ):
 	cfg.start_camera_number = request['start_camera_number'][0]																 
 	cfg.gphoto2_capture_image_and_download = request['gphoto2_capture_image_and_download'][0]											 
 	cfg.use_camera_resetter = request['use_camera_resetter'][0]											 
+	cfg.camera_resetter_normaly_on = request['camera_resetter_normaly_on'][0]											 
+
+
 
 	cfg.ftpserver = request['ftpserver'][0]																		   
 	cfg.ftpserverDestFolder = request['ftpserverDestFolder'][0]																 

@@ -47,8 +47,8 @@ class Sensor(threading.Thread):
 		object.__init__(self)
 		
 	def GetData(self):
-		
-		if ( self.bmp085 != None ):
+		#print "GetData"
+		if ( self.cfg.use_bmp085 and self.bmp085 != None ):
 			self.ReadBMP085()
 			
 		if ( self.cfg.use_dht ):
@@ -64,7 +64,10 @@ class Sensor(threading.Thread):
 			#print output
 			matches = re.search("Temp =\s+([0-9.]+)", output)
 			if ( matches):
-				globalvars.meteo_data.temp_in = float(matches.group(1))
+				if ( self.cfg.use_bmp085 ):
+					globalvars.meteo_data.temp_in = float(matches.group(1))
+				else:
+					globalvars.meteo_data.temp_out = float(matches.group(1))
 			
 			# search for humidity printout
 			matches = re.search("Hum =\s+([0-9.]+)", output)
@@ -171,13 +174,13 @@ class Sensor(threading.Thread):
 		
 		
 	def _logData(self):
-		#print "report_wind",dirDeg, avgSpeed, gustSpeed 
+		#print "_logData" 
 #		if ( globalvars.meteo_data.last_measure_time != None):
 #			print (datetime.datetime.now()-globalvars.meteo_data.last_measure_time).seconds
 		if ( globalvars.meteo_data.last_measure_time == None or (datetime.datetime.now()-globalvars.meteo_data.last_measure_time).seconds >= 60 ) :   
 			globalvars.meteo_data.status = 0
 			globalvars.meteo_data.last_measure_time = datetime.datetime.now()
 			globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
-		
-			self.GetData()				  
+			print "_logData1"
+			super().GetData()				  
  

@@ -70,7 +70,7 @@ class Rebooter(threading.Thread):
     def run(self):
         #try:
         if ( self.cfg.reboot_at.upper() != "NONE" ):
-            time_todo = datetime.timedelta(hours=int(self.cfg.reboot_at.split(":")[0]), minutes=int(self.cfg.reboot_at.split(":")[1]), seconds=int(self.cfg.reboot_at.split(":")[2]))
+            time_todo = datetime.timedelta(hours=int(self.cfg.reboot_at.split(":")[0]), minutes=int(self.cfg.reboot_at.split(":")[1]), seconds=00)
             time_now = datetime.timedelta(hours=datetime.datetime.now().hour, minutes=datetime.datetime.now().minute, seconds=datetime.datetime.now().second)
             
             seconds_todo = (time_todo - time_now  ).total_seconds()
@@ -92,7 +92,7 @@ class Halter(threading.Thread):
     def run(self):
         #try:
         if ( self.cfg.shutdown_at.upper() != "NONE" ):
-            time_todo = datetime.timedelta(hours=int(self.cfg.shutdown_at.split(":")[0]), minutes=int(self.cfg.shutdown_at.split(":")[1]), seconds=int(self.cfg.shutdown_at.split(":")[2]))
+            time_todo = datetime.timedelta(hours=int(self.cfg.shutdown_at.split(":")[0]), minutes=int(self.cfg.shutdown_at.split(":")[1]), seconds=00)
             time_now = datetime.timedelta(hours=datetime.datetime.now().hour, minutes=datetime.datetime.now().minute, seconds=datetime.datetime.now().second)
            
             seconds_todo = (time_todo - time_now  ).total_seconds()

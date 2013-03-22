@@ -405,6 +405,23 @@ def answer_call(modem, message):
 			listOfMessages.append("./audio/" + str(intera) + ".raw")
 			listOfMessages.append("./audio/percent.raw")
 		
+		#Cloud base
+		if (globalvars.meteo_data.cloud_base_altitude != None ) : 
+			thousands, rem = divmod(round(globalvars.meteo_data.cloud_base_altitude), 1000) 
+			thousands = int(thousands * 1000)
+			hundreds, tens = divmod(rem, 100)
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))	
+			listOfMessages.append("./audio/silence05s.raw") 
+			listOfMessages.append("./audio/cloudbase.raw")
+			if ( thousands != 0):
+				listOfMessages.append("./audio/" + str(thousands) + ".raw")
+			if ( hundreds != 0):
+				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")
+			listOfMessages.append("./audio/meters.raw")
+		
 		# Statistics
 		listOfMessages.append("./audio/minday.raw")
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")		
@@ -415,6 +432,8 @@ def answer_call(modem, message):
 		listOfMessages.append("./audio/www.raw")
 		listOfMessages.append("./audio/silence05s.raw") 
 		listOfMessages.append("./audio/swpi.raw")
+			
+			
 			
 		modem.answerCallNew(listOfMessages)
 		
@@ -480,8 +499,11 @@ os.system( "sudo chmod +x ./swpi.sh" )
 os.system( "sudo chmod +x ./swpi-update.sh" )
 os.system( "sudo chmod +x ./killswpi.sh" )
 os.system( "sudo chmod +x ./DHT/DHT" )
-os.system( "sudo chown pi mcp3002/" )
-os.system( "sudo chown pi TX23/" )
+
+os.system( "sudo chown  pi ./DHT" )
+os.system( "sudo chown  pi ./mcp3002" )
+os.system( "sudo chown  pi ./TX23" )
+os.system( "sudo chown  pi ./wh1080_rf" )
 
 
 

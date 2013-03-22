@@ -69,7 +69,25 @@ class PhotoCamera(object):
 			GPIO.setwarnings(False)
 			GPIO.setmode(GPIO.BCM)
 			GPIO.setup(self.__PIN_RESET, GPIO.OUT) 
-			GPIO.output(self.__PIN_RESET, True)
+			if cfg.camera_resetter_normaly_on :
+				GPIO.output(self.__PIN_RESET, True)
+			else:
+				GPIO.output(self.__PIN_RESET, False)
+
+	def reset_camera(self):
+		if ( self.cfg.use_camera_resetter ):
+			log("Switching off Camera ... ")
+			if self.cfg.camera_resetter_normaly_on :
+				GPIO.output(self.__PIN_RESET, 0)
+			else:
+				GPIO.output(self.__PIN_RESET, 1)
+			time.sleep(2)
+			log("Switching on Camera ... ")
+			if self.cfg.camera_resetter_normaly_on :
+				GPIO.output(self.__PIN_RESET, 1)
+			else:
+				GPIO.output(self.__PIN_RESET, 0)
+			
 		
 	def detectCameras(self):
 		p = subprocess.Popen("gphoto2 --auto-detect",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -107,13 +125,7 @@ class PhotoCamera(object):
 		if ( self.cfg.WebCamInterval  >= 120 ) :
 			time.sleep(120)
 			if ( self.bCaturing ) : 
-				if ( self.cfg.use_camera_resetter ):
-					log("Switching off Camera ... ")
-					GPIO.output(self.__PIN_RESET, 0)
-					time.sleep(2)
-					log("Switching on Camera ... ")
-					GPIO.output(self.__PIN_RESET, 1)
-					time.sleep(10)           
+				self.reset_camera()           
 				log("CameraWatchDog problem: System will Reboot " )
 				systemRestart()
 			else:
@@ -209,14 +221,8 @@ class PhotoCamera(object):
 					nTry = nTry + 1
 					if ( bError ):
 						log("Error capturing camera .. retrying")
-						if ( self.cfg.use_camera_resetter ):
-							log("Switching off Camera ... ")
-							GPIO.output(self.__PIN_RESET, 0)
-							time.sleep(2)
-							log("Switching on Camera ... ")
-							GPIO.output(self.__PIN_RESET, 1)
-							time.sleep(10)
-						time.sleep(1)
+						self.reset_camera()
+						time.sleep(10)
 						
 				if ( bError ):		
 					log("Error capturing camera .. rebooting") 	
@@ -266,13 +272,21 @@ if __name__ == '__main__':
 	
 	cfg = config.config(configfile)
 	
-	if ( cfg.use_camera_resetter ):
-		log("Switching off Camera ... ")
-		GPIO.output(24, 0)
-		time.sleep(2)
-		log("Switching on Camera ... ")
-		GPIO.output(24, 1)
-		time.sleep(10)     
+	
+	cam = PhotoCamera(cfg)
+	
+	cam.reset_camera()
+#	
+#	GPIO.setmode(GPIO.BCM)
+#	GPIO.setup(24, GPIO.OUT) 
+#	
+#	if ( cfg.use_camera_resetter ):
+#		log("Switching off Camera ... ")
+#		GPIO.output(24, 0)
+#		time.sleep(2)
+#		log("Switching on Camera ... ")
+#		GPIO.output(24, 1)
+#		time.sleep(10)     
 		      
 	#ClearAllCameraSDCards(cfg)
 	

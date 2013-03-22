@@ -300,6 +300,8 @@ def UploadData(cfg):
     mydata['wind_chill'] = (globalvars.meteo_data.wind_chill)
     mydata['temp_apparent'] = (globalvars.meteo_data.temp_apparent)
     mydata['dew_point'] = (globalvars.meteo_data.dew_point)
+    mydata['cloud_base_altitude'] = (globalvars.meteo_data.cloud_base_altitude)
+
     mydata['uv'] = (globalvars.meteo_data.uv)
     mydata['illuminance'] = (globalvars.meteo_data.illuminance)
     mydata['winDayMin'] = (globalvars.meteo_data.winDayMin)
@@ -444,6 +446,8 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
                     text = text + " - Temperatura:%4.1f" % globalvars.meteo_data.temp_out + " C"
                 if (globalvars.meteo_data.rel_pressure != None ) : 
                     text = text + " - Pressione:%6.1f" % globalvars.meteo_data.rel_pressure + " hpa"         
+                if (globalvars.meteo_data.cloud_base_altitude != None ) : 
+                    text = text + " - Base cumulo:%d" % globalvars.meteo_data.cloud_base_altitude + " m"   
                 
                 width, height = font.getsize(text)
                 draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)

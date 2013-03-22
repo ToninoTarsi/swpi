@@ -202,6 +202,7 @@ class config(object):
 		self.start_camera_number = config.getint('Camera', 'start_camera_number',1)
 		self.gphoto2_capture_image_and_download = config.getboolean('Camera', 'gphoto2_capture_image_and_download',True)
 		self.use_camera_resetter = config.getboolean('Camera', 'use_camera_resetter',False)
+		self.camera_resetter_normaly_on = config.getboolean('Camera', 'camera_resetter_normaly_on',True)
 
 
 
@@ -335,6 +336,7 @@ class config(object):
 		config.setint('Camera', 'start_camera_number',self.start_camera_number)
 		config.setboolean('Camera', 'gphoto2_capture_image_and_download',self.gphoto2_capture_image_and_download)
 		config.setboolean('Camera', 'use_camera_resetter',self.use_camera_resetter)
+		config.setboolean('Camera', 'camera_resetter_normaly_on',self.camera_resetter_normaly_on)
 
 
 

@@ -54,8 +54,7 @@ class Sensor_WM918(sensor.Sensor):
     Station driver for the Oregon Scientific WM918.
     '''
     def __init__(self,cfg ):
-        self.port = cfg.sensor_serial_port
-        self.config = cfg
+        self.cfg = cfg
 
     def GetData(self):     
         log("Thread started")
@@ -68,7 +67,7 @@ class Sensor_WM918(sensor.Sensor):
                 ser.setParity(serial.PARITY_NONE)
                 ser.setByteSize(serial.EIGHTBITS)
                 ser.setStopbits(serial.STOPBITS_ONE)
-                ser.setPort(self.port)
+                ser.setPort(self.cfg.sensor_serial_port)
                 ser.setTimeout(60)  # 60s timeout
                 ser.open()
                 ser.setRTS(True)
@@ -79,7 +78,7 @@ class Sensor_WM918(sensor.Sensor):
                 log(" WM918 reader exception")
 
             
-            
+            #self._run(ser)
             ## Close serial port connection
             log("Serial port  WM918 connection failure")
             try:
@@ -130,8 +129,14 @@ class Sensor_WM918(sensor.Sensor):
                     self.prCF( c + s)
                     flags[4] = 1
 
+                #print  flags[0] , flags[1] , flags[2] , flags[3] , flags[4]
                 if flags[0] and flags[1] and flags[2] and flags[3] and flags[4]:
-                    self._logData()
+                    if ( globalvars.meteo_data.last_measure_time == None or (datetime.datetime.now()-globalvars.meteo_data.last_measure_time).seconds >= 60 ) :   
+                        globalvars.meteo_data.status = 0
+                        globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+                        globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time 
+                        #print "_logData1"
+                        sensor.Sensor.GetData(self)                 
                     flags = [0,0,0,0,0]
     
             else:

@@ -11,11 +11,54 @@
 
 import time
 import sqlite3
-import WeatherStation
 import datetime
 import TTLib
 import config
+import math
+
+def  cloud_base_altitude(temp,dew_point,station_altitude):
+    if (temp == None or dew_point == None or station_altitude == None):
+        return None
+    return (((((temp-dew_point)*1.8/4.5 ) * 1000 ) + (station_altitude * 3.2808) ) / 3.2808)
+
+
             
+def dew_point(temp, hum):
+    """Compute dew point, using formula from
+    http://en.wikipedia.org/wiki/Dew_point.
+
+    """
+    if temp == None or hum == None:
+        return None
+    a = 17.27
+    b = 237.7
+    gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
+    return (b * gamma) / (a - gamma)
+
+def wind_chill(temp, wind):
+    """Compute wind chill, using formula from
+    http://en.wikipedia.org/wiki/wind_chill
+
+    """
+    if temp == None or wind == None:
+        return None
+    wind_kph = wind * 3.6
+    if wind_kph <= 4.8 or temp > 10.0:
+        return temp
+    return min(13.12 + (temp * 0.6215) +
+               (((0.3965 * temp) - 11.37) * (wind_kph ** 0.16)),
+               temp)
+
+def apparent_temp(temp, rh, wind):
+    """Compute apparent temperature (real feel), using formula from
+    http://www.bom.gov.au/info/thermal_stress/
+
+    """
+    if temp == None or rh == None or wind == None:
+        return None
+    vap_press = (float(rh) / 100.0) * 6.105 * math.exp(
+        17.27 * temp / (237.7 + temp))
+    return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00            
 
 class MeteoData(object):
     
@@ -55,6 +98,7 @@ class MeteoData(object):
         self.wind_chill = None
         self.temp_apparent = None
         self.dew_point = None
+        self.cloud_base_altitude = None
         
         self.previous_rain = None   
         
@@ -98,10 +142,10 @@ class MeteoData(object):
       
     def CalcStatistics(self):
         
-        self.wind_chill = WeatherStation.wind_chill(self.temp_out, self.wind_ave)
-        self.temp_apparent = WeatherStation.apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
-        self.dew_point = WeatherStation.dew_point(self.temp_out, self.hum_out)
-        
+        self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
+        self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
+        self.dew_point = dew_point(self.temp_out, self.hum_out)
+        self.cloud_base_altitude = cloud_base_altitude(self.temp_out,self.dew_point,self.cfg.location_altitude)
 
         if ( self.abs_pressure != None and self.abs_pressure != 0.0): 
             if ( self.cfg.location_altitude != 0 ):
@@ -220,7 +264,9 @@ class MeteoData(object):
             if self.hum_out != None :
                 msg = msg + " - U: %d" % self.hum_out        
             if self.rain != None :
-                msg = msg + " - R: %d" % self.rain                                            
+                msg = msg + " - R: %d" % self.rain     
+            if self.cloud_base_altitude != None :
+                msg = msg + " - CB: %d" % self.cloud_base_altitude                                           
             TTLib.log(msg)
 
 

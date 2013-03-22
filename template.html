@@ -510,6 +510,14 @@ Content-Type: text/html
             }
         }
 
+        dd = document.getElementById('camera_resetter_normaly_on');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$camera_resetter_normaly_on') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+
         
                                       
 	}
@@ -537,6 +545,12 @@ Content-Type: text/html
 	    window.location = '/web_swpi_update.py'
 	}
 
+	function ButtonResetCamera_onclick() {
+	    window.location = '/reset_camera.py'
+	}
+
+
+	
     </script>
     
     
@@ -550,10 +564,11 @@ Content-Type: text/html
             id="ButtonUploadCFG" type="button" value="Upload Configuration File" 
             onclick="return ButtonUploadCFG_onclick()" /><input 
             id="ButtonReboot" type="button" value="Reboot" onclick="return ButtonReboot_onclick()" /><input 
-            id="Button1" type="button" value="Check for Update" onclick="return Button1_onclick()" /><input 
+            id="ButtonStatus0" type="button" value=" Reset Camera" 
+            onclick="return ButtonResetCamera_onclick()" /><input 
+            id="Button1" type="button" value="Check for Update" onclick="return Button1_onclick()" /><br /><input 
             id="ButtonStatus" type="button" value="View Status" 
-            onclick="return ButtonStatus_onclick()" />
-        <form id="ConfigForm" action="swpi_webconfig.py" method="post">
+            onclick="return ButtonStatus_onclick()" /><form id="ConfigForm" action="swpi_webconfig.py" method="post">
         <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
             <tr>
                 <td class="style46" colspan="2" style="font-size: large; color: #0000FF;">
@@ -1075,7 +1090,18 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         <option value=False >False</option>
                     </select></td>
             </tr>
+            <tr>
+                <td class="style2">
+                    Resetter PIN ( GPIO24 ) normaly on (<b>camera_resetter_normaly_on</b>)</td>
+                <td class="style34">
+                    <select id="camera_resetter_normaly_on" type="text" name="camera_resetter_normaly_on" 
+                        value=$use_camera_resetter style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
             </table>
+        <br />
         <br />
         <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
             <tr>
