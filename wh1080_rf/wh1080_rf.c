@@ -46,10 +46,26 @@
 #include <linux/spi/spidev.h>
 #include <time.h>
 #include <sched.h>
+#include <string.h>
 
 #include "wh1080_rf.h"
-#include "bcm2835.h"
+#include "rf_bcm2835.h"
+#include <bcm2835.h>
+
 #include "rfm01.h"
+
+unsigned int f;
+unsigned int band;
+unsigned int lna;
+unsigned int bw;
+unsigned int rssi;
+
+uint16_t cmd_band;
+uint16_t cmd_f;
+uint16_t cmd_lna;
+uint16_t cmd_bw;
+uint16_t cmd_rssi;
+
 
 uint16_t bw_scale[6] = {BW_67, BW_134, BW_200, BW_270, BW_340, BW_400};
 
@@ -73,6 +89,31 @@ static uint8_t mode=0;
 static uint8_t bits = 8;
 static uint32_t speed = 1000000;
 static uint16_t delay=0;
+
+
+
+#define RFM01_CE        BCM2835_SPI_CS0         // SPI chip select
+#define HIGH 0x1
+#define LOW  0x0
+#define RFM01_IRQ       RPI_V2_GPIO_P1_15          // SPI IRQ GPIO pin. tony
+#define RFM01_DATA 		RPI_V2_GPIO_P1_13    		// Data tony
+
+static void spi_init()
+{
+	if (!bcm2835_init()) exit(1);
+	bcm2835_spi_begin();
+	bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
+	bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);
+	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_32);
+	bcm2835_spi_chipSelect(RFM01_CE);
+	bcm2835_spi_setChipSelectPolarity(RFM01_CE, LOW);
+
+	bcm2835_gpio_fsel(RFM01_IRQ, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_set_pud(RFM01_IRQ, BCM2835_GPIO_PUD_UP);
+	// As we use FIFO, the DATA line requires pull-up
+	bcm2835_gpio_fsel(RFM01_DATA, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_set_pud(RFM01_DATA, BCM2835_GPIO_PUD_UP);
+}
 
 
 static uint16_t send_command16(int fd, uint16_t cmd)
@@ -107,8 +148,12 @@ uint16_t cmd_status = CMD_STATUS;
 
 // Expected bit rate: 95 = 1959, 99 = 1700, 9c = 1500, a1 = 1268, aa = 1000, b8 - 756, d5 = 500
 uint16_t cmd_drate = CMD_DRATE|0xaa;	// drate is c8xx rather than c6xx
+
+
 // uint16_t cmd_freq	= CMD_FREQ|0x620; // 433.92 MHz
 uint16_t cmd_freq = CMD_FREQ|0x67c; // 868.3 MHz Tony
+
+uint16_t  cmd_wakeup;
 
 #ifdef RFM01
 	uint16_t cmd_afc	= CMD_AFC|AFC_ON|AFC_OUT_ON|AFC_MANUAL|AFC_FINE|AFC_RL_7;
@@ -118,7 +163,7 @@ uint16_t cmd_freq = CMD_FREQ|0x67c; // 868.3 MHz Tony
 	//uint16_t cmd_config	= CMD_CONFIG|BAND_433|LOAD_CAP_12C0|BW_67;
 
 	// Enviroment
-	uint16_t cmd_config = CMD_CONFIG|BAND_868|LOAD_CAP_12C0|BW_67; // Tony
+	uint16_t cmd_config = CMD_CONFIG|BAND_868|LOAD_CAP_12C0|BW_134; // Tony
 	uint16_t cmd_rcon = (CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|RSSI_97);
 	
 
@@ -185,12 +230,352 @@ float sample_rssi(int fd, int duration, int interval) {
 
 extern int read_bmp085(float altitude);
 
+static void rfm01_init(int fd)
+{
+//	send_command16(fd, cmd_status);  		// CMD_STATUS
+//	send_command16(fd, cmd_config); 		// CMD_CONFIG|BAND_868|LOAD_CAP_12C0|BW_134
+//	send_command16(fd, cmd_freq);			// CMD_FREQ|0x67c
+//	send_command16(fd, cmd_drate);			// CMD_DRATE|0xaa
+//	send_command16(fd, cmd_rcon);			// CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|RSSI_97
+//	send_command16(fd, cmd_dfilter);		// CMD_DFILTER|CR_LOCK_FAST|FILTER_OOK
+//	send_command16(fd, cmd_fifo);			// CMD_FIFO|0x00
+//	send_command16(fd, cmd_afc);			// CMD_AFC|AFC_ON|AFC_OUT_ON|AFC_MANUAL|AFC_FINE|AFC_RL_7
+//	send_command16(fd, cmd_dcycle);			// CMD_LOWDUTY|0x00
+
+
+	cmd_status = CMD_STATUS;
+	cmd_config = CMD_CONFIG|cmd_band|LOWBATT_EN|CRYSTAL_EN|LOAD_CAP_12C5|cmd_bw;
+	cmd_freq = CMD_FREQ|cmd_f;
+	cmd_wakeup = CMD_WAKEUP|1<<8|0x05;
+	cmd_drate = CMD_DRATE|0xaa;
+	cmd_rcon = CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|cmd_rssi;
+	cmd_dfilter = CMD_DFILTER|CR_LOCK_FAST|FILTER_OOK;
+	cmd_fifo = CMD_FIFO|0x00;
+	cmd_afc = CMD_AFC|AFC_ON|AFC_OUT_ON|AFC_MANUAL|AFC_FINE|AFC_RL_7;
+	cmd_dcycle = CMD_LOWDUTY|0x00;
+
+
+	send_command16(fd, CMD_STATUS);  		// CMD_STATUS
+	send_command16(fd, CMD_CONFIG|cmd_band|LOWBATT_EN|CRYSTAL_EN|LOAD_CAP_12C5|cmd_bw); 		// CMD_CONFIG|BAND_868|LOAD_CAP_12C0|BW_134
+	send_command16(fd, CMD_FREQ|cmd_f);			// CMD_FREQ|0x67c
+	send_command16(fd, CMD_WAKEUP|1<<8|0x05);			// Not present before
+	send_command16(fd, CMD_DRATE|0xaa);			// CMD_DRATE|0xaa
+	send_command16(fd, CMD_RCON|RX_EN|VDI_DRSSI|cmd_lna|cmd_rssi);			// CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|RSSI_97
+	send_command16(fd, CMD_DFILTER|CR_LOCK_FAST|FILTER_OOK);		// CMD_DFILTER|CR_LOCK_FAST|FILTER_OOK
+	send_command16(fd, CMD_FIFO|0x00);			// CMD_FIFO|0x00
+	send_command16(fd, CMD_AFC|AFC_ON|AFC_OUT_ON|AFC_MANUAL|AFC_FINE|AFC_RL_7);			// CMD_AFC|AFC_ON|AFC_OUT_ON|AFC_MANUAL|AFC_FINE|AFC_RL_7
+	send_command16(fd, CMD_LOWDUTY|0x00);			// CMD_LOWDUTY|0x00
+
+
+
+
+	#ifdef RFM12B
+		send_command16(fd, cmd_power);
+		send_command16(fd, cmd_sync);
+		send_command16(fd, cmd_pll);
+	#endif
+
+	printf("Ctrl+C to exit\n");
+	usleep(5000);	// Allow crystal oscillator to start
+
+
+}
+
+static void rfm01_init_new(int fd)
+{
+
+	send_command16(fd,CMD_STATUS);          // ------------- Status Read Command -------------
+
+	send_command16(fd,CMD_CONFIG |          // -------- Configuration Setting Command --------
+		BAND_868 |                  // selects the 868 MHz frequency band
+		LOWBATT_EN |                // enable the low battery detector
+		CRYSTAL_EN |                // the crystal is active during sleep mode
+		LOAD_CAP_12C5 |             // 12.5pF crystal load capacitance
+		BW_134);                    // 134kHz baseband bandwidth
+
+	send_command16(fd,CMD_FREQ |            // -------- Frequency Setting Command --------
+		0x067c);                    // 868.300 .0 MHz --> F = ((915/(10*3))-30)*4000 = 2001 = 0x07d0
+
+	send_command16(fd,CMD_WAKEUP |          // -------- Wake-Up Timer Command --------
+		1<<8 |                      // R = 1
+		0x05);                      // M = 5
+									// T_wake-up = (M * 2^R) = (2 * 5) = 10 ms
+
+	send_command16(fd,CMD_LOWDUTY |         // -------- Low Duty-Cycle Command --------
+		0x0e);                      // (this is the default setting)
+
+	send_command16(fd,CMD_AFC |				// -------- AFC Command --------
+		AFC_VDI |                   // drop the f_offset value when the VDI signal is low
+		AFC_RL_15 |                 // limits the value of the frequency offset register to +15/-16
+		AFC_STROBE |                // the actual latest calculated frequency error is stored into the output registers of the AFC block
+		AFC_FINE |                  // switches the circuit to high accuracy (fine) mode
+		AFC_OUT_ON |                // enables the output (frequency offset) register
+		AFC_ON);                    // enables the calculation of the offset frequency by the AFC circuit
+
+	send_command16(fd,CMD_DFILTER |         // -------- Data Filter Command --------
+		CR_LOCK_FAST |              // clock recovery lock control, fast mode, fast attack and fast release
+		FILTER_DIGITAL |            // select the digital data filter
+		DQD_4);                     // DQD threshold parameter
+
+	send_command16(fd,CMD_DRATE |           // -------- Data Rate Command --------
+		0<<7 |                      // cs = 0
+		0x13);                      // R = 18 = 0x12
+									// BR = 10000000 / 29 / (R + 1) / (1 + cs*7) = 18.15kbps
+
+	send_command16(fd,CMD_LOWBATT |         // -------- Low Battery Detector and Microcontroller Clock Divider Command --------
+		2<<5 |                      // d = 2, 1.66MHz Clock Output Frequency
+		0x00);                      // t = 0, determines the threshold voltage V_lb
+
+	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command --------
+		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+		LNA_0 |                     // LNA gain set to 0dB
+		RSSI_97);                  // threshold of the RSSI detector set to 103dB
+
+	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+		0<<1 |                      // Disables FIFO fill after synchron word reception
+		0);                         // Disables the 16bit deep FIFO mode
+
+	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+		1<<1 |                      // Enables FIFO fill after synchron word reception
+		1);                         // Ensables the 16bit deep FIFO mode
+
+	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command ---------
+		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+		cmd_lna |                     // LNA gain set to 0dB
+		cmd_rssi  |                  // threshold of the RSSI detector set to 103dB
+		1);                         // enables the whole receiver chain
+
+	usleep(5000);	// Allow crystal oscillator to start
+
+
+}
+
+static void rfm01_init_2(int fd)
+{
+
+	send_command16(fd,CMD_STATUS);          // ------------- Status Read Command -------------
+
+	send_command16(fd,CMD_CONFIG |          // -------- Configuration Setting Command --------
+		cmd_band |                  // selects the 868 MHz frequency band
+		LOWBATT_EN |                // enable the low battery detector
+		CRYSTAL_EN |                // the crystal is active during sleep mode
+		LOAD_CAP_12C5 |             // 12.5pF crystal load capacitance
+		cmd_bw);                    // 134kHz baseband bandwidth
+
+	send_command16(fd,CMD_FREQ |            // -------- Frequency Setting Command --------
+		cmd_f);                    // 868.300 .0 MHz --> F = ((915/(10*3))-30)*4000 = 2001 = 0x07d0
+
+	send_command16(fd,CMD_WAKEUP |          // -------- Wake-Up Timer Command --------
+		1<<8 |                      // R = 1
+		0x05);                      // M = 5
+									// T_wake-up = (M * 2^R) = (2 * 5) = 10 ms
+
+	send_command16(fd,CMD_LOWDUTY |         // -------- Low Duty-Cycle Command --------
+		0x0e);                      // (this is the default setting)
+
+	send_command16(fd,CMD_AFC |				// -------- AFC Command --------
+		AFC_VDI |                   // drop the f_offset value when the VDI signal is low
+		AFC_RL_15 |                 // limits the value of the frequency offset register to +15/-16
+		AFC_STROBE |                // the actual latest calculated frequency error is stored into the output registers of the AFC block
+		AFC_FINE |                  // switches the circuit to high accuracy (fine) mode
+		AFC_OUT_ON |                // enables the output (frequency offset) register
+		AFC_ON);                    // enables the calculation of the offset frequency by the AFC circuit
+
+	send_command16(fd,CMD_DFILTER |         // -------- Data Filter Command --------
+		CR_LOCK_FAST |              // clock recovery lock control, fast mode, fast attack and fast release
+		FILTER_DIGITAL |            // select the digital data filter
+		DQD_4);                     // DQD threshold parameter
+
+	send_command16(fd,CMD_DRATE |           // -------- Data Rate Command --------
+		0<<7 |                      // cs = 0
+		0x13);                      // R = 18 = 0x12
+									// BR = 10000000 / 29 / (R + 1) / (1 + cs*7) = 18.15kbps
+
+	send_command16(fd,CMD_LOWBATT |         // -------- Low Battery Detector and Microcontroller Clock Divider Command --------
+		2<<5 |                      // d = 2, 1.66MHz Clock Output Frequency
+		0x00);                      // t = 0, determines the threshold voltage V_lb
+
+	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command --------
+		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+		cmd_lna |                     // LNA gain set to 0dB
+		cmd_rssi);                  // threshold of the RSSI detector set to 103dB
+
+	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+		0<<1 |                      // Disables FIFO fill after synchron word reception
+		0);                         // Disables the 16bit deep FIFO mode
+
+	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+		1<<1 |                      // Enables FIFO fill after synchron word reception
+		1);                         // Ensables the 16bit deep FIFO mode
+
+	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command ---------
+		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+		cmd_lna |                     // LNA gain set to 0dB
+		cmd_rssi  |                  // threshold of the RSSI detector set to 103dB
+		1);                         // enables the whole receiver chain
+
+	usleep(5000);	// Allow crystal oscillator to start
+
+
+}
+/*****************************************************************************
+* Function:   	get_args
+*
+* Overview:   	This function processes possible command line parameters
+* Input:
+* Output:
+*
+******************************************************************************/
+static void get_args(int argc, char *argv[])
+{
+    int opt;
+
+	// set default values
+    f = 868;
+    lna = 0;
+    bw = 134;
+    rssi = 97;
+
+
+	// process all passed options
+    while ((opt = getopt(argc, argv, "f:l:b:r:h")) != -1) {
+        switch (opt) {
+        case 'f':
+        	band = atoi(optarg);
+            break;
+        case 'l':
+        	lna = atoi(optarg);
+            break;
+        case 'b':
+        	bw = atoi(optarg);
+            break;
+        case 'r':
+        	rssi = atoi(optarg);
+            break;
+        case 'h':
+        default:
+            printf("Usage: wh1080_rf [OPTIONS]\n");
+            printf("  -f   Frequenzy\n");
+            printf("       315  \n");
+            printf("       433  \n");
+            printf("       868  (default)\n");
+            printf("       915  \n");
+            printf("  -l  low noice amplifier\n");
+            printf("       0  (default)");
+            printf("       6  \n");
+            printf("       14  \n");
+            printf("       20  \n");
+            printf("  -b  band width\n");
+            printf("       67  \n");
+            printf("       134  (default)\n");
+            printf("       200  \n");
+            printf("       270  \n");
+            printf("       340  \n");
+            printf("       400  \n");
+            printf("  -r  Received signal strength indication\n");
+            printf("       73  \n");
+            printf("       79  \n");
+            printf("       85  \n");
+            printf("       91  \n");
+            printf("       97  (default)\n");
+            printf("       103  \n");
+            exit(1);
+        }
+    }
+
+	switch (f) {
+		case 315:
+			cmd_f = 0x0620;
+			cmd_band = BAND_315;
+			break;
+		case 433:
+			cmd_f = 0x0620 ;
+			cmd_band = BAND_433;
+			break;
+		case 868:
+			cmd_f = 0x067c;
+			cmd_band = BAND_868;
+			break;
+		case 915:
+			cmd_f = 0x07d0;
+			cmd_band = BAND_915;
+			break;
+	}
+
+	switch (lna) {
+		case 0:
+			cmd_lna = LNA_0;
+			break;
+		case 6:
+			cmd_lna = LNA_6;
+			break;
+		case 14:
+			cmd_lna = LNA_14;
+			break;
+		case 20:
+			cmd_lna = LNA_20;
+			break;
+	}
+
+	switch (bw) {
+		case 134:
+			cmd_bw = BW_134;
+			break;
+		case 200:
+			cmd_bw = BW_200;
+			break;
+		case 270:
+			cmd_bw = BW_270;
+			break;
+		case 340:
+			cmd_bw = BW_340;
+			break;
+		case 400:
+			cmd_bw = BW_400;
+			break;
+	}
+
+	switch (rssi) {
+		case 73:
+			cmd_rssi = RSSI_73;
+			break;
+		case 79:
+			cmd_rssi = RSSI_79;
+			break;
+		case 85:
+			cmd_rssi = RSSI_85;
+			break;
+		case 91:
+			cmd_rssi = RSSI_91;
+			break;
+		case 97:
+			cmd_rssi = RSSI_97;
+			break;
+		case 103:
+			cmd_rssi = RSSI_103;
+			break;
+	}
+}
+
+
+
 int main(int argc, char *argv[])
 {
-	//unsigned char bytes2[] = {0xa1,0x82,0x0a,0x59,0x03,0x06,0x00,0x4e,0x06,0xc8};
-	//calculate_values(bytes2);
-	//return -1;
-	
+
+	get_args(argc, argv);
+
+	printf("frequenzy : %d - bw : %d - rssi : %d - lna: %d\n",f,bw,rssi,lna);
+
+	spi_init();
+
 	uint8_t packet_sig = 0xfa;
 
 	if(map_peripheral(&gpio) == -1 || map_peripheral(&timer_arm) == -1) {
@@ -210,7 +595,7 @@ int main(int argc, char *argv[])
 	//*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6);
 
 	// RPi (Rev2) Init GPIO27 (on pin 13) as input (DATA)
-	*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xff1fffff)|(0x001 << 6)
+	*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xff1fffff)|(0x001 << 6);
 
 	#ifdef RFM01
 		printf("Initialising RFM01\n");
@@ -250,23 +635,10 @@ int main(int argc, char *argv[])
 	// LED off
 	*(gpio.addr + (0x28 >> 2)) = 1 << 22;
 
-	send_command16(fd, cmd_status);
-	send_command16(fd, cmd_config);
-	send_command16(fd, cmd_freq);
-	send_command16(fd, cmd_drate);
-	send_command16(fd, cmd_rcon);
-	send_command16(fd, cmd_dfilter);
-	send_command16(fd, cmd_fifo);
-	send_command16(fd, cmd_afc);
-	send_command16(fd, cmd_dcycle);
-	#ifdef RFM12B
-		send_command16(fd, cmd_power);
-		send_command16(fd, cmd_sync);
-		send_command16(fd, cmd_pll);
-	#endif
 
-	printf("Ctrl+C to exit\n");
-	usleep(5000);	// Allow crystal oscillator to start
+	rfm01_init_2(fd);
+	rfm01_init(fd);
+
 
 	
 	int idx1, idx2;
@@ -302,12 +674,12 @@ int main(int argc, char *argv[])
 	// Show the average RSSI to indicate noise at startup. If args dictate
 	// then repeat forever. Note that an unshielded Ethernet cable will
 	// radiate noise, so include a delay to allow console output to be flushed.
-	do {
-		float duty = sample_rssi(fd, 250, 100);
-		printf("RSSI Duty %0.2f\r", duty);
-		fflush(stdout);
-		usleep(250000);
-	} while(argc > 1);
+//	do {
+//		float duty = sample_rssi(fd, 250, 100);
+//		printf("RSSI Duty %0.2f\r", duty);
+//		fflush(stdout);
+//		usleep(250000);
+//	} while(argc > 1);
 
 	printf("\n");
 
@@ -393,6 +765,7 @@ int main(int argc, char *argv[])
 					fflush(stdout);
 				}
 			} else {
+
 				if(shorts++ % 10 == 0) {
 					printf(".");
 					fflush(stdout);
@@ -456,6 +829,14 @@ int main(int argc, char *argv[])
 					printf("Listening for transmission\n");
 					scheduler_realtime();
 				}
+				else
+				{
+					FILE *fp;
+					fp=fopen("wh1080_rf.txt", "w");
+					fprintf(fp,"Station_Id,None\n");
+					fclose(fp);
+
+				}
 			}
 			count = 0;
 
@@ -480,6 +861,7 @@ int main(int argc, char *argv[])
 char *direction_name[] = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
 
 void calculate_values(unsigned char *buf) {
+	printf("calculate_values\n");
 	
 	unsigned short device_id = ((unsigned short)buf[0] << 4) | (buf[1] >> 4);
 	unsigned short temperature_raw = (((unsigned short)buf[1] & 0x0f) << 8) | buf[2];
@@ -507,6 +889,15 @@ void calculate_values(unsigned char *buf) {
 	printf("Wind speed: %0.2f m/s, Gust Speed %0.2f m/s, %s\n", wind_avg_ms, wind_gust_ms, direction_str);
 	printf("Wind speed: %0.1f mph, Gust Speed %0.1f mph, %s\n", wind_avg_mph, wind_gust_mph, direction_str);
 	printf("Total rain: %0.1f mm\n", rain);
+
+
+	FILE *fp;
+	fp=fopen("wh1080_rf.txt", "w");
+	fprintf(fp,"Station_Id,%04X\n", device_id);
+	fprintf(fp,"Temperature,%0.1f,Humidity,%d\n", temperature, humidity);
+	fprintf(fp,"Wind_speed,%0.2f,Gust_Speed ,%0.2f,%s,%d\n", wind_avg_ms*3.6, wind_gust_ms*3.6, direction_str,direction);
+	fprintf(fp,"Total_rain,%0.1f \n", rain);
+	fclose(fp);
 }
 
 /*

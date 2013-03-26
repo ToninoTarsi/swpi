@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#include "bcm2835.h"
+#include "rf_bcm2835.h"
 
 struct bcm2835_peripheral gpio = {GPIO_BASE, 0};
 struct bcm2835_peripheral bsc0 = {BSC0_BASE, 0};

@@ -169,6 +169,13 @@ class config(object):
 
 		# [Sensor_NEVIO8-16]
 
+		# [RFM01]
+		self.rfm01_frequenzy = config.getint('RFM01', 'rfm01_frequenzy',868)
+		self.rfm01_band = config.getint('RFM01', 'rfm01_band',134)
+		self.rfm01_lna = config.getint('RFM01', 'rfm01_lna',0)
+		self.rfm01_rssi = config.getint('RFM01', 'rfm01_rssi',97)
+
+
 		#[WebCam]
 		self.webcamDevice1 = config.get('WebCam', 'webcamDevice1',"None")
 		self.webcamDevice2 = config.get('WebCam', 'webcamDevice2',"None")
@@ -311,6 +318,11 @@ class config(object):
 
 
 		# [Sensor_NEVIO8-16]
+
+		config.setint('RFM01', 'rfm01_frequenzy',self.rfm01_frequenzy)
+		config.setint('RFM01', 'rfm01_band',self.rfm01_band)
+		config.setint('RFM01', 'rfm01_lna',self.rfm01_lna)
+		config.setint('RFM01', 'rfm01_rssi',self.rfm01_rssi)
 
 		#[WebCam]
 		config.setstr('WebCam', 'webcamDevice1',self.webcamDevice1)

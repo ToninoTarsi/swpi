@@ -45,8 +45,15 @@
 #ifdef RFM01
 	//CONFIG
 	
+	#define BAND_315                (0 << 11)   //  ...0 0... .... ....
+	#define BAND_433                (1 << 11)   //  ...0 1... .... ....
+	#define BAND_868                (2 << 11)   //  ...1 0... .... ....
+	#define BAND_915                (3 << 11)   //  ...1 1... .... ....
+
 //	#define BAND_433		(1 << 11)
-	#define BAND_868		(1 << 12) // Tony 
+//	#define BAND_868		(1 << 12) // Tony
+
+
 	#define LOWBATT_EN		(1 << 10)
 	#define WAKEUP_EN		(1 << 9)
 

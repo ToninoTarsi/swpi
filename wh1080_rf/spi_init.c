@@ -1,12 +1,18 @@
+/*****************************************************************************
+* File:      	fo_main.c
+*
+* Overview:
+*
+*
+******************************************************************************/
 
-//#define USE_BMP085
-#define ALTITUDE_M	210.0f
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <unistd.h>
 
-void scheduler_realtime();
-void scheduler_standard();
-void calculate_values(unsigned char *buf);
-
-// Tony
+#include <bcm2835.h>   // C library for Broadcom BCM2835 (http://www.open.com.au/mikem/bcm2835)
 
 #define RFM01_CE        BCM2835_SPI_CS0         // SPI chip select
 #define HIGH 0x1
@@ -209,3 +215,153 @@ void calculate_values(unsigned char *buf);
 #define L20R91                  {"LNA_20,RSSI_91",LNA_20,RSSI_91}
 #define L20R97                  {"LNA_20,RSSI_97",LNA_20,RSSI_97}
 #define L20R103                 {"LNA_20,RSSI_103",LNA_20,RSSI_103}
+
+struct RSSI {
+  char *name;
+  uint16_t g_lna;
+  uint16_t rssi_setth;
+  uint16_t cmd_config;
+  uint16_t cmd_rcon;
+  uint16_t flags;               // bit 0: active, bit 1: not suitable
+  float duty[6];
+};
+
+/*****************************************************************************
+* Function:  	spi_init
+*
+* Overview:  	This function uses the bcm2835 library to set up the SPI
+* Input:     	none
+* Output:    	none
+*
+******************************************************************************/
+static void spi_init()
+{
+	if (!bcm2835_init()) exit(1);
+	bcm2835_spi_begin();
+	bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
+	bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);
+	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_32);
+	bcm2835_spi_chipSelect(RFM01_CE);
+	bcm2835_spi_setChipSelectPolarity(RFM01_CE, LOW);
+
+	bcm2835_gpio_fsel(RFM01_IRQ, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_set_pud(RFM01_IRQ, BCM2835_GPIO_PUD_UP);
+	// As we use FIFO, the DATA line requires pull-up
+	bcm2835_gpio_fsel(RFM01_DATA, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_set_pud(RFM01_DATA, BCM2835_GPIO_PUD_UP);
+}
+
+
+/*****************************************************************************
+* Function:  	rfm01_cmd
+*
+* Overview:  	This function sends commands to the RFM01 module
+* Input:		2 byte command
+* Output:     	none
+*
+******************************************************************************/
+static void rfm01_cmd(uint16_t cmd)
+{
+    char buffer[2];
+    buffer[0] = cmd >> 8;
+    buffer[1] = cmd;
+    bcm2835_spi_transfern(buffer,2);
+}
+
+
+
+/*****************************************************************************
+* Function:   	rfm01_init
+*
+* Overview:   	This function initializes the RFM01 module.
+* Input:		none
+* Output:     	none
+*
+******************************************************************************/
+static void rfm01_init()
+{
+    // Source: "RFM01 Universal ISM Band FSK Receiver" (http://www.hoperf.com/upload/rf/RFM01.pdf)
+
+    rfm01_cmd(CMD_STATUS);          // ------------- Status Read Command -------------
+
+    rfm01_cmd(CMD_CONFIG |          // -------- Configuration Setting Command --------
+		BAND_868 |                  // selects the 915 MHz frequency band
+		LOWBATT_EN |                // enable the low battery detector
+		CRYSTAL_EN |                // the crystal is active during sleep mode
+		LOAD_CAP_12C5 |             // 12.5pF crystal load capacitance
+		BW_134);                    // 134kHz baseband bandwidth
+
+    rfm01_cmd(CMD_FREQ |            // -------- Frequency Setting Command --------
+		0x067c);                    // 868.300 .0 MHz --> F = ((915/(10*3))-30)*4000 = 2001 = 0x07d0
+
+    rfm01_cmd(CMD_WAKEUP |          // -------- Wake-Up Timer Command --------
+		1<<8 |                      // R = 1
+		0x05);                      // M = 5
+									// T_wake-up = (M * 2^R) = (2 * 5) = 10 ms
+
+    rfm01_cmd(CMD_LOWDUTY |         // -------- Low Duty-Cycle Command --------
+		0x0e);                      // (this is the default setting)
+
+    rfm01_cmd(CMD_AFC |				// -------- AFC Command --------
+		AFC_VDI |                   // drop the f_offset value when the VDI signal is low
+		AFC_RL_15 |                 // limits the value of the frequency offset register to +15/-16
+		AFC_STROBE |                // the actual latest calculated frequency error is stored into the output registers of the AFC block
+		AFC_FINE |                  // switches the circuit to high accuracy (fine) mode
+		AFC_OUT_ON |                // enables the output (frequency offset) register
+		AFC_ON);                    // enables the calculation of the offset frequency by the AFC circuit
+
+    rfm01_cmd(CMD_DFILTER |         // -------- Data Filter Command --------
+		CR_LOCK_FAST |              // clock recovery lock control, fast mode, fast attack and fast release
+		FILTER_DIGITAL |            // select the digital data filter
+		DQD_4);                     // DQD threshold parameter
+
+    rfm01_cmd(CMD_DRATE |           // -------- Data Rate Command --------
+		0<<7 |                      // cs = 0
+		0x13);                      // R = 18 = 0x12
+									// BR = 10000000 / 29 / (R + 1) / (1 + cs*7) = 18.15kbps
+
+    rfm01_cmd(CMD_LOWBATT |         // -------- Low Battery Detector and Microcontroller Clock Divider Command --------
+		2<<5 |                      // d = 2, 1.66MHz Clock Output Frequency
+		0x00);                      // t = 0, determines the threshold voltage V_lb
+
+    rfm01_cmd(CMD_RCON |            // -------- Receiver Setting Command --------
+		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+		LNA_0 |                     // LNA gain set to 0dB
+		RSSI_97);                  // threshold of the RSSI detector set to 103dB
+
+    rfm01_cmd(CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+		0<<1 |                      // Disables FIFO fill after synchron word reception
+		0);                         // Disables the 16bit deep FIFO mode
+
+    rfm01_cmd(CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+		1<<1 |                      // Enables FIFO fill after synchron word reception
+		1);                         // Ensables the 16bit deep FIFO mode
+
+    rfm01_cmd(CMD_RCON |            // -------- Receiver Setting Command ---------
+		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+		LNA_0 |                     // LNA gain set to 0dB
+		RSSI_97  |                  // threshold of the RSSI detector set to 103dB
+		1);                         // enables the whole receiver chain
+}
+
+
+
+/*****************************************************************************
+* Function:   main
+*
+* Overview:   This function
+* Input:
+* Output:
+*
+******************************************************************************/
+int main(int argc, char *argv[])
+{
+    spi_init();
+    rfm01_init();
+
+    return 0;
+}

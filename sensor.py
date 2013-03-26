@@ -32,12 +32,12 @@ class Sensor(threading.Thread):
 	
 	def __init__(self ,cfg):
 		self.cfg = cfg
-		self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23","WMR100","WMR200","WMR918","WM918"]
+		#self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23","WMR100","WMR200","WMR918","WM918","WH1080-RFM01"]
 		
-		if ( self.cfg.sensor_type not in self.implementedStations  ):
-			log("Unknown sensor type %s can not continue" % self.cfg.sensor_type)
-			log("Implemented sensors are :")
-			print self.implementedStations
+#		if ( self.cfg.sensor_type not in self.implementedStations  ):
+#			log("Unknown sensor type %s can not continue" % self.cfg.sensor_type)
+#			log("Implemented sensors are :")
+#			print self.implementedStations
 			
 		if ( self.cfg.use_bmp085 ):
 			self.bmp085 = BMP085(0x77,3)  
@@ -92,8 +92,12 @@ class Sensor(threading.Thread):
 			globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
 		else:
 			globalvars.meteo_data.abs_pressure = None
-			
-		globalvars.meteo_data.temp_out = temp
+		
+		if ( self.cfg.sensor_type == "WH1080-RFM01"):
+			globalvars.meteo_data.temp_in = temp
+		else:
+			globalvars.meteo_data.temp_out = temp
+
 
 #		if ( p == None):
 #			globalvars.meteo_data.temp_out = None

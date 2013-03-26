@@ -518,6 +518,40 @@ Content-Type: text/html
             }
         }
 
+
+        dd = document.getElementById('rfm01_frequenzy');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$rfm01_frequenzy') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+
+        dd = document.getElementById('rfm01_band');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$rfm01_band') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+
+        dd = document.getElementById('rfm01_lna');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$rfm01_lna') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+
+
+        dd = document.getElementById('rfm01_rssi');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$rfm01_rssi') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }             
+        
         
                                       
 	}
@@ -702,6 +736,7 @@ Content-Type: text/html
                         value=$sensor_type style="width: 100%" >
                         <option value="SIMULATE" >SIMULATE</option>
                         <option value="PCE-FWS20" >PCE-FWS20</option>
+                        <option value="WH1080-RFM01" >WH1080-RFM01</option>
 						<option value="WMR100" >WMR100</option>
 						<option value="WMR200" >WMR200</option>
 						<option value="WMR918" >WMR918</option>
@@ -1099,6 +1134,72 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         <option value=True >True</option>
                         <option value=False >False</option>
                     </select></td>
+            </tr>
+            </table>
+        <br />
+    
+    
+
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    RFM01</td>
+            </tr>
+            <tr>
+                <td class="style41">
+                    Frequenzy MHz (<b>rfm01_frequenzy</b>)</td>
+                <td class="style17">
+                    <select id="rfm01_frequenzy" type="text" name="rfm01_frequenzy" 
+                        value=$rfm01_frequenzy style="width: 100%" >
+                         <option value=315>315</option>
+                         <option value=433>433</option>
+                         <option value=868>868</option>
+                         <option value=915>915</option>                                         
+                    </select>       
+                    </td>
+            </tr>
+            <tr>
+                <td class="style42">
+                    low noice amplifier level (<b>rfm01_lna</b>)</td>
+                <td class="style17">
+                    <select id="rfm01_lna" type="text" name="rfm01_lna" 
+                        value=$rfm01_lna style="width: 100%" >
+                        <option value="0">0</option>
+                        <option value="6">6</option>
+                       <option value="14">14</option>
+                        <option value="20">20</option>      
+                    </select>       
+                    </td>
+            </tr>
+            <tr>
+                <td class="style42">
+                    band width kHz (<b>rfm01_band</b>)<td class="style17">
+                    <select id="rfm01_band" type="text" name="rfm01_band" 
+                        value=$rfm01_band      style="width: 100%" >
+                        <option value="67">67</option>
+                        <option value="134">134</option>
+                        <option value="67">67</option>
+                        <option value="200">200</option>                        
+                        <option value="270">270</option>
+                        <option value="340">340</option>                        
+                        <option value="400">400</option>                            
+                    </select>       
+                    </td>
+            </tr>
+            <tr>
+                <td class="style43">
+                    Received signal strength indication (<b>rfm01_rssi</b>)</td>
+                <td class="style17">
+                    <select id="rfm01_rssi" type="text" name="rfm01_rssi" 
+                        value=$rfm01_rssi style="width: 100%" >
+                        <option value="73">73</option>
+                        <option value="79">79</option>
+                        <option value="85">85</option>
+                        <option value="91">91</option>
+                        <option value="97">97</option>
+                        <option value="103">103</option>
+                     
+                        </td>
             </tr>
             </table>
         <br />

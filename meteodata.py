@@ -218,15 +218,17 @@ class MeteoData(object):
             dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")
             data = dbCursor.fetchall()
             if ( len(data) == 1):
-                therain = (data[0][9])    
-                self.rain_rate_24h = self.rain - therain
+                therain = (data[0][9]) 
+                if (therain != None ) :    
+                    self.rain_rate_24h = self.rain - therain
                 #print "Rain24h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
             #else: print"Nodata"
             dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour') order by rowid asc limit 1")
             data = dbCursor.fetchall()
             if ( len(data) == 1):
-                therain = (data[0][9])    
-                self.rain_rate_1h = self.rain - therain  
+                therain = (data[0][9])  
+                if (therain != None ) : 
+                    self.rain_rate_1h = self.rain - therain  
                 #print "Rain1h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
             #else: print"Nodata"
             if conn:        

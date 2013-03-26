@@ -499,6 +499,8 @@ os.system( "sudo chmod +x ./swpi.sh" )
 os.system( "sudo chmod +x ./swpi-update.sh" )
 os.system( "sudo chmod +x ./killswpi.sh" )
 os.system( "sudo chmod +x ./DHT/DHT" )
+os.system( "sudo chmod +x ./wh1080_rf/wh1080_rf" )
+os.system( "sudo chmod +x ./wh1080_rf/spi_init" )
 
 os.system( "sudo chown  pi ./DHT" )
 os.system( "sudo chown  pi ./mcp3002" )
@@ -614,8 +616,10 @@ if bConnected:
 	modem.disconnectwvdial()
 	
 # Wait for valid data
+maxwait = 0
 if ( cfg.use_wind_sensor ) :
-	while ( globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status == -9999 ) :
+	while ( globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status == -9999 and maxwait < cfg.WebCamInterval) :
+		maxwait = maxwait + 1 
 		time.sleep(1)
 
 # clear all sd cards at startup

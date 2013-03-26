@@ -107,7 +107,11 @@ def outputPage(cfg):
 	d.update(camera_resetter_normaly_on=cfg.camera_resetter_normaly_on)
 
 
-
+	d.update(rfm01_frequenzy=cfg.rfm01_frequenzy)
+	d.update(rfm01_band=cfg.rfm01_band)
+	d.update(rfm01_lna=cfg.rfm01_lna)
+	d.update(rfm01_rssi=cfg.rfm01_rssi)
+		
 
 	d.update(ftpserver=cfg.ftpserver)
 	d.update(ftpserverDestFolder=cfg.ftpserverDestFolder)
@@ -231,7 +235,10 @@ if ( len(request) != 0 ):
 	cfg.use_camera_resetter = request['use_camera_resetter'][0]											 
 	cfg.camera_resetter_normaly_on = request['camera_resetter_normaly_on'][0]											 
 
-
+	cfg.rfm01_frequenzy = request['rfm01_frequenzy'][0]											 
+	cfg.rfm01_band = request['rfm01_band'][0]											 
+	cfg.rfm01_lna = request['rfm01_lna'][0]											 
+	cfg.rfm01_rssi = request['rfm01_rssi'][0]											 
 
 	cfg.ftpserver = request['ftpserver'][0]																		   
 	cfg.ftpserverDestFolder = request['ftpserverDestFolder'][0]																 

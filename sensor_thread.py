@@ -25,6 +25,7 @@ import meteodata
 import sensor
 import sensor_simulator
 import sensor_wh1080
+import sensor_wh1080rf
 import sensor_nevio
 import sensor_argent80422
 import sensor_davis
@@ -95,7 +96,11 @@ class WindSensorThread(threading.Thread):
             sensor = sensor_wmr918.Sensor_WMR918(self.cfg)     
                                
         elif ( self.cfg.sensor_type.upper()  == "WM918" ):
-            sensor = sensor_wm918.Sensor_WM918(self.cfg)                                  
+            sensor = sensor_wm918.Sensor_WM918(self.cfg)   
+            
+        elif ( self.cfg.sensor_type.upper()  == "WH1080-RFM01" ):
+            sensor = sensor_wh1080rf.Sensor_WH1080RF(self.cfg)               
+                                           
         else:
             log("Sensor type not implemented. Exiting")
             os.system("sudo ./killswpi.sh")
