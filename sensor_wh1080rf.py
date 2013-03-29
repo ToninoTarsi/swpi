@@ -32,8 +32,11 @@ def log(message) :
 	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
 def modification_date(filename):
-	t = os.path.getmtime(filename)
-	return datetime.datetime.fromtimestamp(t)
+	try:
+		t = os.path.getmtime(filename)
+		return datetime.datetime.fromtimestamp(t)
+	except:
+		return None
 
 def getrevision():
 	# Extract board revision from cpuinfo file
@@ -83,13 +86,14 @@ class Sensor_WH1080RF(sensor.Sensor):
 
 		self.active = True
 		self.start()
-
+	
+	def startRFListenig(self):
+		cmd = "./wh1080_rf/wh1080_rf -f %d -r %d -l %d -b %d > /dev/null" % (self.cfg.rfm01_frequenzy,self.cfg.rfm01_rssi,self.cfg.rfm01_lna,self.cfg.rfm01_band)
+		os.system(cmd)
 	
 	def run(self):
 		log("Starting RF listening")
 		cmd = "./wh1080_rf/wh1080_rf -f %d -r %d -l %d -b %d > /dev/null" % (self.cfg.rfm01_frequenzy,self.cfg.rfm01_rssi,self.cfg.rfm01_lna,self.cfg.rfm01_band)
-		#os.system("./wh1080_rf/spi_init > /dev/null")
-		#time.sleep(1)
 		os.system(cmd)
 		log("Something wrong with  RF ... restarting")
 
@@ -98,41 +102,42 @@ class Sensor_WH1080RF(sensor.Sensor):
 		return True
 	
 	def ReadData(self):
-		bRead = False
-		while not bRead:
-			try:
-				in_file = open("./wh1080_rf.txt","r")
-				text = in_file.read().splitlines()
-				in_file.close()
-				station_id = text[0].split(",")[1]
-				#print "station_id ",station_id
-				if ( station_id  == "None" ):
-					return station_id,0,0,0,0,"",0,0
-				temp = float(text[1].split(",")[1])
-				hum = float(text[1].split(",")[3])
-				Wind_speed = float(text[2].split(",")[1])
-				Gust_Speed = float(text[2].split(",")[3])
-				dir_code = (text[2].split(",")[4])
-				dir = int(text[2].split(",")[5])
-				rain = float(text[3].split(",")[1])
-				return station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dir,rain
-			except:
-				time.sleep(1)
+		try:
+#			in_file = open("./wh1080_rf.txt","r")
+#			text = in_file.read().splitlines()
+#			in_file.close()
+
+			text = os.popen("cat ./wh1080_rf.txt").read().splitlines()
+			#print text
+			station_id = text[0].split(",")[1]
+			#print "station_id ",station_id
+			if ( station_id  == "None" ):
+				return "None",0,0,0,0,"",0,0
+			temp = float(text[1].split(",")[1])
+			hum = float(text[1].split(",")[3])
+			Wind_speed = float(text[2].split(",")[1])
+			Gust_Speed = float(text[2].split(",")[3])
+			dir_code = (text[2].split(",")[4])
+			dire = int(text[2].split(",")[5])
+			rain = float(text[3].split(",")[1])
+			return station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain
+		except:
+			return "None",0,0,0,0,"",0,0
 
 	def GetData(self):
 		
 		# get first good data
 		good_data = False
 		while ( not os.path.exists('./wh1080_rf.txt')  ):
-			while ( not good_data ):
-				station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain =  self.ReadData()
-				if ( station_id != "None"):
-					good_data = True
-				else:
-					log("Bad data received from RFM01 ")
-					time.sleep(48)
 			time.sleep(1)
-		log("First data receiced from RFM01 .. processing")
+		while ( not good_data ):
+			station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain =  self.ReadData()
+			if ( station_id != "None"):
+				good_data = True
+			else:
+				log("Bad data received from RFM01 ")
+				time.sleep(48)
+		log("First data received from RFM01 station %s .. processing" % station_id)
 		last_data_time = modification_date('./wh1080_rf.txt')
 		
 		
@@ -155,14 +160,18 @@ class Sensor_WH1080RF(sensor.Sensor):
 			
 			tosleep = 48-(datetime.datetime.now()-last_data_time).seconds
 			#print "Sleeping  ", tosleep
-			time.sleep(tosleep)
+			if (tosleep > 0 ):	
+				time.sleep(tosleep)
+			else:
+				time.sleep(48)
 			
 			new_last_data_time = modification_date('./wh1080_rf.txt')
-			while ( new_last_data_time == last_data_time):
+			while ( new_last_data_time == None or new_last_data_time == last_data_time):
 				time.sleep(1)
+				new_last_data_time = modification_date('./wh1080_rf.txt')
 				
 				
-			log("New data receiced from RFM01 .. processing")
+			log("New data received from RFM01 station %s .. processing" % station_id)
 			last_data_time = new_last_data_time
 						
 			station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain =  self.ReadData()

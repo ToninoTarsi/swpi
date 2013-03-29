@@ -473,6 +473,7 @@ print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
 # Get curret log file
+globalvars.TimeSetFromNTP = False
 globalvars.logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 

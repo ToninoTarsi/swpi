@@ -281,78 +281,78 @@ static void rfm01_init(int fd)
 
 }
 
-static void rfm01_init_new(int fd)
-{
-
-	send_command16(fd,CMD_STATUS);          // ------------- Status Read Command -------------
-
-	send_command16(fd,CMD_CONFIG |          // -------- Configuration Setting Command --------
-		BAND_868 |                  // selects the 868 MHz frequency band
-		LOWBATT_EN |                // enable the low battery detector
-		CRYSTAL_EN |                // the crystal is active during sleep mode
-		LOAD_CAP_12C5 |             // 12.5pF crystal load capacitance
-		BW_134);                    // 134kHz baseband bandwidth
-
-	send_command16(fd,CMD_FREQ |            // -------- Frequency Setting Command --------
-		0x067c);                    // 868.300 .0 MHz --> F = ((915/(10*3))-30)*4000 = 2001 = 0x07d0
-
-	send_command16(fd,CMD_WAKEUP |          // -------- Wake-Up Timer Command --------
-		1<<8 |                      // R = 1
-		0x05);                      // M = 5
-									// T_wake-up = (M * 2^R) = (2 * 5) = 10 ms
-
-	send_command16(fd,CMD_LOWDUTY |         // -------- Low Duty-Cycle Command --------
-		0x0e);                      // (this is the default setting)
-
-	send_command16(fd,CMD_AFC |				// -------- AFC Command --------
-		AFC_VDI |                   // drop the f_offset value when the VDI signal is low
-		AFC_RL_15 |                 // limits the value of the frequency offset register to +15/-16
-		AFC_STROBE |                // the actual latest calculated frequency error is stored into the output registers of the AFC block
-		AFC_FINE |                  // switches the circuit to high accuracy (fine) mode
-		AFC_OUT_ON |                // enables the output (frequency offset) register
-		AFC_ON);                    // enables the calculation of the offset frequency by the AFC circuit
-
-	send_command16(fd,CMD_DFILTER |         // -------- Data Filter Command --------
-		CR_LOCK_FAST |              // clock recovery lock control, fast mode, fast attack and fast release
-		FILTER_DIGITAL |            // select the digital data filter
-		DQD_4);                     // DQD threshold parameter
-
-	send_command16(fd,CMD_DRATE |           // -------- Data Rate Command --------
-		0<<7 |                      // cs = 0
-		0x13);                      // R = 18 = 0x12
-									// BR = 10000000 / 29 / (R + 1) / (1 + cs*7) = 18.15kbps
-
-	send_command16(fd,CMD_LOWBATT |         // -------- Low Battery Detector and Microcontroller Clock Divider Command --------
-		2<<5 |                      // d = 2, 1.66MHz Clock Output Frequency
-		0x00);                      // t = 0, determines the threshold voltage V_lb
-
-	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command --------
-		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
-		LNA_0 |                     // LNA gain set to 0dB
-		RSSI_97);                  // threshold of the RSSI detector set to 103dB
-
-	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
-		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
-		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
-		0<<1 |                      // Disables FIFO fill after synchron word reception
-		0);                         // Disables the 16bit deep FIFO mode
-
-	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
-		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
-		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
-		1<<1 |                      // Enables FIFO fill after synchron word reception
-		1);                         // Ensables the 16bit deep FIFO mode
-
-	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command ---------
-		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
-		cmd_lna |                     // LNA gain set to 0dB
-		cmd_rssi  |                  // threshold of the RSSI detector set to 103dB
-		1);                         // enables the whole receiver chain
-
-	usleep(5000);	// Allow crystal oscillator to start
-
-
-}
+//static void rfm01_init_new(int fd)
+//{
+//
+//	send_command16(fd,CMD_STATUS);          // ------------- Status Read Command -------------
+//
+//	send_command16(fd,CMD_CONFIG |          // -------- Configuration Setting Command --------
+//		BAND_868 |                  // selects the 868 MHz frequency band
+//		LOWBATT_EN |                // enable the low battery detector
+//		CRYSTAL_EN |                // the crystal is active during sleep mode
+//		LOAD_CAP_12C5 |             // 12.5pF crystal load capacitance
+//		BW_134);                    // 134kHz baseband bandwidth
+//
+//	send_command16(fd,CMD_FREQ |            // -------- Frequency Setting Command --------
+//		0x067c);                    // 868.300 .0 MHz --> F = ((915/(10*3))-30)*4000 = 2001 = 0x07d0
+//
+//	send_command16(fd,CMD_WAKEUP |          // -------- Wake-Up Timer Command --------
+//		1<<8 |                      // R = 1
+//		0x05);                      // M = 5
+//									// T_wake-up = (M * 2^R) = (2 * 5) = 10 ms
+//
+//	send_command16(fd,CMD_LOWDUTY |         // -------- Low Duty-Cycle Command --------
+//		0x0e);                      // (this is the default setting)
+//
+//	send_command16(fd,CMD_AFC |				// -------- AFC Command --------
+//		AFC_VDI |                   // drop the f_offset value when the VDI signal is low
+//		AFC_RL_15 |                 // limits the value of the frequency offset register to +15/-16
+//		AFC_STROBE |                // the actual latest calculated frequency error is stored into the output registers of the AFC block
+//		AFC_FINE |                  // switches the circuit to high accuracy (fine) mode
+//		AFC_OUT_ON |                // enables the output (frequency offset) register
+//		AFC_ON);                    // enables the calculation of the offset frequency by the AFC circuit
+//
+//	send_command16(fd,CMD_DFILTER |         // -------- Data Filter Command --------
+//		CR_LOCK_FAST |              // clock recovery lock control, fast mode, fast attack and fast release
+//		FILTER_DIGITAL |            // select the digital data filter
+//		DQD_4);                     // DQD threshold parameter
+//
+//	send_command16(fd,CMD_DRATE |           // -------- Data Rate Command --------
+//		0<<7 |                      // cs = 0
+//		0x13);                      // R = 18 = 0x12
+//									// BR = 10000000 / 29 / (R + 1) / (1 + cs*7) = 18.15kbps
+//
+//	send_command16(fd,CMD_LOWBATT |         // -------- Low Battery Detector and Microcontroller Clock Divider Command --------
+//		2<<5 |                      // d = 2, 1.66MHz Clock Output Frequency
+//		0x00);                      // t = 0, determines the threshold voltage V_lb
+//
+//	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command --------
+//		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+//		LNA_0 |                     // LNA gain set to 0dB
+//		RSSI_97);                  // threshold of the RSSI detector set to 103dB
+//
+//	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+//		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+//		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+//		0<<1 |                      // Disables FIFO fill after synchron word reception
+//		0);                         // Disables the 16bit deep FIFO mode
+//
+//	send_command16(fd,CMD_FIFO |            // -------- Output and FIFO Mode Command --------
+//		8<<4 |                      // f = 8, FIFO generates IT when number of the received data bits reaches this level
+//		1<<2 |                      // s = 1, set the input of the FIFO fill start condition to sync word
+//		1<<1 |                      // Enables FIFO fill after synchron word reception
+//		1);                         // Ensables the 16bit deep FIFO mode
+//
+//	send_command16(fd,CMD_RCON |            // -------- Receiver Setting Command ---------
+//		VDI_CR_LOCK |               // VDI (valid data indicator) signal: clock recovery lock
+//		cmd_lna |                     // LNA gain set to 0dB
+//		cmd_rssi  |                  // threshold of the RSSI detector set to 103dB
+//		1);                         // enables the whole receiver chain
+//
+//	usleep(5000);	// Allow crystal oscillator to start
+//
+//
+//}
 
 static void rfm01_init_2(int fd)
 {
@@ -822,10 +822,10 @@ int main(int argc, char *argv[])
 
 					do {
 						elapsed = (TIMER_ARM_COUNT - wait_start) / 1000000;
-						printf("Wait %us \r", 47 - elapsed);
+						printf("Wait %us \r", 44 - elapsed);
 						fflush(stdout);
 						usleep(250000);
-					} while(elapsed < 47);
+					} while(elapsed < 44);
 					printf("Listening for transmission\n");
 					scheduler_realtime();
 				}

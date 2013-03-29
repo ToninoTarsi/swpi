@@ -24,7 +24,9 @@ def swpi_update():
     os.remove("swpi-src.tar.gz")
     os.system( "sudo chown pi mcp3002/" )
     os.system( "sudo chown pi TX23/" )
-
+    os.system( "sudo chown pi wh1080_rf/" )
+    os.system( "sudo chown pi DHT/" )    
+    
 html1 = """<head>
     <title>Sint Wind PI</title>
     <style type="text/css">

@@ -13,6 +13,6 @@ import meteodata
 
 bAnswering = False
 bCapturingCamera = False
-TimeSetFromNTP = False
+
 IP = "None"
 #meteo_data = meteodata.MeteoData()

@@ -330,7 +330,7 @@ class config(object):
 		config.setstr('WebCam', 'webcamLogo',self.webcamLogo)
 		config.setboolean('WebCam', 'sendImagesToServer',self.sendImagesToServer)
 		config.setint('WebCam', 'WebCamInterval',self.WebCamInterval)
-		config.setstr('WebCam', 'webcamdevice1captureresolution',"640x480")
+		config.setstr('WebCam', 'webcamdevice1captureresolution',self.webcamdevice1captureresolution)
 		config.setstr('WebCam', 'webcamdevice2captureresolution',self.webcamdevice1captureresolution)
 		config.setstr('WebCam', 'webcamdevice1finalresolution',self.webcamdevice1finalresolution)
 		config.setstr('WebCam', 'webcamdevice2finalresolution',self.webcamdevice2finalresolution)
