@@ -71,6 +71,7 @@ def outputPage(cfg):
 	d.update(use_bmp085=cfg.use_bmp085)
 	d.update(use_tmp36=cfg.use_tmp36)
 	d.update(use_dht=cfg.use_dht)
+	d.update(dht_type=cfg.dht_type)
 
 	
 	
@@ -90,7 +91,7 @@ def outputPage(cfg):
 	d.update(webcamdevice2captureresolution=cfg.webcamdevice2captureresolution)
 	d.update(webcamdevice1finalresolution=cfg.webcamdevice1finalresolution)
 	d.update(webcamdevice2finalresolution=cfg.webcamdevice2finalresolution)
-	d.update(capturewithffmpeg=cfg.capturewithffmpeg)
+	d.update(captureprogram=cfg.captureprogram)
 	d.update(sendallimagestoserver=cfg.sendallimagestoserver)
 	d.update(delete_images_on_sd=cfg.delete_images_on_sd)
 
@@ -202,6 +203,9 @@ if ( len(request) != 0 ):
 	cfg.use_bmp085 = request['use_bmp085'][0]																		   
 	cfg.use_tmp36 = request['use_tmp36'][0]		
 	cfg.use_dht = request['use_dht'][0]		
+	cfg.dht_type = request['dht_type'][0]		
+
+	
 	
 																	   
 	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]						 
@@ -220,7 +224,7 @@ if ( len(request) != 0 ):
 	cfg.webcamdevice2captureresolution = request['webcamdevice2captureresolution'][0]												  
 	cfg.webcamdevice1finalresolution = request['webcamdevice1finalresolution'][0]												  
 	cfg.webcamdevice2finalresolution = request['webcamdevice2finalresolution'][0]												  
-	cfg.capturewithffmpeg = request['capturewithffmpeg'][0]																 
+	cfg.captureprogram = request['captureprogram'][0]																 
 	cfg.sendallimagestoserver = request['sendallimagestoserver'][0]															
 	cfg.delete_images_on_sd = request['delete_images_on_sd'][0]																								   
 

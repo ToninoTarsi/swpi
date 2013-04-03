@@ -229,6 +229,7 @@ Content-Type: text/html
         {
             width: 405px;
             height: 33px;
+            font-weight: 700;
         }
         #Button1
         {
@@ -388,9 +389,9 @@ Content-Type: text/html
             }
         }
 
-        dd = document.getElementById('capturewithffmpeg');
+        dd = document.getElementById('captureprogram');
         for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$capturewithffmpeg') {
+            if (dd.options[i].text == '$captureprogram') {
                 dd.selectedIndex = i;
                 break;
             }
@@ -550,9 +551,16 @@ Content-Type: text/html
                 dd.selectedIndex = i;
                 break;
             }
-        }             
-        
-        
+        }
+
+        dd = document.getElementById('dht_type');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$dht_type') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+             
                                       
 	}
 	function ButtonLog_onclick() {
@@ -817,6 +825,17 @@ Content-Type: text/html
                         <option value=False >False</option>
                     </select></td>
             </tr>
+            <tr>   
+                <td class="style52">
+                    DHT type (dht_type)</td>
+                <td class="style31">
+                    <select id="dht_type" type="text" name="dht_type" 
+                        value=$use_tmp36 style="width: 100%" >
+                        <option value="DHT11">DHT11</option>
+                        <option value="DHT22">DHT22</option>
+                        <option value="AM2302">AM2302</option>
+                    </select></td>
+            </tr>
             </table>
     
     
@@ -1032,12 +1051,14 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    Use ffmpeg for capturing. Otherwise use<b> </b> uvcapture (<b>capturewithffmpeg</b>)</td>
+                    Webcam Capture program (<b>captureprogram</b>)</td>
                 <td class="style33">
-                    <select id="capturewithffmpeg" type="text" name="capturewithffmpeg" 
-                        value=$capturewithffmpeg style="width: 100%" >
-                                              <option value=True >True</option>
-                        <option value=False >False</option>
+                    <select id="captureprogram" type="text" name="captureprogram" 
+                        value=$captureprogram style="width: 100%" >
+                        <option value="ffmpeg" >ffmpeg</option>
+                        <option value="uvccapture" >uvccapture</option>
+                        <option value="fswebcam">fswebcam</option>
+                        
                     </select> </td>
             </tr>
             </table>

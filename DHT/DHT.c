@@ -5,11 +5,11 @@
 #define MAX_TIME 85
 #define DHT11PIN 1
 #define MAXTRY  100
-
+//#include <unistd.h>
 
 int dht11_val[5]={0,0,0,0,0};
 
-
+int type=11;
 
 int dht11_read_val(float *temp, float *hum)
 {
@@ -48,8 +48,25 @@ int dht11_read_val(float *temp, float *hum)
   // verify cheksum and print the verified data
   if((j>=40)&&(dht11_val[4]==((dht11_val[0]+dht11_val[1]+dht11_val[2]+dht11_val[3])& 0xFF)))
   {
-	*temp = dht11_val[2]+dht11_val[3]/10.;
-	*hum = dht11_val[0]+dht11_val[1]/10.;
+	  if ( type == 11)
+	  {
+		  *temp = dht11_val[2]+dht11_val[3]/10.;
+		  *hum = dht11_val[0]+dht11_val[1]/10.;
+	  }
+	  else
+	  {
+		  float f, h;
+		  h = dht11_val[0] * 256 + dht11_val[1];
+		  h /= 10;
+
+		  f = (dht11_val[2] & 0x7F)* 256 + dht11_val[3];
+		  f /= 10.0;
+		  if (dht11_val[2] & 0x80)
+			  f *= -1;
+		  *temp = f;
+		  *hum = h;
+		  //printf("Temp =  %.1f *C, Hum = %.1f \%\n", f, h);
+	  }
     //printf("Humidity = %d.%d %% Temperature = %d.%d *C (%.1f *F)\n",dht11_val[0],dht11_val[1],dht11_val[2],dht11_val[3],farenheit);
     return 0;
   }
@@ -75,10 +92,18 @@ int read(float *temp, float *hum)
 	return 1;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+
+	if ( argc > 1 )
+		type = 22;
+
 	float temp,hum;
-	printf("Interfacing Temperature and Humidity Sensor (DHT11) With Raspberry Pi\n");
+	if ( type == 11)
+		printf("Interfacing Temperature and Humidity Sensor (DHT11) With Raspberry Pi\n");
+	else
+		printf("Interfacing Temperature and Humidity Sensor (DHT22) With Raspberry Pi\n");
+
 	if(wiringPiSetup()==-1)
 		exit(1);
 

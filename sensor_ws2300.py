@@ -88,7 +88,7 @@ class Sensor_WS2300(sensor.Sensor):
 				
 				data = [ m.conv.binary2value(d) for m, d in zip(measures, raw_data)]
 	
-				print data
+				#print data
 				
 				globalvars.meteo_data.status = 0
 				globalvars.meteo_data.last_measure_time = datetime.datetime.now()

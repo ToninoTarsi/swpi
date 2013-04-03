@@ -141,42 +141,41 @@ def SetTimeFromNTP(ntp_server):
     except:
         log("ERROR - Failed to set time system from ntp server")
         return False
-
-
+       
 def DNSExit(uname,pwd,hname):
-    
-    params = {
-        'login':uname,
-        'password':pwd,
-        'host':hname}
-    req = urllib2.Request("http://www.dnsexit.com/RemoteUpdate.sv",urllib.urlencode(params))
-    try:
-        resp= urllib2.urlopen(req)
-        page= resp.read()
-        tolog = True
-        try:
-                status,msg = page.split('\n')
-                status_code = status.split()[1]
-                msg_code,msg_content = msg.split('=')
-                if msg_code == "0":
-                        log("DNS Exit - Successfully Updated IP for host:%s"%hname)
-                        return True
-                elif msg_code in ["2","3","10"]:
-                        log("DNS Exit -Error Updating Dynamic IP:%s"%msg_content)
-                        return False
-                else:
-                        log("DNS Exit - Error with Connection:%s"%msg_content)
-                        return False
+	ip = getPublicIP()
+	if ( ip == None):
+		return
+	params = {
+		'login':uname,
+		'password':pwd,
+		'host':hname}
+	posturl = "http://update.dnsexit.com/RemoteUpdate.sv?login=%s&password=%s&host=%s&myip=%s" % (uname,pwd,hname,ip)
 
-        except Exception,err:
-                log("DNS Exit - Unexpected Error occured with the service")
-                return False
-    except Exception, err:
-            print "Exception"
-            if tolog:
-                    print '%s' % str(err)
-                        
-    return True
+	req = urllib2.Request(posturl)
+	#print req
+	try:
+		resp= urllib2.urlopen(req,timeout=10)
+		page= resp.read()
+		tolog = True
+		status,msg = page.split('\n')
+		status_code = status.split()[1]
+		msg_code,msg_content = msg.split('=')
+		if msg_code == "0":
+			log("DNS Exit - Successfully Updated IP for host:%s"%hname)
+			return True
+		elif msg_code in ["2","3","10"]:
+			log("DNS Exit -Error Updating Dynamic IP:%s"%msg_content)
+			return False
+		else:
+			log("DNS Exit - Error with Connection:%s"%msg_content)
+			return False
+
+	except Exception,err:
+		log("DNS Exit - Unexpected Error occured with the service")
+		return False
+		
+	return True
 
 def logDataToWunderground(ID,password):
 
@@ -188,7 +187,7 @@ def logDataToWunderground(ID,password):
     if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = globalvars.meteo_data.wind_gust * 0.621371192
     if globalvars.meteo_data.hum_out != None :  parameters['humidity'] = globalvars.meteo_data.hum_out 
     if globalvars.meteo_data.temp_out != None :  parameters['tempf'] = ( globalvars.meteo_data.temp_out * 1.8 ) + 32
-    if globalvars.meteo_data.abs_pressure != None :  parameters['baromin'] = globalvars.meteo_data.abs_pressure  * 0.0296133971008484
+    if globalvars.meteo_data.rel_pressure != None :  parameters['baromin'] = globalvars.meteo_data.rel_pressure  * 0.0296133971008484
     if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = globalvars.meteo_data.rain_rate  * 0.0393700787
     if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = ( globalvars.meteo_data.dew_point * 1.8 ) + 32
     if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = globalvars.meteo_data.rain_rate_1h  * 0.0393700787
@@ -203,7 +202,7 @@ def logDataToWunderground(ID,password):
         #print serverfile
         req=urllib2.Request(serverfile)
         req.add_header("Content-type", "application/x-www-form-urlencoded")
-        page=urllib2.urlopen(req).read()
+        page=urllib2.urlopen(req,timeout=10).read()
         log( "Log to Wunderground : " + page )
     except:
         log(  "Error Logging to Wunderground : " + serverfile )
@@ -272,7 +271,7 @@ def logData(serverfile,SMSPwd):
     try:
         req=urllib2.Request(serverfile, mydata)
         req.add_header("Content-type", "application/x-www-form-urlencoded")
-        page=urllib2.urlopen(req).read()
+        page=urllib2.urlopen(req,timeout=10).read()
         log( "Data sent to server : " + page )
     except:
         log(  "Error connecting to server : " + serverfile )

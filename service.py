@@ -42,6 +42,9 @@ class SunHalter(threading.Thread):
     def run(self):
         #try:
         #shutdown_hour_before_sunset
+        if ( self.cfg.set_system_time_from_ntp_server_at_startup ):
+            while (  not globalvars.TimeSetFromNTP ) :
+                time.sleep(60)
         if ( self.cfg.shutdown_hour_before_sunset.upper() != "NONE" ):
             s=sun.sun(lat=self.cfg.location_latitude,long=self.cfg.location_longitude)
             sh = float(self.cfg.shutdown_hour_before_sunset)
@@ -69,6 +72,9 @@ class Rebooter(threading.Thread):
         
     def run(self):
         #try:
+        if ( self.cfg.set_system_time_from_ntp_server_at_startup ):
+            while (  not globalvars.TimeSetFromNTP ) :
+                time.sleep(60)
         if ( self.cfg.reboot_at.upper() != "NONE" ):
             time_todo = datetime.timedelta(hours=int(self.cfg.reboot_at.split(":")[0]), minutes=int(self.cfg.reboot_at.split(":")[1]), seconds=00)
             time_now = datetime.timedelta(hours=datetime.datetime.now().hour, minutes=datetime.datetime.now().minute, seconds=datetime.datetime.now().second)
@@ -91,6 +97,9 @@ class Halter(threading.Thread):
         
     def run(self):
         #try:
+        if ( self.cfg.set_system_time_from_ntp_server_at_startup ):
+            while (  not globalvars.TimeSetFromNTP ) :
+                time.sleep(60)
         if ( self.cfg.shutdown_at.upper() != "NONE" ):
             time_todo = datetime.timedelta(hours=int(self.cfg.shutdown_at.split(":")[0]), minutes=int(self.cfg.shutdown_at.split(":")[1]), seconds=00)
             time_now = datetime.timedelta(hours=datetime.datetime.now().hour, minutes=datetime.datetime.now().minute, seconds=datetime.datetime.now().second)

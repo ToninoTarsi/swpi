@@ -159,6 +159,8 @@ class config(object):
 		self.use_bmp085 = config.getboolean('Sensors', 'use_bmp085',False)
 		self.use_tmp36 = config.getboolean('Sensors', 'use_tmp36',False)
 		self.use_dht = config.getboolean('Sensors', 'use_dht',False)
+		self.dht_type = config.get('Sensors', 'dht_type',"DHT11")
+
 		self.number_of_measure_for_wind_average_gust_calculation =  config.getint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',10)
 
 		# [Sensor_PCE-FWS20]
@@ -186,9 +188,10 @@ class config(object):
 		self.webcamdevice2captureresolution = config.get('WebCam', 'webcamdevice2captureresolution',"640x480")
 		self.webcamdevice1finalresolution = config.get('WebCam', 'webcamdevice1finalresolution',"640x480")
 		self.webcamdevice2finalresolution = config.get('WebCam', 'webcamdevice2finalresolution',"640x480")
-		self.capturewithffmpeg = config.getboolean('WebCam', 'capturewithffmpeg',True)
 		self.sendallimagestoserver = config.getboolean('WebCam', 'sendallimagestoserver',False)
 		self.delete_images_on_sd = config.getboolean('WebCam', 'delete_images_on_sd',False)
+		self.captureprogram = config.get('WebCam', 'captureprogram',"fswebcam")
+
 
 		self.webcamdevice1captureresolutionX = int(self.webcamdevice1captureresolution.split('x')[0])
 		self.webcamdevice1captureresolutionY = int(self.webcamdevice1captureresolution.split('x')[1])
@@ -306,6 +309,8 @@ class config(object):
 		config.setboolean('Sensors', 'use_bmp085',self.use_bmp085)
 		config.setboolean('Sensors', 'use_tmp36',self.use_tmp36)
 		config.setboolean('Sensors', 'use_dht',self.use_dht)
+		config.setstr('Sensors', 'dht_type',self.dht_type)
+
 
 
 		config.setint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',self.number_of_measure_for_wind_average_gust_calculation)
@@ -334,7 +339,7 @@ class config(object):
 		config.setstr('WebCam', 'webcamdevice2captureresolution',self.webcamdevice1captureresolution)
 		config.setstr('WebCam', 'webcamdevice1finalresolution',self.webcamdevice1finalresolution)
 		config.setstr('WebCam', 'webcamdevice2finalresolution',self.webcamdevice2finalresolution)
-		config.setboolean('WebCam', 'capturewithffmpeg',self.capturewithffmpeg)
+		config.setstr('WebCam', 'captureprogram',self.captureprogram)
 		config.setboolean('WebCam', 'sendallimagestoserver',self.sendallimagestoserver)
 		config.setboolean('WebCam', 'delete_images_on_sd',self.delete_images_on_sd)
 

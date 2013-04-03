@@ -65,7 +65,7 @@ uint16_t cmd_f;
 uint16_t cmd_lna;
 uint16_t cmd_bw;
 uint16_t cmd_rssi;
-
+int rev;
 
 uint16_t bw_scale[6] = {BW_67, BW_134, BW_200, BW_270, BW_340, BW_400};
 
@@ -248,7 +248,7 @@ static void rfm01_init(int fd)
 	cmd_freq = CMD_FREQ|cmd_f;
 	cmd_wakeup = CMD_WAKEUP|1<<8|0x05;
 	cmd_drate = CMD_DRATE|0xaa;
-	cmd_rcon = CMD_RCON|RX_EN|VDI_DRSSI|LNA_0|cmd_rssi;
+	cmd_rcon = CMD_RCON|RX_EN|VDI_DRSSI|cmd_lna|cmd_rssi;
 	cmd_dfilter = CMD_DFILTER|CR_LOCK_FAST|FILTER_OOK;
 	cmd_fifo = CMD_FIFO|0x00;
 	cmd_afc = CMD_AFC|AFC_ON|AFC_OUT_ON|AFC_MANUAL|AFC_FINE|AFC_RL_7;
@@ -443,10 +443,11 @@ static void get_args(int argc, char *argv[])
     lna = 0;
     bw = 134;
     rssi = 97;
+    rev = 2;
 
 
 	// process all passed options
-    while ((opt = getopt(argc, argv, "f:l:b:r:h")) != -1) {
+    while ((opt = getopt(argc, argv, "f:l:b:r:s:h")) != -1) {
         switch (opt) {
         case 'f':
         	band = atoi(optarg);
@@ -459,6 +460,8 @@ static void get_args(int argc, char *argv[])
             break;
         case 'r':
         	rssi = atoi(optarg);
+        case 's':
+        	rev = atoi(optarg);
             break;
         case 'h':
         default:
@@ -469,7 +472,7 @@ static void get_args(int argc, char *argv[])
             printf("       868  (default)\n");
             printf("       915  \n");
             printf("  -l  low noice amplifier\n");
-            printf("       0  (default)");
+            printf("       0  (default)\n");
             printf("       6  \n");
             printf("       14  \n");
             printf("       20  \n");
@@ -487,6 +490,9 @@ static void get_args(int argc, char *argv[])
             printf("       91  \n");
             printf("       97  (default)\n");
             printf("       103  \n");
+            printf("  -s  Raspberry PI revision\n");
+            printf("       1  \n");
+            printf("       2 (default) \n");
             exit(1);
         }
     }
@@ -526,6 +532,9 @@ static void get_args(int argc, char *argv[])
 	}
 
 	switch (bw) {
+		case 67:
+			cmd_bw = BW_67;
+		break;
 		case 134:
 			cmd_bw = BW_134;
 			break;
@@ -574,7 +583,7 @@ int main(int argc, char *argv[])
 
 	printf("frequenzy : %d - bw : %d - rssi : %d - lna: %d\n",f,bw,rssi,lna);
 
-	spi_init();
+	//spi_init();
 
 	uint8_t packet_sig = 0xfa;
 
@@ -591,11 +600,16 @@ int main(int argc, char *argv[])
 	// Init GPIO21 (on pin 13) as input (DATA), GPIO22 (pin 15) as output (nRES)
 	//*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6); Tony
 
+	if ( rev == 1)
+	{
 	// RPi (Rev1) Init GPIO21 (on pin 13) as input (DATA), GPIO22 (pin 15) as output (nRES)
-	//*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6);
-
+		*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xfffffe07)|(0x001 << 6);
+	}
+	else
+	{
 	// RPi (Rev2) Init GPIO27 (on pin 13) as input (DATA)
-	*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xff1fffff)|(0x001 << 6);
+		*(gpio.addr + 2) = (*(gpio.addr + 2) & 0xff1fffff)|(0x001 << 6);
+	}
 
 	#ifdef RFM01
 		printf("Initialising RFM01\n");
@@ -702,8 +716,10 @@ int main(int argc, char *argv[])
 	do {
 
 		// Read the GPIO pin for clocked DATA value
-		//status = ((*(gpio.addr + 13)) >> 21) & 1;
-		status = ((*(gpio.addr + 13)) >> 27) & 1; // Tony
+		if ( rev == 1)
+			status = ((*(gpio.addr + 13)) >> 21) & 1;
+		else
+			status = ((*(gpio.addr + 13)) >> 27) & 1; // Tony
 		rssi = status;
 		rssitime = TIMER_ARM_COUNT;
 		// Check if the pin transitioned

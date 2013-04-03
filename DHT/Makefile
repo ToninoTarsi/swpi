@@ -17,6 +17,6 @@ libDHT.o : libDHT.c
 
 
 DHT.o : DHT.c
-	gcc -c DHT.c -std=gnu99
+	gcc -c -Wall DHT.c -std=gnu99
 
 

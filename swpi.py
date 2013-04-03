@@ -33,7 +33,9 @@ import signal
 import thread
 import database
 import web_server
+import socket
 
+socket.setdefaulttimeout(30)
 
 ################################  functions############################
 
@@ -468,7 +470,7 @@ log( "Starting SINT WIND PI  ... ")
 print "************************************************************************"
 print "*                      Sint Wind PI "+v+"                           *"
 print "*                                                                      *"
-print "*            2012 by Tonino Tarsi  <tony.tarsi@gmail.com>              *"
+print "*          2012-2013 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
 print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
@@ -687,7 +689,7 @@ while 1:
 					bConnected = True
 
 			if (  internet_on() ):
-				log("Sending to server ...")
+				#log("Sending to server ...")
 				waitForHandUP()
 				if ( cfg.webcamDevice1.upper() != "NONE" and bwebcam1 ):
 					if (cfg.sendallimagestoserver ):

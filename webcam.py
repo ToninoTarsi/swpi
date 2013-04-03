@@ -47,10 +47,12 @@ class webcam(object):
 	def capture(self,filename):
 		try:
 
-			if ( self.cfg.capturewithffmpeg ):
+			if ( self.cfg.captureprogram == "ffmpeg" ):
 				snapCommand = "ffmpeg -loglevel quiet -t 1  -f video4linux2 -vframes 1 -s " + self.captureresolution + " -i " + self.device + " " + filename
-			else:
+			elif ( self.cfg.captureprogram == "uvccapture" ):
 				snapCommand = "uvccapture -m -S80 -B80 -C80 -G80 -x" + self.captureresolutionX + "-y" + self.captureresolutionX + " -d" + self.device + " -o " + filename
+			elif ( self.cfg.captureprogram == "fswebcam" ):
+				snapCommand = "fswebcam --quiet --no-subtitle --no-banner --no-timestamp -r %s -d %s -S 15 --save %s" %( self.captureresolution,self.device,filename)
 				
 			#log( "Getting images with command : " + snapCommand)
 			os.system(snapCommand )

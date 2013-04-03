@@ -92,8 +92,14 @@ class Sensor_WH1080RF(sensor.Sensor):
 		os.system(cmd)
 	
 	def run(self):
+		myrevision = getrevision()
+		if myrevision == "0002" or myrevision == "0003" :
+			s = 1
+		else:
+			s = 2
 		log("Starting RF listening")
-		cmd = "./wh1080_rf/wh1080_rf -f %d -r %d -l %d -b %d > /dev/null" % (self.cfg.rfm01_frequenzy,self.cfg.rfm01_rssi,self.cfg.rfm01_lna,self.cfg.rfm01_band)
+		cmd = "./wh1080_rf/wh1080_rf -f %d -r %d -l %d -b %d -s %d > /dev/null" % (self.cfg.rfm01_frequenzy,self.cfg.rfm01_rssi,self.cfg.rfm01_lna,self.cfg.rfm01_band,s)
+		#print cmd
 		os.system(cmd)
 		log("Something wrong with  RF ... restarting")
 
@@ -129,7 +135,7 @@ class Sensor_WH1080RF(sensor.Sensor):
 		# get first good data
 		good_data = False
 		while ( not os.path.exists('./wh1080_rf.txt')  ):
-			time.sleep(1)
+			time.sleep(5)
 		while ( not good_data ):
 			station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain =  self.ReadData()
 			if ( station_id != "None"):
@@ -167,7 +173,7 @@ class Sensor_WH1080RF(sensor.Sensor):
 			
 			new_last_data_time = modification_date('./wh1080_rf.txt')
 			while ( new_last_data_time == None or new_last_data_time == last_data_time):
-				time.sleep(1)
+				time.sleep(5)
 				new_last_data_time = modification_date('./wh1080_rf.txt')
 				
 				

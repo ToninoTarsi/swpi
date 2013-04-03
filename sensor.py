@@ -60,7 +60,10 @@ class Sensor(threading.Thread):
 		
 	def ReadDHT(self):
 		try:
-			output = subprocess.check_output(["./DHT/DHT"]);
+			if ( self.cfg.dht_type == "DHT11" ) :
+				output = subprocess.check_output(["./DHT/DHT"]);
+			else:
+				output = subprocess.check_output(["./DHT/DHT","22"]);
 			#print output
 			matches = re.search("Temp =\s+([0-9.]+)", output)
 			if ( matches):
