@@ -9,10 +9,11 @@
 
 """Global vars"""
 import meteodata
-
+import datetime
 
 bAnswering = False
 bCapturingCamera = False
+WatchDogTime = datetime.datetime.now()
 
 IP = "None"
 #meteo_data = meteodata.MeteoData()

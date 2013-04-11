@@ -65,7 +65,7 @@ class Sensor_WS2300(sensor.Sensor):
 				#print "GetData"
 				serialPort = ws2300.LinuxSerialPort(self.cfg.sensor_serial_port)
 				#print serialPort
-				#serialPort.open()
+				
 				#print "opened"
 	
 				ws = ws2300.Ws2300(serialPort)

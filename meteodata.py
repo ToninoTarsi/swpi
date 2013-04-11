@@ -145,8 +145,11 @@ class MeteoData(object):
         self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = dew_point(self.temp_out, self.hum_out)
-        self.cloud_base_altitude = cloud_base_altitude(self.temp_out,self.dew_point,self.cfg.location_altitude)
-
+     
+        self.cloud_base_altitude = cloud_base_altitude(self.temp_out,self.dew_point,self.cfg.location_altitude) 
+        if ( self.cloud_base_altitude != None) : 
+            self.cloud_base_altitude = self.cloud_base_altitude * self.cfg.cloudbase_calib
+            
         if ( self.abs_pressure != None and self.abs_pressure != 0.0): 
             if ( self.cfg.location_altitude != 0 ):
                 p0 = (self.abs_pressure*100) / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
@@ -295,6 +298,7 @@ class MeteoData(object):
 #        self.abs_pressure = (data[0][7])
 #        self.hum_out = (data[0][8])
         self.rain = (data[0][9])
+        #print "-----------------------------------------",self.rain
 #        self.rain_rate = (data[0][10])
 #        self.temp_in = (data[0][11])
 #        self.hum_in = (data[0][12])

@@ -33,8 +33,9 @@ import ntplib
 import tarfile
 import thread
 import os
+import requests
 
-
+socket.setdefaulttimeout(30)
 
 
 def disk_free():
@@ -143,145 +144,214 @@ def SetTimeFromNTP(ntp_server):
         return False
        
 def DNSExit(uname,pwd,hname):
-	ip = getPublicIP()
-	if ( ip == None):
-		return
-	params = {
-		'login':uname,
-		'password':pwd,
-		'host':hname}
-	posturl = "http://update.dnsexit.com/RemoteUpdate.sv?login=%s&password=%s&host=%s&myip=%s" % (uname,pwd,hname,ip)
-
-	req = urllib2.Request(posturl)
-	#print req
-	try:
-		resp= urllib2.urlopen(req,timeout=10)
-		page= resp.read()
-		tolog = True
-		status,msg = page.split('\n')
-		status_code = status.split()[1]
-		msg_code,msg_content = msg.split('=')
-		if msg_code == "0":
-			log("DNS Exit - Successfully Updated IP for host:%s"%hname)
-			return True
-		elif msg_code in ["2","3","10"]:
-			log("DNS Exit -Error Updating Dynamic IP:%s"%msg_content)
-			return False
-		else:
-			log("DNS Exit - Error with Connection:%s"%msg_content)
-			return False
-
-	except Exception,err:
-		log("DNS Exit - Unexpected Error occured with the service")
-		return False
-		
-	return True
+    ip = getPublicIP()
+    if ( ip == None):
+        return
+    params = {
+        'login':uname,
+        'password':pwd,
+        'host':hname,
+        'myip':ip}
+    posturl = "http://update.dnsexit.com/RemoteUpdate.sv"
+    
+    try:
+        r = requests.get(posturl, params=params,timeout=10)
+        log("DNS Exit -: " +  r.text)
+        return True
+    except:
+        log("Error DNS Exit"  ) 
+        return False   
+        
+    
+#    posturl = posturl + "?"
+#    for key in params:
+#        posturl = (posturl + "&" + str(key) + "=" +  str(params[key]) )
+#    req = urllib2.Request(posturl)
+#    #print req
+#    try:
+#        resp= urllib2.urlopen(req,timeout=10)
+#        page= resp.read()
+#        tolog = True
+#        status,msg = page.split('\n')
+#        status_code = status.split()[1]
+#        msg_code,msg_content = msg.split('=')
+#        if msg_code == "0":
+#            log("DNS Exit - Successfully Updated IP for host:%s"%hname)
+#            return True
+#        elif msg_code in ["2","3","10"]:
+#            log("DNS Exit -Error Updating Dynamic IP:%s"%msg_content)
+#            return False
+#        else:
+#            log("DNS Exit - Error with Connection:%s"%msg_content)
+#            return False
+#
+#    except Exception,err:
+#        log("DNS Exit - Unexpected Error occured with the service")
+#        return False
+        
+    return True
 
 def logDataToWunderground(ID,password):
 
-    serverfile = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?action=updateraw&ID=%s&PASSWORD=%s&dateutc=%s" %(ID,password,str(datetime.datetime.utcnow()))
+    serverfile = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php"
 
     parameters = {}
-    if globalvars.meteo_data.wind_dir != None :  parameters['winddir'] = globalvars.meteo_data.wind_dir
-    if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = globalvars.meteo_data.wind_ave *  0.621371192
-    if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = globalvars.meteo_data.wind_gust * 0.621371192
-    if globalvars.meteo_data.hum_out != None :  parameters['humidity'] = globalvars.meteo_data.hum_out 
-    if globalvars.meteo_data.temp_out != None :  parameters['tempf'] = ( globalvars.meteo_data.temp_out * 1.8 ) + 32
-    if globalvars.meteo_data.rel_pressure != None :  parameters['baromin'] = globalvars.meteo_data.rel_pressure  * 0.0296133971008484
-    if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = globalvars.meteo_data.rain_rate  * 0.0393700787
-    if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = ( globalvars.meteo_data.dew_point * 1.8 ) + 32
-    if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = globalvars.meteo_data.rain_rate_1h  * 0.0393700787
-
+    parameters['action'] = "updateraw"
+    parameters['ID'] = ID
+    parameters['PASSWORD'] = password
+    parameters['dateutc'] = str(datetime.datetime.utcnow())
     
+    if globalvars.meteo_data.wind_dir != None :  parameters['winddir'] = int(globalvars.meteo_data.wind_dir)
+    if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = "{:.2f}".format(globalvars.meteo_data.wind_ave *  0.621371192)
+    if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = "{:.2f}".format(globalvars.meteo_data.wind_gust * 0.621371192)
+    if globalvars.meteo_data.hum_out != None :  parameters['humidity'] = "{:.1f}".format(globalvars.meteo_data.hum_out )
+    if globalvars.meteo_data.temp_out != None :  parameters['tempf'] = "{:.2f}".format(( globalvars.meteo_data.temp_out * 1.8 ) + 32)
+    if globalvars.meteo_data.rel_pressure != None :  parameters['baromin'] = "{:.4f}".format(globalvars.meteo_data.rel_pressure  * 0.0296133971008484)
+    if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = "{:.2f}".format(( globalvars.meteo_data.dew_point * 1.8 ) + 32)
+    if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate  * 0.0393700787)
+    if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
     parameters['softwaretype'] = "Sint Wind PI"
-    
-    for key in parameters:
-        serverfile = (serverfile + "&" + str(key) + "=" +  str(parameters[key]) )
-     
+        
+    #print  parameters   
     try:
-        #print serverfile
-        req=urllib2.Request(serverfile)
-        req.add_header("Content-type", "application/x-www-form-urlencoded")
-        page=urllib2.urlopen(req,timeout=10).read()
-        log( "Log to Wunderground : " + page )
+        r = requests.get(serverfile, params=parameters,timeout=10)
+        log("Log to Wunderground new: " +  r.text)
     except:
-        log(  "Error Logging to Wunderground : " + serverfile )
-        pass     
+        log(  "Error Logging to Wunderground : "  )    
+        
+        
+#    try:
+#        serverfile = serverfile + "?"
+#        for key in parameters:
+#            serverfile = (serverfile + "&" + str(key) + "=" +  str(parameters[key]) )
+#        print serverfile
+#        req=urllib2.Request(serverfile)
+#        log("Sending request to Wunderground") 
+#        page=urllib2.urlopen(req,timeout=10).read()
+#        log( "Log to Wunderground : " + page )
+#    except:
+#        log(  "Error Logging to Wunderground : "  )
+
      
       
 
 def logData(serverfile,SMSPwd):
     
-    mydata = []
-    
-    mydata.append(('pwd', SMSPwd))
-
-    
-    mydata.append(('last_measure_time',NoneToNull(globalvars.meteo_data.last_measure_time)))
-    mydata.append(('idx',NoneToNull(globalvars.meteo_data.idx)))
-    mydata.append(('wind_dir_code',NoneToNull(globalvars.meteo_data.wind_dir_code)))
-    mydata.append(('wind_dir',NoneToNull(globalvars.meteo_data.wind_dir)))
-    mydata.append(('wind_ave',NoneToNull(globalvars.meteo_data.wind_ave)))
-    mydata.append(('wind_gust',NoneToNull(globalvars.meteo_data.wind_gust)))
-    mydata.append(('temp_out',NoneToNull(globalvars.meteo_data.temp_out)))
-    mydata.append(('abs_pressure',NoneToNull(globalvars.meteo_data.abs_pressure)))
-    mydata.append(('rel_pressure',NoneToNull(globalvars.meteo_data.rel_pressure)))
-    mydata.append(('hum_out',NoneToNull(globalvars.meteo_data.hum_out)))
-    mydata.append(('rain',NoneToNull(globalvars.meteo_data.rain)))
-    mydata.append(('rain_rate',NoneToNull(globalvars.meteo_data.rain_rate)))
-    mydata.append(('temp_in',NoneToNull(globalvars.meteo_data.temp_in)))
-    mydata.append(('hum_in',NoneToNull(globalvars.meteo_data.hum_in)))
-    mydata.append(('wind_chill',NoneToNull(globalvars.meteo_data.wind_chill)))
-    mydata.append(('temp_apparent',NoneToNull(globalvars.meteo_data.temp_apparent)))
-    mydata.append(('dew_point',NoneToNull(globalvars.meteo_data.dew_point)))
-    mydata.append(('uv',NoneToNull(globalvars.meteo_data.uv)))
-    mydata.append(('illuminance',NoneToNull(globalvars.meteo_data.illuminance)))
-    mydata.append(('winDayMin',NoneToNull(globalvars.meteo_data.winDayMin)))
-    mydata.append(('winDayMax',NoneToNull(globalvars.meteo_data.winDayMax)))
-        
-    mydata.append(('winDayGustMin',NoneToNull(globalvars.meteo_data.winDayGustMin)))
-    mydata.append(('winDayGustMax',NoneToNull(globalvars.meteo_data.winDayGustMax)))
-    
-    mydata.append(('TempOutMin',NoneToNull(globalvars.meteo_data.TempOutMin)))
-    mydata.append(('TempOutMax',NoneToNull(globalvars.meteo_data.TempOutMax)))
-    
-    mydata.append(('TempInMin',NoneToNull(globalvars.meteo_data.TempInMin)))
-    mydata.append(('TempInMax',NoneToNull(globalvars.meteo_data.TempInMax)))
-    
-    mydata.append(('UmOutMin',NoneToNull(globalvars.meteo_data.UmOutMin)))
-    mydata.append(('UmOutMax',NoneToNull(globalvars.meteo_data.UmOutMax)))
-    
-    mydata.append(('UmInMin',NoneToNull(globalvars.meteo_data.UmInMin)))
-    mydata.append(('UmInMax',NoneToNull(globalvars.meteo_data.UmInMax)))
-    
-    mydata.append(('PressureMin',NoneToNull(globalvars.meteo_data.PressureMin)))
-    mydata.append(('PressureMax',NoneToNull(globalvars.meteo_data.PressureMax)))
-    
-       
-    mydata.append(('wind_dir_ave',NoneToNull(globalvars.meteo_data.wind_dir_ave)))
-
-    
-    mydata.append(('rain_rate_24h',NoneToNull(globalvars.meteo_data.rain_rate_24h)))
-    mydata.append(('rain_rate_1h',NoneToNull(globalvars.meteo_data.rain_rate_1h)))
-        
-    
-    mydata=urllib.urlencode(mydata)
+    mydata = {} 
+    mydata['pwd'] = SMSPwd
+    mydata['last_measure_time'] = NoneToNull(globalvars.meteo_data.last_measure_time)
+    mydata['idx'] = NoneToNull(globalvars.meteo_data.idx)
+    mydata['wind_dir_code'] = NoneToNull(globalvars.meteo_data.wind_dir_code)
+    mydata['wind_dir'] = NoneToNull(globalvars.meteo_data.wind_dir)
+    mydata['wind_ave'] = NoneToNull(globalvars.meteo_data.wind_ave)
+    mydata['wind_gust'] = NoneToNull(globalvars.meteo_data.wind_gust)
+    mydata['temp_out'] = NoneToNull(globalvars.meteo_data.temp_out)
+    mydata['abs_pressure'] = NoneToNull(globalvars.meteo_data.abs_pressure)
+    mydata['rel_pressure'] = NoneToNull(globalvars.meteo_data.rel_pressure)
+    mydata['hum_out'] = NoneToNull(globalvars.meteo_data.hum_out)
+    mydata['rain'] = NoneToNull(globalvars.meteo_data.rain)
+    mydata['rain_rate'] = NoneToNull(globalvars.meteo_data.rain_rate)
+    mydata['temp_in'] = NoneToNull(globalvars.meteo_data.temp_in)
+    mydata['hum_in'] = NoneToNull(globalvars.meteo_data.hum_in)
+    mydata['wind_chill'] = NoneToNull(globalvars.meteo_data.wind_chill)
+    mydata['temp_apparent'] = NoneToNull(globalvars.meteo_data.temp_apparent)
+    mydata['dew_point'] = NoneToNull(globalvars.meteo_data.dew_point)
+    mydata['uv'] = NoneToNull(globalvars.meteo_data.uv)
+    mydata['illuminance'] = NoneToNull(globalvars.meteo_data.illuminance)
+    mydata['winDayMin'] = NoneToNull(globalvars.meteo_data.winDayMin)
+    mydata['winDayMax'] = NoneToNull(globalvars.meteo_data.winDayMax)
+    mydata['winDayGustMin'] = NoneToNull(globalvars.meteo_data.winDayGustMin)
+    mydata['winDayGustMax'] = NoneToNull(globalvars.meteo_data.winDayGustMax)
+    mydata['TempOutMin'] = NoneToNull(globalvars.meteo_data.TempOutMin)
+    mydata['TempOutMax'] = NoneToNull(globalvars.meteo_data.TempOutMax)
+    mydata['TempInMin'] = NoneToNull(globalvars.meteo_data.TempInMin)
+    mydata['TempInMax'] = NoneToNull(globalvars.meteo_data.TempInMax)
+    mydata['UmOutMin'] = NoneToNull(globalvars.meteo_data.UmOutMin)
+    mydata['UmOutMax'] = NoneToNull(globalvars.meteo_data.UmOutMax)
+    mydata['UmInMin'] = NoneToNull(globalvars.meteo_data.UmInMin)
+    mydata['UmInMax'] = NoneToNull(globalvars.meteo_data.UmInMax)
+    mydata['PressureMin'] = NoneToNull(globalvars.meteo_data.PressureMin)
+    mydata['PressureMax'] = NoneToNull(globalvars.meteo_data.PressureMax)
+    mydata['wind_dir_ave'] = NoneToNull(globalvars.meteo_data.wind_dir_ave)
+    mydata['rain_rate_24h'] = NoneToNull(globalvars.meteo_data.rain_rate_24h)
+    mydata['rain_rate_1h'] = NoneToNull(globalvars.meteo_data.rain_rate_1h)
     
     
     try:
-        req=urllib2.Request(serverfile, mydata)
-        req.add_header("Content-type", "application/x-www-form-urlencoded")
-        page=urllib2.urlopen(req,timeout=10).read()
-        log( "Data sent to server : " + page )
+        r = requests.post(serverfile, data=mydata,timeout=10)
+        log( "Data sent to server : " + r.text )
     except:
         log(  "Error connecting to server : " + serverfile )
-        pass
+    
+
+    
+#    mydata = [] 
+
+#    mydata.append(('pwd', SMSPwd))
+#
+#    
+#    mydata.append(('last_measure_time',NoneToNull(globalvars.meteo_data.last_measure_time)))
+#    mydata.append(('idx',NoneToNull(globalvars.meteo_data.idx)))
+#    mydata.append(('wind_dir_code',NoneToNull(globalvars.meteo_data.wind_dir_code)))
+#    mydata.append(('wind_dir',NoneToNull(globalvars.meteo_data.wind_dir)))
+#    mydata.append(('wind_ave',NoneToNull(globalvars.meteo_data.wind_ave)))
+#    mydata.append(('wind_gust',NoneToNull(globalvars.meteo_data.wind_gust)))
+#    mydata.append(('temp_out',NoneToNull(globalvars.meteo_data.temp_out)))
+#    mydata.append(('abs_pressure',NoneToNull(globalvars.meteo_data.abs_pressure)))
+#    mydata.append(('rel_pressure',NoneToNull(globalvars.meteo_data.rel_pressure)))
+#    mydata.append(('hum_out',NoneToNull(globalvars.meteo_data.hum_out)))
+#    mydata.append(('rain',NoneToNull(globalvars.meteo_data.rain)))
+#    mydata.append(('rain_rate',NoneToNull(globalvars.meteo_data.rain_rate)))
+#    mydata.append(('temp_in',NoneToNull(globalvars.meteo_data.temp_in)))
+#    mydata.append(('hum_in',NoneToNull(globalvars.meteo_data.hum_in)))
+#    mydata.append(('wind_chill',NoneToNull(globalvars.meteo_data.wind_chill)))
+#    mydata.append(('temp_apparent',NoneToNull(globalvars.meteo_data.temp_apparent)))
+#    mydata.append(('dew_point',NoneToNull(globalvars.meteo_data.dew_point)))
+#    mydata.append(('uv',NoneToNull(globalvars.meteo_data.uv)))
+#    mydata.append(('illuminance',NoneToNull(globalvars.meteo_data.illuminance)))
+#    mydata.append(('winDayMin',NoneToNull(globalvars.meteo_data.winDayMin)))
+#    mydata.append(('winDayMax',NoneToNull(globalvars.meteo_data.winDayMax)))
+#        
+#    mydata.append(('winDayGustMin',NoneToNull(globalvars.meteo_data.winDayGustMin)))
+#    mydata.append(('winDayGustMax',NoneToNull(globalvars.meteo_data.winDayGustMax)))
+#    
+#    mydata.append(('TempOutMin',NoneToNull(globalvars.meteo_data.TempOutMin)))
+#    mydata.append(('TempOutMax',NoneToNull(globalvars.meteo_data.TempOutMax)))
+#    
+#    mydata.append(('TempInMin',NoneToNull(globalvars.meteo_data.TempInMin)))
+#    mydata.append(('TempInMax',NoneToNull(globalvars.meteo_data.TempInMax)))
+#    
+#    mydata.append(('UmOutMin',NoneToNull(globalvars.meteo_data.UmOutMin)))
+#    mydata.append(('UmOutMax',NoneToNull(globalvars.meteo_data.UmOutMax)))
+#    
+#    mydata.append(('UmInMin',NoneToNull(globalvars.meteo_data.UmInMin)))
+#    mydata.append(('UmInMax',NoneToNull(globalvars.meteo_data.UmInMax)))
+#    
+#    mydata.append(('PressureMin',NoneToNull(globalvars.meteo_data.PressureMin)))
+#    mydata.append(('PressureMax',NoneToNull(globalvars.meteo_data.PressureMax)))
+#    
+#       
+#    mydata.append(('wind_dir_ave',NoneToNull(globalvars.meteo_data.wind_dir_ave)))
+#
+#    
+#    mydata.append(('rain_rate_24h',NoneToNull(globalvars.meteo_data.rain_rate_24h)))
+#    mydata.append(('rain_rate_1h',NoneToNull(globalvars.meteo_data.rain_rate_1h)))
+#        
+#    
+#    mydata=urllib.urlencode(mydata)
+#    
+#    
+#    try:
+#        req=urllib2.Request(serverfile, mydata)
+#        req.add_header("Content-type", "application/x-www-form-urlencoded")
+#        page=urllib2.urlopen(req,timeout=10).read()
+#        log( "Data sent to server : " + page )
+#    except:
+#        log(  "Error connecting to server : " + serverfile )
+#        pass
 
 def UploadData(cfg):
     mydata = {} 
-    
-
-    
     mydata['last_measure_time'] = (globalvars.meteo_data.last_measure_time.strftime("[%d/%m/%Y-%H:%M:%S]"))
     mydata['idx'] = (globalvars.meteo_data.idx.strftime("[%d/%m/%Y-%H:%M:%S]"))
     mydata['wind_dir_code'] = (globalvars.meteo_data.wind_dir_code)
@@ -332,7 +402,6 @@ def UploadData(cfg):
         
     #print mydata
     
-
     
     j = json.dumps(mydata)
     objects_file = './meteo.txt'
@@ -536,7 +605,7 @@ def isnumeric(s):
 
 def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
     try:
-        s = ftplib.FTP(server,login,password) 	# Connect
+        s = ftplib.FTP(server,login,password,timeout=30) 	# Connect
         f = open(filename,'rb')                # file to send
         s.cwd(destFolder)
         s.storbinary('STOR ' + name, f)         # Send the file
@@ -578,8 +647,8 @@ def internet_on():
 def internet_on1():
     try:
         log("Checking internet connetion ...")
-        urllib2.urlopen('http://74.125.113.99',timeout=10)
-        #urllib2.urlopen('http://74.125.113.99')
+        #urllib2.urlopen('http://74.125.113.99',timeout=10)
+        requests.get('http://74.125.113.99',timeout=10)
         log("Internet ok")
         return True
     except :

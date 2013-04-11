@@ -32,6 +32,28 @@ def run_all_service_thread(cfg):
     Halter_thread = Halter(cfg)
     Halter_thread.start()    
     
+    WatchDog_thread = WatchDog(cfg)
+    WatchDog_thread.start()
+     
+class WatchDog(threading.Thread):
+    
+    def __init__(self,cfg):
+        self.cfg = cfg
+        threading.Thread.__init__(self)
+        
+    def run(self):
+        log("Starting General WatchDog")
+        time.sleep(300)
+        while 1:
+            time.sleep(self.cfg.WebCamInterval )
+            seconds_elapsed = (datetime.datetime.now() - globalvars.WatchDogTime  ).total_seconds()
+            log("Last main Thread delay ratio: %.1f"%(seconds_elapsed/self.cfg.WebCamInterval))
+            if (seconds_elapsed > (2 * self.cfg.WebCamInterval)  ) :
+                log("General WatchDog : System will Reboot")
+                time.sleep(10)
+                systemRestart()
+
+             
 
 class SunHalter(threading.Thread):
     

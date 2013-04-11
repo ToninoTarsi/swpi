@@ -122,7 +122,8 @@ class config(object):
 		self.location_longitude = config.getfloat('General', 'location_longitude',12.743187)
 		self.location_altitude = config.getfloat('General', 'location_altitude',0)
 		self.wifi_reset_if_down = config.getboolean('General', 'wifi_reset_if_down',False)
-
+		self.cloudbase_calib = config.getfloat('General', 'cloudbase_calib',1.0)
+		
 		# [Dongle]
 		self.usedongle = config.getboolean('Dongle', 'usedongle',False)
 		self.AlwaysOnInternet = config.getboolean('Dongle', 'alwaysoninternet',True)
@@ -272,6 +273,9 @@ class config(object):
 		config.setfloat('General', 'location_altitude',self.location_altitude)
 		config.setboolean('General', 'wifi_reset_if_down',self.wifi_reset_if_down)
 		config.setint('General', 'config_web_server_port',self.config_web_server_port)
+		config.setfloat('General', 'cloudbase_calib',self.cloudbase_calib)
+
+
 
 		# [Dongle]
 		config.setboolean('Dongle', 'usedongle',self.usedongle)

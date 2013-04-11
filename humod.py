@@ -277,8 +277,15 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
     def __init__(self, data,audio, ctrl,cfg):
         """Open a serial connection to the modem."""
         self.cfg = cfg
+
         self.IP = "None"
         self.bAnswering = False
+        
+        _dial_num = self.cfg.dialnum
+        
+        if ( not cfg.usedongle ):
+            return
+        
         self.data_port = ModemPort()
         self.data_port.setPort(data)
         self.data_port.setBaudrate(self.cfg.modem_baudrate)
@@ -290,7 +297,7 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
         self.ctrl_port = ModemPort(ctrl, self.cfg.ctrl__baudrate,
                                    timeout=self.cfg.prober_timeout)
         
-        _dial_num = self.cfg.dialnum
+        
             
         self.ctrl_lock = threading.Lock()
         self.prober = Prober(self)

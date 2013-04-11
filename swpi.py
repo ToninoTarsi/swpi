@@ -278,7 +278,7 @@ def process_sms(modem, smsID):
 			modem.sms_del(msgID)
 			
 			bbConnected = False
-			if ( ( not internet_on()) and cfg.UseDongle and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet ):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -527,9 +527,10 @@ if ( cfg.use_wind_sensor ):
 
 bConnected = False
 
+modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
 # Init Dongle
 if cfg.usedongle :
-	modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
+	
 	modem.enable_textmode(True)
 	modem.enable_clip(True)	
 	modem.enable_nmi(True)
@@ -551,14 +552,14 @@ if cfg.usedongle :
 		smsID = message[0]
 		process_sms(modem,smsID)
 
-	if ( ( not internet_on()) and cfg.UseDongleNet ):
-		log( "Trying to connect to internet with 3G dongle ....")
-		time.sleep(1)
-		modem.connectwvdial()
-		time.sleep(2)
-		waitForIP()
-		if ( not cfg.AlwaysOnInternet ) :
-			bConnected = True
+if ( ( not internet_on()) and cfg.UseDongleNet ):
+	log( "Trying to connect to internet with 3G dongle ....")
+	time.sleep(1)
+	modem.connectwvdial()
+	time.sleep(2)
+	waitForIP()
+	if ( not cfg.AlwaysOnInternet ) :
+		bConnected = True
 
 # Get network IP
 if (internet_on() ):
@@ -775,7 +776,8 @@ while 1:
 			os.system( "sudo rm -r /var/log/*" )
 		else:
 			log("Disk space left = %s" % disk_space)	
-				
+		
+		globalvars.WatchDogTime = datetime.datetime.now()	
 		if ( cfg.WebCamInterval != 0):
 			log("Sleeping %s seconds" % cfg.WebCamInterval)
 			time.sleep(cfg.WebCamInterval)

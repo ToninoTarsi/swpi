@@ -31,6 +31,7 @@ import config
 import os
 from TTLib import *
    
+   
 class NTPException(Exception):
     """Exception raised by this module."""
     pass
