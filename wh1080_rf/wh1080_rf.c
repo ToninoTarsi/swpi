@@ -737,7 +737,8 @@ int main(int argc, char *argv[])
 		// Check time since last transition. If timeout, then dump packet.
 		int packet_offset = 0;
 		now = TIMER_ARM_COUNT;
-		if(!timeout && (now - oldrssitime) > 5000) { // && count > 0
+		if(!timeout && (now - oldrssitime) > 5000)
+		{ // && count > 0
 
 			uint8_t sig_matched = 0;
 		
@@ -756,8 +757,8 @@ int main(int argc, char *argv[])
 				}
 				printf("\rData bits = %d   (offset %d) (%d short) %s\n",
 					count, packet_offset, shorts, sig_matched ? "Packet signature found" : "No packet signature found");
-				if(count == 88 && sig_matched) { // then probably a data packet
-
+				if(count == 88 && sig_matched) // then probably a data packet
+				{
 					// LED on
 					*(gpio.addr + (0x1c >> 2)) = 1 << 22;
 
@@ -765,9 +766,11 @@ int main(int argc, char *argv[])
 
 					int b;
 					uint8_t byte;
-					for(idx=0; idx < 10; idx++) {
+					for(idx=0; idx < 10; idx++)
+					{
 						byte = 0;
-						for(b=0; b < 8; b++) {
+						for(b=0; b < 8; b++)
+						{
 							// Short pulses 1, long pulses 0
 							uint8_t bit = rssitime_buf[packet_offset + (idx * 8 + b)] < g_low_threshold ? 1 : 0;
 							byte = (byte << 1) + bit;
@@ -780,9 +783,11 @@ int main(int argc, char *argv[])
 					last_valid = time(0);
 					fflush(stdout);
 				}
-			} else {
-
-				if(shorts++ % 10 == 0) {
+			}
+			else
+			{
+				if(shorts++ % 10 == 0)
+				{
 					printf(".");
 					fflush(stdout);
 				}
@@ -838,10 +843,10 @@ int main(int argc, char *argv[])
 
 					do {
 						elapsed = (TIMER_ARM_COUNT - wait_start) / 1000000;
-						printf("Wait %us \r", 44 - elapsed);
+						printf("Wait %us \r", 46 - elapsed);
 						fflush(stdout);
 						usleep(250000);
-					} while(elapsed < 44);
+					} while(elapsed < 46);
 					printf("Listening for transmission\n");
 					scheduler_realtime();
 				}
@@ -851,7 +856,7 @@ int main(int argc, char *argv[])
 					fp=fopen("wh1080_rf.txt", "w");
 					fprintf(fp,"Station_Id,None\n");
 					fclose(fp);
-
+					usleep(5000000);
 				}
 			}
 			count = 0;
@@ -941,6 +946,7 @@ uint8_t _crc8( uint8_t *addr, uint8_t len)
 
 void scheduler_realtime() {
 
+	return;
 	struct sched_param p;
 	
 	p.__sched_priority = sched_get_priority_max(SCHED_RR);
@@ -952,6 +958,7 @@ void scheduler_realtime() {
 
 void scheduler_standard() {
 
+	return;
 	struct sched_param p;
 	
 	p.__sched_priority = 0;

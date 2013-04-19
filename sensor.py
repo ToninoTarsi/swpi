@@ -26,7 +26,8 @@ import meteodata
 from BMP085 import BMP085
 import re
 
-
+def log(message) :
+	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
 class Sensor(threading.Thread):
 	
@@ -79,38 +80,48 @@ class Sensor(threading.Thread):
 
 			#print "Temperature: %.1f C Humidity:    %.1f " % (globalvars.meteo_data.temp_in , globalvars.meteo_data.hum_out)
 		except:
-			log("Error reading DHT sensor")
+			globalvars.meteo_data.hum_out = None
+			if ( self.cfg.use_bmp085 ):
+				globalvars.meteo_data.temp_in = None
+			else:
+				globalvars.meteo_data.temp_out = None
+			log("ERROR reading DHT sensor")
+			
 		
 	def ReadBMP085(self):
-		p=0.0
-		temp = None
-		i = 0
-		while ( p==0.0 and i < 10):
-			p,temp = self.bmp085.readPressureTemperature()
-			i = i+1
-			if p == 0.0 :
-				time.sleep(0.5)
-				
-		if ( p != None )  :  
-			globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
-		else:
+		try:
+			p=0.0
+			temp = None
+			i = 0
+			while ( p==0.0 and i < 10):
+				p,temp = self.bmp085.readPressureTemperature()
+				i = i+1
+				if p == 0.0 :
+					time.sleep(0.5)
+					
+			if ( p != None )  :  
+				globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+			else:
+				globalvars.meteo_data.abs_pressure = None
+				if ( self.cfg.sensor_type == "WH1080-RFM01"):
+					globalvars.meteo_data.temp_in = None
+				else:
+					globalvars.meteo_data.temp_out = None
+					return
+			
+			if ( self.cfg.sensor_type == "WH1080-RFM01"):
+				globalvars.meteo_data.temp_in = temp
+			else:
+				globalvars.meteo_data.temp_out = temp
+		except:
 			globalvars.meteo_data.abs_pressure = None
-		
-		if ( self.cfg.sensor_type == "WH1080-RFM01"):
-			globalvars.meteo_data.temp_in = temp
-		else:
-			globalvars.meteo_data.temp_out = temp
+			if ( self.cfg.sensor_type == "WH1080-RFM01"):
+				globalvars.meteo_data.temp_in = None
+			else:
+				globalvars.meteo_data.temp_out = None
+			log("ERROR reading BMP085 sensor")
 
 
-#		if ( p == None):
-#			globalvars.meteo_data.temp_out = None
-#			globalvars.meteo_data.abs_pressure = None
-#		elif ( p != 0.0): 
-#			if ( self.cfg.location_altitude != 0 ):
-#				p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
-#			else:
-#				p0 = p
-#			globalvars.meteo_data.rel_pressure = float(p0 / 100.0)
 				
 	def ReadBMP085_temp_in(self):
 		p=0.0

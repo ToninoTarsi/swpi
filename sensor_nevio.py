@@ -56,6 +56,15 @@ def get_wind_dir16():
     return [ 0,22.5,337.5,315,67.5,45,90,112.5,247.5,225,270,292.5,180,202.5,157.5,135 ]
 
 
+def get_wind_dir_code16S():
+    return [ 'S','SSW','SSE','SE','WSW','SW','W','WNW','ENE','NE','E','ESE','N','NNE','NNW','NW']
+
+
+def get_wind_dir16S():
+    return [ 180,202.5,157.5,135,247.5,225,270,292.5,67.5,45,90,112.5,0,22.5,337.5,315 ]
+
+
+
 class Sensor_Nevio(sensor.Sensor):
     
     __MEASURETIME = 2 # Number of seconds for pulse recording
@@ -89,7 +98,7 @@ class Sensor_Nevio(sensor.Sensor):
         GPIO.setup(self.__PIN_B1, GPIO.IN)  # B1
         GPIO.setup(self.__PIN_B2, GPIO.IN)  # B2
         GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
-        if ( self.cfg.sensor_type.upper() == "NEVIO16") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B-1
+        if ( self.cfg.sensor_type.upper() != "NEVIO8") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
         
@@ -119,18 +128,20 @@ class Sensor_Nevio(sensor.Sensor):
         b1 = GPIO.input(self.__PIN_B1)
         b2 = GPIO.input(self.__PIN_B2)
         b3 = GPIO.input(self.__PIN_B3)
-        if ( self.cfg.sensor_type.upper() == "NEVIO16"): b0 = GPIO.input(self.__PIN_B0)
+        if ( self.cfg.sensor_type.upper() != "NEVIO8"): b0 = GPIO.input(self.__PIN_B0)
         
-        if ( self.cfg.sensor_type.upper() != "NEVIO16"):
+        if ( self.cfg.sensor_type.upper() == "NEVIO8"):
             wind_dir8  =   b1 + b2*2 + b3*4 
             wind_dir = get_wind_dir8()[wind_dir8]
             wind_dir_code = get_wind_dir_code8()[wind_dir8]   
-        else:
+        elif ( self.cfg.sensor_type.upper() == "NEVIO16" ):
             wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
             wind_dir = get_wind_dir16()[wind_dir16]
             wind_dir_code = get_wind_dir_code16()[wind_dir16]                   
-        
-        
+        elif ( self.cfg.sensor_type.upper() == "NEVIO16S" ):
+            wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
+            wind_dir = get_wind_dir16S()[wind_dir16]
+            wind_dir_code = get_wind_dir_code16S()[wind_dir16]               
         
         return wind_dir, wind_dir_code
     

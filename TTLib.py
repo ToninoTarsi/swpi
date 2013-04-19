@@ -683,7 +683,8 @@ def getIP():
 
 def getPublicIP():
     try:
-        ip = urllib.urlopen("http://www.vololiberomontecucco.it/ip.php").read()
+        ip = requests.get("http://www.vololiberomontecucco.it/ip.php",timeout=10).text
+        #ip = urllib.urlopen("http://www.vololiberomontecucco.it/ip.php").read()
         return ip
     except Exception, e:
         return None    

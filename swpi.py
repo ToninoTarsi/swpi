@@ -749,7 +749,7 @@ while 1:
 					cfg.readCfg(False)
 				
 				# Set Time from NTP ( using a thread to avoid strange freezing )
-				if ( ( not globalvars.TimeSetFromNTP )  and cfg.set_system_time_from_ntp_server_at_startup ):
+				if ( cfg.set_system_time_from_ntp_server_at_startup ):
 					thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 				
 				if bConnected:

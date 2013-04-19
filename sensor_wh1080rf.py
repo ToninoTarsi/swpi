@@ -28,6 +28,10 @@ import TTLib
 import thread
 import os
 
+DEBUG = False
+
+
+
 def log(message) :
 	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
@@ -128,6 +132,7 @@ class Sensor_WH1080RF(sensor.Sensor):
 			rain = float(text[3].split(",")[1])
 			return station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain
 		except:
+			if DEBUG: print "DEBUG - Error in ReadData"
 			return "None",0,0,0,0,"",0,0
 
 	def GetData(self):
@@ -135,6 +140,7 @@ class Sensor_WH1080RF(sensor.Sensor):
 		# get first good data
 		good_data = False
 		while ( not os.path.exists('./wh1080_rf.txt')  ):
+			if DEBUG: print "DEBUG - not exist ./wh1080_rf.txt "
 			time.sleep(5)
 		while ( not good_data ):
 			station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain =  self.ReadData()
@@ -164,16 +170,16 @@ class Sensor_WH1080RF(sensor.Sensor):
 				sensor.Sensor.GetData(self)
 			
 			
-			tosleep = 48-(datetime.datetime.now()-last_data_time).seconds
-			#print "Sleeping  ", tosleep
-			if (tosleep > 0 ):	
+			tosleep = 50-(datetime.datetime.now()-last_data_time).seconds
+			if DEBUG: print "Sleeping  ", tosleep
+			if (tosleep > 0 and tosleep < 50 ):	
 				time.sleep(tosleep)
 			else:
-				time.sleep(48)
+				time.sleep(50)
 			
 			new_last_data_time = modification_date('./wh1080_rf.txt')
 			while ( new_last_data_time == None or new_last_data_time == last_data_time):
-				time.sleep(5)
+				time.sleep(10)
 				new_last_data_time = modification_date('./wh1080_rf.txt')
 				
 				

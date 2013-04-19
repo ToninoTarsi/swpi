@@ -142,6 +142,7 @@ class MeteoData(object):
       
     def CalcStatistics(self):
         
+        TTLib.log("Calculating Meteo data and statistics")
         self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = dew_point(self.temp_out, self.hum_out)
@@ -245,6 +246,7 @@ class MeteoData(object):
         
     def LogDataToDB(self):
         
+            TTLib.log("Logging data to Database")
             if ( self.last_measure_time == None ):
                 return
             

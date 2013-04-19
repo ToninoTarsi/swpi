@@ -70,7 +70,7 @@ class WindSensorThread(threading.Thread):
         if ( self.cfg.sensor_type.upper() == "SIMULATE"):             
             sensor = sensor_simulator.Sensor_Simulator(self.cfg)
             
-        elif ( self.cfg.sensor_type.upper() == "NEVIO8" or self.cfg.sensor_type.upper() == "NEVIO16"):
+        elif ( self.cfg.sensor_type.upper() == "NEVIO8" or self.cfg.sensor_type.upper() == "NEVIO16" or self.cfg.sensor_type.upper() == "NEVIO16S"):
             sensor = sensor_nevio.Sensor_Nevio(self.cfg)
             
         elif ( self.cfg.sensor_type.upper()  == "PCE-FWS20"):
