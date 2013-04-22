@@ -73,7 +73,7 @@ def process_sms(modem, smsID):
 			modem.sms_del(msgID)
 			return False
 		pwd = command[0]
-		if ( pwd != cfg.SMSPwd ):
+		if ( pwd.upper() != cfg.SMSPwd.upper() ):
 			log( "Bad SMS Password .. deleting")
 			modem.sms_del(msgID)
 			return False
@@ -86,7 +86,8 @@ def process_sms(modem, smsID):
 		#                                          SMS COMMANDS
 		#	command	param	desc
 		#
-		#	RBT				reboot	
+		#	RBT				reboot
+		#	HLT				halt	
 		#	MDB				mail database to sender
 		#	RDB				Reset Database
 		#	MCFG			mail cfg to sender
@@ -116,6 +117,14 @@ def process_sms(modem, smsID):
 			log( "Receiced rebooting command  " )
 			systemRestart()
 		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "HLT" ):
+			modem.sms_del(msgID)
+			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+			conn.commit()		
+			log( "Receiced halt command  " )
+			systemHalt()
+		#---------------------------------------------------------------------------------------	
+
 		if (len(command) == 2 and cmd == "RDB" ):
 			modem.sms_del(msgID)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
@@ -638,6 +647,7 @@ if ( cfg.usecameradivice ):
 ############################ MAIN  LOOP###############################################
 
 while 1:
+	last_data_time = datetime.datetime.now()
 	try:
 		#if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
@@ -779,8 +789,10 @@ while 1:
 		
 		globalvars.WatchDogTime = datetime.datetime.now()	
 		if ( cfg.WebCamInterval != 0):
-			log("Sleeping %s seconds" % cfg.WebCamInterval)
-			time.sleep(cfg.WebCamInterval)
+			tosleep = cfg.WebCamInterval-(datetime.datetime.now()-last_data_time).seconds
+			if ( tosleep > 0):
+				log("Sleeping %s seconds" % tosleep)
+				time.sleep(tosleep)
 		else:
 			log("Sleeping 1000 seconds")
 			time.sleep(1000)	
