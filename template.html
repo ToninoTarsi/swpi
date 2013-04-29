@@ -653,6 +653,7 @@ Content-Type: text/html
                     <input id="shutdown_at" type="text" name="shutdown_at" 
                         value=$shutdown_at style="width: 100%" /></td>
             </tr>
+			
             <tr>
                 <td class="style12" width="800">
                     Shutdown system every day at the specified hours before sunset. For example -2 
@@ -662,6 +663,16 @@ Content-Type: text/html
                     <input id="shutdown_hour_before_sunset" type="text" name="shutdown_hour_before_sunset" 
                         value=$shutdown_hour_before_sunset style="width: 100%" /></td>
             </tr>
+			
+			<tr>
+                <td class="style12" width="800">
+                    Set time at boot ( None for not using this function . es 08:00 <b> 
+                    (set_time_at_boot</b>)</td>
+                <td class="style45">
+                    <input id="set_time_at_boot" type="text" name="set_time_at_boot" 
+                        value=$set_time_at_boot style="width: 100%" /></td>
+            </tr>
+			
             <tr>
                 <td class="style12" width="800">
                     Adjust system time from a NTP internt server at system startup (<b>set_system_time_from_ntp_server_at_startup</b>)</td>
@@ -675,6 +686,8 @@ Content-Type: text/html
                  </td>
                     
             </tr>
+			
+			
             <tr>
                 <td class="style12" width="800">
                     NTP servet for time adjustemnt. (<b>ntp_server</b>)</td>

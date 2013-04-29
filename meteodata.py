@@ -19,7 +19,11 @@ import math
 def  cloud_base_altitude(temp,dew_point,station_altitude):
     if (temp == None or dew_point == None or station_altitude == None):
         return None
-    return (((((temp-dew_point)*1.8/4.5 ) * 1000 ) + (station_altitude * 3.2808) ) / 3.2808)
+    delta = (((temp-dew_point)*1.8/4.5 ) * 1000 )
+#    if ( delta < 10 ):
+#        return -1
+#    else:
+    return ( delta + (station_altitude * 3.2808) ) / 3.2808
 
 
             
@@ -138,7 +142,7 @@ class MeteoData(object):
             self.PressureMin = None
             self.PressureMax = None
             
-            self.previous_rain = self.rain
+            self.previous_rain = None
       
     def CalcStatistics(self):
         
@@ -156,11 +160,11 @@ class MeteoData(object):
                 p0 = (self.abs_pressure*100) / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
             else:
                 p0 = self.abs_pressure*100
-            self.rel_pressure = float(p0/100 )
+            self.rel_pressure = float(p0/100 ) 
             #print self.abs_pressure,self.rel_pressure
         
         
-        if ( self.previous_rain != None and self.previous_measure_time != None ):
+        if ( self.rain != None and self.previous_rain != None and self.previous_measure_time != None ):
             self.rain_rate = self.rain - self.previous_rain
         
         if ( ( self.previous_measure_time != None ) and  (datetime.datetime.strftime(self.last_measure_time,'%m/%d/%Y') !=  datetime.datetime.strftime(self.previous_measure_time,'%m/%d/%Y')  ) ):

@@ -205,7 +205,7 @@ class LinuxSerialPort(SerialPort):
       "38400":	tty.B38400,
       "57600":	tty.B57600,
       "115200":	tty.B115200, }
-  SERIAL_SETTINGS = "2400,n,8,1"
+  SERIAL_SETTINGS = "9600,n,8,1"
   device	= None		# string, the device name.
   orig_settings = None		# class,  the original ports settings.
   select_list	= None		# list,   The serial ports

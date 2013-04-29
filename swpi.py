@@ -34,6 +34,9 @@ import thread
 import database
 import web_server
 import socket
+import pluginmanager
+import importlib
+import subprocess
 
 socket.setdefaulttimeout(30)
 
@@ -372,6 +375,45 @@ def answer_call(modem, message):
 		
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_gust)) + ".raw")
 		listOfMessages.append("./audio/km.raw")
+
+		#Cloud base
+		if (globalvars.meteo_data.cloud_base_altitude != None ) : 
+			if ( globalvars.meteo_data.cloud_base_altitude != -1 ) :
+				thousands, rem = divmod(round(globalvars.meteo_data.cloud_base_altitude), 1000) 
+				thousands = int(thousands * 1000)
+				hundreds, tens = divmod(rem, 100)
+				hundreds = int(hundreds * 100)
+				tens = int(round(tens))	
+				listOfMessages.append("./audio/silence05s.raw") 
+				listOfMessages.append("./audio/cloudbase.raw")
+				if ( thousands != 0):
+					listOfMessages.append("./audio/" + str(thousands) + ".raw")
+				if ( hundreds != 0):
+					listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+				if ( tens != 0 ):
+					listOfMessages.append("./audio/" + str(tens) + ".raw")
+				listOfMessages.append("./audio/meters.raw")
+			else:
+				listOfMessages.append("./audio/incloud.raw")
+			
+			
+	
+		# Pressure
+		if ( globalvars.meteo_data.rel_pressure != None ):
+			thousands, rem = divmod(round(globalvars.meteo_data.rel_pressure), 1000) 
+			thousands = int(thousands * 1000)
+			hundreds, tens = divmod(rem, 100)
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))	
+			listOfMessages.append("./audio/silence05s.raw") 
+			listOfMessages.append("./audio/pressure.raw")
+			if ( thousands != 0):
+				listOfMessages.append("./audio/" + str(thousands) + ".raw")
+			if ( hundreds != 0):
+				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")
+			listOfMessages.append("./audio/hpa.raw")	
 	
 		# Temperature
 		if ( globalvars.meteo_data.temp_out != None ):
@@ -391,22 +433,7 @@ def answer_call(modem, message):
 			listOfMessages.append("./audio/" + str(intera) + ".raw")
 			listOfMessages.append("./audio/degree.raw")
 
-		# Pressure
-		if ( globalvars.meteo_data.rel_pressure != None ):
-			thousands, rem = divmod(round(globalvars.meteo_data.rel_pressure), 1000) 
-			thousands = int(thousands * 1000)
-			hundreds, tens = divmod(rem, 100)
-			hundreds = int(hundreds * 100)
-			tens = int(round(tens))	
-			listOfMessages.append("./audio/silence05s.raw") 
-			listOfMessages.append("./audio/pressure.raw")
-			if ( thousands != 0):
-				listOfMessages.append("./audio/" + str(thousands) + ".raw")
-			if ( hundreds != 0):
-				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
-			if ( tens != 0 ):
-				listOfMessages.append("./audio/" + str(tens) + ".raw")
-			listOfMessages.append("./audio/hpa.raw")
+
 			
 		# Humidity
 		if ( globalvars.meteo_data.hum_out != None ):
@@ -416,28 +443,15 @@ def answer_call(modem, message):
 			listOfMessages.append("./audio/" + str(intera) + ".raw")
 			listOfMessages.append("./audio/percent.raw")
 		
-		#Cloud base
-		if (globalvars.meteo_data.cloud_base_altitude != None ) : 
-			thousands, rem = divmod(round(globalvars.meteo_data.cloud_base_altitude), 1000) 
-			thousands = int(thousands * 1000)
-			hundreds, tens = divmod(rem, 100)
-			hundreds = int(hundreds * 100)
-			tens = int(round(tens))	
-			listOfMessages.append("./audio/silence05s.raw") 
-			listOfMessages.append("./audio/cloudbase.raw")
-			if ( thousands != 0):
-				listOfMessages.append("./audio/" + str(thousands) + ".raw")
-			if ( hundreds != 0):
-				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
-			if ( tens != 0 ):
-				listOfMessages.append("./audio/" + str(tens) + ".raw")
-			listOfMessages.append("./audio/meters.raw")
+
 		
 		# Statistics
-		listOfMessages.append("./audio/minday.raw")
-		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")		
+#		listOfMessages.append("./audio/minday.raw")
+#		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")	
+			
 		listOfMessages.append("./audio/maxday.raw")	
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
+		
 		listOfMessages.append("./audio/silence05s.raw") 		
 		listOfMessages.append("./audio/thanks.raw")
 		listOfMessages.append("./audio/www.raw")
@@ -472,6 +486,8 @@ if not os.path.isfile(configfile):
 	#exit(0)
 else:
 	cfg = config.config(configfile,False)
+	
+
 ##################################################################################
 v = version.Version("VERSION").getVersion()
 log( "Starting SINT WIND PI  ... ")
@@ -582,6 +598,16 @@ else:
 
 # Set Time from NTP ( using a thread to avoid strange freezing )
 
+if ( cfg.set_time_at_boot.upper() != "NONE"):
+	hours=int((cfg.set_time_at_boot.split(":")[0]))
+	minutes=int((cfg.set_time_at_boot.split(":")[1]))
+	seconds="00"
+	now = datetime.datetime.now()
+	new_date = now + datetime.timedelta(days=1)
+	d = new_date.replace( hour=hours )
+	new_date =  d.replace( minute=minutes )
+	os.system("sudo date -s '%s'" %  new_date)
+
 if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 
@@ -631,7 +657,7 @@ if bConnected:
 # Wait for valid data
 maxwait = 0
 if ( cfg.use_wind_sensor ) :
-	while ( globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status == -9999 and maxwait < cfg.WebCamInterval) :
+	while ( globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status == -9999 and maxwait < 120) :
 		maxwait = maxwait + 1 
 		time.sleep(1)
 
@@ -641,13 +667,30 @@ if ( cfg.usecameradivice ):
 	if ( cfg.clear_all_sd_cards_at_startup):
 		camera.ClearAllCameraSDCards(cfg)		
 
-		
+# load plugins
+pl = pluginmanager.PluginLoader("./plugins",cfg)
+pl.loadAll()
+
+
+
+if os.path.exists('./plugins/sync_plugin.py'):
+	log("Loading sync plugin")
+	import plugins.sync_plugin as pls
+	plugin_sync = pls.swpi_sync_plugin(cfg)
+else:
+	plugin_sync = None
+	
 
 # Start main thread
 ############################ MAIN  LOOP###############################################
 
 while 1:
 	last_data_time = datetime.datetime.now()
+	
+	if ( plugin_sync != None ):
+		plugin_sync.run_before()
+		
+	
 	try:
 		#if ( cfg.usedongle ):  log("Signal quality : " + str(modem.get_rssi()))
 
@@ -787,7 +830,12 @@ while 1:
 		else:
 			log("Disk space left = %s" % disk_space)	
 		
-		globalvars.WatchDogTime = datetime.datetime.now()	
+		globalvars.WatchDogTime = datetime.datetime.now()
+		
+		
+		if ( plugin_sync != None ):
+			plugin_sync.run_after()
+			
 		if ( cfg.WebCamInterval != 0):
 			tosleep = cfg.WebCamInterval-(datetime.datetime.now()-last_data_time).seconds
 			if ( tosleep > 0):

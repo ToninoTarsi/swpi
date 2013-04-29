@@ -15,8 +15,6 @@ import config
 import random
 import datetime
 import sqlite3
-#from TTLib import *
-import TTLib
 import sys
 import subprocess
 import globalvars

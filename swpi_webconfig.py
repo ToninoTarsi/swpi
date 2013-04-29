@@ -29,6 +29,7 @@ def outputPage(cfg):
 	d.update(reboot_at=cfg.reboot_at)
 	d.update(shutdown_at=cfg.shutdown_at)
 	d.update(shutdown_hour_before_sunset=cfg.shutdown_hour_before_sunset)
+	d.update(set_time_at_boot=cfg.set_time_at_boot)
 	d.update(set_system_time_from_ntp_server_at_startup=cfg.set_system_time_from_ntp_server_at_startup)
 #	if (cfg.set_system_time_from_ntp_server_at_startup ):
 #		d.update(selected_True_set_system_time_from_ntp_server_at_startup='selected')
@@ -165,7 +166,8 @@ cfg = config.config(configfile,False)
 if ( len(request) != 0 ):
 	
 	cfg.config_web_server = request['config_web_server'][0]																 
-	cfg.set_system_time_from_ntp_server_at_startup = request['set_system_time_from_ntp_server_at_startup'][0]								   
+	cfg.set_system_time_from_ntp_server_at_startup = request['set_system_time_from_ntp_server_at_startup'][0]	
+	cfg.set_time_at_boot = request['set_time_at_boot'][0]					   
 	cfg.ntp_server = request['ntp_server'][0]																		   
 	cfg.reboot_at = request['reboot_at'][0]																		   
 	cfg.shutdown_at = request['shutdown_at'][0]																		   
