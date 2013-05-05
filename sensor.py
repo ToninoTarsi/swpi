@@ -51,40 +51,57 @@ class Sensor(threading.Thread):
 		#print "GetData"
 		if ( self.cfg.use_bmp085 and self.bmp085 != None ):
 			self.ReadBMP085()
-			
+			#print "bmp read"
 		if ( self.cfg.use_dht ):
 			self.ReadDHT()
-
+			#print "dht read"
 		globalvars.meteo_data.CalcStatistics()
 		globalvars.meteo_data.LogDataToDB()
 		
 		
 	def ReadDHT(self):
+		
+		if ( self.cfg.use_bmp085 ):
+			globalvars.meteo_data.temp_in = None
+		else:
+			globalvars.meteo_data.temp_out = None
+		if ( self.cfg.sensor_type != "WH1080-RFM01"):				
+			globalvars.meteo_data.hum_out = None
+		else:
+			globalvars.meteo_data.hum_in = None	
+			
 		try:
 			if ( self.cfg.dht_type == "DHT11" ) :
-				output = subprocess.check_output(["./DHT/DHT"]);
+				if ( self.cfg.sensor_type != "WH1080-RFM01"):
+					output = subprocess.check_output(["./DHT/DHT"])
+				else:
+					output = subprocess.check_output(["./DHT/DHT_rf","11","18"])
 			else:
-				output = subprocess.check_output(["./DHT/DHT","22"]);
+				if ( self.cfg.sensor_type != "WH1080-RFM01"):
+					output = subprocess.check_output(["./DHT/DHT","22"])
+				else:
+					output = subprocess.check_output(["./DHT/DHT_rf","22","18"])
 			#print output
 			matches = re.search("Temp =\s+([0-9.]+)", output)
 			if ( matches):
+				dht_temp = float(matches.group(1))
 				if ( self.cfg.use_bmp085 ):
-					globalvars.meteo_data.temp_in = float(matches.group(1))
+					globalvars.meteo_data.temp_in = dht_temp
 				else:
-					globalvars.meteo_data.temp_out = float(matches.group(1))
+					globalvars.meteo_data.temp_out = dht_temp
 			
 			# search for humidity printout
 			matches = re.search("Hum =\s+([0-9.]+)", output)
 			if ( matches):
-				globalvars.meteo_data.hum_out = float(matches.group(1))
-
-			#print "Temperature: %.1f C Humidity:    %.1f " % (globalvars.meteo_data.temp_in , globalvars.meteo_data.hum_out)
+				dht_hum = float(matches.group(1))
+				if ( self.cfg.sensor_type != "WH1080-RFM01"):				
+					globalvars.meteo_data.hum_out = dht_hum
+				else:
+					globalvars.meteo_data.hum_in = dht_hum
+						
+			log("DHT - Temperature: %.1f C Humidity:    %.1f " % (dht_temp, dht_hum) )
+		
 		except:
-			globalvars.meteo_data.hum_out = None
-			if ( self.cfg.use_bmp085 ):
-				globalvars.meteo_data.temp_in = None
-			else:
-				globalvars.meteo_data.temp_out = None
 			log("ERROR reading DHT sensor")
 			
 		
@@ -94,25 +111,29 @@ class Sensor(threading.Thread):
 			temp = None
 			i = 0
 			while ( p==0.0 and i < 10):
-				p,temp = self.bmp085.readPressureTemperature()
 				i = i+1
+				p,temp = self.bmp085.readPressureTemperature()
 				if p == 0.0 :
 					time.sleep(0.5)
 					
 			if ( p != None )  :  
-				globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+				abs_pressure = float(p / 100.0) 
+				globalvars.meteo_data.abs_pressure =  abs_pressure
 			else:
 				globalvars.meteo_data.abs_pressure = None
 				if ( self.cfg.sensor_type == "WH1080-RFM01"):
 					globalvars.meteo_data.temp_in = None
 				else:
-					globalvars.meteo_data.temp_out = None
-					return
+					globalvars.meteo_data.temp_out = None		
+				return
 			
 			if ( self.cfg.sensor_type == "WH1080-RFM01"):
 				globalvars.meteo_data.temp_in = temp
 			else:
 				globalvars.meteo_data.temp_out = temp
+			
+			log("BMP085 - Temperature: %.1f C Pressure:    %.1f " % (temp, abs_pressure) )
+			
 		except:
 			globalvars.meteo_data.abs_pressure = None
 			if ( self.cfg.sensor_type == "WH1080-RFM01"):

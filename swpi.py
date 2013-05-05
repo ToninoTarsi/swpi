@@ -355,7 +355,10 @@ def answer_call(modem, message):
 		listOfMessages = []
 		
 		listOfMessages.append("./audio/silence05s.raw") 
+		
 		listOfMessages.append("./audio/hello.raw")
+		
+		listOfMessages.append("./audio/message.raw")
 		
 		if ( cfg.sensor_type.upper() == "SIMULATE" ):
 			listOfMessages.append("./audio/simulate.raw")
@@ -363,8 +366,8 @@ def answer_call(modem, message):
 		if (delay_seconds > 600 ):
 			listOfMessages.append("./audio/some_problem.raw") 
 
-#		if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
-#			listOfMessages.append("./audio/raining.raw")
+		if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
+			listOfMessages.append("./audio/raining.raw")
 		
 		# Wind Speed and Direction
 		listOfMessages.append("./audio/winddirection.raw")
@@ -375,6 +378,41 @@ def answer_call(modem, message):
 		
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_gust)) + ".raw")
 		listOfMessages.append("./audio/km.raw")
+	
+		# Temperature
+		if ( globalvars.meteo_data.temp_out != None ):
+			listOfMessages.append("./audio/silence05s.raw") 
+			listOfMessages.append("./audio/temperature.raw")
+			if ( globalvars.meteo_data.temp_out < 0) :
+				listOfMessages.append("./audio/minus.raw") 
+	
+#			intera =  int( math.floor(abs(globalvars.meteo_data.temp_out)) )
+#			dec = int( (abs(globalvars.meteo_data.temp_out)-intera)*10 )
+#			listOfMessages.append("./audio/temperature.raw")
+#			listOfMessages.append("./audio/" + str(intera) + ".raw")
+#			listOfMessages.append("./audio/comma.raw")
+#			listOfMessages.append("./audio/" + str(dec ) + ".raw")
+						
+			intera = int(round( abs(globalvars.meteo_data.temp_out) ))
+			listOfMessages.append("./audio/" + str(intera) + ".raw")
+			listOfMessages.append("./audio/degree.raw")
+
+		# Pressure
+		if ( globalvars.meteo_data.rel_pressure != None ):
+			thousands, rem = divmod(round(globalvars.meteo_data.rel_pressure), 1000) 
+			thousands = int(thousands * 1000)
+			hundreds, tens = divmod(rem, 100)
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))	
+			listOfMessages.append("./audio/silence05s.raw") 
+			listOfMessages.append("./audio/pressure.raw")
+			if ( thousands != 0):
+				listOfMessages.append("./audio/" + str(thousands) + ".raw")
+			if ( hundreds != 0):
+				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")
+			listOfMessages.append("./audio/hpa.raw")	
 
 		#Cloud base
 		if (globalvars.meteo_data.cloud_base_altitude != None ) : 
@@ -397,44 +435,6 @@ def answer_call(modem, message):
 				listOfMessages.append("./audio/incloud.raw")
 			
 			
-	
-		# Pressure
-		if ( globalvars.meteo_data.rel_pressure != None ):
-			thousands, rem = divmod(round(globalvars.meteo_data.rel_pressure), 1000) 
-			thousands = int(thousands * 1000)
-			hundreds, tens = divmod(rem, 100)
-			hundreds = int(hundreds * 100)
-			tens = int(round(tens))	
-			listOfMessages.append("./audio/silence05s.raw") 
-			listOfMessages.append("./audio/pressure.raw")
-			if ( thousands != 0):
-				listOfMessages.append("./audio/" + str(thousands) + ".raw")
-			if ( hundreds != 0):
-				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
-			if ( tens != 0 ):
-				listOfMessages.append("./audio/" + str(tens) + ".raw")
-			listOfMessages.append("./audio/hpa.raw")	
-	
-		# Temperature
-		if ( globalvars.meteo_data.temp_out != None ):
-			listOfMessages.append("./audio/silence05s.raw") 
-			listOfMessages.append("./audio/temperature.raw")
-			if ( globalvars.meteo_data.temp_out < 0) :
-				listOfMessages.append("./audio/minus.raw") 
-	
-#			intera =  int( math.floor(abs(globalvars.meteo_data.temp_out)) )
-#			dec = int( (abs(globalvars.meteo_data.temp_out)-intera)*10 )
-#			listOfMessages.append("./audio/temperature.raw")
-#			listOfMessages.append("./audio/" + str(intera) + ".raw")
-#			listOfMessages.append("./audio/comma.raw")
-#			listOfMessages.append("./audio/" + str(dec ) + ".raw")
-						
-			intera = int(round( abs(globalvars.meteo_data.temp_out) ))
-			listOfMessages.append("./audio/" + str(intera) + ".raw")
-			listOfMessages.append("./audio/degree.raw")
-
-
-			
 		# Humidity
 		if ( globalvars.meteo_data.hum_out != None ):
 			listOfMessages.append("./audio/silence05s.raw") 
@@ -446,8 +446,8 @@ def answer_call(modem, message):
 
 		
 		# Statistics
-#		listOfMessages.append("./audio/minday.raw")
-#		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")	
+		listOfMessages.append("./audio/minday.raw")
+		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")	
 			
 		listOfMessages.append("./audio/maxday.raw")	
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
@@ -527,6 +527,7 @@ os.system( "sudo chmod +x ./swpi.sh" )
 os.system( "sudo chmod +x ./swpi-update.sh" )
 os.system( "sudo chmod +x ./killswpi.sh" )
 os.system( "sudo chmod +x ./DHT/DHT" )
+os.system( "sudo chmod +x ./DHT/DHT_rf" )
 os.system( "sudo chmod +x ./wh1080_rf/wh1080_rf" )
 os.system( "sudo chmod +x ./wh1080_rf/spi_init" )
 

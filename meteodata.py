@@ -112,6 +112,17 @@ class MeteoData(object):
             
             self.ResetStatistic()
             
+    def newday(self):
+        if ( self.previous_measure_time == None ):
+            self.previous_measure_time = self.last_measure_time
+            return True
+        elif (datetime.datetime.strftime(self.last_measure_time,'%m/%d/%Y') != 
+            datetime.datetime.strftime(self.previous_measure_time,'%m/%d/%Y') ) :
+            self.previous_rain = self.rain
+            return True
+        else:
+            return False        
+            
     def CalcMeanWindDir(self):
         rb = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_dir_average)
         while 1:
@@ -142,19 +153,23 @@ class MeteoData(object):
             self.PressureMin = None
             self.PressureMax = None
             
-            self.previous_rain = None
+            self.previous_measure_time = None
+            self.previous_rain = self.rain
       
     def CalcStatistics(self):
         
         TTLib.log("Calculating Meteo data and statistics")
+        
+        
+        ############## Calucelated parameters
+        #
         self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = dew_point(self.temp_out, self.hum_out)
-     
         self.cloud_base_altitude = cloud_base_altitude(self.temp_out,self.dew_point,self.cfg.location_altitude) 
         if ( self.cloud_base_altitude != None) : 
             self.cloud_base_altitude = self.cloud_base_altitude * self.cfg.cloudbase_calib
-            
+        
         if ( self.abs_pressure != None and self.abs_pressure != 0.0): 
             if ( self.cfg.location_altitude != 0 ):
                 p0 = (self.abs_pressure*100) / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
@@ -167,13 +182,16 @@ class MeteoData(object):
         if ( self.rain != None and self.previous_rain != None and self.previous_measure_time != None ):
             self.rain_rate = self.rain - self.previous_rain
         
-        if ( ( self.previous_measure_time != None ) and  (datetime.datetime.strftime(self.last_measure_time,'%m/%d/%Y') !=  datetime.datetime.strftime(self.previous_measure_time,'%m/%d/%Y')  ) ):
+        ###############################################
+        
+        if ( self.newday() ):
             
             self.ResetStatistic()
+            
 
         else:
         
-            if ( self.winDayMin == None or self.wind_ave < self.winDayMin ) : 
+            if ( self.winDayMin == None or self.wind_ave < self.winDayMin ): 
                 self.winDayMin  = self.wind_ave
             if ( self.winDayMax == None or self.wind_ave > self.winDayMax ) : 
                 self.winDayMax  = self.wind_ave       
@@ -268,16 +286,32 @@ class MeteoData(object):
                 msg = msg + " - Spd: " + str(self.wind_ave)
             if self.wind_gust != None :
                 msg = msg + " - Gst: " + str(self.wind_gust) 
+            if self.temp_in  != None :
+                msg = msg + " - Tin: %d" % self.temp_in        
             if self.temp_out != None :
-                msg = msg + " - T: " + str(self.temp_out)     
+                msg = msg + " - T: " + str(self.temp_out)  
+            if self.hum_in  != None :
+                msg = msg + " - Hin: %d" % self.hum_in       
+            if self.hum_out != None :
+                msg = msg + " - U: %d" % self.hum_out                        
             if self.rel_pressure != None :
                 msg = msg + " - P: %.1f" % self.rel_pressure   
-            if self.hum_out != None :
-                msg = msg + " - U: %d" % self.hum_out        
             if self.rain != None :
                 msg = msg + " - R: %d" % self.rain     
             if self.cloud_base_altitude != None :
-                msg = msg + " - CB: %d" % self.cloud_base_altitude                                           
+                msg = msg + " - CB: %d" % self.cloud_base_altitude
+  
+
+#            if self.hum_in  != None :
+#                msg = msg + " - Hin: %d" % self.hum_in                
+#            if self.winDayMin != None :
+#                msg = msg + " - winDayMin: %d" % self.winDayMin         
+#            if self.winDayMax != None :
+#                msg = msg + " - winDayMax: %d" % self.winDayMax                                         
+#            if self.TempOutMin != None :
+#                msg = msg + " - Tm: %d" % self.TempOutMin         
+#            if self.TempOutMax != None :
+#                msg = msg + " - TM: %d" % self.TempOutMax                                         
             TTLib.log(msg)
 
 
@@ -294,7 +328,7 @@ class MeteoData(object):
 
 # "2012-10-19 11:15:50.375000"
 
-#        self.last_measure_time = datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")   
+        self.previous_measure_time = datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")   
 #        self.idx = datetime.datetime.strptime(data[0][1],"%Y-%m-%d %H:%M:%S.%f")
 #        self.wind_dir_code = (data[0][2])
 #        self.wind_dir = (data[0][3])
@@ -388,19 +422,14 @@ class MeteoData(object):
 #        self.previous_rain = self.rain
 #
 #        if conn:
-#            conn.close()            
-            
-            
+#            conn.close()                        
+
 if __name__ == '__main__':
 
-    
     configfile = 'swpi.cfg'
     
-   
     cfg = config.config(configfile)
    
-    
-    
     mt = MeteoData(cfg)
     
     conn = sqlite3.connect('db/swpi.s3db',200)    

@@ -215,7 +215,8 @@ def logDataToWunderground(ID,password):
     #print  parameters   
     try:
         r = requests.get(serverfile, params=parameters,timeout=10)
-        log("Log to Wunderground new: " +  r.text)
+        msg = r.text.splitlines()
+        log("Log to Wunderground : " +  msg[0])
     except:
         log(  "Error Logging to Wunderground : "  )    
         
