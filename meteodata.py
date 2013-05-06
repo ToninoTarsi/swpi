@@ -241,21 +241,23 @@ class MeteoData(object):
             #try:
             conn = sqlite3.connect('db/swpi.s3db',200)    
             dbCursor = conn.cursor()
-            dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")
+            dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day','localtime') order by rowid asc limit 1")
             data = dbCursor.fetchall()
             if ( len(data) == 1):
                 therain = (data[0][9]) 
                 if (therain != None ) :    
                     self.rain_rate_24h = self.rain - therain
-                #print "Rain24h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
+                #msg = "Rain24h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
+                #TTLib.log(msg)
             #else: print"Nodata"
-            dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour') order by rowid asc limit 1")
+            dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour','localtime') order by rowid asc limit 1")
             data = dbCursor.fetchall()
             if ( len(data) == 1):
                 therain = (data[0][9])  
                 if (therain != None ) : 
                     self.rain_rate_1h = self.rain - therain  
-                #print "Rain1h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
+                #msg =  "Rain1h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
+                #TTLib.log(msg)
             #else: print"Nodata"
             if conn:        
                 conn.close()
@@ -286,24 +288,27 @@ class MeteoData(object):
                 msg = msg + " - Spd: " + str(self.wind_ave)
             if self.wind_gust != None :
                 msg = msg + " - Gst: " + str(self.wind_gust) 
-            if self.temp_in  != None :
-                msg = msg + " - Tin: %d" % self.temp_in        
             if self.temp_out != None :
-                msg = msg + " - T: " + str(self.temp_out)  
-            if self.hum_in  != None :
-                msg = msg + " - Hin: %d" % self.hum_in       
+                msg = msg + " - Tout: %.1f" % self.temp_out  
+            if self.temp_in  != None :
+                msg = msg + " - Tin: %.1f" % self.temp_in      
             if self.hum_out != None :
-                msg = msg + " - U: %d" % self.hum_out                        
+                msg = msg + " - Hout: %.1f" % self.hum_out      
+            if self.hum_in  != None :
+                msg = msg + " - Hin: %.1f" % self.hum_in                           
             if self.rel_pressure != None :
-                msg = msg + " - P: %.1f" % self.rel_pressure   
+                msg = msg + " - P: %d" % self.rel_pressure   
             if self.rain != None :
-                msg = msg + " - R: %d" % self.rain     
+                msg = msg + " - Rtot: %.1f" % self.rain     
+            if self.rain_rate != None :
+                msg = msg + " - RDay: %.1f" % self.rain_rate 
+            if self.rain_rate_1h != None :
+                msg = msg + " - R1h: %.1f" % self.rain_rate_1h 
+            if self.rain_rate_24h != None :
+                msg = msg + " - R24h: %.1f" % self.rain_rate_24h
             if self.cloud_base_altitude != None :
-                msg = msg + " - CB: %d" % self.cloud_base_altitude
-  
-
-#            if self.hum_in  != None :
-#                msg = msg + " - Hin: %d" % self.hum_in                
+                msg = msg + " - CB: %d" % self.cloud_base_altitude               
+              
 #            if self.winDayMin != None :
 #                msg = msg + " - winDayMin: %d" % self.winDayMin         
 #            if self.winDayMax != None :
@@ -319,7 +324,7 @@ class MeteoData(object):
         conn = sqlite3.connect('db/swpi.s3db',200)
         
         dbCursor = conn.cursor()
-        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now') order by rowid desc limit 1")
+        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','localtime') order by rowid desc limit 1")
         data = dbCursor.fetchall()
         if ( len(data) != 1):
             if conn:
@@ -363,7 +368,7 @@ class MeteoData(object):
         self.PressureMax = (data[0][31])
 
 
-        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','-1 day') order by rowid desc limit 1")
+        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','-1 day','localtime') order by rowid desc limit 1")
         data = dbCursor.fetchall()
         if ( len(data) == 1):
             self.previous_rain = (data[0][9])
@@ -434,14 +439,14 @@ if __name__ == '__main__':
     
     conn = sqlite3.connect('db/swpi.s3db',200)    
     dbCursor = conn.cursor()
-    dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")
+    dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day','localtime') order by rowid asc limit 1")
     data = dbCursor.fetchall()
     if ( len(data) == 1):
         therain = (data[0][9])    
         mt.rain_rate_24h = therain
         print  mt.rain_rate_24h
     else : print " nodara"
-    dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour') order by rowid asc limit 1")
+    dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour','localtime') order by rowid asc limit 1")
     data = dbCursor.fetchall()
     if ( len(data) == 1):
         therain = (data[0][9])    
