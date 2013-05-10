@@ -127,6 +127,22 @@ class Sensor_Argent80422(sensor.Sensor):
         i = 0
         o = GPIO.input(self.__PIN_A)
         while self.bTimerRun:
+            n = GPIO.input(self.__PIN_A)
+            if ( n != o):
+                i = i+1
+                o = n
+                time.sleep(0.005)
+        return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
+    
+
+    def GetCurretWindSpeedOld(self):
+        """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
+        self.bTimerRun = 1
+        t = threading.Timer(self.__MEASURETIME, self.SetTimer)
+        t.start()
+        i = 0
+        o = GPIO.input(self.__PIN_A)
+        while self.bTimerRun:
             #time.sleep(0.010)
             n = GPIO.input(self.__PIN_A)
             if ( n != o):
@@ -134,6 +150,7 @@ class Sensor_Argent80422(sensor.Sensor):
                 o = n
         return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
+
 
     def GetData(self):
         

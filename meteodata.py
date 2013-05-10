@@ -160,7 +160,8 @@ class MeteoData(object):
         
         TTLib.log("Calculating Meteo data and statistics")
         
-        
+
+            
         ############## Calucelated parameters
         #
         self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
@@ -181,6 +182,10 @@ class MeteoData(object):
         
         if ( self.rain != None and self.previous_rain != None and self.previous_measure_time != None ):
             self.rain_rate = self.rain - self.previous_rain
+        
+        if ( self.cfg.wind_speed_units == "knots"):
+            self.wind_ave = self.wind_ave * 0.539956803456
+            self.wind_gust = self.wind_ave * 0.539956803456
         
         ###############################################
         

@@ -560,6 +560,17 @@ Content-Type: text/html
                 break;
             }
         }
+
+        dd = document.getElementById('wind_speed_units');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$wind_speed_units') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+
+
+        
              
                                       
 	}
@@ -719,10 +730,21 @@ Content-Type: text/html
                 <td class="style45">
                     <select id="wifi_reset_if_down" type="text" name="wifi_reset_if_down" 
                         value="$wifi_reset_if_down" style="width: 100%" >
-                        <option value=True >True</option>
-                         <option value=False >False</option>
+                        <option value=True>True</option>
+                         <option value=False>False</option>
                     </select>                        
                         
+                        </td>
+            </tr>
+            <tr>
+                <td class="style12" width="800">
+                    Wind speed units (<b>wind_speed_units</b>)</td>
+                <td class="style45">
+                    <select id="wind_speed_units" type="text" name="wind_speed_units" 
+                        value="$wind_speed_units" style="width: 100%" >
+                         <option value=kmh>kmh</option>
+                         <option value=knots>knots</option>
+                    </select>                       
                         </td>
             </tr>
         </table>

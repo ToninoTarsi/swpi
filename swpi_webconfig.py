@@ -41,7 +41,7 @@ def outputPage(cfg):
 	d.update(config_web_server=cfg.config_web_server)
 	d.update(wifi_reset_if_down=cfg.wifi_reset_if_down)
 	d.update(config_web_server_port=cfg.config_web_server_port)
-
+	d.update(wind_speed_units=cfg.wind_speed_units)
 
 
 	d.update(usedongle=cfg.usedongle)
@@ -177,6 +177,9 @@ if ( len(request) != 0 ):
 	cfg.location_altitude = request['location_altitude'][0]																 
 	cfg.wifi_reset_if_down = request['wifi_reset_if_down'][0]       
 	cfg.config_web_server_port = request['config_web_server_port'][0]                                                                 
+	cfg.wind_speed_units = request['wind_speed_units'][0]                                                                 
+
+
 
 	cfg.usedongle = request['usedongle'][0]																		   
 	cfg.AlwaysOnInternet = request['AlwaysOnInternet'][0]																 

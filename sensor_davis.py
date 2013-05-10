@@ -116,6 +116,7 @@ class Sensor_Davis(sensor.Sensor):
             if ( n != o):
                 i = i+1
                 o = n
+                time.sleep(0.005)
         return ( ( i  / ( self.__MEASURETIME * 2 ))  * 2.25 * 1.609344 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
 

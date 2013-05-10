@@ -52,6 +52,28 @@ class Sensor_WS2300(sensor.Sensor):
 
 	def GetData(self):	 
 		log("Thread started")
+		
+		#print "GetData"
+		serialPort = ws2300.LinuxSerialPort(self.cfg.sensor_serial_port)
+		#print serialPort
+		#print "opened"
+		
+		ws = ws2300.Ws2300(serialPort)
+		
+		measures = [
+			ws2300.Measure.IDS["pa"],  # pressure absolute
+			ws2300.Measure.IDS["it"],  # in temp
+			ws2300.Measure.IDS["ih"],  # in humidity
+			ws2300.Measure.IDS["ot"],  # out temp"
+			ws2300.Measure.IDS["oh"],  # out humidity"
+			ws2300.Measure.IDS["rt"],  # rain total 
+			ws2300.Measure.IDS["ws"],  # "wind speed"
+			ws2300.Measure.IDS["w0"],  # "wind direction"
+			ws2300.Measure.IDS["ws"],  # "wind speed gust ???"
+			#ws2300.Measure.IDS["rh"],  # rain 1h
+			#ws2300.Measure.IDS["wsh"], # "wind speed max ??????????????"
+			]		
+		
 		while True:
 			
 			seconds = datetime.datetime.now().second
@@ -59,32 +81,10 @@ class Sensor_WS2300(sensor.Sensor):
 				time.sleep(30-seconds)
 			else:
 				time.sleep(90-seconds)
-			
-					
+		
 			try:
-				#print "GetData"
-				serialPort = ws2300.LinuxSerialPort(self.cfg.sensor_serial_port)
-				#print serialPort
-				
-				#print "opened"
-	
-				ws = ws2300.Ws2300(serialPort)
-				measures = [
-					ws2300.Measure.IDS["pa"],  # pressure absolute
-					ws2300.Measure.IDS["it"],  # in temp
-					ws2300.Measure.IDS["ih"],  # in humidity
-					ws2300.Measure.IDS["ot"],  # out temp"
-					ws2300.Measure.IDS["oh"],  # out humidity"
-					ws2300.Measure.IDS["rt"],  # rain total 
-					ws2300.Measure.IDS["ws"],  # "wind speed"
-					ws2300.Measure.IDS["w0"],  # "wind direction"
-					#ws2300.Measure.IDS["rh"],  # rain 1h
-					#ws2300.Measure.IDS["wsh"], # "wind speed max ??????????????"
-					]
-	
+
 				raw_data = ws2300.read_measurements(ws, measures)
-				
-				serialPort.close()
 				
 				data = [ m.conv.binary2value(d) for m, d in zip(measures, raw_data)]
 	
@@ -101,7 +101,7 @@ class Sensor_WS2300(sensor.Sensor):
 				globalvars.meteo_data.hum_out = float(data[4])
 				globalvars.meteo_data.rain = float(data[5])
 				globalvars.meteo_data.wind_ave = (float(data[6])*1.609344)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
-				globalvars.meteo_data.wind_gust = (float(data[6])*1.609344)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
+				globalvars.meteo_data.wind_gust = (float(data[8])*1.609344)*self.cfg.windspeed_gain + self.cfg.windspeed_offset
 				
 				wind_dir = data[7]
 				globalvars.meteo_data.wind_dir = wind_dir
@@ -119,6 +119,8 @@ class Sensor_WS2300(sensor.Sensor):
 			except Exception, err:
 				print sys.exc_info()[0]
 				log("ERROR with WS2300  %s "  % err)
+				
+		serialPort.close()
 				
 				
 	

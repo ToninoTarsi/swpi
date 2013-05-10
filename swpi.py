@@ -358,7 +358,7 @@ def answer_call(modem, message):
 		
 		listOfMessages.append("./audio/hello.raw")
 		
-		listOfMessages.append("./audio/message.raw")
+
 		
 		if ( cfg.sensor_type.upper() == "SIMULATE" ):
 			listOfMessages.append("./audio/simulate.raw")
@@ -414,6 +414,14 @@ def answer_call(modem, message):
 				listOfMessages.append("./audio/" + str(tens) + ".raw")
 			listOfMessages.append("./audio/hpa.raw")	
 
+		# Humidity
+		if ( globalvars.meteo_data.hum_out != None ):
+			listOfMessages.append("./audio/silence05s.raw") 
+			intera =  int( globalvars.meteo_data.hum_out) 
+			listOfMessages.append("./audio/umidity.raw")
+			listOfMessages.append("./audio/" + str(intera) + ".raw")
+			listOfMessages.append("./audio/percent.raw")
+
 		#Cloud base
 		if (globalvars.meteo_data.cloud_base_altitude != None ) : 
 			if ( globalvars.meteo_data.cloud_base_altitude != -1 ) :
@@ -435,13 +443,7 @@ def answer_call(modem, message):
 				listOfMessages.append("./audio/incloud.raw")
 			
 			
-		# Humidity
-		if ( globalvars.meteo_data.hum_out != None ):
-			listOfMessages.append("./audio/silence05s.raw") 
-			intera =  int( globalvars.meteo_data.hum_out) 
-			listOfMessages.append("./audio/umidity.raw")
-			listOfMessages.append("./audio/" + str(intera) + ".raw")
-			listOfMessages.append("./audio/percent.raw")
+
 		
 
 		
@@ -451,6 +453,9 @@ def answer_call(modem, message):
 			
 		listOfMessages.append("./audio/maxday.raw")	
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
+		
+		
+		listOfMessages.append("./audio/message.raw")
 		
 		listOfMessages.append("./audio/silence05s.raw") 		
 		listOfMessages.append("./audio/thanks.raw")
@@ -658,7 +663,7 @@ if bConnected:
 # Wait for valid data
 maxwait = 0
 if ( cfg.use_wind_sensor ) :
-	while ( globalvars.meteo_data.last_measure_time == None or  globalvars.meteo_data.status == -9999 and maxwait < 120) :
+	while ( globalvars.meteo_data.last_measure_time == None and maxwait < 120) :
 		maxwait = maxwait + 1 
 		time.sleep(1)
 

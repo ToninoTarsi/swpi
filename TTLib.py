@@ -193,6 +193,16 @@ def DNSExit(uname,pwd,hname):
 
 def logDataToWunderground(ID,password):
 
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 120 ):
+        return
+
+
     serverfile = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php"
 
     parameters = {}
@@ -237,6 +247,15 @@ def logDataToWunderground(ID,password):
       
 
 def logData(serverfile,SMSPwd):
+    
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 120 ):
+        return
     
     mydata = {} 
     mydata['pwd'] = SMSPwd
@@ -352,6 +371,16 @@ def logData(serverfile,SMSPwd):
 #        pass
 
 def UploadData(cfg):
+    
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 120 ):
+        return
+    
     mydata = {} 
     mydata['last_measure_time'] = (globalvars.meteo_data.last_measure_time.strftime("[%d/%m/%Y-%H:%M:%S]"))
     mydata['idx'] = (globalvars.meteo_data.idx.strftime("[%d/%m/%Y-%H:%M:%S]"))

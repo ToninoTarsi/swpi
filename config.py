@@ -124,6 +124,7 @@ class config(object):
 		self.wifi_reset_if_down = config.getboolean('General', 'wifi_reset_if_down',False)
 		self.cloudbase_calib = config.getfloat('General', 'cloudbase_calib',1.0)
 		self.set_time_at_boot = config.get('General', 'set_time_at_boot',"None")
+		self.wind_speed_units = config.get('General', 'wind_speed_units',"kmh")
 
 		# [Dongle]
 		self.usedongle = config.getboolean('Dongle', 'usedongle',False)
@@ -178,7 +179,6 @@ class config(object):
 		self.rfm01_band = config.getint('RFM01', 'rfm01_band',134)
 		self.rfm01_lna = config.getint('RFM01', 'rfm01_lna',0)
 		self.rfm01_rssi = config.getint('RFM01', 'rfm01_rssi',97)
-
 
 		#[WebCam]
 		self.webcamDevice1 = config.get('WebCam', 'webcamDevice1',"None")
@@ -276,7 +276,7 @@ class config(object):
 		config.setint('General', 'config_web_server_port',self.config_web_server_port)
 		config.setfloat('General', 'cloudbase_calib',self.cloudbase_calib)
 		config.setstr('General', 'set_time_at_boot',self.set_time_at_boot)
-
+		config.setstr('General', 'wind_speed_units',self.wind_speed_units)
 
 		# [Dongle]
 		config.setboolean('Dongle', 'usedongle',self.usedongle)
