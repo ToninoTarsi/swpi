@@ -163,7 +163,8 @@ class config(object):
 		self.use_tmp36 = config.getboolean('Sensors', 'use_tmp36',False)
 		self.use_dht = config.getboolean('Sensors', 'use_dht',False)
 		self.dht_type = config.get('Sensors', 'dht_type',"DHT11")
-
+		self.number_of_measure_for_wind_trend = config.getint('Sensors', 'number_of_measure_for_wind_trend',30)
+		self.wind_trend_limit = config.getfloat('Sensors', 'wind_trend_limit',0.2)
 		self.number_of_measure_for_wind_average_gust_calculation =  config.getint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',10)
 
 		# [Sensor_PCE-FWS20]
@@ -216,7 +217,8 @@ class config(object):
 		self.use_camera_resetter = config.getboolean('Camera', 'use_camera_resetter',False)
 		self.camera_resetter_normaly_on = config.getboolean('Camera', 'camera_resetter_normaly_on',True)
 
-
+		#[CameraPI]
+		self.use_cameraPI = config.getboolean('CameraPI', 'use_cameraPI',False)
 
 		self.cameradivicefinalresolutionX = int(self.cameradivicefinalresolution.split('x')[0])
 		self.cameradivicefinalresolutionY = int(self.cameradivicefinalresolution.split('x')[1])
@@ -315,9 +317,8 @@ class config(object):
 		config.setboolean('Sensors', 'use_tmp36',self.use_tmp36)
 		config.setboolean('Sensors', 'use_dht',self.use_dht)
 		config.setstr('Sensors', 'dht_type',self.dht_type)
-
-
-
+		config.setint('Sensors', 'number_of_measure_for_wind_trend',self.number_of_measure_for_wind_trend)
+		config.setfloat('Sensors', 'wind_trend_limit',self.wind_trend_limit)
 		config.setint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',self.number_of_measure_for_wind_average_gust_calculation)
 
 		# [Sensor_PCE-FWS20]
@@ -361,6 +362,11 @@ class config(object):
 		config.setboolean('Camera', 'camera_resetter_normaly_on',self.camera_resetter_normaly_on)
 
 
+
+		#[CameraPI]
+		config.setboolean('CameraPI', 'use_cameraPI',self.use_cameraPI)
+
+		
 
 		# [ftp]
 		config.setstr('ftp', 'ftpserver',self.ftpserver)

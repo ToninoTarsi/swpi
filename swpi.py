@@ -37,6 +37,7 @@ import socket
 import pluginmanager
 import importlib
 import subprocess
+import cameraPI
 
 socket.setdefaulttimeout(30)
 
@@ -379,6 +380,11 @@ def answer_call(modem, message):
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_gust)) + ".raw")
 		listOfMessages.append("./audio/km.raw")
 	
+		if ( globalvars.meteo_data.wind_trend != None ):
+			if ( globalvars.meteo_data.wind_trend < - cfg.wind_trend_limit) :
+				listOfMessages.append("./audio/winddown.raw")
+			if ( globalvars.meteo_data.wind_trend >  cfg.wind_trend_limit) :
+				listOfMessages.append("./audio/windup.raw")	
 		# Temperature
 		if ( globalvars.meteo_data.temp_out != None ):
 			listOfMessages.append("./audio/silence05s.raw") 
@@ -735,6 +741,13 @@ while 1:
 			fotos = cameras.take_pictures()
 			for foto in fotos:
 				addTextandResizePhoto(foto,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
+		
+		bcPI = False
+		cPIFilemane =""
+		if ( cfg.use_cameraPI):
+			cPI = cameraPI.cameraPI(cfg)
+			cPIFilemane = "./img/raspi_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
+			bcPI = cPI.capture(cPIFilemane)
 					
 		bConnected = False
 		
@@ -766,6 +779,16 @@ while 1:
 					else:
 						waitForHandUP()
 						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+				
+				
+				if ( cfg.use_cameraPI and bcPI ): 
+					if (cfg.sendallimagestoserver ):
+						waitForHandUP()
+						sendFileToServer(cPIFilemane,getFileName(cPIFilemane),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+					else:
+						waitForHandUP()
+						sendFileToServer(cPIFilemane,"raspi.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+					
 	
 				if ( cfg.usecameradivice   ):
 					nCamera = 0

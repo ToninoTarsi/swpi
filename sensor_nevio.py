@@ -159,6 +159,7 @@ class Sensor_Nevio(sensor.Sensor):
                 i = i+1
                 o = n
                 time.sleep(0.001)
+            time.sleep(0.0005)
         return (  ( i  / ( self.__MEASURETIME * 2 )) ) * self.cfg.windspeed_gain  + self.cfg.windspeed_offset
     
 

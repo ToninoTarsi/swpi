@@ -73,7 +73,10 @@ def outputPage(cfg):
 	d.update(use_tmp36=cfg.use_tmp36)
 	d.update(use_dht=cfg.use_dht)
 	d.update(dht_type=cfg.dht_type)
+	d.update(number_of_measure_for_wind_trend=cfg.number_of_measure_for_wind_trend)
+	d.update(wind_trend_limit=cfg.wind_trend_limit)
 
+	
 	
 	
 	d.update(number_of_measure_for_wind_average_gust_calculation=cfg.number_of_measure_for_wind_average_gust_calculation)
@@ -209,8 +212,8 @@ if ( len(request) != 0 ):
 	cfg.use_tmp36 = request['use_tmp36'][0]		
 	cfg.use_dht = request['use_dht'][0]		
 	cfg.dht_type = request['dht_type'][0]		
-
-	
+	cfg.number_of_measure_for_wind_trend = request['number_of_measure_for_wind_trend'][0]	
+	cfg.wind_trend_limit = request['wind_trend_limit'][0]	
 	
 																	   
 	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]						 

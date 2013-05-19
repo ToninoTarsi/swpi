@@ -73,6 +73,7 @@ class MeteoData(object):
         self.last_measure_time = None
         self.previous_measure_time = None
 
+        self.wind_trend = None
         # Station data
         self.idx = None
         self.status = -9999
@@ -96,6 +97,9 @@ class MeteoData(object):
         
         if ( cfg != None):
             self.rb_wind_dir = TTLib.RingBuffer(cfg.number_of_measure_for_wind_dir_average)
+            self.rb_wind_trend = TTLib.RingBuffer(cfg.number_of_measure_for_wind_trend)
+            
+            
         
         #calculated values
         self.wind_dir_code = None
@@ -107,6 +111,7 @@ class MeteoData(object):
         self.previous_rain = None   
         
         self.wind_dir_ave = None
+        
                                     
         if ( not self.getLastTodayFromDB() ):
             
@@ -161,9 +166,11 @@ class MeteoData(object):
         TTLib.log("Calculating Meteo data and statistics")
         
 
-            
         ############## Calucelated parameters
         #
+        self.rb_wind_trend.append(self.wind_ave)
+        self.wind_trend = self.rb_wind_trend.getTrend()
+        
         self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = dew_point(self.temp_out, self.hum_out)
@@ -312,7 +319,9 @@ class MeteoData(object):
             if self.rain_rate_24h != None :
                 msg = msg + " - R24h: %.1f" % self.rain_rate_24h
             if self.cloud_base_altitude != None :
-                msg = msg + " - CB: %d" % self.cloud_base_altitude               
+                msg = msg + " - CB: %d" % self.cloud_base_altitude   
+            if self.wind_trend != None :
+                msg = msg + " - Trend: %.2f" % self.wind_trend  
               
 #            if self.winDayMin != None :
 #                msg = msg + " - winDayMin: %d" % self.winDayMin         
@@ -349,7 +358,7 @@ class MeteoData(object):
 #        self.hum_out = (data[0][8])
         self.rain = (data[0][9])
         #print "-----------------------------------------",self.rain
-#        self.rain_rate = (data[0][10])
+        self.rain_rate = (data[0][10])
 #        self.temp_in = (data[0][11])
 #        self.hum_in = (data[0][12])
 #        self.wind_chill = (data[0][13])
@@ -373,7 +382,7 @@ class MeteoData(object):
         self.PressureMax = (data[0][31])
 
 
-        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','-1 day','localtime') order by rowid desc limit 1")
+        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','localtime') order by rowid asc limit 1")
         data = dbCursor.fetchall()
         if ( len(data) == 1):
             self.previous_rain = (data[0][9])

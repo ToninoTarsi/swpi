@@ -51,6 +51,18 @@ def disk_free():
     #used = (st.f_blocks - st.f_bfree) * st.f_frsize
     return free
 
+def linreg(X, Y):
+    N = len(X)
+    Sx = Sy = Sxx = Syy = Sxy = 0.0
+    for x, y in zip(X, Y):
+        Sx = Sx + x
+        Sy = Sy + y
+        Sxx = Sxx + x*x
+        #Syy = Syy + y*y
+        Sxy = Sxy + x*y
+    det = Sxx * N - Sx * Sx
+    return (Sxy * N - Sy * Sx)/det
+
 
 class RingBuffer(object):
     def __init__(self, size):
@@ -101,6 +113,11 @@ class RingBuffer(object):
             return None,None
         else:
             return (s/float(i)),maxval
+        
+    def getTrend(self):
+        if self.get()[0] == None:
+            return None
+        return  linreg(range(len(self.get())),self.get())
 
 def getrevision():
     # Extract board revision from cpuinfo file
