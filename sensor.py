@@ -122,6 +122,7 @@ class Sensor(threading.Thread):
 				globalvars.meteo_data.abs_pressure =  abs_pressure
 			else:
 				globalvars.meteo_data.abs_pressure = None
+				
 				if ( self.cfg.sensor_type == "WH1080-RFM01"):
 					globalvars.meteo_data.temp_in = None
 				else:
