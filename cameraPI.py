@@ -15,17 +15,25 @@ import ImageDraw
 import time
 import os
 from TTLib  import *
+import sun
+import math
 
 class cameraPI(object):
 	"""Class defining generic webcams."""
 
 	def __init__(self, cfg):
 		self.cfg = cfg
-		
+		self.god=sun.sun(lat=cfg.location_latitude,long=cfg.location_longitude)
 	
 	def capture(self,filename):
+		if ( self.god.daylight() ):
+			options = self.cfg.cameraPI_day_settings
+			log("Using Dayligth settings" + options)
+		else:
+			options = self.cfg.cameraPI_night_settings
+			log("Using Nigth settings" + options)
 		try:
-			snapCommand = "raspistill -o " + filename
+			snapCommand = "raspistill %s -o %s" %  (options,filename)
 			#log( "Getting images with command : " + snapCommand)
 			os.system(snapCommand )
 

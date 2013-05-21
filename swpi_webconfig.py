@@ -23,7 +23,10 @@ def outputPage(cfg):
 
 	html_template=string.Template(text_template)
 
+
+
 	d = dict(location_latitude=cfg.location_latitude)
+	d.update(station_name=cfg.station_name)
 	d.update(location_longitude=cfg.location_longitude)
 	d.update(location_altitude=cfg.location_altitude)
 	d.update(reboot_at=cfg.reboot_at)
@@ -112,6 +115,12 @@ def outputPage(cfg):
 	d.update(camera_resetter_normaly_on=cfg.camera_resetter_normaly_on)
 
 
+	d.update(use_cameraPI=cfg.use_cameraPI)
+	d.update(cameraPI_day_settings=cfg.cameraPI_day_settings)
+	d.update(cameraPI_night_settings=cfg.cameraPI_night_settings)
+
+
+
 	d.update(rfm01_frequenzy=cfg.rfm01_frequenzy)
 	d.update(rfm01_band=cfg.rfm01_band)
 	d.update(rfm01_lna=cfg.rfm01_lna)
@@ -174,7 +183,8 @@ if ( len(request) != 0 ):
 	cfg.ntp_server = request['ntp_server'][0]																		   
 	cfg.reboot_at = request['reboot_at'][0]																		   
 	cfg.shutdown_at = request['shutdown_at'][0]																		   
-	cfg.shutdown_hour_before_sunset = request['shutdown_hour_before_sunset'][0]													   
+	cfg.shutdown_hour_before_sunset = request['shutdown_hour_before_sunset'][0]		
+	cfg.station_name = request['station_name'][0]																 					   
 	cfg.location_latitude = request['location_latitude'][0]																 
 	cfg.location_longitude = request['location_longitude'][0]																 
 	cfg.location_altitude = request['location_altitude'][0]																 
@@ -246,6 +256,11 @@ if ( len(request) != 0 ):
 	cfg.gphoto2_capture_image_and_download = request['gphoto2_capture_image_and_download'][0]											 
 	cfg.use_camera_resetter = request['use_camera_resetter'][0]											 
 	cfg.camera_resetter_normaly_on = request['camera_resetter_normaly_on'][0]											 
+
+	cfg.use_cameraPI = request['use_cameraPI'][0]											 
+	cfg.cameraPI_day_settings = request['cameraPI_day_settings'][0]											 
+	cfg.cameraPI_night_settings = request['cameraPI_night_settings'][0]											 
+
 
 	cfg.rfm01_frequenzy = request['rfm01_frequenzy'][0]											 
 	cfg.rfm01_band = request['rfm01_band'][0]											 

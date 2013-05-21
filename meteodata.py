@@ -46,7 +46,8 @@ def wind_chill(temp, wind):
     """
     if temp == None or wind == None:
         return None
-    wind_kph = wind * 3.6
+    #wind_kph = wind * 3.6
+    wind_kph = wind 
     if wind_kph <= 4.8 or temp > 10.0:
         return temp
     return min(13.12 + (temp * 0.6215) +
@@ -58,11 +59,12 @@ def apparent_temp(temp, rh, wind):
     http://www.bom.gov.au/info/thermal_stress/
 
     """
+    wind_ms = wind / 3.6
     if temp == None or rh == None or wind == None:
         return None
     vap_press = (float(rh) / 100.0) * 6.105 * math.exp(
         17.27 * temp / (237.7 + temp))
-    return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00            
+    return temp + (0.33 * vap_press) - (0.70 * wind_ms) - 4.00            
 
 class MeteoData(object):
     
@@ -166,6 +168,7 @@ class MeteoData(object):
         TTLib.log("Calculating Meteo data and statistics")
         
 
+            
         ############## Calucelated parameters
         #
         self.rb_wind_trend.append(self.wind_ave)
@@ -175,8 +178,17 @@ class MeteoData(object):
         self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = dew_point(self.temp_out, self.hum_out)
         self.cloud_base_altitude = cloud_base_altitude(self.temp_out,self.dew_point,self.cfg.location_altitude) 
+
+        
+        
+        if ( self.cfg.wind_speed_units == "knots"):
+            self.wind_ave = self.wind_ave * 0.539956803456
+            self.wind_gust = self.wind_gust * 0.539956803456       
+        
+
         if ( self.cloud_base_altitude != None) : 
             self.cloud_base_altitude = self.cloud_base_altitude * self.cfg.cloudbase_calib
+
         
         if ( self.abs_pressure != None and self.abs_pressure != 0.0): 
             if ( self.cfg.location_altitude != 0 ):
@@ -190,9 +202,7 @@ class MeteoData(object):
         if ( self.rain != None and self.previous_rain != None and self.previous_measure_time != None ):
             self.rain_rate = self.rain - self.previous_rain
         
-        if ( self.cfg.wind_speed_units == "knots"):
-            self.wind_ave = self.wind_ave * 0.539956803456
-            self.wind_gust = self.wind_ave * 0.539956803456
+
         
         ###############################################
         

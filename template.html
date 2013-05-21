@@ -569,7 +569,13 @@ Content-Type: text/html
             }
         }
 
-
+        dd = document.getElementById('use_cameraPI');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text == '$use_cameraPI') {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
         
              
                                       
@@ -626,6 +632,13 @@ Content-Type: text/html
             <tr>
                 <td class="style46" colspan="2" style="font-size: large; color: #0000FF;">
                     General</td>
+            </tr>
+            <tr>
+                <td class="style10" width="800">
+                    Station name ( <strong>station_name</strong> )</td>
+                <td class="style45">
+                    <input id="station_name" type="text" name="station_name" 
+                        value="$station_name" style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style10" width="800">
@@ -1191,7 +1204,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2">
-                    Use a camera resetter connected to the GPIO (<b>use_camera_resetter</b>)</td>
+                    Use a camera resetter connected to the GPIO (<strong>use_camera_resette</strong>)</td>
                 <td class="style34">
                     <select id="use_camera_resetter" type="text" name="use_camera_resetter" 
                         value=$use_camera_resetter style="width: 100%" >
@@ -1210,6 +1223,39 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             </table>
+        <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    Camera PI</td>
+            </tr>
+            <tr>
+                <td class="style2">
+                    Use Camera PI (use_cameraPI)</td>
+                <td class="style20">
+                    <select id="use_cameraPI" type="text" name="use_cameraPI" 
+                        style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>       
+                    </td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    Day Capture option (<strong>cameraPI_day_settings</strong>)</td>
+                <td class="style19">
+                    <input id="cameraPI_day_settings" type="text" name="cameraPI_day_settings" 
+                        value="$cameraPI_day_settings" style="width: 100%" /></td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    Night Capture option(<strong>cameraPI_night_settings</strong>)</td>
+                <td class="style19">
+                    <input id="cameraPI_night_settings" type="text" name="cameraPI_night_settings" 
+                        value="$cameraPI_night_settings" style="width: 100%" /></td>
+            </tr>
+            </table>
+           <br />
         <br />
     
     

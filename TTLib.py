@@ -117,7 +117,13 @@ class RingBuffer(object):
     def getTrend(self):
         if self.get()[0] == None:
             return None
-        return  linreg(range(len(self.get())),self.get())
+        reg = linreg(range(len(self.get())),self.get())
+        #print self.get()
+        #print reg
+        if ( reg != None):
+            return reg * 60
+        else:
+            return None
 
 def getrevision():
     # Extract board revision from cpuinfo file
@@ -446,7 +452,24 @@ def UploadData(cfg):
     
     mydata['rain_rate_24h'] = (globalvars.meteo_data.rain_rate_24h)
     mydata['rain_rate_1h'] = (globalvars.meteo_data.rain_rate_1h)
-        
+    
+
+    mydata['wind_trend'] = (globalvars.meteo_data.wind_trend)
+
+    mydata['station_name'] = (cfg.station_name)
+    mydata['location_longitude'] = (cfg.location_longitude)
+    mydata['location_latitude'] = (cfg.location_latitude)
+    mydata['location_altitude'] = (cfg.location_altitude)
+
+    mydata['wind_speed_units'] = (cfg.wind_speed_units)
+
+
+    #mydata['swpi_versione'] = swpi_version
+
+
+
+    
+    
     #print mydata
     
     

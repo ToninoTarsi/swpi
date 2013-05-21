@@ -111,6 +111,7 @@ class config(object):
 			config.read(self.cfgName)
 
 		#[General]
+		self.station_name = config.get('General', 'station_name',"Sint Wind PI")
 		self.config_web_server = config.getboolean('General', 'config_web_server',True)
 		self.config_web_server_port = config.getint('General', 'config_web_server_port',80)
 		self.set_system_time_from_ntp_server_at_startup = config.getboolean('General', 'set_sistem_time_from_ntp_server_at_startup',True)
@@ -164,7 +165,7 @@ class config(object):
 		self.use_dht = config.getboolean('Sensors', 'use_dht',False)
 		self.dht_type = config.get('Sensors', 'dht_type',"DHT11")
 		self.number_of_measure_for_wind_trend = config.getint('Sensors', 'number_of_measure_for_wind_trend',30)
-		self.wind_trend_limit = config.getfloat('Sensors', 'wind_trend_limit',0.2)
+		self.wind_trend_limit = config.getfloat('Sensors', 'wind_trend_limit',10)
 		self.number_of_measure_for_wind_average_gust_calculation =  config.getint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',10)
 
 		# [Sensor_PCE-FWS20]
@@ -219,6 +220,10 @@ class config(object):
 
 		#[CameraPI]
 		self.use_cameraPI = config.getboolean('CameraPI', 'use_cameraPI',False)
+		self.cameraPI_day_settings = config.get('CameraPI', 'cameraPI_day_settings',"")
+		self.cameraPI_night_settings = config.get('CameraPI', 'cameraPI_night_settings',"")
+
+
 
 		self.cameradivicefinalresolutionX = int(self.cameradivicefinalresolution.split('x')[0])
 		self.cameradivicefinalresolutionY = int(self.cameradivicefinalresolution.split('x')[1])
@@ -265,6 +270,7 @@ class config(object):
 		config = myConfigParser()
 		
 		#[General]
+		config.setstr('General', 'station_name',self.station_name)
 		config.setboolean('General', 'config_web_server',self.config_web_server)
 		config.setboolean('General', 'set_sistem_time_from_ntp_server_at_startup',self.set_system_time_from_ntp_server_at_startup)
 		config.setstr('General', 'ntp_server',self.ntp_server)
@@ -361,12 +367,10 @@ class config(object):
 		config.setboolean('Camera', 'use_camera_resetter',self.use_camera_resetter)
 		config.setboolean('Camera', 'camera_resetter_normaly_on',self.camera_resetter_normaly_on)
 
-
-
 		#[CameraPI]
 		config.setboolean('CameraPI', 'use_cameraPI',self.use_cameraPI)
-
-		
+		config.setstr('CameraPI', 'cameraPI_day_settings',self.cameraPI_day_settings)
+		config.setstr('CameraPI', 'cameraPI_night_settings',self.cameraPI_night_settings)
 
 		# [ftp]
 		config.setstr('ftp', 'ftpserver',self.ftpserver)
