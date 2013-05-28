@@ -33,7 +33,7 @@ class cameraPI(object):
 			options = self.cfg.cameraPI_night_settings
 			log("Using Nigth settings" + options)
 		try:
-			snapCommand = "raspistill %s -o %s" %  (options,filename)
+			snapCommand = "raspistill -hf %s -o %s" %  (options,filename)
 			#log( "Getting images with command : " + snapCommand)
 			os.system(snapCommand )
 

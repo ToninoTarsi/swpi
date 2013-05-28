@@ -214,7 +214,7 @@ def DNSExit(uname,pwd,hname):
         
     return True
 
-def logDataToWunderground(ID,password):
+def logDataToWunderground(ID,password,wind_speed_units="kmh"):
 
     if ( globalvars.meteo_data.last_measure_time == None):
         return
@@ -235,8 +235,12 @@ def logDataToWunderground(ID,password):
     parameters['dateutc'] = str(datetime.datetime.utcnow())
     
     if globalvars.meteo_data.wind_dir != None :  parameters['winddir'] = int(globalvars.meteo_data.wind_dir)
-    if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = "{:.2f}".format(globalvars.meteo_data.wind_ave *  0.621371192)
-    if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = "{:.2f}".format(globalvars.meteo_data.wind_gust * 0.621371192)
+    if ( wind_speed_units == "kmh" ):
+        if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = "{:.2f}".format(globalvars.meteo_data.wind_ave *  0.621371192)
+        if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = "{:.2f}".format(globalvars.meteo_data.wind_gust * 0.621371192)
+    else:
+        if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = "{:.2f}".format((globalvars.meteo_data.wind_ave / 0.539956803456  ) *  0.621371192)
+        if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = "{:.2f}".format((globalvars.meteo_data.wind_gust / 0.539956803456  ) * 0.621371192)  
     if globalvars.meteo_data.hum_out != None :  parameters['humidity'] = "{:.1f}".format(globalvars.meteo_data.hum_out )
     if globalvars.meteo_data.temp_out != None :  parameters['tempf'] = "{:.2f}".format(( globalvars.meteo_data.temp_out * 1.8 ) + 32) 
     if globalvars.meteo_data.rel_pressure != None :  parameters['baromin'] = "{:.4f}".format(globalvars.meteo_data.rel_pressure  *    0.0295299830714) #new
@@ -454,7 +458,10 @@ def UploadData(cfg):
     mydata['rain_rate_1h'] = (globalvars.meteo_data.rain_rate_1h)
     
 
-    mydata['wind_trend'] = (globalvars.meteo_data.wind_trend)
+    if ( globalvars.meteo_data.wind_trend != None):
+        mydata['wind_trend'] = (globalvars.meteo_data.wind_trend)
+    else:
+        mydata['wind_trend'] = 0
 
     mydata['station_name'] = (cfg.station_name)
     mydata['location_longitude'] = (cfg.location_longitude)

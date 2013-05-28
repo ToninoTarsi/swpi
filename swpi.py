@@ -748,6 +748,7 @@ while 1:
 			cPI = cameraPI.cameraPI(cfg)
 			cPIFilemane = "./img/raspi_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
 			bcPI = cPI.capture(cPIFilemane)
+			addTextandResizePhoto(bcPI,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 					
 		bConnected = False
 		
@@ -809,7 +810,7 @@ while 1:
 					
 				if ( cfg.WeatherUnderground_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					log("Logging data to Wunderground ...")
-					logDataToWunderground(cfg.WeatherUnderground_ID,cfg.WeatherUnderground_password)	
+					logDataToWunderground(cfg.WeatherUnderground_ID,cfg.WeatherUnderground_password,cfg.wind_speed_units)	
 					
 
 				if ( cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
