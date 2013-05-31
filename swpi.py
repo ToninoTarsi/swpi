@@ -748,7 +748,7 @@ while 1:
 			cPI = cameraPI.cameraPI(cfg)
 			cPIFilemane = "./img/raspi_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
 			bcPI = cPI.capture(cPIFilemane)
-			addTextandResizePhoto(bcPI,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
+			addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 					
 		bConnected = False
 		

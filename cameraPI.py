@@ -28,10 +28,10 @@ class cameraPI(object):
 	def capture(self,filename):
 		if ( self.god.daylight() ):
 			options = self.cfg.cameraPI_day_settings
-			log("Using Dayligth settings" + options)
+			log("CameraPI - Using Dayligth settings" + options)
 		else:
 			options = self.cfg.cameraPI_night_settings
-			log("Using Nigth settings" + options)
+			log("CameraPI - Using Nigth settings" + options)
 		try:
 			snapCommand = "raspistill -hf %s -o %s" %  (options,filename)
 			#log( "Getting images with command : " + snapCommand)
