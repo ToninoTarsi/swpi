@@ -471,6 +471,8 @@ def UploadData(cfg):
     mydata['wind_speed_units'] = (cfg.wind_speed_units)
     
     mydata['wind_trend_limit'] = (cfg.wind_trend_limit)
+    
+    mydata['pressure_trend'] = (globalvars.meteo_data.pressure_trend)
 
 
     #mydata['swpi_versione'] = swpi_version

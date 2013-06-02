@@ -126,6 +126,8 @@ class config(object):
 		self.cloudbase_calib = config.getfloat('General', 'cloudbase_calib',1.0)
 		self.set_time_at_boot = config.get('General', 'set_time_at_boot',"None")
 		self.wind_speed_units = config.get('General', 'wind_speed_units',"kmh")
+		#self.seconds_after_sunset_for_night = config.getint('General', 'seconds_after_sunset_for_night',3600)
+
 
 		# [Dongle]
 		self.usedongle = config.getboolean('Dongle', 'usedongle',False)
@@ -285,6 +287,7 @@ class config(object):
 		config.setfloat('General', 'cloudbase_calib',self.cloudbase_calib)
 		config.setstr('General', 'set_time_at_boot',self.set_time_at_boot)
 		config.setstr('General', 'wind_speed_units',self.wind_speed_units)
+		#config.setint('General', 'seconds_after_sunset_for_night',self.seconds_after_sunset_for_night)
 
 		# [Dongle]
 		config.setboolean('Dongle', 'usedongle',self.usedongle)

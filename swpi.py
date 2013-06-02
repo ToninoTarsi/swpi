@@ -359,7 +359,8 @@ def answer_call(modem, message):
 		
 		listOfMessages.append("./audio/hello.raw")
 		
-
+		# Message
+		listOfMessages.append("./audio/message.raw")
 		
 		if ( cfg.sensor_type.upper() == "SIMULATE" ):
 			listOfMessages.append("./audio/simulate.raw")
@@ -460,8 +461,7 @@ def answer_call(modem, message):
 		listOfMessages.append("./audio/maxday.raw")	
 		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
 		
-		
-		listOfMessages.append("./audio/message.raw")
+
 		
 		listOfMessages.append("./audio/silence05s.raw") 		
 		listOfMessages.append("./audio/thanks.raw")

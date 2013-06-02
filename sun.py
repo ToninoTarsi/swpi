@@ -29,7 +29,7 @@ class sun:
      time_sunrise = timedelta(hours=sunrise.hour, minutes=sunrise.minute, seconds=sunrise.second)
      time_sunset  = timedelta(hours=sunset.hour, minutes=sunset.minute, seconds=sunset.second)
      time_now = timedelta(hours=datetime.now().hour, minutes=datetime.now().minute, seconds=datetime.now().second)
-     if ( ( time_now  - time_sunrise  ).total_seconds()  < - 3600 ): 
+     if ( ( time_now  - time_sunrise  ).total_seconds()  < -3600 ): 
          return False
      if ( ( time_now - time_sunset  ).total_seconds()  > 3600 ):
          return False   

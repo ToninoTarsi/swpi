@@ -76,6 +76,7 @@ class MeteoData(object):
         self.previous_measure_time = None
 
         self.wind_trend = None
+        self.pressure_trend = None
         # Station data
         self.idx = None
         self.status = -9999
@@ -130,11 +131,11 @@ class MeteoData(object):
         else:
             return False        
             
-    def CalcMeanWindDir(self):
-        rb = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_dir_average)
-        while 1:
-            rb.append(self.wind_dir)
-            yield  rb.getMeanDir()
+#    def CalcMeanWindDir(self):
+#        rb = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_dir_average)
+#        while 1:
+#            rb.append(self.wind_dir)
+#            yield  rb.getMeanDir()
 
     def ResetStatistic(self):
     
@@ -252,7 +253,7 @@ class MeteoData(object):
                 self.PressureMax  = self.rel_pressure                       
                 
         self.rb_wind_dir.append(self.wind_dir)
-        self.wind_dir_ave = self.rb_wind_dir.getMean()
+        self.wind_dir_ave = self.rb_wind_dir.getMeanDir()
 
         self.previous_measure_time = self.last_measure_time
         
@@ -278,6 +279,9 @@ class MeteoData(object):
                 therain = (data[0][9])  
                 if (therain != None ) : 
                     self.rain_rate_1h = self.rain - therain  
+                thepress= (data[0][7]) 
+                if ( thepress != None):
+                    self.pressure_trend = self.rel_pressure - thepress
                 #msg =  "Rain1h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
                 #TTLib.log(msg)
             #else: print"Nodata"
