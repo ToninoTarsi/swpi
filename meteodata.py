@@ -57,7 +57,6 @@ def wind_chill(temp, wind):
 def apparent_temp(temp, rh, wind):
     """Compute apparent temperature (real feel), using formula from
     http://www.bom.gov.au/info/thermal_stress/
-
     """
     wind_ms = wind / 3.6
     if temp == None or rh == None or wind == None:
@@ -102,8 +101,6 @@ class MeteoData(object):
             self.rb_wind_dir = TTLib.RingBuffer(cfg.number_of_measure_for_wind_dir_average)
             self.rb_wind_trend = TTLib.RingBuffer(cfg.number_of_measure_for_wind_trend)
             
-            
-        
         #calculated values
         self.wind_dir_code = None
         self.wind_chill = None
@@ -168,23 +165,21 @@ class MeteoData(object):
         
         TTLib.log("Calculating Meteo data and statistics")
         
-
-            
         ############## Calucelated parameters
         #
-        self.rb_wind_trend.append(self.wind_ave)
-        self.wind_trend = self.rb_wind_trend.getTrend()
-        
+ 
         self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = dew_point(self.temp_out, self.hum_out)
         self.cloud_base_altitude = cloud_base_altitude(self.temp_out,self.dew_point,self.cfg.location_altitude) 
 
         
-        
         if ( self.cfg.wind_speed_units == "knots"):
             self.wind_ave = self.wind_ave * 0.539956803456
-            self.wind_gust = self.wind_gust * 0.539956803456       
+            self.wind_gust = self.wind_gust * 0.539956803456    
+               
+        self.rb_wind_trend.append(self.wind_ave)
+        self.wind_trend = self.rb_wind_trend.getTrend()
         
 
         if ( self.cloud_base_altitude != None) : 
@@ -259,28 +254,29 @@ class MeteoData(object):
         
         #self.previous_rain = self.rain
         
-        # Rain 24h - rain 1h
-        if ( self.rain != None ):
+        # Rain 24h - rain 1h - pressure_trend
+        if ( self.rain != None or self.rel_pressure != None):
             #try:
             conn = sqlite3.connect('db/swpi.s3db',200)    
             dbCursor = conn.cursor()
-            dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day','localtime') order by rowid asc limit 1")
-            data = dbCursor.fetchall()
-            if ( len(data) == 1):
-                therain = (data[0][9]) 
-                if (therain != None ) :    
-                    self.rain_rate_24h = self.rain - therain
-                #msg = "Rain24h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
-                #TTLib.log(msg)
+            if (self.rain != None ):
+                dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day','localtime') order by rowid asc limit 1")
+                data = dbCursor.fetchall()
+                if ( len(data) == 1):
+                    therain = (data[0][9]) 
+                    if (therain != None ) :    
+                        self.rain_rate_24h = self.rain - therain
+                        #msg = "Rain24h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
+                        #TTLib.log(msg)
             #else: print"Nodata"
             dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 hour','localtime') order by rowid asc limit 1")
             data = dbCursor.fetchall()
             if ( len(data) == 1):
                 therain = (data[0][9])  
-                if (therain != None ) : 
+                if (therain != None and self.rain != None) : 
                     self.rain_rate_1h = self.rain - therain  
                 thepress= (data[0][7]) 
-                if ( thepress != None):
+                if ( thepress != None and self.rel_pressure != None):
                     self.pressure_trend = self.rel_pressure - thepress
                 #msg =  "Rain1h :" + str(datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")) + " " + str(therain) + " Current " +  str(self.rain)
                 #TTLib.log(msg)

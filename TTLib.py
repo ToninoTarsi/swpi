@@ -605,6 +605,9 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
             if (globalvars.meteo_data.hum_out  != None) : 
                 text = text + "Umidita : %d" % (globalvars.meteo_data.hum_out) + " % - "
             
+            if (globalvars.meteo_data.rain_rate != None) : 
+                text = text + "Pioggia oggi : %3.1f" % (globalvars.meteo_data.rain_rate) + " mm - "
+            
             if ( globalvars.meteo_data.last_measure_time != None ):
                 text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
                 width, height = font.getsize(text)
