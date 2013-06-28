@@ -160,7 +160,7 @@ class config(object):
 		self.use_wind_sensor = config.getboolean('Sensors', 'use_wind_sensor',True)
 		self.number_of_measure_for_wind_dir_average =  config.getint('Sensors', 'number_of_measure_for_wind_dir_average',10)
 		self.windspeed_offset = config.getfloat('Sensors', 'windspeed_offset',0)
-		self.windspeed_gain = config.getfloat('Sensors', 'windspeed_gain',0.6)
+		self.windspeed_gain = config.getfloat('Sensors', 'windspeed_gain',1)
 		self.windmeasureinterval = config.getint('Sensors', 'windmeasureinterval',5)
 		self.use_bmp085 = config.getboolean('Sensors', 'use_bmp085',False)
 		self.use_tmp36 = config.getboolean('Sensors', 'use_tmp36',False)
