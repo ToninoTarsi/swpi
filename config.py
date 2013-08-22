@@ -240,6 +240,7 @@ class config(object):
 		# [Radio]
 		self.useradio = config.getboolean('Radio', 'useradio',False)
 		self.radiointerval = config.getint('Radio', 'radiointerval',900)
+		self.radio_verbosity = config.get('Radio', 'radio_verbosity',"only_wind")
 
 		# [Mail]
 		self.gmail_user = config.get('Mail', 'gmail_user',"sintwindpi@gmail.com")
@@ -385,6 +386,8 @@ class config(object):
 		# [Radio]
 		config.setboolean('Radio', 'useradio',self.useradio)
 		config.setint('Radio', 'radiointerval',self.radiointerval)
+		config.setstr('Radio', 'radio_verbosity',self.radio_verbosity)
+
 
 		# [Mail]
 		config.setstr('Mail', 'gmail_user',self.gmail_user)
