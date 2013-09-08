@@ -137,6 +137,10 @@ def outputPage(cfg):
 
 	d.update(useradio=cfg.useradio)
 	d.update(radiointerval=cfg.radiointerval)
+	d.update(radio_verbosity=cfg.radio_verbosity)
+
+
+
 
 	d.update(gmail_user=cfg.gmail_user)
 	d.update(gmail_pwd=cfg.gmail_pwd)
@@ -150,6 +154,11 @@ def outputPage(cfg):
 	d.update(WeatherUnderground_logdata=cfg.WeatherUnderground_logdata)
 	d.update(WeatherUnderground_ID=cfg.WeatherUnderground_ID)
 	d.update(WeatherUnderground_password=cfg.WeatherUnderground_password)
+
+	d.update(CWOP_logdata=cfg.CWOP_logdata)
+	d.update(CWOP_ID=cfg.CWOP_ID)
+	d.update(CWOP_password=cfg.CWOP_password)
+		
 
 	d.update(use_DNSExit=cfg.use_DNSExit)
 	d.update(DNSExit_uname=cfg.DNSExit_uname)
@@ -275,6 +284,8 @@ if ( len(request) != 0 ):
 
 	cfg.useradio = request['useradio'][0]																		   
 	cfg.radiointerval = request['radiointerval'][0]																	  
+	cfg.radio_verbosity = request['radio_verbosity'][0]																	  
+
 
 	cfg.gmail_user = request['gmail_user'][0]																		   
 	cfg.gmail_pwd = request['gmail_pwd'][0]																		   
@@ -289,6 +300,11 @@ if ( len(request) != 0 ):
 	cfg.WeatherUnderground_ID = request['WeatherUnderground_ID'][0]	  	
 	cfg.WeatherUnderground_password = request['WeatherUnderground_password'][0]	  	
 	
+	cfg.CWOP_logdata = request['CWOP_logdata'][0]																	  
+	cfg.CWOP_ID = request['CWOP_ID'][0]	  	
+	cfg.CWOP_password = request['CWOP_password'][0]	  	
+	
+
 
 	cfg.use_DNSExit = request['use_DNSExit'][0]																		   
 	cfg.DNSExit_uname = request['DNSExit_uname'][0]																				

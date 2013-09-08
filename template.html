@@ -258,358 +258,376 @@ Content-Type: text/html
 </head>
 <body onload="init()">
     <script>
-    function init() {
+        function init() {
 
-        var dd = document.getElementById('set_system_time_from_ntp_server_at_startup');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$set_system_time_from_ntp_server_at_startup') {
-                dd.selectedIndex = i;
-                break;
+            var dd = document.getElementById('set_system_time_from_ntp_server_at_startup');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$set_system_time_from_ntp_server_at_startup') {
+                    dd.selectedIndex = i;
+                    break;
+                }
             }
+
+            dd = document.getElementById('config_web_server');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$config_web_server') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('wifi_reset_if_down');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$wifi_reset_if_down') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('usedongle');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$usedongle') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('AlwaysOnInternet');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$AlwaysOnInternet') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('UseDongleNet');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$UseDongleNet') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('upload_data');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$upload_data') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('logdata');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$logdata') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('sensor_type');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$sensor_type') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('use_wind_sensor');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_wind_sensor') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+
+            dd = document.getElementById('use_tmp36');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_tmp36') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('use_bmp085');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_bmp085') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('delete_images_on_sd');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$delete_images_on_sd') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('sendallimagestoserver');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$sendallimagestoserver') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('set_system_time_from_WeatherStation');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$set_system_time_from_WeatherStation') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('sendImagesToServer');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$sendImagesToServer') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('captureprogram');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$captureprogram') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+
+            dd = document.getElementById('usecameradivice');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$usecameradivice') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('reset_usb');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$reset_usb') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('clear_all_sd_cards_at_startup');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$clear_all_sd_cards_at_startup') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('gphoto2_capture_image_and_download');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$gphoto2_capture_image_and_download') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('use_camera_resetter');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_camera_resetter') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('useradio');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$useradio') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('use_thread_for_sending_to_server');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_thread_for_sending_to_server') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('send_IP_by_sms');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$send_IP_by_sms') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('use_mail');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_mail') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('mail_ip');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$mail_ip') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('operator');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$operator') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('WeatherUnderground_logdata');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$WeatherUnderground_logdata') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('CWOP_logdata');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$CWOP_logdata') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+            
+
+            dd = document.getElementById('use_DNSExit');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_DNSExit') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('use_dht');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_dht') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('camera_resetter_normaly_on');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$camera_resetter_normaly_on') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+
+            dd = document.getElementById('rfm01_frequenzy');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$rfm01_frequenzy') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('rfm01_band');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$rfm01_band') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('rfm01_lna');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$rfm01_lna') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+
+            dd = document.getElementById('rfm01_rssi');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$rfm01_rssi') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('dht_type');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$dht_type') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('wind_speed_units');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$wind_speed_units') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('use_cameraPI');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_cameraPI') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+            dd = document.getElementById('radio_verbosity');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$radio_verbosity') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+        }
+        function ButtonLog_onclick() {
+            window.location = '/log/'
         }
 
-        dd = document.getElementById('config_web_server');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$config_web_server') {
-                dd.selectedIndex = i;
-                break;
-            }
+        function ButtonDownloadCFG_onclick() {
+            window.location = '/download_cfg.py'
         }
 
-        dd = document.getElementById('wifi_reset_if_down');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$wifi_reset_if_down') {
-                dd.selectedIndex = i;
-                break;
-            }
+        function ButtonUploadCFG_onclick() {
+            window.location = '/upload_cfg.html'
         }
 
-        dd = document.getElementById('usedongle');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$usedongle') {
-                dd.selectedIndex = i;
-                break;
-            }
+        function ButtonReboot_onclick() {
+            window.location = '/web_reboot.py'
         }
 
-        dd = document.getElementById('AlwaysOnInternet');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$AlwaysOnInternet') {
-                dd.selectedIndex = i;
-                break;
-            }
+        function ButtonStatus_onclick() {
+            window.location = '/web_status.py'
         }
 
-        dd = document.getElementById('UseDongleNet');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$UseDongleNet') {
-                dd.selectedIndex = i;
-                break;
-            }
+        function Button1_onclick() {
+            window.location = '/web_swpi_update.py'
         }
 
-        dd = document.getElementById('upload_data');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$upload_data') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('logdata');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$logdata') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('sensor_type');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$sensor_type') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('use_wind_sensor');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_wind_sensor') {
-                dd.selectedIndex = i;
-                break;
-            }
+        function ButtonResetCamera_onclick() {
+            window.location = '/reset_camera.py'
         }
 
 
-        dd = document.getElementById('use_tmp36');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_tmp36') {
-                dd.selectedIndex = i;
-                break;
-            }
+
+        function WeatherUnderground_logdata_onclick() {
+
         }
 
-        dd = document.getElementById('use_bmp085');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_bmp085') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('delete_images_on_sd');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$delete_images_on_sd') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('sendallimagestoserver');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$sendallimagestoserver') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('set_system_time_from_WeatherStation');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$set_system_time_from_WeatherStation') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('sendImagesToServer');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$sendImagesToServer') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('captureprogram');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$captureprogram') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-
-        dd = document.getElementById('usecameradivice');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$usecameradivice') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('reset_usb');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$reset_usb') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('clear_all_sd_cards_at_startup');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$clear_all_sd_cards_at_startup') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('gphoto2_capture_image_and_download');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$gphoto2_capture_image_and_download') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('use_camera_resetter');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_camera_resetter') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('useradio');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$useradio') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('use_thread_for_sending_to_server');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_thread_for_sending_to_server') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('send_IP_by_sms');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$send_IP_by_sms') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('use_mail');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_mail') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('mail_ip');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$mail_ip') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('operator');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$operator') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('WeatherUnderground_logdata');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$WeatherUnderground_logdata') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-
-        dd = document.getElementById('use_DNSExit');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_DNSExit') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('use_dht');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_dht') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('camera_resetter_normaly_on');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$camera_resetter_normaly_on') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-
-        dd = document.getElementById('rfm01_frequenzy');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$rfm01_frequenzy') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('rfm01_band');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$rfm01_band') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('rfm01_lna');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$rfm01_lna') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-
-        dd = document.getElementById('rfm01_rssi');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$rfm01_rssi') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('dht_type');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$dht_type') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('wind_speed_units');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$wind_speed_units') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-
-        dd = document.getElementById('use_cameraPI');
-        for (var i = 0; i < dd.options.length; i++) {
-            if (dd.options[i].text == '$use_cameraPI') {
-                dd.selectedIndex = i;
-                break;
-            }
-        }
-        
-             
-                                      
-	}
-	function ButtonLog_onclick() {
-	    window.location = '/log/'
-	}
-
-	function ButtonDownloadCFG_onclick() {
-	    window.location = '/download_cfg.py'
-	}
-
-	function ButtonUploadCFG_onclick() {
-	    window.location = '/upload_cfg.html'
-	}
-
-	function ButtonReboot_onclick() {
-	    window.location = '/web_reboot.py'
-	}
-
-	function ButtonStatus_onclick() {
-	    window.location = '/web_status.py'
-	}
-
-	function Button1_onclick() {
-	    window.location = '/web_swpi_update.py'
-	}
-
-	function ButtonResetCamera_onclick() {
-	    window.location = '/reset_camera.py'
-	}
-
-
-	
     </script>
     
     
@@ -1373,7 +1391,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     Log data to Weather Underground PWS (<strong>WeatherUnderground_logdata</strong>)</td>
                 <td class="style20">
                     <select id="WeatherUnderground_logdata" type="text" name="WeatherUnderground_logdata" 
-                        style="width: 100%" >
+                        style="width: 100%" onclick="return WeatherUnderground_logdata_onclick()">
                         <option value=True >True</option>
                         <option value=False >False</option>
                     </select>       
@@ -1394,6 +1412,42 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         value=$WeatherUnderground_password style="width: 100%" /></td>
             </tr>
             </table>
+            
+            </table>
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    Citizen Weather Observer Program</td>
+            </tr>
+            <tr>
+                <td class="style8">
+                    Log data to CWOP (CWOP_logdata)</td>
+                <td class="style20">
+                    <select id="CWOP_logdata" type="text" name="CWOP_logdata" 
+                        style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>       
+                    </td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    CWOP&nbsp; station ID (<b>CWOP_ID</b>)</td>
+                <td class="style19">
+                    <input id="Text3" type="text" name="CWOP_ID" 
+                        value=$CWOP_ID style="width: 100%" /></td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    CWOP&nbsp; password (CWOP_password)</td>
+                <td class="style19">
+                    <input id="Text4" type="text" name="CWOP_password" 
+                        value=$CWOP_password style="width: 100%" /></td>
+            </tr>
+            </table>
+            
+            
            <br />
         <table bgcolor="#FF99FF" border="1" frame="box" 
         style="width: 800px; margin-right: 0px">
@@ -1491,6 +1545,16 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     <input id="radiointerval" type="text" name="radiointerval" 
                         value=$radiointerval onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    Radio Verbosity (<b>radio_verbosity</b>)<td class="style40">
+                    <select id="radio_verbosity" type="text" name="radio_verbosity" 
+                        value=$radio_verbosity style="width: 100%" ">
+                        <option value="only_wind">only_wind</option>
+                        <option value="motor">motor</option>
+                        <option value="all">all</option>
+                        </td>
             </tr>
             </table>
         </p>

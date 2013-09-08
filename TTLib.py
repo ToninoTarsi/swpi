@@ -214,6 +214,136 @@ def DNSExit(uname,pwd,hname):
         
     return True
 
+def logDataToCWOP(CWOP_ID,CWOP_password,location_latitude,location_longitude,swpi_version=""):
+    # http://pond1.gladstonefamily.net:8080/aprswxnet.html
+    log("Logging to CWOP server ...")
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return False
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 120 ):
+        return False
+    
+    
+    send = ""
+    
+    send += CWOP_ID
+    send += ">APRS,TCPXX*:"
+    
+    d = (datetime.datetime.utcnow())
+    aprs_time = d.strftime("%d%H%M")
+    send += "/" + aprs_time + "z"
+ 
+    lat = abs(location_latitude)
+    d = int(lat)
+    p = (lat-d)*60
+    location = "%2d%5.2f" % (d,p)
+    if (location_latitude) > 0:
+        location += "N"
+    else:
+        location += "S"
+    
+    location += "/"
+    
+        
+    lon = abs(location_longitude)
+    d = int(lon)
+    p = (lon-d)*60
+    location += "%03d%5.2f" % (d,p)
+    if (location_longitude) > 0:
+        location += "E"
+    else:
+        location += "W"
+    
+    send += location
+    
+    if ( globalvars.meteo_data.wind_dir != None):
+        direction = "%03.0f" % float(globalvars.meteo_data.wind_dir)
+        send += "_"+direction
+
+    # average wind speed
+    if (globalvars.meteo_data.wind_ave != None):
+        wind_speed =  globalvars.meteo_data.wind_ave *  0.621371192   
+        wind_str = '/' + "%03.0f" % wind_speed
+        send += wind_str
+
+    # wind gust
+    if (globalvars.meteo_data.wind_gust != None ):
+        wind_gust= globalvars.meteo_data.wind_gust * 0.621371192
+        wind_gust_str = 'g' + "%03.0f" % wind_gust
+        send += wind_gust_str
+
+    # temp
+    if ( globalvars.meteo_data.temp_out != None):
+        temp_in_f = ( globalvars.meteo_data.temp_out * 1.8 ) + 32
+        temp_str = "t" + "%03.0f" % temp_in_f
+        send += temp_str
+
+    # rain last hour -- each count is 0.0204" 
+    if (globalvars.meteo_data.rain_rate_1h != None):
+        rain_hr_hundredth_inches = int(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
+        rain_hr_str = "r" + "%03d" % rain_hr_hundredth_inches
+        send += rain_hr_str
+
+    # rain last 24 hours -- each count is 0.0204"
+    # so the math accidentally scales perfect -- report in hundreths of inches
+    if (globalvars.meteo_data.rain_rate_24h != None) :
+        rain_24_hrs_hundredth_inches = int(globalvars.meteo_data.rain_rate_24h  * 0.0393700787)
+        rain_24_hrs_str = "p" + "%03d" % rain_24_hrs_hundredth_inches
+        send += rain_24_hrs_str
+
+    # skip rain since midnight
+    if (globalvars.meteo_data.rain_rate != None ) :
+        rain_today_hundredth_inches = int(globalvars.meteo_data.rain_rate  * 0.0393700787)
+        rain_midnight_str = "P" + "%03d" % rain_today_hundredth_inches
+        send += rain_midnight_str
+
+    # humidity
+    if (globalvars.meteo_data.hum_out != None):
+        rh = float(globalvars.meteo_data.hum_out / 100 )
+        if rh >= 0.995:
+            humid_str = "h00"
+        else:
+            humid_str = "h" + "%02.0f" % (rh * 100.0)
+        send += humid_str
+
+    # barometric pressure (in tenths of millibars)
+    if (globalvars.meteo_data.rel_pressure != None ) :
+        baro = float(globalvars.meteo_data.rel_pressure  *    10)
+        baro_str = "b" + "%05.0f"%baro
+        send += baro_str
+
+    # equipment used
+    equip_str = ".Sint Wind PI - "+swpi_version
+    send += equip_str
+    
+
+    #log(send)
+    
+    # Don't send errors in the case that connect fails...
+    try:
+        HOST = 'cwop.aprs.net'
+        PORT = 14580
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((HOST,PORT))
+        s.send('user '+ CWOP_ID +' pass ' + CWOP_password + ' vers linux-1wire 1.00\r\n')
+        time.sleep(3)
+        s.send(send+'\r\n')
+        s.close()
+        log(CWOP_ID + " Ok")
+    except:
+        log(CWOP_ID + " ERROR")
+        s.close()
+        return False
+
+
+
+    return True
+
+
+
 def logDataToWunderground(ID,password,wind_speed_units="kmh"):
 
     if ( globalvars.meteo_data.last_measure_time == None):
@@ -835,8 +965,7 @@ if __name__ == '__main__':
     cfg = config.config(configfile)
     
     
-    print DNSExit(cfg.DNSExit_uname,cfg.DNSExit_pwd,cfg.DNSExit_hname)
-    #swpi_update()
+    print logDataToCWOP(cfg)
     
     
     

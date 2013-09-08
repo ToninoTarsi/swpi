@@ -815,7 +815,10 @@ while 1:
 
 				if ( cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					log("Uploading data ...")
-					UploadData(cfg)			
+					UploadData(cfg)		
+					
+				if ( cfg.CWOP_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
+					logDataToCWOP(cfg.CWOP_ID,cfg.CWOP_password,cfg.location_latitude,cfg.location_longitude,v)
 			
 				thenewIP = getPublicIP()
 				if ( thenewIP != None and publicIP != thenewIP ):

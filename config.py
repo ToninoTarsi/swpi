@@ -258,6 +258,12 @@ class config(object):
 		self.WeatherUnderground_ID = config.get('WeatherUnderground', 'WeatherUnderground_ID',"KCASANFR5")
 		self.WeatherUnderground_password = config.get('WeatherUnderground', 'WeatherUnderground_password',"XXXXXXXX")
 
+		#[CWOP]
+		self.CWOP_logdata = config.getboolean('CWOP', 'CWOP_logdata',False)
+		self.CWOP_ID = config.get('CWOP', 'CWOP_ID',"EW0000")
+		self.CWOP_password = config.get('CWOP', 'CWOP_password',"-1")
+	
+
 		#[DNS Exit]
 		self.use_DNSExit = config.getboolean('DNSExit', 'use_DNSExit',False)
 		self.DNSExit_uname = config.get('DNSExit', 'DNSExit_uname',"user")
@@ -404,6 +410,12 @@ class config(object):
 		config.setboolean('WeatherUnderground', 'WeatherUnderground_logdata',self.WeatherUnderground_logdata)
 		config.setstr('WeatherUnderground', 'WeatherUnderground_ID',self.WeatherUnderground_ID)		
 		config.setstr('WeatherUnderground', 'WeatherUnderground_password',self.WeatherUnderground_password)		
+		
+		#[CWOP]
+		config.setboolean('CWOP', 'CWOP_logdata',self.CWOP_logdata)
+		config.setstr('CWOP', 'CWOP_ID',self.CWOP_ID)		
+		config.setstr('CWOP', 'CWOP_password',self.CWOP_password)	
+		
 		
 		#[DNS Exit]
 		config.setboolean('DNSExit', 'use_DNSExit',self.use_DNSExit)
