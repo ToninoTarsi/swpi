@@ -159,6 +159,10 @@ def outputPage(cfg):
 	d.update(CWOP_ID=cfg.CWOP_ID)
 	d.update(CWOP_password=cfg.CWOP_password)
 		
+	d.update(PWS_logdata=cfg.PWS_logdata)
+	d.update(PWS_ID=cfg.PWS_ID)
+	d.update(PWS_password=cfg.PWS_password)
+
 
 	d.update(use_DNSExit=cfg.use_DNSExit)
 	d.update(DNSExit_uname=cfg.DNSExit_uname)
@@ -304,7 +308,9 @@ if ( len(request) != 0 ):
 	cfg.CWOP_ID = request['CWOP_ID'][0]	  	
 	cfg.CWOP_password = request['CWOP_password'][0]	  	
 	
-
+	cfg.PWS_logdata = request['PWS_logdata'][0]																	  
+	cfg.PWS_ID = request['PWS_ID'][0]	  	
+	cfg.PWS_password = request['PWS_password'][0]	  
 
 	cfg.use_DNSExit = request['use_DNSExit'][0]																		   
 	cfg.DNSExit_uname = request['DNSExit_uname'][0]																				

@@ -592,6 +592,16 @@ Content-Type: text/html
                     break;
                 }
             }
+            
+            dd = document.getElementById('PWS_logdata');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$PWS_logdata') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
+
 
         }
         function ButtonLog_onclick() {
@@ -1435,7 +1445,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                 <td class="style8">
                     CWOP&nbsp; station ID (<b>CWOP_ID</b>)</td>
                 <td class="style19">
-                    <input id="Text3" type="text" name="CWOP_ID" 
+                    <input id="CWOP_ID" type="text" name="CWOP_ID" 
                         value=$CWOP_ID style="width: 100%" /></td>
             </tr>
             <tr> 
@@ -1446,6 +1456,43 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         value=$CWOP_password style="width: 100%" /></td>
             </tr>
             </table>
+            
+            
+           <br />
+        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                    PWS	- Personal Weather Station</td>
+            </tr>
+            <tr>
+                <td class="style8">
+                    Log data to PWS (PWS_logdata)</td>
+                <td class="style20">
+                    <select id="PWS_logdata" type="text" name="PWS_logdata" 
+                        style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select>       
+                    </td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    PWS&nbsp; station ID (<b>PWS_ID</b>)</td>
+                <td class="style19">
+                    <input id="PWS_ID" type="text" name="PWS_ID" 
+                        value=$PWS_ID style="width: 100%" /></td>
+            </tr>
+            <tr> 
+                <td class="style8">
+                    CWOP&nbsp; password (PWS_password)</td>
+                <td class="style19">
+                    <input id="PWS_password" type="text" name="PWS_password" 
+                        value=$PWS_password style="width: 100%" /></td>
+            </tr>
+            </table>
+            
+            
+           <br />
             
             
            <br />

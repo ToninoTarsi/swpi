@@ -263,6 +263,10 @@ class config(object):
 		self.CWOP_ID = config.get('CWOP', 'CWOP_ID',"EW0000")
 		self.CWOP_password = config.get('CWOP', 'CWOP_password',"-1")
 	
+		#[PWS]
+		self.PWS_logdata = config.getboolean('PWS', 'PWS_logdata',False)
+		self.PWS_ID = config.get('PWS', 'PWS_ID',"KCASANFR5")
+		self.PWS_password = config.get('PWS', 'PWS_password',"XXXXXXXX")
 
 		#[DNS Exit]
 		self.use_DNSExit = config.getboolean('DNSExit', 'use_DNSExit',False)
@@ -411,10 +415,17 @@ class config(object):
 		config.setstr('WeatherUnderground', 'WeatherUnderground_ID',self.WeatherUnderground_ID)		
 		config.setstr('WeatherUnderground', 'WeatherUnderground_password',self.WeatherUnderground_password)		
 		
+		#[PWS]
+		config.setboolean('PWS', 'PWS_logdata',self.PWS_logdata)
+		config.setstr('PWS', 'PWS_ID',self.PWS_ID)		
+		config.setstr('PWS', 'PWS_password',self.PWS_password)	
+		
 		#[CWOP]
 		config.setboolean('CWOP', 'CWOP_logdata',self.CWOP_logdata)
 		config.setstr('CWOP', 'CWOP_ID',self.CWOP_ID)		
 		config.setstr('CWOP', 'CWOP_password',self.CWOP_password)	
+		
+
 		
 		
 		#[DNS Exit]

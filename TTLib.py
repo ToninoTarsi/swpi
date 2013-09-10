@@ -401,7 +401,50 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
 #        log(  "Error Logging to Wunderground : "  )
 
      
-      
+def logDataToPWS(ID,password,wind_speed_units="kmh"):
+
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 120 ):
+        return
+
+
+    serverfile = "http://www.pwsweather.com/pwsupdate/pwsupdate.php"
+
+    parameters = {}
+    parameters['action'] = "updateraw"
+    parameters['ID'] = ID
+    parameters['PASSWORD'] = password
+    parameters['dateutc'] = str(datetime.datetime.utcnow())
+    
+    if globalvars.meteo_data.wind_dir != None :  parameters['winddir'] = int(globalvars.meteo_data.wind_dir)
+    if ( wind_speed_units == "kmh" ):
+        if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = "{:.2f}".format(globalvars.meteo_data.wind_ave *  0.621371192)
+        if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = "{:.2f}".format(globalvars.meteo_data.wind_gust * 0.621371192)
+    else:
+        if globalvars.meteo_data.wind_ave != None :  parameters['windspeedmph'] = "{:.2f}".format((globalvars.meteo_data.wind_ave / 0.539956803456  ) *  0.621371192)
+        if globalvars.meteo_data.wind_gust != None :  parameters['windgustmph'] = "{:.2f}".format((globalvars.meteo_data.wind_gust / 0.539956803456  ) * 0.621371192)  
+    if globalvars.meteo_data.hum_out != None :  parameters['humidity'] = "{:.1f}".format(globalvars.meteo_data.hum_out )
+    if globalvars.meteo_data.temp_out != None :  parameters['tempf'] = "{:.2f}".format(( globalvars.meteo_data.temp_out * 1.8 ) + 32) 
+    if globalvars.meteo_data.rel_pressure != None :  parameters['baromin'] = "{:.4f}".format(globalvars.meteo_data.rel_pressure  *    0.0295299830714) #new
+    if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = "{:.2f}".format(( globalvars.meteo_data.dew_point * 1.8 ) + 32)
+    if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate  * 0.0393700787)
+    if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
+    parameters['softwaretype'] = "Sint Wind PI"
+        
+    #print  parameters   
+    try:
+        r = requests.get(serverfile, params=parameters,timeout=10)
+        msg = r.text.splitlines()
+        log("Log to PWS : " +  msg[0])
+    except:
+        log(  "Error Logging to PWS : "  )    
+        
+             
 
 def logData(serverfile,SMSPwd):
     

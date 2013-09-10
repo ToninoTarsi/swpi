@@ -55,6 +55,7 @@ class Sensor_Simulator(sensor.Sensor):
         globalvars.meteo_data.rain  = random.randrange(1,100)      
         globalvars.meteo_data.illuminance = random.randrange(1,100)
         globalvars.meteo_data.uv = random.randrange(1,100)
+        
             
      
         sensor.Sensor.GetData(self)

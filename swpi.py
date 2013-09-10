@@ -752,7 +752,7 @@ while 1:
 					
 		bConnected = False
 		
-		if ( cfg.sendImagesToServer or cfg.logdata or cfg.upload_data or cfg.WeatherUnderground_logdata ):
+		if ( cfg.sendImagesToServer or cfg.logdata or cfg.upload_data or cfg.WeatherUnderground_logdata or cfg.PWS_logdata):
 			waitForHandUP()
 			if ( cfg.UseDongleNet and ( not internet_on())  and modem._pppd_pid == None): # connect if not
 				log( "Trying to connect to internet with 3G dongle")
@@ -819,6 +819,12 @@ while 1:
 					
 				if ( cfg.CWOP_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
 					logDataToCWOP(cfg.CWOP_ID,cfg.CWOP_password,cfg.location_latitude,cfg.location_longitude,v)
+			
+				if ( cfg.PWS_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+					log("Logging data to PWS ...")
+					logDataToPWS(cfg.PWS_ID,cfg.PWS_password,cfg.wind_speed_units)	
+					
+			
 			
 				thenewIP = getPublicIP()
 				if ( thenewIP != None and publicIP != thenewIP ):
