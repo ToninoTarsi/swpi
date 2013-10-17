@@ -34,8 +34,14 @@ import tarfile
 import thread
 import os
 import requests
+import subprocess
 
 socket.setdefaulttimeout(30)
+
+def get_cpu_temperature():
+    process = subprocess.Popen(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE)
+    output, _error = process.communicate()
+    return float(output[output.index('=') + 1:output.rindex("'")])
 
 
 def disk_free():
@@ -698,7 +704,7 @@ def UploadData(cfg):
 
     #mydata['swpi_versione'] = swpi_version
 
-
+    mydata['TempCPU'] =  get_cpu_temperature()
 
     
     

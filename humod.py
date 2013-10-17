@@ -352,7 +352,7 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
             memfile = ""
             for message in listOfMessages:
                 if ( not os.path.exists(message)):
-                    log( "ERROR : File not found : " + message)
+                    log( "WARNING : File not found : " + message)
                     continue
                 f = open(message, "rb")
                 chunk = f.read()

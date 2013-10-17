@@ -35,6 +35,8 @@ import sensor_wmr200
 import sensor_wmr918
 import sensor_wm918
 import sensor_ws2300
+import sensor_none
+
 
 
 def log(message) :
@@ -105,7 +107,9 @@ class WindSensorThread(threading.Thread):
         elif ( self.cfg.sensor_type.upper()  == "WS23XX" ):
             sensor = sensor_ws2300.Sensor_WS2300(self.cfg)                             
                        
-                                    
+        elif ( self.cfg.sensor_type.upper()  == "NONE" ):
+            sensor = sensor_none.Sensor_None(self.cfg)  
+                                             
         else:
             log("Sensor type not implemented. Exiting")
             os.system("sudo ./killswpi.sh")

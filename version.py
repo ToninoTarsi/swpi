@@ -10,7 +10,6 @@
 import sys
 import struct
 import ConfigParser
-import sqlite3
 import os
 import ftplib
 import Image

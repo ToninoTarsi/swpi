@@ -58,6 +58,8 @@ def apparent_temp(temp, rh, wind):
     """Compute apparent temperature (real feel), using formula from
     http://www.bom.gov.au/info/thermal_stress/
     """
+    if ( temp == None or rh == None or wind == None ):
+        return None
     wind_ms = wind / 3.6
     if temp == None or rh == None or wind == None:
         return None

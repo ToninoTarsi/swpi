@@ -127,7 +127,7 @@ class RadioThread(threading.Thread):
                             intera = int(round( abs(globalvars.meteo_data.temp_out) ))
                             listOfMessages.append("./audio/mp3/" + str(intera) + ".mp3")
                             listOfMessages.append("./audio/mp3/degree.mp3")
-                
+
                         # Pressure
                         if ( globalvars.meteo_data.rel_pressure != None ):
                             thousands, rem = divmod(round(globalvars.meteo_data.rel_pressure), 1000) 
@@ -177,8 +177,7 @@ class RadioThread(threading.Thread):
                         elif ( self.cfg.radio_verbosity == "motor") :
                             listOfMessages = []
                             
-                            
-                            listOfMessages.append("./audio/mp3/hello.mp3")
+                            #listOfMessages.append("./audio/mp3/hello.mp3")
                             # Message
                             listOfMessages.append("./audio/mp3/message.mp3")
                             
@@ -190,6 +189,7 @@ class RadioThread(threading.Thread):
                     
                             if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
                                 listOfMessages.append("./audio/mp3/raining.mp3")
+                                #listOfMessages.append("./audio/mp3/pioggiainatto.mp3")
                             
                             # Temperature
                             if ( globalvars.meteo_data.temp_out != None ):
@@ -210,7 +210,7 @@ class RadioThread(threading.Thread):
                                 hundreds, tens = divmod(rem, 100)
                                 hundreds = int(hundreds * 100)
                                 tens = int(round(tens))    
-                                listOfMessages.append("./audio/mp3/qhh.mp3")
+                                listOfMessages.append("./audio/mp3/qnh.mp3")
                                 if ( thousands != 0):
                                     listOfMessages.append("./audio/mp3/" + str(thousands) + ".mp3")
                                 if ( hundreds != 0):
@@ -247,36 +247,10 @@ class RadioThread(threading.Thread):
                                 if ( globalvars.meteo_data.wind_trend < - self.cfg.wind_trend_limit) :
                                     listOfMessages.append("./audio/mp3/winddown.mp3")
                                 if ( globalvars.meteo_data.wind_trend >  self.cfg.wind_trend_limit) :
-                                    listOfMessages.append("./audio/mp3/windup.mp3")    
-                            
+                                    listOfMessages.append("./audio/mp3/windup.mp3")
+                             
                      
-#                             # Humidity
-#                             if ( globalvars.meteo_data.hum_out != None ):
-#                                 listOfMessages.append("./audio/mp3/silence05s.mp3") 
-#                                 intera =  int( globalvars.meteo_data.hum_out) 
-#                                 listOfMessages.append("./audio/mp3/umidity.mp3")
-#                                 listOfMessages.append("./audio/mp3/" + str(intera) + ".mp3")
-#                                 listOfMessages.append("./audio/mp3/percent.mp3")
-#                     
-#                             #Cloud base
-#                             if (globalvars.meteo_data.cloud_base_altitude != None ) : 
-#                                 if ( globalvars.meteo_data.cloud_base_altitude != -1 ) :
-#                                     thousands, rem = divmod(round(globalvars.meteo_data.cloud_base_altitude), 1000) 
-#                                     thousands = int(thousands * 1000)
-#                                     hundreds, tens = divmod(rem, 100)
-#                                     hundreds = int(hundreds * 100)
-#                                     tens = int(round(tens))    
-#                                     listOfMessages.append("./audio/mp3/silence05s.mp3") 
-#                                     listOfMessages.append("./audio/mp3/cloudbase.mp3")
-#                                     if ( thousands != 0):
-#                                         listOfMessages.append("./audio/mp3/" + str(thousands) + ".mp3")
-#                                     if ( hundreds != 0):
-#                                         listOfMessages.append("./audio/mp3/" + str(hundreds) + ".mp3")
-#                                     if ( tens != 0 ):
-#                                         listOfMessages.append("./audio/mp3/" + str(tens) + ".mp3")
-#                                     listOfMessages.append("./audio/mp3/meters.mp3")
-#                                 else:
-#                                     listOfMessages.append("./audio/mp3/incloud.mp3")
+
     
     
                     playsounds(listOfMessages)

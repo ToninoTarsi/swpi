@@ -143,11 +143,33 @@ def process_sms(modem, smsID):
 			tar = tarfile.open(tarname, "w:gz")
 			tar.add("./db")
 			tar.close()
-			if SendMail(cfg, "DB", "Here your DB", tarname):
-				log("DB sent by mail")
-			os.remove(tarname)
-			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
-			conn.commit()		
+						
+			bbConnected = False
+			if ( ( not internet_on())  and cfg.UseDongleNet ):
+				log( "Trying to connect to internet with 3G dongle ....")
+				time.sleep(1)
+				modem.connectwvdial()
+				time.sleep(2)
+				waitForIP()
+				bbConnected = True
+			
+			if ( internet_on() ):
+				SendMail(cfg, "DB", "Here your DB", tarname)
+				os.remove(tarname)
+				dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+				conn.commit()		
+				
+			if (bbConnected ):
+				log("Try to disconnect")
+				modem.disconnectwvdial()
+				modem.disconnectwvdial()
+				modem.enable_textmode(True)
+				modem.enable_clip(True)	
+				modem.enable_nmi(True)
+				
+	
+			log( "DB sent by mail" )
+			
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 2 and cmd == "MCFG" ):
 			modem.sms_del(msgID)
@@ -155,11 +177,32 @@ def process_sms(modem, smsID):
 			tar = tarfile.open(tarname, "w:gz")
 			tar.add("swpi.cfg")
 			tar.close()
-			if SendMail(cfg, "CFG", "Here your CFG", tarname):
-				log("CFG sent by mail")
-			os.remove(tarname)
-			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
-			conn.commit()		
+			bbConnected = False
+			if ( ( not internet_on())  and cfg.UseDongleNet ):
+				log( "Trying to connect to internet with 3G dongle ....")
+				time.sleep(1)
+				modem.connectwvdial()
+				time.sleep(2)
+				waitForIP()
+				bbConnected = True
+			
+			if ( internet_on() ):
+				SendMail(cfg, "CFG", "Here your CFG", tarname)
+				os.remove(tarname)
+				dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+				conn.commit()		
+				
+			if (bbConnected ):
+				log("Try to disconnect")
+				modem.disconnectwvdial()
+				modem.disconnectwvdial()
+				modem.enable_textmode(True)
+				modem.enable_clip(True)	
+				modem.enable_nmi(True)
+				
+	
+			log( "CFG sent by mail" )
+
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 2 and cmd == "MLOG" ):
 			modem.sms_del(msgID)
@@ -171,12 +214,34 @@ def process_sms(modem, smsID):
 			filetoadd = "log/gphoto2"+logFileDate+".log"
 			if ( os.path.isfile(filetoadd) ) :  
 				tar.add(filetoadd)				
-			tar.close()
-			if SendMail(cfg, "LOF", "Here your LOG", tarname):
-				log("LOG sent by mail")
-			os.remove(tarname)
-			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
-			conn.commit()		
+				tar.close()
+			bbConnected = False
+			if ( ( not internet_on())  and cfg.UseDongleNet ):
+				log( "Trying to connect to internet with 3G dongle ....")
+				time.sleep(1)
+				modem.connectwvdial()
+				time.sleep(2)
+				waitForIP()
+				bbConnected = True
+			
+			if ( internet_on() ):
+					SendMail(cfg, "LOF", "Here your LOG", tarname)
+					os.remove(tarname)
+					dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+					conn.commit()		
+				
+			if (bbConnected ):
+				log("Try to disconnect")
+				modem.disconnectwvdial()
+				modem.disconnectwvdial()
+				modem.enable_textmode(True)
+				modem.enable_clip(True)	
+				modem.enable_nmi(True)
+				
+	
+			log( "LOG sent by mail" )
+			
+		
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 2 and cmd == "MALOG" ):
 			modem.sms_del(msgID)
@@ -184,11 +249,33 @@ def process_sms(modem, smsID):
 			tar = tarfile.open(tarname, "w:gz")
 			tar.add("log")				
 			tar.close()
-			if SendMail(cfg, "LOF", "Here your LOG", tarname):
-				log("All LOG sent by mail")
-			os.remove(tarname)
-			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
-			conn.commit()		
+			bbConnected = False
+			if ( ( not internet_on())  and cfg.UseDongleNet ):
+				log( "Trying to connect to internet with 3G dongle ....")
+				time.sleep(1)
+				modem.connectwvdial()
+				time.sleep(2)
+				waitForIP()
+				bbConnected = True
+			
+			if ( internet_on() ):
+				SendMail(cfg, "LOF", "Here your LOG", tarname)
+				os.remove(tarname)
+				dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+				conn.commit()			
+				
+			if (bbConnected ):
+				log("Try to disconnect")
+				modem.disconnectwvdial()
+				modem.disconnectwvdial()
+				modem.enable_textmode(True)
+				modem.enable_clip(True)	
+				modem.enable_nmi(True)
+				
+	
+			log( "All LOG sent by mail" )
+			
+			
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) > 2 and cmd == "SYS" ):
 			modem.sms_del(msgID)
@@ -665,6 +752,9 @@ service.run_all_service_thread(cfg)
 if bConnected:
 	log("Try to disconnect")
 	modem.disconnectwvdial()
+	modem.enable_textmode(True)
+	modem.enable_clip(True)	
+	modem.enable_nmi(True)
 	
 # Wait for valid data
 maxwait = 0
@@ -847,7 +937,9 @@ while 1:
 				if bConnected:
 					log("Try to disconnect")
 					modem.disconnectwvdial()
-					
+					modem.enable_textmode(True)
+					modem.enable_clip(True)	
+					modem.enable_nmi(True)
 			else:
 				log("Error. Non internet connection available")
 			
