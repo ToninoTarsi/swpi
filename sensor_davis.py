@@ -94,13 +94,17 @@ class Sensor_Davis(sensor.Sensor):
                 log("Error reading mcp3002 channel 0. Retrying ")
                 time.sleep(0.1) 
         
-        #print "ch0",ch0
-        
-        wind_dir = (350.0/1023.0)*ch0+5
-        
+       #print "ch0",ch0
+
+        wind_dir = ((350.0/1023.0)*ch0+5)-self.cfg.davis_error
+
+        #log(self.cfg.davis_error)
+        if wind_dir<0:
+	    wind_dir=359+wind_dir
         val=int((wind_dir/22.5)+.5)
         winddir_code = get_wind_dir_text()[val]
-        
+
+
         return wind_dir, winddir_code
     
     def GetCurretWindSpeed(self):

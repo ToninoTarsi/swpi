@@ -1004,9 +1004,15 @@ def waitForIP():
     # wait maximum 2 minute for a valid IP
     log("Waiting for a valid IP ...")
     n = 60
+    cfg = config.config('swpi.cfg')
     for i in range(1,n):
         theIP = getIP()
+        #log(cfg.ntp_url)
         if ( theIP != None):
+            if (cfg.ntp_url != 'None'):
+                date_str = requests.get(cfg.ntp_url,timeout=10).text
+                log(date_str)
+                os.system("sudo date -s '%s'" % date_str)
             return theIP
         log("No IP yet. Retrying ..%d" % (n-i) )
         time.sleep(2)

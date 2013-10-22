@@ -126,6 +126,7 @@ class config(object):
 		self.cloudbase_calib = config.getfloat('General', 'cloudbase_calib',1.0)
 		self.set_time_at_boot = config.get('General', 'set_time_at_boot',"None")
 		self.wind_speed_units = config.get('General', 'wind_speed_units',"kmh")
+		self.ntp_url=config.get('General', 'ntp_url',"None")
 		#self.seconds_after_sunset_for_night = config.getint('General', 'seconds_after_sunset_for_night',3600)
 
 
@@ -157,6 +158,7 @@ class config(object):
 
 		# [Sensors]
 		self.sensor_type = config.get('Sensors', 'sensor_type',"SIMULATE")
+		self.davis_error= config.getint('Sensors', 'davis_error',0)
 		self.use_wind_sensor = config.getboolean('Sensors', 'use_wind_sensor',True)
 		self.number_of_measure_for_wind_dir_average =  config.getint('Sensors', 'number_of_measure_for_wind_dir_average',10)
 		self.windspeed_offset = config.getfloat('Sensors', 'windspeed_offset',0)
@@ -169,6 +171,8 @@ class config(object):
 		self.number_of_measure_for_wind_trend = config.getint('Sensors', 'number_of_measure_for_wind_trend',30)
 		self.wind_trend_limit = config.getfloat('Sensors', 'wind_trend_limit',10)
 		self.number_of_measure_for_wind_average_gust_calculation =  config.getint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',10)
+		self.sensor_temp_out =   config.get('Sensors', 'sensor_temp_out',"Default")
+		self.sensor_temp_in =   config.get('Sensors', 'sensor_temp_in',"Default")
 
 		# [Sensor_PCE-FWS20]
 		self.set_system_time_from_WeatherStation = config.getboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',False)
@@ -298,6 +302,7 @@ class config(object):
 		config.setfloat('General', 'cloudbase_calib',self.cloudbase_calib)
 		config.setstr('General', 'set_time_at_boot',self.set_time_at_boot)
 		config.setstr('General', 'wind_speed_units',self.wind_speed_units)
+		config.setstr('General', 'ntp_url',self.ntp_url)
 		#config.setint('General', 'seconds_after_sunset_for_night',self.seconds_after_sunset_for_night)
 
 		# [Dongle]
@@ -328,6 +333,7 @@ class config(object):
 
 		# [Sensors]
 		config.setstr('Sensors', 'sensor_type',self.sensor_type)
+		config.setint('Sensors', 'davis_error',self.davis_error)
 		config.setboolean('Sensors', 'use_wind_sensor',self.use_wind_sensor)
 		config.setint('Sensors', 'number_of_measure_for_wind_dir_average',self.number_of_measure_for_wind_dir_average)
 		config.setfloat('Sensors', 'windspeed_offset',self.windspeed_offset)
@@ -340,6 +346,9 @@ class config(object):
 		config.setint('Sensors', 'number_of_measure_for_wind_trend',self.number_of_measure_for_wind_trend)
 		config.setfloat('Sensors', 'wind_trend_limit',self.wind_trend_limit)
 		config.setint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',self.number_of_measure_for_wind_average_gust_calculation)
+		config.setstr('Sensors', 'sensor_temp_out',self.sensor_temp_out)
+		config.setstr('Sensors', 'sensor_temp_in',self.sensor_temp_in)	
+		
 
 		# [Sensor_PCE-FWS20]
 		config.setboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',self.set_system_time_from_WeatherStation)

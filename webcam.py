@@ -29,7 +29,7 @@ class webcam(object):
 			self.finalresolutionX = cfg.webcamdevice1finalresolutionX
 			self.finalresolutionY = cfg.webcamdevice1finalresolutionY
 		elif (deviceNumber == 2):
-			self.device = cfg.webcamDevice1
+			self.device = cfg.webcamDevice2
 			self.captureresolution = cfg.webcamdevice2captureresolution 
 			self.finalresolution = cfg.webcamdevice2finalresolution
 			self.caprureresolutionX = cfg.webcamdevice2captureresolutionX

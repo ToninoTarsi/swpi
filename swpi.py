@@ -162,7 +162,6 @@ def process_sms(modem, smsID):
 			if (bbConnected ):
 				log("Try to disconnect")
 				modem.disconnectwvdial()
-				modem.disconnectwvdial()
 				modem.enable_textmode(True)
 				modem.enable_clip(True)	
 				modem.enable_nmi(True)
@@ -194,7 +193,6 @@ def process_sms(modem, smsID):
 				
 			if (bbConnected ):
 				log("Try to disconnect")
-				modem.disconnectwvdial()
 				modem.disconnectwvdial()
 				modem.enable_textmode(True)
 				modem.enable_clip(True)	
@@ -233,7 +231,6 @@ def process_sms(modem, smsID):
 			if (bbConnected ):
 				log("Try to disconnect")
 				modem.disconnectwvdial()
-				modem.disconnectwvdial()
 				modem.enable_textmode(True)
 				modem.enable_clip(True)	
 				modem.enable_nmi(True)
@@ -266,7 +263,6 @@ def process_sms(modem, smsID):
 				
 			if (bbConnected ):
 				log("Try to disconnect")
-				modem.disconnectwvdial()
 				modem.disconnectwvdial()
 				modem.enable_textmode(True)
 				modem.enable_clip(True)	
@@ -713,7 +709,7 @@ if ( cfg.set_system_time_from_ntp_server_at_startup ):
 # Send mail with IP information ( using a thread to avoid strange freezing )
 if ( publicIP != None and cfg.use_mail and cfg.mail_ip ):
 	log("Local IP :" + IP + " Public IP : " + publicIP)
-	thread.start_new_thread(SendMail,(cfg,"My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")) 
+	thread.start_new_thread(SendMail,(cfg, cfg.station_name + " - My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")) 
 	
 if ( publicIP != None and cfg.use_DNSExit) :
 	DNSExit(cfg.DNSExit_uname,cfg.DNSExit_pwd,cfg.DNSExit_hname)
