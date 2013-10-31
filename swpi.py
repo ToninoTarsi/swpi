@@ -42,6 +42,12 @@ import cameraPI
 socket.setdefaulttimeout(30)
 
 ################################  functions############################
+def reset_sms(modem):
+	modem.enable_textmode(True)
+	modem.enable_clip(True)	
+	modem.enable_nmi(True)
+	log ("sms reset")
+	
 
 def new_sms(modem, message):
 	"""Event Function for new incoming SMS"""
@@ -162,9 +168,11 @@ def process_sms(modem, smsID):
 			if (bbConnected ):
 				log("Try to disconnect")
 				modem.disconnectwvdial()
-				modem.enable_textmode(True)
-				modem.enable_clip(True)	
-				modem.enable_nmi(True)
+				#reset_sms(modem)
+
+				#modem.enable_textmode(True)
+				#modem.enable_clip(True)	
+				#modem.enable_nmi(True)
 				
 	
 			log( "DB sent by mail" )
@@ -194,9 +202,10 @@ def process_sms(modem, smsID):
 			if (bbConnected ):
 				log("Try to disconnect")
 				modem.disconnectwvdial()
-				modem.enable_textmode(True)
-				modem.enable_clip(True)	
-				modem.enable_nmi(True)
+				#reset_sms(modem)
+				#modem.enable_textmode(True)
+				#modem.enable_clip(True)	
+				#modem.enable_nmi(True)
 				
 	
 			log( "CFG sent by mail" )
@@ -231,9 +240,11 @@ def process_sms(modem, smsID):
 			if (bbConnected ):
 				log("Try to disconnect")
 				modem.disconnectwvdial()
-				modem.enable_textmode(True)
-				modem.enable_clip(True)	
-				modem.enable_nmi(True)
+				#reset_sms(modem)
+
+				#modem.enable_textmode(True)
+				#modem.enable_clip(True)	
+				#modem.enable_nmi(True)
 				
 	
 			log( "LOG sent by mail" )
@@ -264,9 +275,10 @@ def process_sms(modem, smsID):
 			if (bbConnected ):
 				log("Try to disconnect")
 				modem.disconnectwvdial()
-				modem.enable_textmode(True)
-				modem.enable_clip(True)	
-				modem.enable_nmi(True)
+				#reset_sms(modem)
+				#modem.enable_textmode(True)
+				#modem.enable_clip(True)	
+				#modem.enable_nmi(True)
 				
 	
 			log( "All LOG sent by mail" )
@@ -399,11 +411,15 @@ def process_sms(modem, smsID):
 		if conn:
 			conn.close()
 		
-		modem.sms_del(msgID)	
+		modem.sms_del(msgID)
+		#log("alla fine  dei messaggi reset sms")
+		reset_sms(modem)	
 		return True
 	except :
 		log( "D - Exept in MSG" )
 		modem.sms_del(msgID)
+		#log("se errore in sms reset ")
+		reset_sms(modem)	
 		if conn:
 			conn.close()
 		return False
@@ -650,14 +666,18 @@ bConnected = False
 modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
 # Init Dongle
 if cfg.usedongle :
-	
-	modem.enable_textmode(True)
-	modem.enable_clip(True)	
-	modem.enable_nmi(True)
+	#reset_sms(modem)
+	#modem.enable_textmode(True)
+	#modem.enable_clip(True)	
+	#modem.enable_nmi(True)
 	sms_action = (humod.actions.PATTERN['new sms'], new_sms)
 	call_action = (humod.actions.PATTERN['incoming callclip'], answer_call)
 	actions = [sms_action , call_action]
 	modem.prober.start(actions) # Starts the prober.
+	#modem.enable_nmi(True)
+	reset_sms(modem)
+
+	
 	print ""
 	log( "Modem Model : "  + modem.show_model())
 	log(  "Revision : "  + modem.show_revision())
@@ -676,8 +696,11 @@ if ( ( not internet_on()) and cfg.UseDongleNet ):
 	log( "Trying to connect to internet with 3G dongle ....")
 	time.sleep(1)
 	modem.connectwvdial()
+	#test
+	#modem.enable_nmi(True)
 	time.sleep(2)
 	waitForIP()
+	reset_sms(modem)
 	if ( not cfg.AlwaysOnInternet ) :
 		bConnected = True
 
@@ -748,9 +771,10 @@ service.run_all_service_thread(cfg)
 if bConnected:
 	log("Try to disconnect")
 	modem.disconnectwvdial()
-	modem.enable_textmode(True)
-	modem.enable_clip(True)	
-	modem.enable_nmi(True)
+	reset_sms(modem)
+	#modem.enable_textmode(True)
+	#modem.enable_clip(True)	
+	#modem.enable_nmi(True)
 	
 # Wait for valid data
 maxwait = 0
@@ -933,9 +957,10 @@ while 1:
 				if bConnected:
 					log("Try to disconnect")
 					modem.disconnectwvdial()
-					modem.enable_textmode(True)
-					modem.enable_clip(True)	
-					modem.enable_nmi(True)
+					reset_sms(modem)
+					#modem.enable_textmode(True)
+					#modem.enable_clip(True)	
+					#modem.enable_nmi(True)
 			else:
 				log("Error. Non internet connection available")
 			
@@ -951,6 +976,11 @@ while 1:
 			
 		#Check disk space
 		disk_space = disk_free()
+		if cfg.usedongle :
+			#log("alla fine")
+			reset_sms(modem)
+		#modem.enable_nmi(True)
+		#log("reset sms")
 		if ( disk_space < 500000000L ):
 			log("Clearing /var/log/")
 			os.system( "sudo rm -r /var/log/*" )
@@ -958,7 +988,6 @@ while 1:
 			log("Disk space left = %s" % disk_space)	
 		
 		globalvars.WatchDogTime = datetime.datetime.now()
-		
 		
 		if ( plugin_sync != None ):
 			plugin_sync.run_after()

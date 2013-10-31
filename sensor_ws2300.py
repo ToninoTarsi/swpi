@@ -70,9 +70,11 @@ class Sensor_WS2300(sensor.Sensor):
 			ws2300.Measure.IDS["ws"],  # "wind speed"
 			ws2300.Measure.IDS["w0"],  # "wind direction"
 			ws2300.Measure.IDS["ws"],  # "wind speed gust ???"
+			ws2300.Measure.IDS["wsu"],  # wind speed units
 			#ws2300.Measure.IDS["rh"],  # rain 1h
 			#ws2300.Measure.IDS["wsh"], # "wind speed max ??????????????"
 			]		
+		
 		
 		while True:
 			
@@ -88,8 +90,10 @@ class Sensor_WS2300(sensor.Sensor):
 				
 				data = [ m.conv.binary2value(d) for m, d in zip(measures, raw_data)]
 	
-				#print data
-				
+				print "***************DUBUG********************"
+				print data
+				print "***************DUBUG********************"
+
 				globalvars.meteo_data.status = 0
 				globalvars.meteo_data.last_measure_time = datetime.datetime.now()
 				globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
