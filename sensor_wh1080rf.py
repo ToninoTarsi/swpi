@@ -125,8 +125,8 @@ class Sensor_WH1080RF(sensor.Sensor):
 				return "None",0,0,0,0,"",0,0
 			temp = float(text[1].split(",")[1])
 			hum = float(text[1].split(",")[3])
-			Wind_speed = float(text[2].split(",")[1])
-			Gust_Speed = float(text[2].split(",")[3])
+			Wind_speed = float(text[2].split(",")[1])*self.cfg.windspeed_gain + self.cfg.windspeed_offset
+			Gust_Speed = float(text[2].split(",")[3])*self.cfg.windspeed_gain + self.cfg.windspeed_offset
 			dir_code = (text[2].split(",")[4])
 			dire = int(text[2].split(",")[5])
 			rain = float(text[3].split(",")[1])

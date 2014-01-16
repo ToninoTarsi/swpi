@@ -356,7 +356,7 @@ class Sensor_WMR100(sensor.Sensor):
         gustSpeed = 0.1 * (((record[5] & 0x0F) << 8) + record[4])
 
         # Report Data
-        self._report_wind(dir, dirDeg, dirStr, gustSpeed, avgSpeed)
+        self._report_wind(dir, dirDeg, dirStr, gustSpeed*3.6, avgSpeed*3.6)
         
         #if ( globalvars.meteo_data.last_measure_time == None or (datetime.datetime.now()-globalvars.meteo_data.last_measure_time).seconds >= 60 ) :   
         globalvars.meteo_data.status = 0

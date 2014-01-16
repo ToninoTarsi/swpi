@@ -947,10 +947,16 @@ uint8_t _crc8( uint8_t *addr, uint8_t len)
 void scheduler_realtime() {
 
 	return;
+
+	int priority = 70;
+
 	struct sched_param p;
 	
-	p.__sched_priority = sched_get_priority_max(SCHED_RR);
-	
+	printf("Set priority to %d \n", priority );
+	p.__sched_priority = priority;
+//	p.__sched_priority = sched_get_priority_max(SCHED_RR);
+
+	return;
 	if( sched_setscheduler( 0, SCHED_RR, &p ) == -1 ) {
 		perror("Failed to switch to realtime scheduler.");
 	}
@@ -959,6 +965,8 @@ void scheduler_realtime() {
 void scheduler_standard() {
 
 	return;
+
+	printf("Set priority to %d \n", 0 );
 	struct sched_param p;
 	
 	p.__sched_priority = 0;

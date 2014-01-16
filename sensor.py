@@ -77,7 +77,8 @@ class Sensor(threading.Thread):
 				else:
 					output = subprocess.check_output(["./DHT/DHT_rf","22","18"])
 			#print output
-			matches = re.search("Temp =\s+([0-9.]+)", output)
+			matches = re.search("Temp =\s+([0-9.]+)", output) 
+			#matches = re.search("Temp\s*=\s*(-?[\d.]+)", output) # Alessandro
 			if ( matches):
 				dht_temp = float(matches.group(1))
 				if ( self.cfg.sensor_type != "WH1080-RFM01" ):

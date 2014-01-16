@@ -128,6 +128,16 @@ class RadioThread(threading.Thread):
                             listOfMessages.append("./audio/mp3/" + str(intera) + ".mp3")
                             listOfMessages.append("./audio/mp3/degree.mp3")
 
+                        # Dew point
+                        if ( globalvars.meteo_data.dew_point != None ):
+                            listOfMessages.append("./audio/mp3/silence05s.mp3")
+                            listOfMessages.append("./audio/mp3/dewpoint.mp3")
+                            if ( globalvars.meteo_data.dew_point < 0) :
+                                listOfMessages.append("./audio/mp3/minus.mp3")
+                            intera = int(round( abs(globalvars.meteo_data.dew_point) ))
+                            listOfMessages.append("./audio/mp3/" + str(intera) + ".mp3")
+                            listOfMessages.append("./audio/mp3/degree.mp3")
+
                         # Pressure
                         if ( globalvars.meteo_data.rel_pressure != None ):
                             thousands, rem = divmod(round(globalvars.meteo_data.rel_pressure), 1000) 

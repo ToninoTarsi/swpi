@@ -27,6 +27,9 @@ def resetDB(filename='db/swpi.s3db',delete_all=False):
     print "DB Resetted "
     
 if __name__ == '__main__':
+    resetDB(delete_all=True)
+    exit(0)
+
     conn = sqlite3.connect('db/swpi.s3db',200)    
     dbCursor = conn.cursor()
     dbCursor.execute("SELECT * FROM METEO where datetime(TIMESTAMP_LOCAL) > datetime('now','-1 day') order by rowid asc limit 1")

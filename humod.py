@@ -492,10 +492,8 @@ if __name__ == '__main__':
     cfg = config.config(configfile)
     
     modem = Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
-    modem.enable_textmode(True)
-    modem.enable_clip(True)    
-    modem.enable_nmi(True)
-
+    print modem
+    
     print ""
     log( "Modem Model : "  + modem.show_model())
     log(  "Revision : "  + modem.show_revision())
@@ -504,19 +502,31 @@ if __name__ == '__main__':
     log(  "Device Center : " + modem.get_service_center()[0] + " " + str(modem.get_service_center()[1]))
     log(  "Signal quality : " + str(modem.get_rssi()))
     
+    
+    log( "Checking new sms messages...")
+    smslist = modem.sms_list()
+    for message in smslist:
+        print message
+    
+    #modem.enable_textmode(True)
+    modem.enable_clip(True)    
+    modem.enable_nmi(True)
+
+
+    
 #    log("trying to send sms to %s" % cfg.number_to_send)
 #    modem.sms_send(cfg.number_to_send, "prova")
     
-    log( "Trying to connect to internet with 3G dongle ....")
-    time.sleep(1)
-    modem.connectwvdial()
-    time.sleep(2)
-    waitForIP()
-    IP = getIP()
-    if IP != None:
-        log("Connected with IP :" + IP)
-    time.sleep(10)
-    
-    log( "Trying to disconnect 3G dongle ....")
-    modem.disconnectwvdial()
+#     log( "Trying to connect to internet with 3G dongle ....")
+#     time.sleep(1)
+#     modem.connectwvdial()
+#     time.sleep(2)
+#     waitForIP()
+#     IP = getIP()
+#     if IP != None:
+#         log("Connected with IP :" + IP)
+#     time.sleep(10)
+#     
+#     log( "Trying to disconnect 3G dongle ....")
+#     modem.disconnectwvdial()
     
