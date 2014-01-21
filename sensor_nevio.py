@@ -39,6 +39,13 @@ def getrevision():
     
     return myrevision
 
+
+def get_wind_dir_code4():
+    return [ 'S','W',  'E' , 'N' ]
+
+def get_wind_dir4():
+    return [ 180,270,90,0 ]
+
 def get_wind_dir_code8():
     return [ 'N','NW','NE', 'E', 'SW' , 'W',  'S' , 'SE' ]
 
@@ -95,8 +102,8 @@ class Sensor_Nevio(sensor.Sensor):
         GPIO.setup(self.__PIN_A, GPIO.IN)   # wind Speed
         GPIO.setup(self.__PIN_B1, GPIO.IN)  # B1
         GPIO.setup(self.__PIN_B2, GPIO.IN)  # B2
-        GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
-        if ( self.cfg.sensor_type.upper() != "NEVIO8") : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
+        if ( self.cfg.sensor_type.upper() != "NEVIO4" ) : GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
+        if ( self.cfg.sensor_type.upper() == "NEVIO16" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
         
@@ -123,20 +130,34 @@ class Sensor_Nevio(sensor.Sensor):
     
     def GetCurretWindDir(self):
         """Get wind direction decoding Nevio table."""
-        b1 = GPIO.input(self.__PIN_B1)
-        b2 = GPIO.input(self.__PIN_B2)
-        b3 = GPIO.input(self.__PIN_B3)
-        if ( self.cfg.sensor_type.upper() != "NEVIO8"): b0 = GPIO.input(self.__PIN_B0)
+
         
-        if ( self.cfg.sensor_type.upper() == "NEVIO8"):
+        if ( self.cfg.sensor_type.upper() == "NEVIO4"): 
+            b1 = GPIO.input(self.__PIN_B1)
+            b2 = GPIO.input(self.__PIN_B2)
+            wind_dir4  =   b1 + b2*2  
+            wind_dir = get_wind_dir4()[wind_dir4]
+            wind_dir_code = get_wind_dir_code4()[wind_dir4]   
+        elif ( self.cfg.sensor_type.upper() == "NEVIO8"):
+            b1 = GPIO.input(self.__PIN_B1)
+            b2 = GPIO.input(self.__PIN_B2)
+            b3 = GPIO.input(self.__PIN_B3)
             wind_dir8  =   b1 + b2*2 + b3*4 
             wind_dir = get_wind_dir8()[wind_dir8]
             wind_dir_code = get_wind_dir_code8()[wind_dir8]   
         elif ( self.cfg.sensor_type.upper() == "NEVIO16" ):
+            b1 = GPIO.input(self.__PIN_B1)
+            b2 = GPIO.input(self.__PIN_B2)
+            b3 = GPIO.input(self.__PIN_B3)
+            b0 = GPIO.input(self.__PIN_B0)
             wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
             wind_dir = get_wind_dir16()[wind_dir16]
             wind_dir_code = get_wind_dir_code16()[wind_dir16]                   
         elif ( self.cfg.sensor_type.upper() == "NEVIO16S" ):
+            b1 = GPIO.input(self.__PIN_B1)
+            b2 = GPIO.input(self.__PIN_B2)
+            b3 = GPIO.input(self.__PIN_B3)
+            b0 = GPIO.input(self.__PIN_B0)
             wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
             wind_dir = get_wind_dir16S()[wind_dir16]
             wind_dir_code = get_wind_dir_code16S()[wind_dir16]               
@@ -208,13 +229,11 @@ if __name__ == '__main__':
     
     while ( 1 ) :
         
-#        b1 = GPIO.input(17)
-#        b2 = GPIO.input(21)
-#        b3 = GPIO.input(22)
-#        b0 = GPIO.input(4)
-#        a = GPIO.input(23)
+        b1 = GPIO.input(17)
+        b2 = GPIO.input(27)
+        #b3 = GPIO.input(22)
+        print "b1=",b1," b2=",b2
         
-#        print "a",a,"b0",b0,"b1",b1,"b2",b2,"b3",b3
         #print "GetCurretWindSpeed"
         speed =  ss.GetCurretWindSpeed() 
         dir =   ss.GetCurretWindDir()

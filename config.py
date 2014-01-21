@@ -115,7 +115,7 @@ class config(object):
 		self.config_web_server = config.getboolean('General', 'config_web_server',True)
 		self.config_web_server_port = config.getint('General', 'config_web_server_port',80)
 		self.set_system_time_from_ntp_server_at_startup = config.getboolean('General', 'set_sistem_time_from_ntp_server_at_startup',True)
-		self.ntp_server = config.get('General', 'ntp_server',"europe.pool.ntp.org")
+		self.ntp_server = config.get('General', 'ntp_server',"time.windows.com")
 		self.reboot_at = config.get('General', 'reboot_at',"None")
 		self.shutdown_at = config.get('General', 'shutdown_at',"None")
 		self.shutdown_hour_before_sunset = config.get('General', 'shutdown_hour_before_sunset',"None")

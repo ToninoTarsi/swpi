@@ -205,8 +205,8 @@ class PhotoCamera(object):
 			else:
 				nTry = 0
 				bError = True
-				cmd = "gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename 
-				#cmd = "gphoto2 --port " + usbcamera + gphoto2options[i] + "  --capture-image-and-download  --filename=" + filename
+				#cmd = "gphoto2 --port " + usbcamera + "  --capture-image-and-download " + gphoto2options[i] + " --filename=" + filename 
+				cmd = "gphoto2 --port " + usbcamera + " " + gphoto2options[i] + "  --capture-image-and-download  --filename=" + filename
 				while ( nTry < 3 and bError == True):
 					bError = False	
 					p = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)

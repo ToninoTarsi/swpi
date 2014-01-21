@@ -27,6 +27,7 @@ sudo chmod +x ./wh1080_rf/wh1080_rf
 sudo chmod +x ./wh1080_rf/spi_init
 sudo chmod +x ./mcp3002/atod
 sudo chmod +x ./mcp3002/libMCP3002.so
+sudo chmod 755 ./swpi.py
 
 
 

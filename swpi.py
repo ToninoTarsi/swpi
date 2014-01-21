@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ###########################################################################
 #     Sint Wind PI
 #     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
@@ -615,7 +616,7 @@ log( "Starting SINT WIND PI  ... ")
 print "************************************************************************"
 print "*                      Sint Wind PI "+v+"                           *"
 print "*                                                                      *"
-print "*          2012-2013 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
+print "*          2012-2014 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
 print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
@@ -991,11 +992,13 @@ while 1:
 			reset_sms(modem)
 		#modem.enable_nmi(True)
 		#log("reset sms")
-		if ( disk_space < 500000000L ):
-			log("Clearing /var/log/")
-			os.system( "sudo rm -r /var/log/*" )
-		else:
-			log("Disk space left = %s" % disk_space)	
+# 		if ( disk_space < 500000000L ):
+# 			log("Clearing /var/log/")
+# 			os.system( "sudo rm -r /var/log/*" )
+# 		else:
+# 			log("Disk space left = %s" % disk_space)	
+		
+		log("Disk space left = %s" % disk_space)
 		
 		globalvars.WatchDogTime = datetime.datetime.now()
 		
