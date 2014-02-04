@@ -104,6 +104,8 @@ def process_sms(modem, smsID):
 		#	MCFG			mail cfg to sender
 		#	MLOG			mail current logfiles
 		#	MALOG			mail all logfiles
+		#   BCK				backup
+		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
 		#	LOG		[0/1]	enable [1] or disable [0] internet data logging
 		#	UPL		[0/1]	enable [1] or disable [0] internet data uploading
@@ -128,7 +130,21 @@ def process_sms(modem, smsID):
 			log( "Receiced rebooting command  " )
 			systemRestart()
 		#---------------------------------------------------------------------------------------	
-		if (len(command) == 2 and cmd == "HLT" ):
+		elif (len(command) == 2 and cmd == "BCK" ):
+			modem.sms_del(msgID)
+			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+			conn.commit()		
+			log( "Receiced backup command  " )
+			os.system("backup")
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 2 and cmd == "RST" ):
+			modem.sms_del(msgID)
+			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
+			conn.commit()		
+			log( "Receiced Restore command  " )
+			os.system("restore")
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 2 and cmd == "HLT" ):
 			modem.sms_del(msgID)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
@@ -136,7 +152,7 @@ def process_sms(modem, smsID):
 			systemHalt()
 		#---------------------------------------------------------------------------------------	
 
-		if (len(command) == 2 and cmd == "RDB" ):
+		elif (len(command) == 2 and cmd == "RDB" ):
 			modem.sms_del(msgID)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
@@ -407,6 +423,8 @@ def process_sms(modem, smsID):
 	
 			log( "SWPI-UPDATE" )
 			systemRestart()
+		else:
+			print "Unknown command"
 		#----------------------------------------------------------------------------	
 		
 		if conn:

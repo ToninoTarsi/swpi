@@ -1,5 +1,21 @@
 #! /bin/bash
 
+
+test=`awk '$4~/(^|,)ro($|,)/' /proc/mounts | grep /dev/root`
+if [ -z "$test" ]
+then 
+	ro=0
+else
+	ro=1
+	echo "Mounting in rw"
+    sudo mount / -o remount,rw
+fi
+
+
+
+
+
+sudo mount / -o remount,rw
 cd /home/pi/swpi
 
 sudo chown -R  pi  /home/pi/swpi 
@@ -21,6 +37,8 @@ sudo chmod +x ./wifi_reset.sh
 sudo chmod +x ./swpi.sh
 sudo chmod +x ./swpi-update.sh
 sudo chmod +x ./killswpi.sh
+sudo chmod +x ./restore.sh
+sudo chmod +x ./backup.sh
 sudo chmod +x ./DHT/DHT
 sudo chmod +x ./DHT/DHT_rf
 sudo chmod +x ./wh1080_rf/wh1080_rf
@@ -31,5 +49,7 @@ sudo chmod 755 ./swpi.py
 
 
 
-
-
+if [ $ro = 1 ] ; then 
+	echo "Mounting in ro"
+	sudo mount / -o remount,ro
+fi

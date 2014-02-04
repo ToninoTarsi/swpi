@@ -146,9 +146,10 @@ def getrevision():
     return myrevision
 
 
-
-
 def swpi_update():
+    os.system( "swpi-update" )
+
+def swpi_update_old():
     url = ' http://www.vololiberomontecucco.it/swpi/swpi-src.tar.gz'
     urllib.urlretrieve(url,filename='swpi-src.tar.gz')
     t = tarfile.open('swpi-src.tar.gz', 'r:gz')
