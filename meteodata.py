@@ -123,8 +123,8 @@ class MeteoData(object):
         if ( self.previous_measure_time == None ):
             self.previous_measure_time = self.last_measure_time
             return True
-        elif (datetime.datetime.strftime(self.last_measure_time,'%m/%d/%Y') != 
-            datetime.datetime.strftime(self.previous_measure_time,'%m/%d/%Y') ) :
+        elif (  self.last_measure_time != None and ( datetime.datetime.strftime(self.last_measure_time,'%m/%d/%Y') != 
+            datetime.datetime.strftime(self.previous_measure_time,'%m/%d/%Y') ) ) :
             self.previous_rain = self.rain
             return True
         else:
