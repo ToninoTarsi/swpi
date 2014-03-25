@@ -132,7 +132,16 @@ class Sensor_Nevio(sensor.Sensor):
         """Get wind direction decoding Nevio table."""
 
         
-        if ( self.cfg.sensor_type.upper() == "NEVIO4"): 
+        if ( self.cfg.sensor_type.upper() == "NEVIO2"): 
+            b1 = GPIO.input(self.__PIN_B1)
+            b2 = GPIO.input(self.__PIN_B2)
+            if ( b1 == 1 or b2 == 1):  
+                wind_dir = 0
+                wind_dir_code = "N"     
+            else:
+                wind_dir = 180
+                wind_dir_code = "S"                          
+        elif ( self.cfg.sensor_type.upper() == "NEVIO4"): 
             b1 = GPIO.input(self.__PIN_B1)
             b2 = GPIO.input(self.__PIN_B2)
             wind_dir4  =   b1 + b2*2  
@@ -228,12 +237,35 @@ if __name__ == '__main__':
     
     
     while ( 1 ) :
-        
-        b1 = GPIO.input(17)
-        b2 = GPIO.input(27)
+
+        if ( cfg.sensor_type.upper() == "NEVIO4"): 
+            b1 = GPIO.input(17)
+            b2 = GPIO.input(27)
+            wind_dir4  =   b1 + b2*2  
+            wind_dir = get_wind_dir4()[wind_dir4]
+            wind_dir_code = get_wind_dir_code4()[wind_dir4]   
+            print "b1=",b1," b2=",b2
+        elif ( cfg.sensor_type.upper() == "NEVIO8"):
+            b1 = GPIO.input(17)
+            b2 = GPIO.input(27)
+            b3 = GPIO.input(22)
+            wind_dir8  =   b1 + b2*2 + b3*4 
+            wind_dir = get_wind_dir8()[wind_dir8]
+            wind_dir_code = get_wind_dir_code8()[wind_dir8]   
+            print "b1=",b1," b2=",b2," b3=",b3
+        elif ( cfg.sensor_type.upper() == "NEVIO16" or cfg.sensor_type.upper() == "NEVIO16S" ):
+            b1 = GPIO.input(17)
+            b2 = GPIO.input(27)
+            b3 = GPIO.input(22)
+            b0 = GPIO.input(4)
+            wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
+            wind_dir = get_wind_dir16()[wind_dir16]
+            wind_dir_code = get_wind_dir_code16()[wind_dir16]    
+            print "b1=",b1," b2=",b2," b3=",b3," b0=",b0          
+    
+
         #b3 = GPIO.input(22)
-        print "b1=",b1," b2=",b2
-        
+ 
         #print "GetCurretWindSpeed"
         speed =  ss.GetCurretWindSpeed() 
         dir =   ss.GetCurretWindDir()

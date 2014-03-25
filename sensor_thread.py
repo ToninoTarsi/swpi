@@ -72,7 +72,7 @@ class WindSensorThread(threading.Thread):
         if ( self.cfg.sensor_type.upper() == "SIMULATE"):             
             sensor = sensor_simulator.Sensor_Simulator(self.cfg)
             
-        elif ( self.cfg.sensor_type.upper() == "NEVIO8" or self.cfg.sensor_type.upper() == "NEVIO16" or self.cfg.sensor_type.upper() == "NEVIO16S"  or self.cfg.sensor_type.upper() == "NEVIO4"):
+        elif ( self.cfg.sensor_type.upper() == "NEVIO8" or self.cfg.sensor_type.upper() == "NEVIO16" or self.cfg.sensor_type.upper() == "NEVIO16S"  or self.cfg.sensor_type.upper() == "NEVIO4" or self.cfg.sensor_type.upper() == "NEVIO2"):
             sensor = sensor_nevio.Sensor_Nevio(self.cfg)
             
         elif ( self.cfg.sensor_type.upper()  == "PCE-FWS20"):
@@ -111,7 +111,7 @@ class WindSensorThread(threading.Thread):
             sensor = sensor_none.Sensor_None(self.cfg)  
                                              
         else:
-            log("Sensor type not implemented. Exiting")
+            log("Sensor type not implemented. Exiting ...")
             os.system("sudo ./killswpi.sh")
             
             
