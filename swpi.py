@@ -311,7 +311,7 @@ def process_sms(modem, smsID):
 			
 			if ( len(output) > 250 ):
 				output = output[:250]
-			output = "prova"
+			output = "SYS OK"
 			log( 'Sending the output back to %s output: %s' % (msgSender, output))
 			modem.sms_send(msgSender, output)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
@@ -658,6 +658,7 @@ except KeyboardInterrupt:
 os.system( "sudo amixer cset numid=3 1 > /dev/null " )
 
 #Make sure every executable is executable
+os.system( "sudo chmod +x ./dwcfg.sh" )
 os.system( "sudo chmod +x ./usbreset" )
 os.system( "sudo chmod +x ./wifi_reset.sh" )
 os.system( "sudo chmod +x ./swpi.sh" )

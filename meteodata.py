@@ -15,6 +15,7 @@ import datetime
 import TTLib
 import config
 import math
+import os
 
 def  cloud_base_altitude(temp,dew_point,station_altitude):
     if (temp == None or dew_point == None or station_altitude == None):
@@ -350,7 +351,12 @@ class MeteoData(object):
         conn = sqlite3.connect('db/swpi.s3db',200)
         
         dbCursor = conn.cursor()
-        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','localtime') order by rowid desc limit 1")
+        try:
+            dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','localtime') order by rowid desc limit 1")
+        except sqlite3.Error:
+            TTLib.log("Ripristino Database")
+	    os.system( "sudo cp -f db/swpiori.s3db db/swpi.s3db" )
+            os.system("sudo reboot")
         data = dbCursor.fetchall()
         if ( len(data) != 1):
             if conn:
