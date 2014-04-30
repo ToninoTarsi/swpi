@@ -104,6 +104,7 @@ class Sensor_Nevio(sensor.Sensor):
         GPIO.setup(self.__PIN_B2, GPIO.IN)  # B2
         if ( self.cfg.sensor_type.upper() != "NEVIO4" ) : GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
         if ( self.cfg.sensor_type.upper() == "NEVIO16" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
+        if ( self.cfg.sensor_type.upper() == "NEVIO16S" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
         

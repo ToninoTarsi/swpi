@@ -420,6 +420,14 @@ class LoopStruct( myStruct ):
         return "%s-%s-%s" % (year, month, day)
 
 
-
+if __name__ == '__main__':
+    """Main only for testing"""
+    configfile = 'swpi.cfg'
+    
+    cfg = config.config(configfile)    
+    
+    globalvars.meteo_data = meteodata.MeteoData(cfg)
+    ws = Sensor_VantagePro2(cfg)
+    ws.GetData()
 
 

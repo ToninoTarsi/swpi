@@ -837,7 +837,9 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
                 text = text + "Pioggia oggi : %3.1f" % (globalvars.meteo_data.rain_rate) + " mm - "
             
             if ( globalvars.meteo_data.last_measure_time != None ):
-                text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
+                #text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
+                text = text + globalvars.meteo_data.last_measure_time.strftime("Ultima misura: %d/%m/%Y - %H:%M:%S ")
+                
                 width, height = font.getsize(text)
                 draw.text((32+marginLeft, h-height),text,textColor,font=font)
                 

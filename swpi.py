@@ -689,10 +689,29 @@ if ( cfg.use_wind_sensor ):
 	wind_sensor_thread = sensor_thread.WindSensorThread(cfg)
 	wind_sensor_thread.start()
 
-bConnected = False
+# load plugins
+pl = pluginmanager.PluginLoader("./plugins",cfg)
+pl.loadAll()
+if os.path.exists('./plugins/sync_plugin.py'):
+	log("Loading sync plugin")
+	plugin_sync = pls.swpi_sync_plugin(cfg)
+else:
+	plugin_sync = None
 
-modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
+
+# start config eweb server
+if ( cfg.config_web_server ):
+	webserver = web_server.config_webserver(cfg)
+	webserver.start()
+
+# Set Time from NTP ( using a thread to avoid strange freezing )
+if ( cfg.set_system_time_from_ntp_server_at_startup ):
+	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
+
 # Init Dongle
+bConnected = False
+modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
+
 if cfg.usedongle :
 	#reset_sms(modem)
 	#modem.enable_textmode(True)
@@ -742,7 +761,6 @@ else:
 	log("Running without internet connection")
 
 
-# Set Time from NTP ( using a thread to avoid strange freezing )
 
 if ( cfg.set_time_at_boot.upper() != "NONE"):
 	hours=int((cfg.set_time_at_boot.split(":")[0]))
@@ -754,6 +772,7 @@ if ( cfg.set_time_at_boot.upper() != "NONE"):
 	new_date =  d.replace( minute=minutes )
 	os.system("sudo date -s '%s'" %  new_date)
 
+# Set Time from NTP ( using a thread to avoid strange freezing )
 if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 
@@ -781,10 +800,7 @@ if ( publicIP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
 	except:
 		log("Error sending IP by SMS")
 
-# start config eweb server
-if ( cfg.config_web_server ):
-	webserver = web_server.config_webserver(cfg)
-	webserver.start()
+
 
 
 
@@ -817,18 +833,7 @@ if ( cfg.usecameradivice ):
 	if ( cfg.clear_all_sd_cards_at_startup):
 		camera.ClearAllCameraSDCards(cfg)		
 
-# load plugins
-pl = pluginmanager.PluginLoader("./plugins",cfg)
-pl.loadAll()
 
-
-
-if os.path.exists('./plugins/sync_plugin.py'):
-	log("Loading sync plugin")
-	import plugins.sync_plugin as pls
-	plugin_sync = pls.swpi_sync_plugin(cfg)
-else:
-	plugin_sync = None
 	
 
 # Start main thread

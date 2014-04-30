@@ -83,9 +83,10 @@ class QueueFeeder(threading.Thread):
                 self.ctrl_lock.release()
                 # Putting the thread on idle between releasing
                 # and acquiring the lock for 100ms
-                time.sleep(1)
-                #while bAnswering:
-                    #time.sleep(10)
+                time.sleep(2)
+                while (  globalvars.bAnswering):
+                    #print "QueueFeeder sleep"
+                    time.sleep(1)
 
     def stop(self):
         """Stop the queue feeder thread."""

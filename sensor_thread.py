@@ -36,6 +36,11 @@ import sensor_wmr918
 import sensor_wm918
 import sensor_ws2300
 import sensor_none
+import sensor_vantage_pro2
+import sensor_W831
+
+
+
 
 
 
@@ -105,11 +110,17 @@ class WindSensorThread(threading.Thread):
             sensor = sensor_wh1080rf.Sensor_WH1080RF(self.cfg)               
                        
         elif ( self.cfg.sensor_type.upper()  == "WS23XX" ):
-            sensor = sensor_ws2300.Sensor_WS2300(self.cfg)                             
+            sensor = sensor_ws2300.Sensor_WS2300(self.cfg)     
+            
+        elif ( self.cfg.sensor_type.upper()  == "W831" ):
+            sensor = sensor_W831.Sensor_W831(self.cfg)                                         
                        
+        elif ( self.cfg.sensor_type.upper()  == "DAVIS-VANTAGE-PRO2" ):
+            sensor = sensor_vantage_pro2.Sensor_VantagePro2(self.cfg)  
+                
         elif ( self.cfg.sensor_type.upper()  == "NONE" ):
-            sensor = sensor_none.Sensor_None(self.cfg)  
-                                             
+            sensor = sensor_none.Sensor_None(self.cfg)           
+                                              
         else:
             log("Sensor type not implemented. Exiting ...")
             os.system("sudo ./killswpi.sh")

@@ -24,7 +24,7 @@ import time
 import globalvars
 import meteodata
 from TTLib import  *
-import RPi.GPIO as GPIO
+
 
 
 
@@ -40,6 +40,7 @@ class swpi_plugin(threading.Thread):  #  do not change the name of the class
         
         
     def run(self):
+        time.sleep(120)
         log("Starting plugin : %s" % sys.modules[__name__])
         i=0
         while 1:
