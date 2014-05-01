@@ -23,7 +23,6 @@ import globalvars
 import meteodata
 import sensor_thread
 import sensor
-from datetime import datetime
 import logging
 import WeatherStation
 import units
@@ -32,14 +31,14 @@ import struct
 
 
 
-logFile = datetime.now().strftime("log/davis_%d%m%Y.log")
+logFile = datetime.datetime.now().strftime("log/davis_%d%m%Y.log")
 logging.basicConfig(filename=logFile,filemode='wa',level=logging.DEBUG)
-#logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
+# logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 
 
 class Sensor_VantagePro2(sensor.Sensor):
     
-    port='/dev/ttyS0' 
+    #port='/dev/ttyUSB0' 
     baud=19200
     loops=25
     rain_bucket = 'eu'
@@ -60,13 +59,8 @@ class Sensor_VantagePro2(sensor.Sensor):
     def __init__(self,cfg ):
         
         sensor.Sensor.__init__(self,cfg )     
-
-        if cfg.set_sistem_time_from_WeatherStation :
-            #wsdate =  self.ws.get_fixed_block(['date_time'])
-            #os.system("sudo date -s '%s'" %  wsdate)   
-            log("System time adjusted from VantagePro1-2  Meteo Station" )
-
         
+        self.port = cfg.sensor_serial_port
          
     def Detect(self):
        
@@ -87,6 +81,20 @@ class Sensor_VantagePro2(sensor.Sensor):
         assert self.baud in [19200, 9600, 4800, 2400, 1200]
 
         while True:
+            seconds = datetime.datetime.now().second
+            if ( ( not self.error) ):
+                if ( seconds < 30 ):
+                    #print "sleeping" , 30-seconds
+                    time.sleep(30-seconds)
+                else:
+                    #print "sleeping" , 90-seconds
+                    time.sleep(90-seconds)
+            else :
+                if (seconds > 45):
+                    time.sleep(60-seconds+15)
+                if ( seconds < 15 ):
+                    time.sleep(15-seconds)
+                    
             self._port = serial.Serial(self.port, self.baud, timeout=10)
             try:
                 bad_CRC = 0 
@@ -102,7 +110,11 @@ class Sensor_VantagePro2(sensor.Sensor):
                         bad_CRC = 0
                         self.logger.debug("CRC OK")
                         fields = _LoopStruct.unpack(raw)
+                        
+                        print fields
  
+                        globalvars.meteo_data.status = 0
+                        
                         globalvars.meteo_data.last_measure_time = datetime.datetime.now()
                         globalvars.meteo_data.idx = datetime.datetime.now()
                         

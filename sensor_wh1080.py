@@ -128,7 +128,6 @@ class Sensor_WH1080(sensor.Sensor):
                 else:
                     #print "sleeping" , 90-seconds
                     time.sleep(90-seconds)
-            
             else :
                 if (seconds > 45):
                     time.sleep(60-seconds+15)
