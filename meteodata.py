@@ -16,6 +16,7 @@ import TTLib
 import config
 import math
 import os
+import globalvars
 
 def  cloud_base_altitude(temp,dew_point,station_altitude):
     if (temp == None or dew_point == None or station_altitude == None):
@@ -167,6 +168,7 @@ class MeteoData(object):
     def CalcStatistics(self):
         
         while globalvars.bAnswering:
+            TTLib.log("DEBUG ... waiting for Calculating Meteo data and statistics")
             time.sleep(1)
             
         TTLib.log("Calculating Meteo data and statistics")
