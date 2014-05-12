@@ -22,7 +22,7 @@ import math
 
 
 def run_all_service_thread(cfg):
-    
+        
     Rebooter_thread = Rebooter(cfg)
     Rebooter_thread.start()
     
@@ -64,6 +64,7 @@ class SunHalter(threading.Thread):
     def run(self):
         #try:
         #shutdown_hour_before_sunset
+        time.sleep(300)
         if ( self.cfg.set_system_time_from_ntp_server_at_startup ):
             while (  not globalvars.TimeSetFromNTP ) :
                 time.sleep(60)
@@ -94,6 +95,7 @@ class Rebooter(threading.Thread):
         
     def run(self):
         #try:
+        time.sleep(300)
         if ( self.cfg.set_system_time_from_ntp_server_at_startup ):
             while (  not globalvars.TimeSetFromNTP ) :
                 time.sleep(60)
@@ -119,6 +121,7 @@ class Halter(threading.Thread):
         
     def run(self):
         #try:
+        time.sleep(300)
         if ( self.cfg.set_system_time_from_ntp_server_at_startup ):
             while (  not globalvars.TimeSetFromNTP ) :
                 time.sleep(60)

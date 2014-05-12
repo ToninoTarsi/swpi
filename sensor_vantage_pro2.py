@@ -35,6 +35,9 @@ logFile = datetime.datetime.now().strftime("log/davis_%d%m%Y.log")
 logging.basicConfig(filename=logFile,filemode='wa',level=logging.DEBUG)
 # logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 
+def get_wind_dir_text():
+	return [ 'N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW' ]
+
 
 class Sensor_VantagePro2(sensor.Sensor):
     
@@ -42,6 +45,8 @@ class Sensor_VantagePro2(sensor.Sensor):
     baud=19200
     loops=25
     rain_bucket = 'eu'
+    
+   	
     pressure_cal = 0
 
     logger = logging.getLogger('station.vantagepro')
@@ -81,19 +86,12 @@ class Sensor_VantagePro2(sensor.Sensor):
         assert self.baud in [19200, 9600, 4800, 2400, 1200]
 
         while True:
+
             seconds = datetime.datetime.now().second
-            if ( ( not self.error) ):
-                if ( seconds < 30 ):
-                    #print "sleeping" , 30-seconds
-                    time.sleep(30-seconds)
-                else:
-                    #print "sleeping" , 90-seconds
-                    time.sleep(90-seconds)
-            else :
-                if (seconds > 45):
-                    time.sleep(60-seconds+15)
-                if ( seconds < 15 ):
-                    time.sleep(15-seconds)
+            if ( seconds < 30 ):
+                time.sleep(30-seconds)
+            else:
+                time.sleep(90-seconds)  
                     
             self._port = serial.Serial(self.port, self.baud, timeout=10)
             try:
@@ -111,7 +109,7 @@ class Sensor_VantagePro2(sensor.Sensor):
                         self.logger.debug("CRC OK")
                         fields = _LoopStruct.unpack(raw)
                         
-                        print fields
+#                        print fields
  
                         globalvars.meteo_data.status = 0
                         
@@ -127,21 +125,28 @@ class Sensor_VantagePro2(sensor.Sensor):
                         globalvars.meteo_data.hum_out = fields['HumOut']
 
                         globalvars.meteo_data.rain = fields['RainRate']
-              
+                        globalvars.meteo_data.rain_rate_24h = fields['RainDay']
                         globalvars.meteo_data.wind_dir = fields['WindDir']    
-                        globalvars.meteo_data.wind_gust = float(fields['WindSpeed'])*self.cfg.windspeed_gain + self.cfg.windspeed_offset
-                        globalvars.meteo_data.wind_ave = float(fields['WindSpeed'])*self.cfg.windspeed_gain + self.cfg.windspeed_offset
+
+
+                        globalvars.meteo_data.wind_gust = float(fields['WindSpeed']) *self.cfg.windspeed_gain + self.cfg.windspeed_offset
+                        globalvars.meteo_data.wind_ave = float(fields['WindSpeed10Min']) *self.cfg.windspeed_gain + self.cfg.windspeed_offset
  
+                        
+                        wind_dir = fields['WindDir']
+                        val=int((wind_dir/22.5)+0.5)
+                        globalvars.meteo_data.wind_dir_code = get_wind_dir_text()[val]
+  
   
                         #log_txt +=  "Wind:%.3fm/s %d " % (fields['WindSpeed'], fields['WindDir'])
 
                         # UV sensor
-                        if not fields['UV'] is None:
+                        if fields['UV'] is not None:
                             globalvars.meteo_data.uv =  fields['UV']
 
                         # Solar radiation sensor
-                        if not fields['SolarRad'] is None:
-                            globalvars.meteo_data.uv = fields['SolarRad']
+                        if fields['SolarRad'] is not None:
+                            globalvars.meteo_data.illuminance = fields['SolarRad']
                             
 
                         
@@ -374,9 +379,10 @@ class LoopStruct( myStruct ):
         items['ExtraHum5'] = items['ExtraHum5'] if items['ExtraHum5'] != 255 else None
         items['ExtraHum6'] = items['ExtraHum6'] if items['ExtraHum6'] != 255 else None
         items['ExtraHum7'] = items['ExtraHum7'] if items['ExtraHum7'] != 255 else None
+        
         # Wind
-        items['WindSpeed'] = units.MphToMps(items['WindSpeed'])
-        items['WindSpeed10Min'] = units.MphToMps(items['WindSpeed10Min'])
+        #items['WindSpeed'] = units.MphToMps(items['WindSpeed'])
+        #items['WindSpeed10Min'] = units.MphToMps(items['WindSpeed10Min'])
         # Rain / European version => each bucket tip ~ 0.2mm
         if self.rain_bucket == 'eu':  
             items['RainRate'] = items['RainRate'] / 5.0 
@@ -386,28 +392,31 @@ class LoopStruct( myStruct ):
             items['RainYear'] = items['RainYear'] / 5.0
         # Rain / US version => each bucket tip ~ 0.01 inches. Conversion to mm needed.
         elif self.rain_bucket == 'us': 
+	    tems['WindSpeed'] = units.MphToMps(items['WindSpeed'])
+            items['WindSpeed10Min'] = units.MphToMps(items['WindSpeed10Min'])         
             items['RainRate'] = units.InToMm(items['RainRate'] / 100.0)
             items['RainStorm'] = units.InToMm(items['RainStorm'] / 100.0)
             items['RainDay'] = units.InToMm(items['RainDay'] / 100.0)
             items['RainMonth'] = units.InToMm(items['RainMonth'] / 100.0)
             items['RainYear'] = units.InToMm(items['RainYear'] / 100.0)
         items['StormStartDate'] = self._unpack_storm_date(items['StormStartDate'])
-        # UV
+        
+            # UV
         items['UV'] = (items['UV'] / 10.0) if items['UV'] != 255 else None
-        # SolarRad
+            # SolarRad
         items['SolarRad'] = items['SolarRad'] if items['SolarRad'] != 32767 else None
         # evapotranspiration totals
-        # items['ETDay'] = items['ETDay'] / 1000.0
-        # items['ETMonth'] = items['ETMonth'] / 100.0
-        # items['ETYear'] = items['ETYear'] / 100.0
-        # soil moisture + leaf wetness
-        # items['SoilMoist'] = struct.unpack('4B',items['SoilMoist'])
-        # items['LeafWetness'] = struct.unpack('4B',items['LeafWetness'])
+        items['ETDay'] = items['ETDay'] / 1000.0
+        items['ETMonth'] = items['ETMonth'] / 100.0
+        items['ETYear'] = items['ETYear'] / 100.0
+        #soil moisture + leaf wetness
+        items['SoilMoist'] = struct.unpack('4B',items['SoilMoist'])
+        items['LeafWetness'] = struct.unpack('4B',items['LeafWetness'])
         # battery statistics
         items['BatteryVolts'] = items['BatteryVolts'] * 300 / 512.0 / 100.0
         # sunrise / sunset
-        # items['SunRise'] = self._unpack_time( items['SunRise'] )
-        # items['SunSet'] = self._unpack_time( items['SunSet'] )
+        items['SunRise'] = self._unpack_time( items['SunRise'] )
+        items['SunSet'] = self._unpack_time( items['SunSet'] )
 
         return items
 

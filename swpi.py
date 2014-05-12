@@ -109,7 +109,7 @@ def process_sms(modem, smsID):
 		#	CAM		X		set camera/logging interval to X seconds
 		#	LOG		[0/1]	enable [1] or disable [0] internet data logging
 		#	UPL		[0/1]	enable [1] or disable [0] internet data uploading
-		#	AON		[0/1]	set [1] or reset [0] always on internet parameter
+		#	AOI		[0/1]	set [1] or reset [0] always on internet parameter
 		#	UDN		[0/1]	set [1] or reset [0] use dongle net parameter
 		#	IP				send sms with current IP to sender
 		#	UPD				Update software

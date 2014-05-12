@@ -166,6 +166,9 @@ class MeteoData(object):
       
     def CalcStatistics(self):
         
+        while globalvars.bAnswering:
+            time.sleep(1)
+            
         TTLib.log("Calculating Meteo data and statistics")
         
         ############## Calucelated parameters
