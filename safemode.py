@@ -245,7 +245,7 @@ hdlr = logging.FileHandler('log/safemode.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
 
 logger.debug('start script')
 
@@ -254,7 +254,7 @@ if not(os.path.exists("swpibak.cfg")):
 	os.system("sudo cp swpi.cfg swpibak.cfg")
 	logger.debug('create copy of swpi.cfg')
 
-	
+
 if (filecmp.cmp('swpibak.cfg', 'swpi.cfg')):
 	os.system("sudo cp swpi.cfg swpibak.cfg")
 	logger.debug('cfg file is changed-new copy')
