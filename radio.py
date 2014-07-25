@@ -18,7 +18,7 @@ from TTLib import  *
 import pygame
 import sys
 import globalvars
-
+import RPi.GPIO as GPIO
 
 def playsound(soundfile):
     pygame.mixer.init()
@@ -33,6 +33,8 @@ def playsound(soundfile):
 
 
 def playsounds(listofsoundfile):
+    
+    
     pygame.mixer.init()
     #pygame.mixer.music.play()
     pygame.mixer.music.set_volume(1.0)
@@ -52,13 +54,20 @@ class RadioThread(threading.Thread):
     def __init__(self,  cfg ):
         self.cfg = cfg
         self._stop = threading.Event()
+        
+        if ( self.cfg.use_ptt ):
+            GPIO.setwarnings(False)
+            GPIO.setmode(GPIO.BCM)   
+            GPIO.setup(25, GPIO.OUT)   # PTT PIN
+            GPIO.output(25, False)
+            
         threading.Thread.__init__(self)
 
     def stop(self):
-         self._stop.set()
+        self._stop.set()
     
     def stopped(self):
-         return self._stop.isSet()
+        return self._stop.isSet()
      
     
     def run(self):
@@ -262,8 +271,13 @@ class RadioThread(threading.Thread):
                      
 
     
-    
+                    if ( self.cfg.use_ptt ):
+                        GPIO.output(25, True)
+                        
                     playsounds(listOfMessages)
+                    
+                    if ( self.cfg.use_ptt ):
+                        GPIO.output(25, False)
                  
             time.sleep(self.cfg.radiointerval/2)
 

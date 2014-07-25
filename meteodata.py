@@ -300,6 +300,11 @@ class MeteoData(object):
         
     def LogDataToDB(self):
         
+            while globalvars.bAnswering:
+                TTLib.log("DEBUG LogDataToDB... waiting for Calculating Meteo data and statistics")
+                time.sleep(1)
+            
+            
             TTLib.log("Logging data to Database")
             if ( self.last_measure_time == None ):
                 return

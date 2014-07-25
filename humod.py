@@ -315,31 +315,35 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
         self.ctrl_port.send_at("H","",False)	
         
 
-    def answerCall(self,listOfMessages): # Tony 2012
-        """answer a call with a list of message provided."""
-        audio_port = self.audio_port
-        audio_port.open()
-        self.answer()
-        self.set_destination_port(2)
-
-        time.sleep(0.5)
-        for message in listOfMessages:
-            time.sleep(0.2)
-            if ( not os.path.exists(message)):
-                log( "ERROR : File not found : " + message)
-                continue
-            f = open(message, "rb")
-            while True:
-                chunk = f.read(320)
-                if chunk:
-                    #print "sending chunk"
-                    audio_port.write(chunk)
-                    time.sleep( 0.020 )
-                else:
-                    break
-        time.sleep(3)
-        self.hangup()
-        audio_port.close()        
+#     def answerCall(self,listOfMessages): # Tony 2012
+#         """answer a call with a list of message provided."""
+#         audio_port = self.audio_port
+#         audio_port.open()
+#         self.answer()
+#         self.set_destination_port(2)
+# 
+#         time.sleep(0.5)
+#         for message in listOfMessages:
+#             time.sleep(0.2)
+#             if ( not os.path.exists(message)):
+#                 log( "ERROR : File not found : " + message)
+#                 continue
+#             f = open(message, "rb")
+#             while True:
+#                 chunk = f.read(320)
+#                 if chunk:
+#                     #print "sending chunk"
+#                     audio_port.write(chunk)
+#                     time.sleep( 0.020 )
+#                 else:
+#                     break
+#         log( "DEBUG : Message sended : " )
+#         time.sleep(1)
+#         self.hangup()
+#         log( "DEBUG : hangup  " )
+#         time.sleep(1)
+#         audio_port.close()        
+#         log( "DEBUG : audio_port.close  " )
         
     def answerCallNew(self,listOfMessages): # Tony 2012
         try:
@@ -365,11 +369,18 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
                 chunk = memfile[i:fine]		
                 audio_port.write(chunk)
                 time.sleep( 0.020 )
+                #time.sleep( 0.020 )
                 i += 320
-             
+            
+            log( "DEBUG : Message sended : " )
+            time.sleep(1)
             self.hangup()
-            audio_port.close()
+            log( "DEBUG : hangup  " )
+            time.sleep(1)
             globalvars.bAnswering = False
+            audio_port.close()        
+            log( "DEBUG : audio_port.close  " )
+            
             return True
         except:
             log("Error in answering call. May be user has hangup")

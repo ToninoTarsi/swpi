@@ -245,6 +245,7 @@ class config(object):
 		self.useradio = config.getboolean('Radio', 'useradio',False)
 		self.radiointerval = config.getint('Radio', 'radiointerval',900)
 		self.radio_verbosity = config.get('Radio', 'radio_verbosity',"only_wind")
+		self.use_ptt = config.getboolean('Radio', 'use_ptt',False)
 
 		# [Mail]
 		self.gmail_user = config.get('Mail', 'gmail_user',"sintwindpi@gmail.com")
@@ -403,10 +404,10 @@ class config(object):
 		config.setboolean('ftp', 'use_thread_for_sending_to_server',self.use_thread_for_sending_to_server)
 
 		# [Radio]
-		config.setboolean('Radio', 'useradio',self.useradio)
+		config.setboolean('Radio', 'use_ptt',self.use_ptt)
 		config.setint('Radio', 'radiointerval',self.radiointerval)
 		config.setstr('Radio', 'radio_verbosity',self.radio_verbosity)
-
+		config.setboolean('Radio', 'useradio',self.useradio)
 
 		# [Mail]
 		config.setstr('Mail', 'gmail_user',self.gmail_user)

@@ -137,11 +137,11 @@ class Sensor_Nevio(sensor.Sensor):
             b1 = GPIO.input(self.__PIN_B1)
             b2 = GPIO.input(self.__PIN_B2)
             if ( b1 == 1 or b2 == 1):  
-                wind_dir = 0
-                wind_dir_code = "N"     
+                wind_dir = 45
+                wind_dir_code = "NE"     
             else:
-                wind_dir = 180
-                wind_dir_code = "S"                          
+                wind_dir = 225
+                wind_dir_code = "SW"                          
         elif ( self.cfg.sensor_type.upper() == "NEVIO4"): 
             b1 = GPIO.input(self.__PIN_B1)
             b2 = GPIO.input(self.__PIN_B2)
