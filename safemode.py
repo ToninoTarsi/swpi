@@ -63,7 +63,7 @@ def process_sms(modem, smsID):
 			logger.debug('SMS MALOG')
 			tarname = "alog.tar.gz"
 			tar = tarfile.open(tarname, "w:gz")
-			tar.add("log")				
+			tar.add("log")
 			tar.close()
 			if  not internet() :
 				logger.debug('No internet')
