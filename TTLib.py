@@ -706,7 +706,7 @@ def UploadData(cfg):
     #mydata['swpi_versione'] = swpi_version
 
     mydata['TempCPU'] =  get_cpu_temperature()
-    mydata['freedisk'] =  disk_free()
+    mydata['freedisk'] = disk_free()
 
     
     
