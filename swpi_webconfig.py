@@ -22,31 +22,32 @@ def outputPage(cfg):
 	in_file.close()
 
 	html_template=string.Template(text_template)
-
-
-
 	d = dict(location_latitude=cfg.location_latitude)
+
+	#[General]
 	d.update(station_name=cfg.station_name)
-	d.update(location_longitude=cfg.location_longitude)
-	d.update(location_altitude=cfg.location_altitude)
+	d.update(config_web_server=cfg.config_web_server)
+	d.update(set_system_time_from_ntp_server_at_startup=cfg.set_system_time_from_ntp_server_at_startup)
+	d.update(set_time_at_boot=cfg.set_time_at_boot)
+	d.update(ntp_server=cfg.ntp_server)	
 	d.update(reboot_at=cfg.reboot_at)
 	d.update(shutdown_at=cfg.shutdown_at)
-	d.update(shutdown_hour_before_sunset=cfg.shutdown_hour_before_sunset)
+	d.update(shutdown_hour_before_sunset=cfg.shutdown_hour_before_sunset)	
+	d.update(location_longitude=cfg.location_longitude)
+	d.update(location_altitude=cfg.location_altitude)
+	d.update(wifi_reset_if_down=cfg.wifi_reset_if_down)
+	d.update(config_web_server_port=cfg.config_web_server_port)
+	d.update(wind_speed_units=cfg.wind_speed_units)	
 	d.update(set_time_at_boot=cfg.set_time_at_boot)
-	d.update(set_system_time_from_ntp_server_at_startup=cfg.set_system_time_from_ntp_server_at_startup)
+
 #	if (cfg.set_system_time_from_ntp_server_at_startup ):
 #		d.update(selected_True_set_system_time_from_ntp_server_at_startup='selected')
 #		d.update(selected_False_set_system_time_from_ntp_server_at_startup='')
 #	else:
 #		d.update(selected_True_set_system_time_from_ntp_server_at_startup='')
 #		d.update(selected_False_set_system_time_from_ntp_server_at_startup='selected')
-	d.update(ntp_server=cfg.ntp_server)
-	d.update(config_web_server=cfg.config_web_server)
-	d.update(wifi_reset_if_down=cfg.wifi_reset_if_down)
-	d.update(config_web_server_port=cfg.config_web_server_port)
-	d.update(wind_speed_units=cfg.wind_speed_units)
 
-
+	# [Dongle]
 	d.update(usedongle=cfg.usedongle)
 	d.update(AlwaysOnInternet=cfg.AlwaysOnInternet)
 	d.update(UseDongleNet=cfg.UseDongleNet)
@@ -55,17 +56,18 @@ def outputPage(cfg):
 	d.update(dongleaudioport=cfg.dongleAudioPort)
 	d.update(donglectrlport=cfg.dongleCtrlPort)
 
-
-
+	#[Security]
 	d.update(SMSPwd=cfg.SMSPwd)
 
+	#[DataLogging]
 	d.update(logdata=cfg.logdata)
 	d.update(serverfile=cfg.serverfile)
 
+	#[Upload]
 	d.update(upload_data=cfg.upload_data)
 	d.update(upload_folder=cfg.upload_folder)
 
-
+	# [Sensors]
 	d.update(sensor_type=cfg.sensor_type)
 	d.update(use_wind_sensor=cfg.use_wind_sensor)
 	d.update(number_of_measure_for_wind_dir_average=cfg.number_of_measure_for_wind_dir_average)
@@ -78,17 +80,23 @@ def outputPage(cfg):
 	d.update(dht_type=cfg.dht_type)
 	d.update(number_of_measure_for_wind_trend=cfg.number_of_measure_for_wind_trend)
 	d.update(wind_trend_limit=cfg.wind_trend_limit)
-
-	
-	
-	
 	d.update(number_of_measure_for_wind_average_gust_calculation=cfg.number_of_measure_for_wind_average_gust_calculation)
 
+	# [Sensor_PCE-FWS20]
 	d.update(set_system_time_from_WeatherStation=cfg.set_system_time_from_WeatherStation)
 
+	# [Sensor Serial]
 	d.update(sensor_serial_port=cfg.sensor_serial_port)
 
+	# [Sensor_NEVIO8-16]
 
+	# [RFM01]
+	d.update(rfm01_frequenzy=cfg.rfm01_frequenzy)
+	d.update(rfm01_band=cfg.rfm01_band)
+	d.update(rfm01_lna=cfg.rfm01_lna)
+	d.update(rfm01_rssi=cfg.rfm01_rssi)
+
+	#[WebCam]	
 	d.update(webcamDevice1=cfg.webcamDevice1)
 	d.update(webcamDevice2=cfg.webcamDevice2)
 	d.update(webcamLogo=cfg.webcamLogo)
@@ -98,11 +106,11 @@ def outputPage(cfg):
 	d.update(webcamdevice2captureresolution=cfg.webcamdevice2captureresolution)
 	d.update(webcamdevice1finalresolution=cfg.webcamdevice1finalresolution)
 	d.update(webcamdevice2finalresolution=cfg.webcamdevice2finalresolution)
-	d.update(captureprogram=cfg.captureprogram)
 	d.update(sendallimagestoserver=cfg.sendallimagestoserver)
 	d.update(delete_images_on_sd=cfg.delete_images_on_sd)
+	d.update(captureprogram=cfg.captureprogram)
 
-
+	#[Camera]
 	d.update(usecameradivice=cfg.usecameradivice)
 	d.update(cameradivicefinalresolution=cfg.cameradivicefinalresolution)
 	d.update(gphoto2options=cfg.gphoto2options)
@@ -114,60 +122,81 @@ def outputPage(cfg):
 	d.update(use_camera_resetter=cfg.use_camera_resetter)
 	d.update(camera_resetter_normaly_on=cfg.camera_resetter_normaly_on)
 
-
+	#[CameraPI]
 	d.update(use_cameraPI=cfg.use_cameraPI)
 	d.update(cameraPI_day_settings=cfg.cameraPI_day_settings)
 	d.update(cameraPI_night_settings=cfg.cameraPI_night_settings)
-
-
-
-	d.update(rfm01_frequenzy=cfg.rfm01_frequenzy)
-	d.update(rfm01_band=cfg.rfm01_band)
-	d.update(rfm01_lna=cfg.rfm01_lna)
-	d.update(rfm01_rssi=cfg.rfm01_rssi)
 		
-
+	# [ftp]
 	d.update(ftpserver=cfg.ftpserver)
 	d.update(ftpserverDestFolder=cfg.ftpserverDestFolder)
 	d.update(ftpserverLogin=cfg.ftpserverLogin)
 	d.update(ftpserverPassowd=cfg.ftpserverPassowd)
 	d.update(use_thread_for_sending_to_server=cfg.use_thread_for_sending_to_server)
 
-
-
+	# [Radio]
 	d.update(useradio=cfg.useradio)
 	d.update(radiointerval=cfg.radiointerval)
 	d.update(radio_verbosity=cfg.radio_verbosity)
 
-
-
-
+	# [Mail]
 	d.update(gmail_user=cfg.gmail_user)
 	d.update(gmail_pwd=cfg.gmail_pwd)
 	d.update(mail_to=cfg.mail_to)
 	d.update(use_mail=cfg.use_mail)
 	d.update(mail_ip=cfg.mail_ip)
 
+	# [SMS]
 	d.update(send_IP_by_sms=cfg.send_IP_by_sms)
 	d.update(number_to_send=cfg.number_to_send)
-
+	
+	#[WeatherUnderground]
 	d.update(WeatherUnderground_logdata=cfg.WeatherUnderground_logdata)
 	d.update(WeatherUnderground_ID=cfg.WeatherUnderground_ID)
 	d.update(WeatherUnderground_password=cfg.WeatherUnderground_password)
 
+	#[CWOP]
 	d.update(CWOP_logdata=cfg.CWOP_logdata)
 	d.update(CWOP_ID=cfg.CWOP_ID)
 	d.update(CWOP_password=cfg.CWOP_password)
-		
+
+	#[PWS]		
 	d.update(PWS_logdata=cfg.PWS_logdata)
 	d.update(PWS_ID=cfg.PWS_ID)
 	d.update(PWS_password=cfg.PWS_password)
-
-
+	
+	#[DNS Exit]
 	d.update(use_DNSExit=cfg.use_DNSExit)
 	d.update(DNSExit_uname=cfg.DNSExit_uname)
 	d.update(DNSExit_pwd=cfg.DNSExit_pwd)
-	d.update(DNSExit_hname=cfg.DNSExit_hname)		
+	d.update(DNSExit_hname=cfg.DNSExit_hname)
+
+	#[IP CAM]
+	d.update(IPCamCfg=cfg.IPCamCfg)
+	d.update(IPCamIP1=cfg.IPCamIP1)
+	d.update(IPCamUS1=cfg.IPCamUS1)
+	d.update(IPCamPW1=cfg.IPCamPW1)
+	d.update(IPCamSN1=cfg.IPCamSN1)
+	d.update(IPCamIP2=cfg.IPCamIP2)
+	d.update(IPCamUS2=cfg.IPCamUS2)
+	d.update(IPCamPW2=cfg.IPCamPW2)
+	d.update(IPCamSN2=cfg.IPCamSN2)
+	d.update(IPCamZZZ=cfg.IPCamZZZ)	
+	d.update(IPCamPosN=cfg.IPCamPosN)
+	d.update(IPCamPosNE=cfg.IPCamPosNE)
+	d.update(IPCamPosE=cfg.IPCamPosE)
+	d.update(IPCamPosSE=cfg.IPCamPosSE)
+	d.update(IPCamPosS=cfg.IPCamPosS)
+	d.update(IPCamPosSW=cfg.IPCamPosSW)
+	d.update(IPCamPosW=cfg.IPCamPosW)
+	d.update(IPCamPosNW=cfg.IPCamPosNW)
+
+	#[LAYOUT]
+	d.update(LayColorTBC=cfg.LayColorTBC)
+	d.update(LayColorTTC=cfg.LayColorTTC)
+	d.update(LayColorBBC=cfg.LayColorBBC)
+	d.update(LayColorBTC=cfg.LayColorBTC)
+
 	
 	html = html_template.safe_substitute(d)
 
@@ -189,15 +218,16 @@ cfg = config.config(configfile,False)
 #print request
 	
 if ( len(request) != 0 ):
-	
+
+	#[General]
+	cfg.station_name = request['station_name'][0]
 	cfg.config_web_server = request['config_web_server'][0]																 
 	cfg.set_system_time_from_ntp_server_at_startup = request['set_system_time_from_ntp_server_at_startup'][0]	
 	cfg.set_time_at_boot = request['set_time_at_boot'][0]					   
 	cfg.ntp_server = request['ntp_server'][0]																		   
 	cfg.reboot_at = request['reboot_at'][0]																		   
 	cfg.shutdown_at = request['shutdown_at'][0]																		   
-	cfg.shutdown_hour_before_sunset = request['shutdown_hour_before_sunset'][0]		
-	cfg.station_name = request['station_name'][0]																 					   
+	cfg.shutdown_hour_before_sunset = request['shutdown_hour_before_sunset'][0]																		 					   
 	cfg.location_latitude = request['location_latitude'][0]																 
 	cfg.location_longitude = request['location_longitude'][0]																 
 	cfg.location_altitude = request['location_altitude'][0]																 
@@ -205,8 +235,7 @@ if ( len(request) != 0 ):
 	cfg.config_web_server_port = request['config_web_server_port'][0]                                                                 
 	cfg.wind_speed_units = request['wind_speed_units'][0]                                                                 
 
-
-
+	# [Dongle]
 	cfg.usedongle = request['usedongle'][0]																		   
 	cfg.AlwaysOnInternet = request['AlwaysOnInternet'][0]																 
 	cfg.UseDongleNet = request['UseDongleNet'][0]																	  
@@ -216,15 +245,18 @@ if ( len(request) != 0 ):
 	cfg.dongleCtrlPort = request['donglectrlport'][0]																		   
 
 
-
-	cfg.SMSPwd = request['SMSPwd'][0]																				
-
+	#[Security]
+	cfg.SMSPwd = request['SMSPwd'][0]
+	
+	#[DataLogging]
 	cfg.logdata = request['logdata'][0]																				
 	cfg.serverfile = request['serverfile'][0]																		   
 
+	#[Upload]
 	cfg.upload_data = request['upload_data'][0]																		   
-	cfg.upload_folder = request['upload_folder'][0]																	  
-
+	cfg.upload_folder = request['upload_folder'][0]
+	
+	# [Sensors]
 	cfg.sensor_type = request['sensor_type'][0]																		   
 	cfg.use_wind_sensor = request['use_wind_sensor'][0]																	  
 	cfg.number_of_measure_for_wind_dir_average = request['number_of_measure_for_wind_dir_average'][0]										
@@ -236,16 +268,16 @@ if ( len(request) != 0 ):
 	cfg.use_dht = request['use_dht'][0]		
 	cfg.dht_type = request['dht_type'][0]		
 	cfg.number_of_measure_for_wind_trend = request['number_of_measure_for_wind_trend'][0]	
-	cfg.wind_trend_limit = request['wind_trend_limit'][0]	
+	cfg.wind_trend_limit = request['wind_trend_limit'][0]																		   
+	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]		
 	
-																	   
-	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]						 
-
-	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]											 
-
+	# [Sensor_PCE-FWS20]
+	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]
+	
+	# [Sensor Serial]
 	cfg.sensor_serial_port = request['sensor_serial_port'][0]											 
 
-
+	#[WebCam]
 	cfg.webcamDevice1 = request['webcamDevice1'][0]																	  
 	cfg.webcamDevice2 = request['webcamDevice2'][0]		
 	cfg.webcamLogo = request['webcamLogo'][0]													   
@@ -258,7 +290,8 @@ if ( len(request) != 0 ):
 	cfg.captureprogram = request['captureprogram'][0]																 
 	cfg.sendallimagestoserver = request['sendallimagestoserver'][0]															
 	cfg.delete_images_on_sd = request['delete_images_on_sd'][0]																								   
-
+	
+	#[Camera]	
 	cfg.usecameradivice = request['usecameradivice'][0]																	  
 	cfg.cameradivicefinalresolution = request['cameradivicefinalresolution'][0]													   
 	cfg.gphoto2options = request['gphoto2options'][0]		
@@ -270,61 +303,92 @@ if ( len(request) != 0 ):
 	cfg.use_camera_resetter = request['use_camera_resetter'][0]											 
 	cfg.camera_resetter_normaly_on = request['camera_resetter_normaly_on'][0]											 
 
+	#[CameraPI]
 	cfg.use_cameraPI = request['use_cameraPI'][0]											 
 	cfg.cameraPI_day_settings = request['cameraPI_day_settings'][0]											 
 	cfg.cameraPI_night_settings = request['cameraPI_night_settings'][0]											 
 
-
+	# [RFM01]
 	cfg.rfm01_frequenzy = request['rfm01_frequenzy'][0]											 
 	cfg.rfm01_band = request['rfm01_band'][0]											 
 	cfg.rfm01_lna = request['rfm01_lna'][0]											 
 	cfg.rfm01_rssi = request['rfm01_rssi'][0]											 
 
+	# [ftp]
 	cfg.ftpserver = request['ftpserver'][0]																		   
 	cfg.ftpserverDestFolder = request['ftpserverDestFolder'][0]																 
 	cfg.ftpserverLogin = request['ftpserverLogin'][0]																	  
 	cfg.ftpserverPassowd = request['ftpserverPassowd'][0]		
 	cfg.use_thread_for_sending_to_server = request['use_thread_for_sending_to_server'][0]		
 
+	# [Radio]	
 	cfg.useradio = request['useradio'][0]																		   
 	cfg.radiointerval = request['radiointerval'][0]																	  
 	cfg.radio_verbosity = request['radio_verbosity'][0]																	  
 
-
+	# [Mail]
 	cfg.gmail_user = request['gmail_user'][0]																		   
 	cfg.gmail_pwd = request['gmail_pwd'][0]																		   
 	cfg.mail_to = request['mail_to'][0]																				
 	cfg.use_mail = request['use_mail'][0]																		   
 	cfg.mail_ip = request['mail_ip'][0]																				
 
-	cfg.send_IP_by_sms = request['send_IP_by_sms'][0]																	  
+	# [SMS]
+	cfg.send_IP_by_sms = request['send_IP_by_sms'][0]				  
 	cfg.number_to_send = request['number_to_send'][0]	  
-	
+
+	#[WeatherUnderground]
 	cfg.WeatherUnderground_logdata = request['WeatherUnderground_logdata'][0]																	  
 	cfg.WeatherUnderground_ID = request['WeatherUnderground_ID'][0]	  	
 	cfg.WeatherUnderground_password = request['WeatherUnderground_password'][0]	  	
-	
+
+	#[CWOP]	
 	cfg.CWOP_logdata = request['CWOP_logdata'][0]																	  
 	cfg.CWOP_ID = request['CWOP_ID'][0]	  	
 	cfg.CWOP_password = request['CWOP_password'][0]	  	
-	
+
+	#[PWS]
 	cfg.PWS_logdata = request['PWS_logdata'][0]																	  
 	cfg.PWS_ID = request['PWS_ID'][0]	  	
 	cfg.PWS_password = request['PWS_password'][0]	  
 
+	#[DNS Exit]
 	cfg.use_DNSExit = request['use_DNSExit'][0]																		   
 	cfg.DNSExit_uname = request['DNSExit_uname'][0]																				
 	cfg.DNSExit_pwd = request['DNSExit_pwd'][0]																		   
 	cfg.DNSExit_hname = request['DNSExit_hname'][0]		
 
-
-		
 	# cfg.AlwaysOnInternet = request['AlwaysOnInternet'][0]
 	# cfg.UseDongleNet = request['UseDongleNet'][0]
 
+	#[IP CAM]
+	cfg.IPCamCfg = request['IPCamCfg'][0]
+	cfg.IPCamIP1 = request['IPCamIP1'][0]
+	cfg.IPCamUS1 = request['IPCamUS1'][0]
+	cfg.IPCamPW1 = request['IPCamPW1'][0]
+	cfg.IPCamSN1 = request['IPCamSN1'][0]
+	cfg.IPCamIP2 = request['IPCamIP2'][0]
+	cfg.IPCamUS2 = request['IPCamUS2'][0]
+	cfg.IPCamPW2 = request['IPCamPW2'][0]
+	cfg.IPCamSN2 = request['IPCamSN2'][0]
+	cfg.IPCamZZZ = request['IPCamZZZ'][0]	
+	cfg.IPCamPosN = request['IPCamPosN'][0]
+	cfg.IPCamPosNE = request['IPCamPosNE'][0]
+	cfg.IPCamPosE = request['IPCamPosE'][0]
+	cfg.IPCamPosSE = request['IPCamPosSE'][0]
+	cfg.IPCamPosS = request['IPCamPosS'][0]
+	cfg.IPCamPosSW = request['IPCamPosSW'][0]
+	cfg.IPCamPosW = request['IPCamPosW'][0]
+	cfg.IPCamPosNW = request['IPCamPosNW'][0]
+
+	#[LAYOUT]
+	cfg.LayColorTBC = request['LayColorTBC'][0]
+	cfg.LayColorTTC = request['LayColorTTC'][0]
+	cfg.LayColorBBC = request['LayColorBBC'][0]
+	cfg.LayColorBTC = request['LayColorBTC'][0]
+
+
 	cfg.writeCfg()
-
-
 
 outputPage(cfg)
 	
