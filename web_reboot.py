@@ -20,8 +20,8 @@ if not hasattr(so,'loggedin'):
 
 
 
-#if os.name != 'nt':
-    #os.system("sudo reboot")
-#else:
-    #print " Sorry can not rebbot windows"
+if os.name != 'nt':
+    os.system("sudo reboot")
+else:
+    print " Sorry can not rebbot windows"
 
