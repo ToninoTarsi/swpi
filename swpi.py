@@ -39,6 +39,7 @@ import pluginmanager
 import importlib
 import subprocess
 import cameraPI
+import IPCam
 
 socket.setdefaulttimeout(30)
 
@@ -875,7 +876,7 @@ while 1:
 			waitForHandUP()
 			bwebcam2 = webcam2.capture(img2FileName)
 			if ( bwebcam2):
-				log( "Webcam 2 Capruterd : "  + img2FileName	)	
+				log( "Webcam 2 Captured : ok : "  + img2FileName	)	
 				addTextandResizePhoto(img2FileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)	
 				
 		# Cameras			
@@ -884,6 +885,27 @@ while 1:
 			fotos = cameras.take_pictures()
 			for foto in fotos:
 				addTextandResizePhoto(foto,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
+
+		# IPCam 1
+		if ( cfg.IPCamIP1.upper() != "NONE" ):
+			#if (cfg.IPCamCfg.upper() == "IPCAM1" or cfg.IPCamCfg.upper() == "COMBINED"):
+			IPCam1 =  IPCam.IPCam(1,cfg)
+			img1FileName = "./img/webcam1_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
+			waitForHandUP()
+			bipcam1 = IPCam1.IPCamCapture(img1FileName,1)
+			if ( bipcam1 ):
+				log( "IPcam 1 Captured : ok : "  + img1FileName )
+				addTextandResizePhoto(img1FileName,cfg.webcamdevice1finalresolutionX,cfg.webcamdevice1finalresolutionY,cfg,v)
+		#else:		
+		# IPCam 2
+		if (cfg.IPCamCfg.upper() == "IPCAM2"):
+			IPCam2 =  IPCam.IPCam(2,cfg)
+			img2FileName = "./img/webcam2_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
+			waitForHandUP()
+			bipcam2 = IPCam2.IPCamCapture(img2FileName,2)
+			if ( bipcam2 ):
+				log( "IPcam 2 Captured : ok : "  + img2FileName	)	
+				addTextandResizePhoto(img2FileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)	
 		
 		bcPI = False
 		cPIFilemane =""
@@ -892,7 +914,7 @@ while 1:
 			cPIFilemane = "./img/raspi_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
 			bcPI = cPI.capture(cPIFilemane)
 			addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
-					
+
 		bConnected = False
 		
 		if ( cfg.sendImagesToServer or cfg.logdata or cfg.upload_data or cfg.WeatherUnderground_logdata or cfg.PWS_logdata):
@@ -911,6 +933,7 @@ while 1:
 				if ( cfg.webcamDevice1.upper() != "NONE" and bwebcam1 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
+						log("Sending to server "+ img1FileName)
 						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
@@ -924,6 +947,23 @@ while 1:
 						waitForHandUP()
 						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
 				
+				if ( cfg.IPCamCfg.upper() != "NONE" and bipcam1 ):
+					if (cfg.sendallimagestoserver ):
+						waitForHandUP()
+						log("Sending to server "+ img1FileName)
+						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+					else:
+						waitForHandUP()
+						sendFileToServer(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+
+				if (cfg.IPCamCfg.upper() == "IPCAM2" and bipcam2 ):
+					if (cfg.sendallimagestoserver ):
+						waitForHandUP()
+						sendFileToServer(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+					else:
+						waitForHandUP()
+						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+
 				
 				if ( cfg.use_cameraPI and bcPI ): 
 					if (cfg.sendallimagestoserver ):

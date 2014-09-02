@@ -129,7 +129,6 @@ class config(object):
 		self.ntp_url=config.get('General', 'ntp_url',"None")
 		#self.seconds_after_sunset_for_night = config.getint('General', 'seconds_after_sunset_for_night',3600)
 
-
 		# [Dongle]
 		self.usedongle = config.getboolean('Dongle', 'usedongle',False)
 		self.AlwaysOnInternet = config.getboolean('Dongle', 'alwaysoninternet',True)
@@ -202,16 +201,6 @@ class config(object):
 		self.delete_images_on_sd = config.getboolean('WebCam', 'delete_images_on_sd',False)
 		self.captureprogram = config.get('WebCam', 'captureprogram',"fswebcam")
 
-
-		self.webcamdevice1captureresolutionX = int(self.webcamdevice1captureresolution.split('x')[0])
-		self.webcamdevice1captureresolutionY = int(self.webcamdevice1captureresolution.split('x')[1])
-		self.webcamdevice1finalresolutionX = int(self.webcamdevice1finalresolution.split('x')[0])
-		self.webcamdevice1finalresolutionY = int(self.webcamdevice1finalresolution.split('x')[1])		
-		self.webcamdevice2captureresolutionX = int(self.webcamdevice2captureresolution.split('x')[0])
-		self.webcamdevice2captureresolutionY = int(self.webcamdevice2captureresolution.split('x')[1])
-		self.webcamdevice2finalresolutionX = int(self.webcamdevice2finalresolution.split('x')[0])
-		self.webcamdevice2finalresolutionY = int(self.webcamdevice2finalresolution.split('x')[1])
-		
 		#[Camera]
 		self.usecameradivice = config.getboolean('Camera', 'usecameradivice',True)
 		self.cameradivicefinalresolution = config.get('Camera', 'cameradivicefinalresolution',"800x600")
@@ -224,16 +213,26 @@ class config(object):
 		self.use_camera_resetter = config.getboolean('Camera', 'use_camera_resetter',False)
 		self.camera_resetter_normaly_on = config.getboolean('Camera', 'camera_resetter_normaly_on',True)
 
+		self.webcamdevice1captureresolutionX = int(self.webcamdevice1captureresolution.split('x')[0])
+		self.webcamdevice1captureresolutionY = int(self.webcamdevice1captureresolution.split('x')[1])
+		self.webcamdevice1finalresolutionX = int(self.webcamdevice1finalresolution.split('x')[0])
+		self.webcamdevice1finalresolutionY = int(self.webcamdevice1finalresolution.split('x')[1])		
+		self.webcamdevice2captureresolutionX = int(self.webcamdevice2captureresolution.split('x')[0])
+		self.webcamdevice2captureresolutionY = int(self.webcamdevice2captureresolution.split('x')[1])
+		self.webcamdevice2finalresolutionX = int(self.webcamdevice2finalresolution.split('x')[0])
+		self.webcamdevice2finalresolutionY = int(self.webcamdevice2finalresolution.split('x')[1])
+		self.cameradivicefinalresolutionX = int(self.cameradivicefinalresolution.split('x')[0])
+		self.cameradivicefinalresolutionY = int(self.cameradivicefinalresolution.split('x')[1])
+		
+				
 		#[CameraPI]
 		self.use_cameraPI = config.getboolean('CameraPI', 'use_cameraPI',False)
 		self.cameraPI_day_settings = config.get('CameraPI', 'cameraPI_day_settings',"")
 		self.cameraPI_night_settings = config.get('CameraPI', 'cameraPI_night_settings',"")
-
-
-
+						
 		self.cameradivicefinalresolutionX = int(self.cameradivicefinalresolution.split('x')[0])
 		self.cameradivicefinalresolutionY = int(self.cameradivicefinalresolution.split('x')[1])
-						
+
 		# [ftp]
 		self.ftpserver = config.get('ftp', 'ftpserver',"ftp.yoursite.it")
 		self.ftpserverDestFolder = config.get('ftp', 'ftpserverDestFolder',"yoursite.it/img")
@@ -278,6 +277,27 @@ class config(object):
 		self.DNSExit_uname = config.get('DNSExit', 'DNSExit_uname',"user")
 		self.DNSExit_pwd = config.get('DNSExit', 'DNSExit_pwd',"pwd")
 		self.DNSExit_hname = config.get('DNSExit', 'DNSExit_hname',"xxxx.linkpc.net")		
+
+		#[IP CAM]
+		self.IPCamCfg = config.get('IPCam', 'IPCamCfg',"A")
+		self.IPCamIP1 = config.get('IPCam', 'IPCamIP1',"None")
+		self.IPCamUS1 = config.get('IPCam', 'IPCamUS1',"None")
+		self.IPCamPW1 = config.get('IPCam', 'IPCamPW1',"None")
+		self.IPCamSN1 = config.get('IPCam', 'IPCamSN1',"None")
+		self.IPCamIP2 = config.get('IPCam', 'IPCamIP2',"None")		
+		self.IPCamUS2 = config.get('IPCam', 'IPCamUS2',"None")
+		self.IPCamPW2 = config.get('IPCam', 'IPCamPW2',"None")
+		self.IPCamSN2 = config.get('IPCam', 'IPCamSN2',"None")
+		self.IPCamZZZ = config.getint('IPCam', 'IPCamZZZ',0)				
+		self.IPCamPosN = config.get('IPCam', 'IPCamPosN',"None")
+		self.IPCamPosNE = config.get('IPCam', 'IPCamPosNE',"None")	
+		self.IPCamPosE = config.get('IPCam', 'IPCamPosE',"None")	
+		self.IPCamPosSE = config.get('IPCam', 'IPCamPosSE',"None")	
+		self.IPCamPosS = config.get('IPCam', 'IPCamPosS',"None")	
+		self.IPCamPosSW = config.get('IPCam', 'IPCamPosSW',"None")	
+		self.IPCamPosW = config.get('IPCam', 'IPCamPosW',"None")	
+		self.IPCamPosNW = config.get('IPCam', 'IPCamPosNW',"None")			
+	
 		
 		f = open(self.cfgName,"w")
 		config.write(f)					
@@ -372,12 +392,13 @@ class config(object):
 		config.setboolean('WebCam', 'sendImagesToServer',self.sendImagesToServer)
 		config.setint('WebCam', 'WebCamInterval',self.WebCamInterval)
 		config.setstr('WebCam', 'webcamdevice1captureresolution',self.webcamdevice1captureresolution)
-		config.setstr('WebCam', 'webcamdevice2captureresolution',self.webcamdevice1captureresolution)
+		config.setstr('WebCam', 'webcamdevice2captureresolution',self.webcamdevice2captureresolution)
 		config.setstr('WebCam', 'webcamdevice1finalresolution',self.webcamdevice1finalresolution)
 		config.setstr('WebCam', 'webcamdevice2finalresolution',self.webcamdevice2finalresolution)
 		config.setstr('WebCam', 'captureprogram',self.captureprogram)
 		config.setboolean('WebCam', 'sendallimagestoserver',self.sendallimagestoserver)
 		config.setboolean('WebCam', 'delete_images_on_sd',self.delete_images_on_sd)
+				
 
 		#[Camera]
 		config.setboolean('Camera', 'usecameradivice',self.usecameradivice)
@@ -434,16 +455,32 @@ class config(object):
 		config.setboolean('CWOP', 'CWOP_logdata',self.CWOP_logdata)
 		config.setstr('CWOP', 'CWOP_ID',self.CWOP_ID)		
 		config.setstr('CWOP', 'CWOP_password',self.CWOP_password)	
-		
 
-		
-		
 		#[DNS Exit]
 		config.setboolean('DNSExit', 'use_DNSExit',self.use_DNSExit)
 		config.setstr('DNSExit', 'DNSExit_uname',self.DNSExit_uname)		
 		config.setstr('DNSExit', 'DNSExit_pwd',self.DNSExit_pwd)	
 		config.setstr('DNSExit', 'DNSExit_hname ',self.DNSExit_hname)	
-		
+
+		#[IP CAM]
+		config.setstr('IPCam', 'IPCamCfg',self.IPCamCfg)		
+		config.setstr('IPCam', 'IPCamIP1',self.IPCamIP1)
+		config.setstr('IPCam', 'IPCamUS1',self.IPCamUS1)
+		config.setstr('IPCam', 'IPCamPW1',self.IPCamPW1)
+		config.setstr('IPCam', 'IPCamSN1',self.IPCamSN1)
+		config.setstr('IPCam', 'IPCamIP2',self.IPCamIP2)
+		config.setstr('IPCam', 'IPCamUS2',self.IPCamUS2)
+		config.setstr('IPCam', 'IPCamPW2',self.IPCamPW2)
+		config.setstr('IPCam', 'IPCamSN2',self.IPCamSN2)
+		config.setint('IPCam', 'IPCamZZZ',self.IPCamZZZ)		
+		config.setstr('IPCam', 'IPCamPosN',self.IPCamPosN)
+		config.setstr('IPCam', 'IPCamPosNE',self.IPCamPosNE)
+		config.setstr('IPCam', 'IPCamPosE',self.IPCamPosE)
+		config.setstr('IPCam', 'IPCamPosSE',self.IPCamPosSE)
+		config.setstr('IPCam', 'IPCamPosS',self.IPCamPosS)
+		config.setstr('IPCam', 'IPCamPosSW',self.IPCamPosSW)		
+		config.setstr('IPCam', 'IPCamPosW',self.IPCamPosW)
+		config.setstr('IPCam', 'IPCamPosNW',self.IPCamPosNW)
 		
 		f = open(self.cfgName,"w")
 		config.write(f)			

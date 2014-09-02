@@ -1,0 +1,24 @@
+
+Modificato l’interfaccia web di swpi aggiunto i tabs per dividere le pagine, aggiunto la gestione per cambiare i colori tab Layout
+
+inserito la gestione delle ipcam ,
+
+con la lista di selezione “IP CAM Configuration(IPCamCfg)” è possibile selezionare 
+
+1 IPCam
+2 IPCam
+3 IPCam 1+2 abbinate
+
+Con la scelta uno  attivi la IPCam 1 mobile i campi delle posizioni sono tutti relativi a questa IPCam viene inviata una foto
+
+Con la scelta due attivi la IPCam 1  mobile i campi delle posizioni sono tutti relativi a questa IPCam in più la IPCam2 è fissa vengono inviate 2 foto
+
+Con la scelta tre attivi la IPCam1 mobile e la IPCam2 mobile , i campi delle posizioni sono divisi 4 per la IPCam1 e 4 per la IPCam2.
+la terza opzione l’ho fatta perché le IPCam a basso costo non riescono a fare una rotazione di 360 gradi quindi divido un due le posizioni, Nord ,Nord-Est,Est,Sud-Est sono collegate alla IPCam1 mentre Sud, Sud-ovest, Ovest, Nord-Ovest sono collegate all IPCam 2 , se le posizioniamo fisicamente una contrapposta all’altra copriamo i 360 gradi.
+
+
+La procedura dopo avere rilevato la direzione del vento posiziona la IPCam interessata e crea lo snapshot da inviare al server.
+
+
+
+  

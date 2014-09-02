@@ -1,4 +1,3 @@
-Content-Type: text/html
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title>Sint wind PI</title>
@@ -235,10 +234,10 @@ Content-Type: text/html
         {
             width: 112px;
         }
-        #ButtonLog
+/*        #ButtonLog 
         {
             height: 29px;
-        }
+        }*/
         .style53
         {
             font-weight: normal;
@@ -253,11 +252,49 @@ Content-Type: text/html
             height: 26px;
             width: 325px;
         }
-        </style>
+
+
+		body { width: 852px ; font-size: 80%; font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif; }
+		ul#tabs { list-style-type: none; margin: 30px 0 0 0; padding: 0 0 0.3em 0; }
+		ul#tabs li { display: inline; }
+		ul#tabs li a { color: #42454a; background-color: #dedbde; border: 1px solid #c9c3ba; border-bottom: none; padding: 0.3em; text-decoration: none; }
+		ul#tabs li a:hover { background-color: #f1f0ee; }
+		ul#tabs li a.selected { color: #000; background-color: #f1f0ee; font-weight: bold; padding: 0.7em 0.3em 0.38em 0.3em; }
+		div.tabContent { border: 1px solid #c9c3ba; padding: 0.5em; background-color: #f1f0ee; }
+		div.tabContent.hide { display: none; }
+       
+    </style>
 
 </head>
 <body onload="init()">
     <script>
+	 var tabLinks = new Array();
+     var contentDivs = new Array();
+	
+	  function showTab() {
+      var selectedId = getHash( this.getAttribute('href') );
+
+      for ( var id in contentDivs ) {
+        if ( id == selectedId ) {
+          tabLinks[id].className = 'selected';
+          contentDivs[id].className = 'tabContent';
+        } else {
+          tabLinks[id].className = '';
+          contentDivs[id].className = 'tabContent hide';
+        }
+      }
+      return false;
+    }
+	   function getFirstChildWithTagName( element, tagName ) {
+      for ( var i = 0; i < element.childNodes.length; i++ ) {
+        if ( element.childNodes[i].nodeName == tagName ) return element.childNodes[i];
+      }
+    }
+	 function getHash( url ) {
+      var hashPos = url.lastIndexOf ( '#' );
+      return url.substring( hashPos + 1 );
+    }
+	
         function init() {
 
             var dd = document.getElementById('set_system_time_from_ntp_server_at_startup');
@@ -397,7 +434,6 @@ Content-Type: text/html
                 }
             }
 
-
             dd = document.getElementById('usecameradivice');
             for (var i = 0; i < dd.options.length; i++) {
                 if (dd.options[i].text == '$usecameradivice') {
@@ -527,7 +563,6 @@ Content-Type: text/html
                 }
             }
 
-
             dd = document.getElementById('rfm01_frequenzy');
             for (var i = 0; i < dd.options.length; i++) {
                 if (dd.options[i].text == '$rfm01_frequenzy') {
@@ -600,10 +635,41 @@ Content-Type: text/html
                     break;
                 }
             }
-
-
-
+			
+            dd = document.getElementById('IPCamCfg');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].value == '$IPCamCfg') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }		
+				
+      var tabListItems = document.getElementById('tabs').childNodes;
+      for ( var i = 0; i < tabListItems.length; i++ ) {
+        if ( tabListItems[i].nodeName == "LI" ) {
+          var tabLink = getFirstChildWithTagName( tabListItems[i], 'A' );
+          var id = getHash( tabLink.getAttribute('href') );
+          tabLinks[id] = tabLink;
+          contentDivs[id] = document.getElementById( id );
         }
+      }
+      var i = 0;
+
+      for ( var id in tabLinks ) {
+        tabLinks[id].onclick = showTab;
+        tabLinks[id].onfocus = function() { this.blur() };
+        if ( i == 0 ) tabLinks[id].className = 'selected';
+        i++;
+      }
+
+      var i = 0;
+
+      for ( var id in contentDivs ) {
+        if ( i != 0 ) contentDivs[id].className = 'tabContent hide';
+        i++;
+      }
+    }
+
         function ButtonLog_onclick() {
             window.location = '/log/'
         }
@@ -632,190 +698,198 @@ Content-Type: text/html
             window.location = '/reset_camera.py'
         }
 
-
-
         function WeatherUnderground_logdata_onclick() {
 
         }
 
     </script>
-    
-    
-    
-    <div id="General">
+    <script type="text/javascript" src="jscolor/jscolor.js"></script>
+
+    <div id="Header">
         <img alt="swpi" src="swpi-banner.jpg" width="800" /><br />
-        <input id="ButtonLog" type="button" value="Download Log Files" 
-            onclick="return ButtonLog_onclick()" />
-        <input id="ButtonDownloadCFG" type="button" value="Save Configuration File" 
-            onclick="return ButtonDownloadCFG_onclick()" /><input 
-            id="ButtonUploadCFG" type="button" value="Upload Configuration File" 
-            onclick="return ButtonUploadCFG_onclick()" /><input 
-            id="ButtonReboot" type="button" value="Reboot" onclick="return ButtonReboot_onclick()" /><input 
-            id="ButtonStatus0" type="button" value=" Reset Camera" 
-            onclick="return ButtonResetCamera_onclick()" /><input 
-            id="Button1" type="button" value="Check for Update" onclick="return Button1_onclick()" /><br /><input 
-            id="ButtonStatus" type="button" value="View Status" 
-            onclick="return ButtonStatus_onclick()" /><form id="ConfigForm" action="swpi_webconfig.py" method="post">
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
-            <tr>
-                <td class="style46" colspan="2" style="font-size: large; color: #0000FF;">
-                    General</td>
+        <div id="Buttons" style= "margin-top: 23px">
+            <input id="ButtonLog" type="button" value="Download Log Files" 
+                onclick="return ButtonLog_onclick()" />
+            <input id="ButtonDownloadCFG" type="button" value="Save Configuration File" 
+                onclick="return ButtonDownloadCFG_onclick()" /><input 
+                id="ButtonUploadCFG" type="button" value="Upload Configuration File" 
+                onclick="return ButtonUploadCFG_onclick()" /><input 
+                id="ButtonReboot" type="button" value="Reboot" onclick="return ButtonReboot_onclick()" /><input 
+                id="ButtonStatus0" type="button" value=" Reset Camera" 
+                onclick="return ButtonResetCamera_onclick()" /><input 
+                id="Button1" type="button" value="Check for Update" onclick="return Button1_onclick()" /><input 
+                id="ButtonStatus" type="button" value="View Status" 
+                onclick="return ButtonStatus_onclick()" /><form id="ConfigForm" action="swpi_webconfig.py" method="post">
+        </div>       
+	</div>
+
+        <ul id="tabs">
+            <li><a href="#General">General</a></li>
+            <li><a href="#Sensors">Sensors</a></li>
+        	<li><a href="#Dongle">Dongle</a></li>
+          	<li><a href="#WebCam">WebCams</a></li>
+        	<li><a href="#RFM01">RFM01</a></li>	
+        	<li><a href="#Security">Security</a></li>	
+        	<li><a href="#DataLogging">DataLogging</a></li>
+        	<li><a href="#Weather">Weather</a></li>
+        	<li><a href="#Upload">Upload/ftp</a></li>
+        	<li><a href="#Radio">Radio</a></li>
+        	<li><a href="#Mail">Mail/SMS</a></li>	 
+        	<li><a href="#DynDNS">DynDNS</a></li>
+        	<li><a href="#Layout">Layout</a></li>	
+        </ul>
+
+	<div class="tabContent" id="General">
+	        <table bgcolor=$LayColorTBC border="1" frame="box" 
+			style=" margin-right: 0px" width="830px" >
+			<tr>
+                <td class="style25" colspan="2" style="font-size: large;">
+                    <font color=$LayColorTTC>General</font></td>
             </tr>
             <tr>
-                <td class="style10" width="800">
-                    Station name ( <strong>station_name</strong> )</td>
-                <td class="style45">
-                    <input id="station_name" type="text" name="station_name" 
-                        value="$station_name" style="width: 100%" /></td>
+               <td class="style10" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Station name ( <strong>station_name</strong> )</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                    <input id="station_name" type="text" name="station_name"  
+                        value="$station_name" style="width: 100%" bgcolor="$LayColorBBC"/></font></td>
             </tr>
             <tr>
-                <td class="style10" width="800">
-                    Latitude of the Sint Wind PI in decimal degree (<b>location_latitude</b>)</td>
-                <td class="style45">
+                <td class="style10" width="800" bgcolor="$LayColorBBC" >
+                    <font color=$LayColorBTC>Latitude of the Sint Wind PI in decimal degree (<b>location_latitude</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     &nbsp;<input id="location_latitude" type="text" name="location_latitude" 
-                        value=$location_latitude style="width: 100%" /></td>
+                        value="$location_latitude" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style11" width="800">
-                    Longitude of the Sint Wind PI in decimal degree (<b>location_longitude</b>)<td class="style45">
+                <td class="style11" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Longitude of the Sint Wind PI in decimal degree (<b>location_longitude</b>)</font></td>
+                    <td class="style45" bgcolor="$LayColorBBC">
                     &nbsp;<input id="location_longitude" type="text" name="location_longitude" 
-                        value=${location_longitude} onclick="return location_longitude_onclick()" 
+                        value="${location_longitude}" onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style11" width="800">
-                    Altitude of the Sint Wind PI in meters (<b>location_altitude</b>)</td>
-                <td class="style45">
+                <td class="style11" width="800" bgcolor="$LayColorBBC" >
+                    <font color=$LayColorBTC>Altitude of the Sint Wind PI in meters (<b>location_altitude</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     &nbsp;<input id="location_altitude" type="text" name="location_altitude" 
-                        value=$location_altitude style="width: 100%" /></td>
+                        value="$location_altitude" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12" width="800">
-                    Reboot system every day at specified time. Ex 08:00 or &quot;None&quot; 
-                    for not rebooting<b> </b>(<b>reboot_at</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Reboot system every day at specified time. Ex 08:00 or &quot;None&quot; 
+                    for not rebooting<b> </b>(<b>reboot_at</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="reboot_at" type="text" name="reboot_at" 
-                        value=$reboot_at style="width: 100%" /></td>
+                        value="$reboot_at" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12" width="800">
-                    Shutdown system every day at specified time. Ex&nbsp; 08:00&nbsp;
-                    or &quot;None&quot; for not shutdown&nbsp; (<b>shutdown_at</b> )</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Shutdown system every day at specified time. Ex&nbsp; 08:00&nbsp;
+                    or &quot;None&quot; for not shutdown&nbsp; (<b>shutdown_at</b> )</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="shutdown_at" type="text" name="shutdown_at" 
-                        value=$shutdown_at style="width: 100%" /></td>
+                        value="$shutdown_at" style="width: 100%" /></td>
             </tr>
 			
             <tr>
-                <td class="style12" width="800">
-                    Shutdown system every day at the specified hours before sunset. For example -2 
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Shutdown system every day at the specified hours before sunset. For example -2 
                     will shutdown two hours after sunset. Use &quot;None&quot; for not using this function.<b> 
-                    (shutdown_hour_before_sunset</b>)</td>
-                <td class="style45">
+                    (shutdown_hour_before_sunset</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="shutdown_hour_before_sunset" type="text" name="shutdown_hour_before_sunset" 
-                        value=$shutdown_hour_before_sunset style="width: 100%" /></td>
+                        value="$shutdown_hour_before_sunset" style="width: 100%" /></td>
             </tr>
 			
 			<tr>
-                <td class="style12" width="800">
-                    Set time at boot ( None for not using this function . es 08:00 <b> 
-                    (set_time_at_boot</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Set time at boot ( None for not using this function . es 08:00 <b> 
+                    (set_time_at_boot</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="set_time_at_boot" type="text" name="set_time_at_boot" 
-                        value=$set_time_at_boot style="width: 100%" /></td>
-            </tr>
-			
+                        value="$set_time_at_boot" style="width: 100%" /></td>
+            </tr>			
             <tr>
-                <td class="style12" width="800">
-                    Adjust system time from a NTP internt server at system startup (<b>set_system_time_from_ntp_server_at_startup</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Adjust system time from a NTP internt server at system startup (<b>set_system_time_from_ntp_server_at_startup</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="set_system_time_from_ntp_server_at_startup" 
                         name="set_system_time_from_ntp_server_at_startup" 
                         value=$set_system_time_from_ntp_server_at_startup style="width: 100%"> 
                          <option value=True >True</option>
                          <option value=False >False</option>
-                    </select>
-                 </td>
+                    </select></td>
                     
-            </tr>
-			
-			
+            </tr>		
             <tr>
-                <td class="style12" width="800">
-                    NTP servet for time adjustemnt. (<b>ntp_server</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>NTP servet for time adjustemnt. (<b>ntp_server</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="ntp_server" type="text" name="ntp_server" 
-                        value=$ntp_server style="width: 100%" /></td>
+                        value="$ntp_server" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12" width="800">
-                    Activate the config WebServer (<b>config_web_server</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Activate the config WebServer (<b>config_web_server</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="config_web_server" type="text" name="config_web_server" 
                         value="$config_web_server" style="width: 100%" >
                          <option value=True >True</option>
                          <option value=False >False</option>
-                    </select>
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style12" width="800">
-                    Port of the config WebServer (<b>config_web_server_port</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Port of the config WebServer (<b>config_web_server_port</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="config_web_server_port" type="text" name="config_web_server_port" 
                         value="$config_web_server_port" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style12" width="800">
-                    Reset the wifi interface if detecting a connection problem (<b>wifi_reset_if_down</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Reset the wifi interface if detecting a connection problem (<b>wifi_reset_if_down</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="wifi_reset_if_down" type="text" name="wifi_reset_if_down" 
                         value="$wifi_reset_if_down" style="width: 100%" >
                         <option value=True>True</option>
                          <option value=False>False</option>
-                    </select>                        
-                        
-                        </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style12" width="800">
-                    Wind speed units (<b>wind_speed_units</b>)</td>
-                <td class="style45">
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Wind speed units (<b>wind_speed_units</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="wind_speed_units" type="text" name="wind_speed_units" 
                         value="$wind_speed_units" style="width: 100%" >
                          <option value=kmh>kmh</option>
                          <option value=knots>knots</option>
-                    </select>                       
-                        </td>
+                    </select></td>
             </tr>
         </table>
-        &nbsp;</div>
-    
-    
-    
-    
-    
+	</div>
 
-        <table bgcolor="#FF99FF" border="1" frame="box" 
-        style=" margin-right: 0px" width="800px">
+	<div class="tabContent" id="Sensors">  
+        <table bgcolor=$LayColorTBC border="1" frame="box" 
+        style=" margin-right: 0px" width="830px">
             <tr>
-                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
-                    Sensors</td>
+                <td class="style25" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    <font color=$LayColorTTC>Sensors</td>
             </tr>
             <tr>
-                <td class="style52">
-                    Use a wind sensor (<b>use_wind_sensor</b>)</td>
-                <td class="style31">
+                <td class="style52"  bgcolor="$LayColorBBC">
+                   <font color=$LayColorBTC>Use a wind sensor (<b>use_wind_sensor</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <select id="use_wind_sensor" type="text" name="use_wind_sensor" 
                         value=$use_wind_sensor style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style52">
-                    Type of wind sensor connected (<b>sensor_type</b>)</td>
-                <td class="style49">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Type of wind sensor connected (<b>sensor_type</b>)</font></td>
+                <td class="style49" bgcolor="$LayColorBBC">
                     <select id="sensor_type" type="text" name="sensor_type" 
                         value=$sensor_type style="width: 100%" >
                         <option value="NONE" >None</option>                                   
@@ -831,77 +905,75 @@ Content-Type: text/html
 						<option value="NEVIO4" >NEVIO4</option>					
                         <option value="NEVIO8" >NEVIO8</option>
                         <option value="NEVIO16" >NEVIO16</option>         
-                       <option value="NEVIO16S" >NEVIO16S</option>                               
+                        <option value="NEVIO16S" >NEVIO16S</option>                               
                         <option value="PCE-SENSOR" >PCE-SENSOR</option>
                         <option value="DAVIS-SENSOR" >DAVIS-SENSOR</option> 
                         <option value="DAVIS-VANTAGE-PRO2" >DAVIS-VANTAGE-PRO2</option>  
                         <option value="LACROSS-TX23" >LACROSS-TX23</option>    
                         <option value="W831" >W831</option>    
                                                        
-                                               
-                    </select>     
-                    </td>  
+                        </select></td>  
             </tr>
             <tr>
-                <td class="style52">
-                    Number of measure for wind average gust calculation. (<b>number_of_measure_for_wind_average_gust_calculation</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Number of measure for wind average gust calculation. (<b>number_of_measure_for_wind_average_gust_calculation</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <input id="number_of_measure_for_wind_average_gust_calculation" type="text" name="number_of_measure_for_wind_average_gust_calculation" 
-                        value=$number_of_measure_for_wind_average_gust_calculation 
+                        value="$number_of_measure_for_wind_average_gust_calculation"
                         style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52">
-                    Number of measure for wind dir average calculation. (<b>number_of_measure_for_wind_dir_average</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Number of measure for wind dir average calculation. (<b>number_of_measure_for_wind_dir_average</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <input id="number_of_measure_for_wind_dir_average" type="text" name="number_of_measure_for_wind_dir_average" 
-                        value=$number_of_measure_for_wind_dir_average style="width: 100%" /></td>
+                        value="$number_of_measure_for_wind_dir_average" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52">
-                    Calibration gain for wind intensity calculation (<b>windspeed_gain</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Calibration gain for wind intensity calculation (<b>windspeed_gain</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <input id="windspeed_gain" type="text" name="windspeed_gain" 
-                        value=$windspeed_gain style="width: 100%" /></td>
+                        value="$windspeed_gain" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52">
-                    Calibration offset for wind intensity calculation (<b>windspeed_offset</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Calibration offset for wind intensity calculation (<b>windspeed_offset</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <input id="windspeed_offset" type="text" name="windspeed_offset" 
-                        value=$windspeed_offset style="width: 100%" /></td>
+                        value="$windspeed_offset" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52">
-                    Interval between measurements (<b>windmeasureinterval</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Interval between measurements (<b>windmeasureinterval</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <input id="windmeasureinterval" type="text" name="windmeasureinterval" 
-                        value=$windmeasureinterval style="width: 100%" /></td>
+                        value="$windmeasureinterval" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52">
-                    Use a BMP085 sensor for pressure and temperature (<b>use_bmp085</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use a BMP085 sensor for pressure and temperature (<b>use_bmp085</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <select id="use_bmp085" type="text" name="use_bmp085" 
                         value=$use_bmp085 style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>    </td>
+                    </select></td>
             </tr>
             <tr>   
-                <td class="style52">
-                    Use a TMP36 sensor for temperature (<b>use_tmp36</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use a TMP36 sensor for temperature (<b>use_tmp36</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <select id="use_tmp36" type="text" name="use_tmp36" 
                         value=$use_tmp36 style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>    </td>
+                    </select></td>
             </tr>
             <tr>   
-                <td class="style52">
-                    Use DHT humidity-Temperature sensor ( <b>use_dht </b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use DHT humidity-Temperature sensor ( <b>use_dht </b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <select id="use_dht" type="text" name="use_dht" 
                         value=$use_tmp36 style="width: 100%" >
                         <option value=True >True</option>
@@ -909,9 +981,9 @@ Content-Type: text/html
                     </select></td>
             </tr>
             <tr>   
-                <td class="style52">
-                    DHT type (dht_type)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>DHT type (dht_type)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <select id="dht_type" type="text" name="dht_type" 
                         value=$use_tmp36 style="width: 100%" >
                         <option value="DHT11">DHT11</option>
@@ -919,257 +991,254 @@ Content-Type: text/html
                         <option value="AM2302">AM2302</option>
                     </select></td>
             </tr>
-
             <tr>
-                <td class="style52">
-                    Number of measure for wind trend calculation. (<b>number_of_measure_for_wind_trend</b>)</td>
-                <td class="style31">
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Number of measure for wind trend calculation. (<b>number_of_measure_for_wind_trend</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <input id="Text1" type="text" name="number_of_measure_for_wind_trend" 
-                        value=$number_of_measure_for_wind_trend 
+                        value="$number_of_measure_for_wind_trend" 
                         style="width: 100%" /></td>
             </tr>
-               <td class="style52">
-                    wind trend limits (<b>wind_trend_limit</b>)</td>
-                <td class="style31">
+				<td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>wind trend limits (<b>wind_trend_limit</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
                     <input id="Text2" type="text" name="wind_trend_limit" 
-                        value=$wind_trend_limit 
+                        value="$wind_trend_limit" 
                         style="width: 100%" /></td>
             </tr>
-            </table>
-    
-    
+            </table> 
     <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
-                    Sensor_PCE-FWS20</td>
+                <td class="style25" colspan="2" style="font-size: large; color:$LayColorTTC;">
+                    PCE-FWS20</td>
             </tr>
             <tr>
-                <td class="style2">
-                    Sincronize system time from PCE station (<b>set_system_time_from_WeatherStation</b>)</td>
-                <td class="style32">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>incronize system time from PCE station (<b>set_system_time_from_WeatherStation</b>)</font></td>
+                <td class="style32" bgcolor="$LayColorBBC">
                     <select  id="set_system_time_from_WeatherStation" type="text" name="set_system_time_from_WeatherStation" 
                         value=$set_system_time_from_WeatherStation style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>   </td>
+                    </select></td>
             </tr>
             </table>
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br />
+			   <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
-                    Sensor Serial</td>
+                <td class="style25" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    Serial Sensor </td>
             </tr>
             <tr>
-                <td class="style2">
-                    Serial port of serial sensors ( WM918, WMR918 )&nbsp; (<b>sensor_serial_port </b>)</td>
-                <td class="style32">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Serial port of serial sensors ( WM918, WMR918 )&nbsp; (<b>sensor_serial_port </b>)</font></td>
+                <td class="style32" bgcolor="$LayColorBBC">
                     &nbsp;<input id="sensor_serial_port" type="text" name="sensor_serial_port" 
                         value="$sensor_serial_port" style="width: 100%" /></td>
             </tr>
             </table>
-           <br />
-    
-    
     <br />
     
-    
-
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+	</div>
+	<div class="tabContent" id="Dongle"> 
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     Dongle</td>
             </tr>
             <tr>
-                <td class="style41">
-                    Use a 3G dongle for telephone and SMS(<b>usedongle</b>)</td>
-                <td class="style17">
+                <td class="style41" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use a 3G dongle for telephone and SMS(<b>usedongle</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <select id="usedongle" type="text" name="usedongle" 
                         value=$usedongle style="width: 100%" >
                          <option value=True >True</option>
                          <option value=False >False</option>
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style42">
-                    Use the 3G dongle also for internet connection (<b>Use_Dongle_Net</b>)</td>
-                <td class="style17">
+                <td class="style42" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use the 3G dongle also for internet connection (<b>Use_Dongle_Net</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <select id="UseDongleNet" type="text" name="UseDongleNet" 
                         value=$UseDongleNet style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style42">
-                    Stay always connected (<b>Always_On_Internet</b>)<td class="style17">
+                <td class="style42" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Stay always connected (<b>Always_On_Internet</b>)</font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">
                     <select id="AlwaysOnInternet" type="text" name="AlwaysOnInternet" 
                         value=$AlwaysOnInternet      style="width: 100%" >
                         <option value=True >True</option>
                          <option value=False >False</option>
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style43">
-                    Operator for internet connection (
-                    <b>Operator</b>)</td>
-                <td class="style17">
+                <td class="style43" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Operator for internet connection (<b>Operator</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <select id="operator" type="text" name="operator" 
                         value=$operator style="width: 100%" >
                         <option value="tim" >tim</option>
                         <option value="wind" >wind</option>
                         <option value="omnitel" >omnitel</option>
-                        <option value="tre" >tre</option>
-                        </td>
+                        <option value="tre" >tre</option></td>
             </tr>
             <tr>
-                <td class="style43">
-                    Data port (<b>dongledataport</b>)</td>
-                <td class="style17">
+                <td class="style43" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Data port (<b>dongledataport</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <input id="dongledataport" type="text" name="dongledataport" 
-                        value=$dongledataport style="width: 100%" /></td>
+                        value="$dongledataport" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style43">
-                    Audio Port(<b>dongleaudioport</b>)</td>
-                <td class="style17">
+                <td class="style43" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Audio Port(<b>dongleaudioport</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <input id="dongleaudioport" type="text" name="dongleaudioport" 
-                        value=$dongleaudioport style="width: 100%" /></td>
+                        value="$"dongleaudioport" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style43">
-                    Control Port (<b>donglectrlport</b>)</td>
-                <td class="style17">
+                <td class="style43" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Control Port (<b>donglectrlport</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <input id="donglectrlport" type="text" name="donglectrlport" 
-                        value=$donglectrlport style="width: 100%" /></td>
+                        value="$donglectrlport" style="width: 100%" /></td>
             </tr>
             </table>
-        <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+	</div>
+	<div class="tabContent" id="WebCam"> 
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style25" colspan="2" style="font-size: large; color:$LayColorTTC;">
                     WebCam - Camera</td>
             </tr>
             <tr>
-                <td class="style26">
-                    Time interval between webcam and Cameras<b> </b> captures (<b>WebCamInterval</b>)<td class="style27">
+                <td class="style26" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Time interval between webcam and Cameras<b> </b> captures (<b>WebCamInterval</b>)</font></td>
+                    <td class="style27" bgcolor="$LayColorBBC">
                     <input id="WebCamInterval" type="text" name="WebCamInterval" 
-                        value=$WebCamInterval style="width: 100%" /></td>
+                        value="$WebCamInterval" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                                        Send captured images to a web server
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Send captured images to a web server
                     <span lang="EN-US" style="font-size:11.0pt;
 line-height:115%;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;mso-ascii-theme-font:minor-latin;
 mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:
 minor-latin;mso-bidi-font-family:&quot;Times New Roman&quot;;mso-bidi-theme-font:minor-bidi;
-mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw FTP<b> (</b></span><b>sendImagesToServer</b>)</td>
-                <td class="style33">
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw FTP<b> (</b></span><b>sendImagesToServer</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <select  id="sendImagesToServer" type="text" name="sendImagesToServer" 
                         value=$sendImagesToServer style="width: 100%" >
                                                <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>  
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Send all captured images to re server . This require a dinamic web server 
-                    with PHP (<b>sendallimagestoserver</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Send all captured images to re server . This require a dinamic web server with PHP (<b>sendallimagestoserver</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <select  id="sendallimagestoserver" type="text" name="sendallimagestoserver" 
                         value=$sendallimagestoserver style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>  
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style50"> 
-                    Delete images after sent to server (<b>delete_images_on_sd</b>)</td>
-                <td class="style51">
+                <td class="style50" bgcolor="$LayColorBBC"> 
+                    <font color=$LayColorBTC>Delete images after sent to server (<b>delete_images_on_sd</b>)</font></td>
+                <td class="style51" bgcolor="$LayColorBBC">
                     <select  id="delete_images_on_sd" type="text" name="delete_images_on_sd" 
                         value=$delete_images_on_sd style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>  </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Webcam device 1. Tipicaly /dev/video0 or None to not use a webcam (<b>webcamDevice1</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Webcam device 1. Tipicaly /dev/video0 or None to not use a webcam (<b>webcamDevice1</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamDevice1" type="text" name="webcamDevice1" 
-                        value=$webcamDevice1 style="width: 100%" /></td>
+                        value="$webcamDevice1" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Webcam device 2. Tipicaly /dev/video1 or None to not use a webcam 
-                    (<b>webcamDevice2</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Webcam device 2. Tipicaly /dev/video1 or None to not use a webcam (<b>webcamDevice2</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamDevice2" type="text" name="webcamDevice2" 
-                        value=$webcamDevice2 style="width: 100%" /></td>
+                        value="$webcamDevice2" style="width: 100%" /></td>
+            </tr>
+			</table>
+	     <br/>		
+		<table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+			<tr>
+                <td class="style25" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    Logo-Resolution-Capture Program</td>
             </tr>
             <tr>
-                <td class="style2">
-                    <b>Logo to write to the images </b>(<b>webcamLogo</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Logo to write into the images(<b>webcamLogo</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamLogo" type="text" name="webcamLogo" 
                         value="$webcamLogo" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Webcam 1 capture resolution. ex 800x600. (<b>webcamdevice1captureresolution</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Webcam 1 capture resolution. ex 800x600. (<b>webcamdevice1captureresolution</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamdevice1captureresolution" type="text" name="webcamdevice1captureresolution" 
-                        value=$webcamdevice1captureresolution style="width: 100%" /></td>
+                        value="$webcamdevice1captureresolution" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Webcam 2 capture resolution. ex 800x600.<b> (webcamdevice2captureresolution)</b></td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Webcam 2 capture resolution. ex 800x600.<b> (webcamdevice2captureresolution)</b></font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamdevice2captureresolution" type="text" name="webcamdevice2captureresolution" 
-                        value=$webcamdevice2captureresolution style="width: 100%" /></td>
+                        value="$webcamdevice2captureresolution" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Webcam 1 final resolution. ex 800x600. (<b>webcamdevice1finalresolution</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Webcam 1 final resolution. ex 800x600. (<b>webcamdevice1finalresolution</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamdevice1finalresolution" type="text" name="webcamdevice1finalresolution" 
-                        value=$webcamdevice1finalresolution style="width: 100%" /></td>
+                        value="$webcamdevice1finalresolution" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Webcam 2 final resolution. ex 800x600. (<b>webcamdevice2finalresolution</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Webcam 2 final resolution. ex 800x600. (<b>webcamdevice2finalresolution</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamdevice2finalresolution" type="text" name="webcamdevice2finalresolution" 
-                        value=$webcamdevice2finalresolution style="width: 100%" /></td>
+                        value="$webcamdevice2finalresolution" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Webcam Capture program (<b>captureprogram</b>)</td>
-                <td class="style33">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Webcam Capture program (<b>captureprogram</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
                     <select id="captureprogram" type="text" name="captureprogram" 
-                        value=$captureprogram style="width: 100%" >
+                        value="$captureprogram" style="width: 100%" >
                         <option value="ffmpeg" >ffmpeg</option>
                         <option value="uvccapture" >uvccapture</option>
                         <option value="fswebcam">fswebcam</option>
-                        
                     </select> </td>
             </tr>
             </table>
-            <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+     <br />
+<!-- </div>-->
+<!--	<div class="tabContent" id="Camera"> -->
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style25" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style25" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     Camera</td>
             </tr>
             <tr>   
-                <td class="style26">
-                    Use Camera. If True the system will try to detect (<b>usecameradivice</b>)<td class="style28">
+                <td class="style26" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use Camera. If True the system will try to detect (<b>usecameradivice</b>)</font></td>
+                    <td class="style28" bgcolor="$LayColorBBC">
                     <select  id="usecameradivice" type="text" name="usecameradivice" 
                         value=$usecameradivice style="width: 100%" >
                         <option value=True >True</option>
@@ -1177,59 +1246,59 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select> </td>
             </tr>
             <tr>
-                <td class="style2">
-                    Camera final resolution. ex 800x600<b> (cameradivicefinalresolution)</b></td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Camera final resolution. ex 800x600<b> (cameradivicefinalresolution)</b></font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <input id="cameradivicefinalresolution" type="text" name="cameradivicefinalresolution" 
-                        value=$cameradivicefinalresolution style="width: 100%" /></td>
+                        value="$cameradivicefinalresolution" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Day
-                    Capture option. Use an element list for each camera (<b>gphoto2options</b>)</td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Day
+                    Capture option. Use an element list for each camera (<b>gphoto2options</b>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <input id="gphoto2options" type="text" name="gphoto2options" 
                         value="$gphoto2options" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Night
-                    Capture option. Use an element list for each camera (<b>gphoto2options_Night</b>)</td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Night
+                    Capture option. Use an element list for each camera (<b>gphoto2options_Night</b>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <input id="gphoto2options_Night" type="text" name="gphoto2options_Night" 
                         value="$gphoto2options_Night" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Before capturing reset the USB. For Nikon cameras<b> (reset_usb</b>)</td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Before capturing reset the USB. For Nikon cameras<b> (reset_usb</b>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <select  id="reset_usb" type="text" name="reset_usb" 
-                        value=$reset_usb style="width: 100%" >
+                        value="$reset_usb" style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
                     </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Clear cameras SD card at startup (<b>clear_all_sd_cards_at_startup</b>)</td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Clear cameras SD card at startup (<b>clear_all_sd_cards_at_startup</b>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <select id="clear_all_sd_cards_at_startup" type="text" name="clear_all_sd_cards_at_startup" 
-                        value=$clear_all_sd_cards_at_startup style="width: 100%" >
+                        value="$clear_all_sd_cards_at_startup" style="width: 100%" >
                          <option value=True >True</option>
                         <option value=False >False</option>
                     </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Stat numbering cameras from (<b>start_camera_number</b>)</td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Stat numbering cameras from (<b>start_camera_number</b>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <input id="start_camera_number" type="text" name="start_camera_number" 
-                        value=$start_camera_number style="width: 100%" /></td>
+                        value="$start_camera_number" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Use gphoto2 capture_and_download (<b>gphoto2_capture_image_and_download</b>)</td> 
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use gphoto2 capture_and_download (<b>gphoto2_capture_image_and_download</b>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <select id="gphoto2_capture_image_and_download" type="text" name="gphoto2_capture_image_and_download" 
                         value=$gphoto2_capture_image_and_download style="width: 100%" >
                         <option value=True >True</option>
@@ -1237,9 +1306,9 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Use a camera resetter connected to the GPIO (<strong>use_camera_resette</strong>)</td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use a camera resetter connected to the GPIO (<strong>use_camera_resette</strong>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <select id="use_camera_resetter" type="text" name="use_camera_resetter" 
                         value=$use_camera_resetter style="width: 100%" >
                         <option value=True >True</option>
@@ -1247,87 +1316,224 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    Resetter PIN ( GPIO24 ) normaly on (<b>camera_resetter_normaly_on</b>)</td>
-                <td class="style34">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Resetter PIN ( GPIO24 ) normaly on (<b>camera_resetter_normaly_on</b>)</font></td>
+                <td class="style34" bgcolor="$LayColorBBC">
                     <select id="camera_resetter_normaly_on" type="text" name="camera_resetter_normaly_on" 
-                        value=$use_camera_resetter style="width: 100%" >
+                        value="$use_camera_resetter" style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
                     </select></td>
             </tr>
             </table>
-        <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br />
+<!--	</div> -->
+<!--	<div class="tabContent" id="Camera_PI"> -->		
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     Camera PI</td>
             </tr>
-            <tr>
-                <td class="style2">
-                    Use Camera PI (use_cameraPI)</td>
-                <td class="style20">
+           <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use Camera PI (use_cameraPI)</font></td>
+                <td class="style20" bgcolor="$LayColorBBC">
                     <select id="use_cameraPI" type="text" name="use_cameraPI" 
                         style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       
-                    </td>
-            </tr>
+                    </select></td>
+            </tr>	
             <tr> 
-                <td class="style8">
-                    Day Capture option (<strong>cameraPI_day_settings</strong>)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Day Capture option (<strong>cameraPI_day_settings</strong>)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="cameraPI_day_settings" type="text" name="cameraPI_day_settings" 
                         value="$cameraPI_day_settings" style="width: 100%" /></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    Night Capture option(<strong>cameraPI_night_settings</strong>)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Night Capture option(<b>cameraPI_night_settings</b>)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="cameraPI_night_settings" type="text" name="cameraPI_night_settings" 
                         value="$cameraPI_night_settings" style="width: 100%" /></td>
             </tr>
             </table>
-           <br />
-        <br />
-    
-    
-
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br />
+			<table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+			<tr>
+                <td class="style25" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    <font color=$LayColorTTC>IP Cam</td>
+            </tr>
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style2" bgcolor="$LayColorBBC"> 
+	                    <font color=$LayColorBTC>IP CAM Configuration(<b>IPCamCfg</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <select id="IPCamCfg" type="text" name="IPCamCfg" 
+                        value=$IPCamCfg style="width: 100%" tabindex="1">
+                        <option value="None">None</option>						
+                        <option value="IPCam1">IPCam1 N-NE-E-SE-S-SW-W-NW</option>
+                        <option value="IPCam2">IPCam1 N-NE-E-SE-S-SW-W-NW+IPCam2 Fixed(two snapshot)</option>
+                        <option value="Combined">Combined IPCam1 (N-NE-E-SE) + IPCam2 (S-SW-W-NW)</option>
+					</select> </td>
+            </tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>IP address of IPCam 1 (<b>IPCamIP1</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamIP1" type="text" name="IPCamIP1" 
+                        value="$IPCamIP1" style="width: 100%" /></td>        
+			</tr>
+			<tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>User of IPCam 1 (<b>IPCamUS1</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamUS1" type="text" name="IPCamUS1" 
+                        value="$IPCamUS1" style="width: 100%" /></td>        
+			</tr>
+			<tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Password of IPCam 1 (<b>IPCamPW1</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPW1" type="text" name="IPCamPW1" 
+                        value="$IPCamPW1" style="width: 100%" /></td>        
+			</tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Snapshot CGI Command for IPCam1 (<b>IPCamSN1</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamSN1" type="text" name="IPCamSN1" 
+                        value="$IPCamSN1" style="width: 100%" /></td>        
+            </tr>          
+			<tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>IP address of IPCam 2 (<b>IPCamIP2</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamIP2" type="text" name="IPCamIP2" 
+                        value="$IPCamIP2" style="width: 100%" /></td>        
+			</tr>				
+ 			<tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>User of IPCam 2 (<b>IPCamUS2</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamUS2" type="text" name="IPCamUS2" 
+                        value="$IPCamUS2" style="width: 100%" /></td>        
+			</tr>
+			<tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Password of IPCam 2 (<b>IPCamPW2</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPW2" type="text" name="IPCamPW2" 
+                        value="$IPCamPW2" style="width: 100%" /></td>        
+			</tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Snapshot CGI Command for IPCam2 (<b>IPCamSN2</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamSN2" type="text" name="IPCamSN2" 
+                        value="$IPCamSN2" style="width: 100%" /></td>        
+            </tr>            
+			<tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Sleep Time in second After IPCam Running (<b>IPCamZZZ</b>)</font></td>
+                <td class="style26" bgcolor="$LayColorBBC">
+                    <input id="IPCamZZZ" type="text" name="IPCamZZZ" 
+                        value="$IPCamZZZ" style="width: 100%" /></td>        
+			</tr>			
+			<tr>
+                <td class="style25" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                       IPCam2 is only fixed if not combined with IPCam1</td>
+            </tr>
+			<tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>North position CGI Command IPCam1 or None to not use a IPCam positioning (<b>IPCamPosN</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosN" type="text" name="IPCamPosN" 
+                        value="$IPCamPosN" style="width: 100%" /></td>        
+			</tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>NorthEast position CGI Command IPCam1 or None to not use a IPCam positioning (<b>IPCamPosNE</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosNE" type="text" name="IPCamPosNE" 
+                        value="$IPCamPosNE" style="width: 100%" /></td>        
+			</tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>East position CGI Command IPCam1 or None to not use a IPCam positioning (<b>IPCamPosE</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosE" type="text" name="IPCamPosE" 
+                        value="$IPCamPosE" style="width: 100%" /></td>        
+			</tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>SouthEast position CGI Command IPCam1 or None to not use a IPCam positioning (<b>IPCamPosSE</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosSE" type="text" name="IPCamPosSE" 
+                        value="$IPCamPosSE" style="width: 100%" /></td>        
+			</tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>South position CGI Command IPCam1/single-IPCam2/combined or None to not use a IPCam positioning (<b>IPCamPosS</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosS" type="text" name="IPCamPosS" 
+                        value="$IPCamPosS" style="width: 100%" /></td>        
+			</tr>
+            <tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>SouthWest position CGI Command IPCam1/single-IPCam2/combined or None to not use a IPCam positioning (<b>IPCamPosSW</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosSW" type="text" name="IPCamPosSW" 
+                        value="$IPCamPosSW" style="width: 100%" /></td>        
+			</tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>West position CGI Command IPCam1/single-IPCam2/combined or None to not use a IPCam positioning (<b>IPCamPosW</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosW" type="text" name="IPCamPosW" 
+                        value="$IPCamPosW" style="width: 100%" /></td>        
+			</tr>
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>NorthWest position CGI Command IPCam1/single-IPCam2/combined or None to not use a IPCam positioning (<b>IPCamPosNW</b>)</font></td>
+                <td class="style33" bgcolor="$LayColorBBC">
+                    <input id="IPCamPosNW" type="text" name="IPCamPosNW" 
+                        style="width: 100%" value="$IPCamPosNW" /></td>      
+			</tr>
+		</table>		
+	</div>
+	<div class="tabContent" id="RFM01"> 	     
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     RFM01</td>
             </tr>
             <tr>
-                <td class="style41">
-                    Frequenzy MHz (<b>rfm01_frequenzy</b>)</td>
-                <td class="style17">
+                <td class="style41" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Frequenzy MHz (<b>rfm01_frequenzy</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <select id="rfm01_frequenzy" type="text" name="rfm01_frequenzy" 
                         value=$rfm01_frequenzy style="width: 100%" >
                          <option value=315>315</option>
                          <option value=433>433</option>
                          <option value=868>868</option>
                          <option value=915>915</option>                                         
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style42">
-                    low noice amplifier level (<b>rfm01_lna</b>)</td>
-                <td class="style17">
+                <td class="style42" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>low noice amplifier level (<b>rfm01_lna</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <select id="rfm01_lna" type="text" name="rfm01_lna" 
                         value=$rfm01_lna style="width: 100%" >
                         <option value="0">0</option>
                         <option value="6">6</option>
                        <option value="14">14</option>
                         <option value="20">20</option>      
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style42">
-                    band width kHz (<b>rfm01_band</b>)<td class="style17">
+                <td class="style42" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>band width kHz (<b>rfm01_band</b>)</font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">
                     <select id="rfm01_band" type="text" name="rfm01_band" 
                         value=$rfm01_band      style="width: 100%" >
                         <option value="67">67</option>
@@ -1337,13 +1543,12 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         <option value="270">270</option>
                         <option value="340">340</option>                        
                         <option value="400">400</option>                            
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style43">
-                    Received signal strength indication (<b>rfm01_rssi</b>)</td>
-                <td class="style17">
+                <td class="style43" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Received signal strength indication (<b>rfm01_rssi</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <select id="rfm01_rssi" type="text" name="rfm01_rssi" 
                         value=$rfm01_rssi style="width: 100%" >
                         <option value="73">73</option>
@@ -1352,224 +1557,221 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         <option value="91">91</option>
                         <option value="97">97</option>
                         <option value="103">103</option>
-                     
-                        </td>
+                    </select></td>
             </tr>
             </table>
-        <br />
-        <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br />
+	</div>
+	<div class="tabContent" id="Security"> 			
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
-                    Security</td>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    <font color=$LayColorTTC>Security</td>
             </tr>
             <tr>
-                <td class="style2">
-                    Password of the SMS and web-config <b>(SMSPwd)</b></td>
-                <td class="style17">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Password of the SMS and web-config <b>(SMSPwd)</b></font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <input id="SMSPwd" type="text" name="SMSPwd" 
                         value=$SMSPwd style="width: 100%" /></td>
             </tr>
             </table>
-        <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br />
+	</div>
+	<div class="tabContent" id="DataLogging">		
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
-                    DataLogging</td>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    <font color=$LayColorTTC>DataLogging</td>
             </tr>
             <tr>
-                <td class="style2">
-                    Log all meteo data to a PHP web server (<b>logdata</b>)</td>
-                <td class="style20">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Log all meteo data to a PHP web server (<b>logdata</b>)</font></td>
+                <td class="style20" bgcolor="$LayColorBBC">
                     <select id="logdata" type="text" name="logdata" 
                         value=$logdata style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    Http address of the PHP web server file (<b>serverfile</b>)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Http address of the PHP web server file (<b>serverfile</b>)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="serverfile" type="text" name="serverfile" 
                         value=$serverfile style="width: 100%" /></td>
             </tr>
             </table>
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br /> 
+	</div>
+	<div class="tabContent" id="Weather"> 			   
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     Weather Underground</td>
             </tr>
             <tr>
-                <td class="style2">
-                    Log data to Weather Underground PWS (<strong>WeatherUnderground_logdata</strong>)</td>
-                <td class="style20">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Log data to Weather Underground PWS (<strong>WeatherUnderground_logdata</strong>)</font></td>
+                <td class="style20" bgcolor="$LayColorBBC">
                     <select id="WeatherUnderground_logdata" type="text" name="WeatherUnderground_logdata" 
                         style="width: 100%" onclick="return WeatherUnderground_logdata_onclick()">
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    Weather Underground station ID (<strong>WeatherUnderground_ID</strong>)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Weather Underground station ID (<strong>WeatherUnderground_ID</strong>)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="WeatherUnderground_ID" type="text" name="WeatherUnderground_ID" 
                         value=$WeatherUnderground_ID style="width: 100%" /></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    Weather Underground password (WeatherUnderground_password)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Weather Underground password (WeatherUnderground_password)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="WeatherUnderground_password" type="text" name="WeatherUnderground_password" 
                         value=$WeatherUnderground_password style="width: 100%" /></td>
             </tr>
-            </table>
-            
-            </table>
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+            </table>            
+    <br />
+	   
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color:$LayColorTTC;">
                     Citizen Weather Observer Program</td>
             </tr>
             <tr>
-                <td class="style8">
-                    Log data to CWOP (CWOP_logdata)</td>
-                <td class="style20">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Log data to CWOP (CWOP_logdata)</font></td>
+                <td class="style20" bgcolor="$LayColorBBC">
                     <select id="CWOP_logdata" type="text" name="CWOP_logdata" 
                         style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    CWOP&nbsp; station ID (<b>CWOP_ID</b>)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>CWOP&nbsp; station ID (<b>CWOP_ID</b>)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="CWOP_ID" type="text" name="CWOP_ID" 
                         value=$CWOP_ID style="width: 100%" /></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    CWOP&nbsp; password (CWOP_password)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>CWOP&nbsp; password (CWOP_password)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="Text4" type="text" name="CWOP_password" 
                         value=$CWOP_password style="width: 100%" /></td>
             </tr>
             </table>
-            
-            
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br />
+	
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     PWS	- Personal Weather Station</td>
             </tr>
             <tr>
-                <td class="style8">
-                    Log data to PWS (PWS_logdata)</td>
-                <td class="style20">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Log data to PWS (PWS_logdata)</font></td>
+                <td class="style20" bgcolor="$LayColorBBC">
                     <select id="PWS_logdata" type="text" name="PWS_logdata" 
                         style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       
-                    </td>
+                    </select></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    PWS&nbsp; station ID (<b>PWS_ID</b>)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>PWS&nbsp; station ID (<b>PWS_ID</b>)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="PWS_ID" type="text" name="PWS_ID" 
                         value=$PWS_ID style="width: 100%" /></td>
             </tr>
             <tr> 
-                <td class="style8">
-                    CWOP&nbsp; password (PWS_password)</td>
-                <td class="style19">
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>CWOP&nbsp; password (PWS_password)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
                     <input id="PWS_password" type="text" name="PWS_password" 
                         value=$PWS_password style="width: 100%" /></td>
             </tr>
             </table>
+    <br />
+	</div>
+	<div class="tabContent" id="Upload"> 	           
             
-            
-           <br />
-            
-            
-           <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" 
-        style="width: 800px; margin-right: 0px">
+        <table bgcolor=$LayColorTBC border="1" frame="box" style="width: 830px; margin-right: 0px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     Upload</td>
             </tr>
             <tr>
-                <td class="style47">
-                    Upload all meteo data to a FTP server
+                <td class="style47" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Upload all meteo data to a FTP server
                     <span lang="EN-US" style="font-size:11.0pt;
 line-height:115%;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;mso-ascii-theme-font:minor-latin;
 mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:
 minor-latin;mso-bidi-font-family:&quot;Times New Roman&quot;;mso-bidi-theme-font:minor-bidi;
 mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">throw </span>a json 
-                    file. Will use credential of the FTP section. (<b>upload_data</b>)</td>
-                <td class="style17">
+                    file. Will use credential of the FTP section. (<b>upload_data</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <select id="upload_data" type="text" name="upload_data" 
                         value=$upload_data style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
-                    </select>       </td>
+                    </select></td>
             </tr>
             <tr>
-                <td class="style48">
-                    FTP folder to upoad (<b>upload_folder</b>)</td>
-                <td class="style17">
+                <td class="style48" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>FTP folder to upload (<b>upload_folder</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <input id="upload_folder" type="text" name="upload_folder" 
                         value=$upload_folder style="width: 100%" /></td>
             </tr>
             </table>
-           <br />
-            <br />
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+    <br />
+		
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     ftp</td>
             </tr>
             <tr>
-                <td class="style2">
-                    FTP Server <b>(ftpserver )</b><td class="style38">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>FTP Server <b>(ftpserver )</font></td>
+                    <td class="style38" bgcolor="$LayColorBBC">
                     <input id="ftpserver" type="text" name="ftpserver" 
                         value=$ftpserver style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Destination folder (<b>ftpserverDestFolder</b>)<td class="style36">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Destination folder (<b>ftpserverDestFolder</b>)</font></td>
+                    <td class="style36" bgcolor="$LayColorBBC">
                     <input id="ftpserverDestFolder" type="text" name="ftpserverDestFolder" 
                         value=$ftpserverDestFolder onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Login<b> </b>(<b>ftpserverLogin</b>)</td>
-                <td class="style36">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Login<b> </b>(<b>ftpserverLogin</b>)</font></td>
+                <td class="style36" bgcolor="$LayColorBBC">
                     <input id="ftpserverLogin" type="text" name="ftpserverLogin" 
                         value=$ftpserverLogin style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style5">
-                    Password (<b>ftpserverPassowd</b>)</td>
-                <td class="style37">
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Password (<b>ftpserverPassowd</b>)</font></td>
+                <td class="style37" bgcolor="$LayColorBBC">
                     <input id="ftpserverPassowd" type="text" name="ftpserverPassowd" 
                         value=$ftpserverPassowd style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style5">
-                    Use a thread for sending (<b>use_thread_for_sending_to_server</b>)</td> 
-                <td class="style37">
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use a thread for sending (<b>use_thread_for_sending_to_server</b>)</font></td>
+                <td class="style37" bgcolor="$LayColorBBC">
                     <select id="use_thread_for_sending_to_server" type="text" name="use_thread_for_sending_to_server" 
                         value=$use_thread_for_sending_to_server style="width: 100%" >
                         <option value=True >True</option>
@@ -1577,15 +1779,18 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             </table>
-        <p>
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+	<br />
+	</div>
+	<div class="tabContent" id="Radio"> 	
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     Radio</td>
             </tr>
             <tr>
-                <td class="style2">
-                    Use a Radio to transmit wind conditions (<b>useradio</b>)<td class="style39">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use a Radio to transmit wind conditions (<b>useradio</b>)</font></td>
+                    <td class="style39"bgcolor="$LayColorBBC">
                     <select id="useradio" type="text" name="useradio" 
                         value=$useradio style="width: 100%" >
                         <option value=True >True</option>
@@ -1593,33 +1798,37 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Radio interval (<b>radiointerval</b>)<td class="style40">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Radio interval (<b>radiointerval</b>)</font></td>
+                    <td class="style40"bgcolor="$LayColorBBC">
                     <input id="radiointerval" type="text" name="radiointerval" 
                         value=$radiointerval onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Radio Verbosity (<b>radio_verbosity</b>)<td class="style40">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Radio Verbosity (<b>radio_verbosity</b>)</font></td>
+                    <td class="style40"bgcolor="$LayColorBBC">
                     <select id="radio_verbosity" type="text" name="radio_verbosity" 
-                        value=$radio_verbosity style="width: 100%" ">
+                        value=$radio_verbosity style="width: 100%" >
                         <option value="only_wind">only_wind</option>
                         <option value="motor">motor</option>
                         <option value="all">all</option>
-                        </td>
+                    </select></td>
+                </td>
             </tr>
             </table>
-        </p>
-        <p>
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+	</div>
+	<div class="tabContent" id="Mail"> 
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     Mail</td>
             </tr>
             <tr>
-                <td class="style5">
-                    Use mail to comunicate<b> (use_mail)</b><td class="style17">
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use mail to comunicate<b> (use_mail)</b></font></td>
+                    <td class="style17"bgcolor="$LayColorBBC">
                     <select id="use_mail" type="text" name="use_mail" 
                         value=$use_mail style="width: 100%" >
                         <option value=True >True</option>
@@ -1627,29 +1836,30 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    User (   <td class="style17">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>User <b>(gmail_user)</b></font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">
                     <input id="gmail_user" type="text" name="gmail_user" 
                         value=$gmail_user style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Password (<b>gmail_pwd</b>)<td class="style17">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Password (<b>gmail_pwd</b>)</font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">
                     <input id="gmail_pwd" type="text" name="gmail_pwd" 
                         value=$gmail_pwd onclick="return location_longitude_onclick()" 
                         style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Address to send to (<b>mail_to</b>)</td>
-                <td class="style17">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Address to send to (<b>mail_to</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
                     <input id="mail_to" type="text" name="mail_to" 
                         value=$mail_to style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style5">
-                    Mail IP at statup&nbsp; (<b>mail_ip</b>)</td>
-                <td class="style17">
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Mail IP at statup&nbsp; (<b>mail_ip</b>)</font></td>
                     <select id="mail_ip" type="text" name="mail_ip" 
                         value=$mail_ip style="width: 100%" >
                         <option value=True >True</option>
@@ -1657,15 +1867,16 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             </table>
-        </p>
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+	<br />
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
                     SMS</td>
             </tr>
             <tr>
-                <td class="style2">
-                    Send IP by SMS at statup (<b>send_IP_by_sms</b>)<td class="style39">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Send IP by SMS at statup (<b>send_IP_by_sms</b>)</font></td>
+                    <td class="style39"bgcolor="$LayColorBBC">
                     <select id="send_IP_by_sms" type="text" name="send_IP_by_sms" 
                         value=$send_IP_by_sms style="width: 100%" >
                         <option value=True >True</option>
@@ -1673,23 +1884,26 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Number to send SMS (<b>number_to_send</b>)<td class="style40">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Number to send SMS (<b>number_to_send</b>)</font></td>
+                    <td class="style40"bgcolor="$LayColorBBC">
                     <input id="number_to_send" type="text" name="number_to_send" 
                         value=$number_to_send  
                         style="width: 100%" /></td>
             </tr>
             </table>
-            
+	</div>
+	<div class="tabContent" id="DynDNS">             
         <br >
-        <table bgcolor="#FF99FF" border="1" frame="box" width="800px">
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: #0000FF;">
-                    DNS Exit</td>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    DNS Exit(DynDNS)</td>
             </tr>
             <tr>
-                <td class="style5">
-                    <span class="style53">Send ip information to DNS Exit</span><b> (use_DNSExit)</b><td class="style17">
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Send ip information to DNS Exit</span><b> (use_DNSExit)</font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">
                     <select id="use_DNSExit" type="text" name="use_DNSExit" 
                         value=$use_mail style="width: 100%" >
                         <option value=True >True</option>
@@ -1697,33 +1911,73 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                     </select></td>
             </tr>
             <tr>
-                <td class="style2">
-                    User (   <b>DNSExit_uname</b> )<td class="style17">
+                <td class="style2" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>User (   <b>DNSExit_uname</b> )</font></td>
+                    <td class="style17"bgcolor="$LayColorBBC">
                     <input id="DNSExit_uname" type="text" name="DNSExit_uname" 
                         value=$DNSExit_uname style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style3">
-                    Password (<b>DNSExit_pwd</b>)<td class="style17">
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Password (<b>DNSExit_pwd</b>)</font></td>
+                    <td class="style17"bgcolor="$LayColorBBC">
                     <input id="DNSExit_pwd" type="text" name="DNSExit_pwd" 
                         value=$DNSExit_pwd  style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style5">
-                    <span class="style53">Hostname</span>&nbsp; (DNSExit_hname )</td>
-                <td class="style17">
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Hostname (<b>DNSExit_hname</b> )</font></td>
+                <td class="style17"bgcolor="$LayColorBBC">
                     <input id="DNSExit_hname" type="text" name="DNSExit_hname" 
                         value=$DNSExit_hname  style="width: 100%" /></td>
             </tr>
             </table>
-        
+   </div>
+   	<div class="tabContent" id="Layout">             
+        <br >
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    Layout</td>
+            </tr>
+
+            <tr>
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Titles Background Color (<b>LayColorTBC</b>)</font></td>
+                    <td class="style17"bgcolor="$LayColorBBC">
+                    <input class="color" id="LayColorTBC" type="text" name="LayColorTBC" 
+                        value=$LayColorTBC   style="width: 100%"/></td>
             
-            
-        <p>
+            </tr>
+            <tr>
+                 <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Titles Text Color (<b>LayColorTTC</b>)</font></td>
+                    <td class="style17"bgcolor="$LayColorBBC">
+                    <input class="color" id="LayColorTTC" type="text" name="LayColorTTC" 
+                        value=$LayColorTTC  style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Body Background Color (<b>LayColorBBC</b>)</font></td>
+                    <td class="style17"bgcolor="$LayColorBBC">
+                    <input class="color" id="LayColorBBC" type="text" name="LayColorBBC" 
+                        value=$LayColorBBC  style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style3" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Body Text Color (<b>LayColorBTC</b>)</font></td>
+                    <td class="style17"bgcolor="$LayColorBBC">
+                    <input class="color" id="LayColorBTC" type="text" name="LayColorBTC" 
+                        value=$LayColorBTC style="width: 100%" /></td>
+            </tr>
+ 
+        </table>
+   </div>         
+       <p>
             <input id="Submit1" type="submit" value="Save" /></p>
             </form>   
             
 
 
-        </body>
+    </body>
 </html>
