@@ -675,7 +675,10 @@ os.system( "sudo chown  pi ./mcp3002" )
 os.system( "sudo chown  pi ./TX23" )
 os.system( "sudo chown  pi ./wh1080_rf" )
 
-
+if(os.path.isfile("webcamtmp")):
+	os.system( "sudo rm ./webcamtmp")
+if(os.path.isfile("wget-log")):
+	os.system( "sudo rm ./wget-log")
 
 
 # Some Globasl :-(
@@ -1072,6 +1075,12 @@ while 1:
 			if ( tosleep > 0):
 				log("Sleeping %s seconds" % tosleep)
 				time.sleep(tosleep)
+
+		if ( cfg.IPCamInterval != 0):
+			tosleep = cfg.IPCamInterval-(datetime.datetime.now()-last_data_time).seconds
+			if ( tosleep > 0):
+				log("IPCam Sleeping %s seconds" % tosleep)
+				time.sleep(tosleep)				
 		else:
 			log("Sleeping 1000 seconds")
 			time.sleep(1000)	
