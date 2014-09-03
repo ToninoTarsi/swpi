@@ -172,6 +172,7 @@ def outputPage(cfg):
 	d.update(DNSExit_hname=cfg.DNSExit_hname)
 
 	#[IP CAM]
+	d.update(IPCamInterval=cfg.IPCamInterval)
 	d.update(IPCamCfg=cfg.IPCamCfg)
 	d.update(IPCamIP1=cfg.IPCamIP1)
 	d.update(IPCamUS1=cfg.IPCamUS1)
@@ -362,6 +363,7 @@ if ( len(request) != 0 ):
 	# cfg.UseDongleNet = request['UseDongleNet'][0]
 
 	#[IP CAM]
+	cfg.IPCamInterval = request['IPCamInterval'][0]
 	cfg.IPCamCfg = request['IPCamCfg'][0]
 	cfg.IPCamIP1 = request['IPCamIP1'][0]
 	cfg.IPCamUS1 = request['IPCamUS1'][0]

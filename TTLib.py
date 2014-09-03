@@ -832,14 +832,14 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
                 
             text = ""
             if (globalvars.meteo_data.hum_out  != None) : 
-                text = text + "Umidita : %d" % (globalvars.meteo_data.hum_out) + " % - "
+                text = text + "Umidita: %d" % (globalvars.meteo_data.hum_out) + " % - "
             
             if (globalvars.meteo_data.rain_rate != None) : 
-                text = text + "Pioggia oggi : %3.1f" % (globalvars.meteo_data.rain_rate) + " mm - "
+                text = text + "Pioggia oggi: %3.1f" % (globalvars.meteo_data.rain_rate) + " mm - "
             
             if ( globalvars.meteo_data.last_measure_time != None ):
-                #text = text + "Ultima misura: " + str(globalvars.meteo_data.last_measure_time)
-                text = text + globalvars.meteo_data.last_measure_time.strftime("Ultima misura: %d/%m/%Y - %H:%M:%S ")
+                #text = text + "Ult.Ril:" + str(globalvars.meteo_data.last_measure_time)
+                text = text + globalvars.meteo_data.last_measure_time.strftime("Ult.Ril:%d/%m/%Y-%H:%M:%S")
                 
                 width, height = font.getsize(text)
                 draw.text((32+marginLeft, h-height),text,textColor,font=font)
@@ -851,7 +851,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
     
     if ( version != None):
         font = ImageFont.truetype(font_path, 11, encoding='unic')
-        text = "(Sint Wind PI : " + version + ")"
+        text = "(Sint Wind PI:" + version + ")"
         width, height = font.getsize(text)
         draw.text((w-width-MarginRight, h-height),text,textColor,font=font)            
     

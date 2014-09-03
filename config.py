@@ -279,7 +279,8 @@ class config(object):
 		self.DNSExit_hname = config.get('DNSExit', 'DNSExit_hname',"xxxx.linkpc.net")		
 
 		#[IP CAM]
-		self.IPCamCfg = config.get('IPCam', 'IPCamCfg',"A")
+		self.IPCamInterval = config.getint('IPCam', 'IPCamInterval',600)
+		self.IPCamCfg = config.get('IPCam', 'IPCamCfg',"None")
 		self.IPCamIP1 = config.get('IPCam', 'IPCamIP1',"None")
 		self.IPCamUS1 = config.get('IPCam', 'IPCamUS1',"None")
 		self.IPCamPW1 = config.get('IPCam', 'IPCamPW1',"None")
@@ -297,7 +298,12 @@ class config(object):
 		self.IPCamPosSW = config.get('IPCam', 'IPCamPosSW',"None")	
 		self.IPCamPosW = config.get('IPCam', 'IPCamPosW',"None")	
 		self.IPCamPosNW = config.get('IPCam', 'IPCamPosNW',"None")			
-	
+		
+		#[LAYOUT]
+		self.LayColorTBC = config.get('LayOut', 'LayColorTBC',"FF99FF")
+		self.LayColorTTC = config.get('LayOut', 'LayColorTTC',"0000FF")
+		self.LayColorBBC = config.get('LayOut', 'LayColorBBC',"FF99FF")
+		self.LayColorBTC = config.get('LayOut', 'LayColorBTC',"0000FF")
 		
 		f = open(self.cfgName,"w")
 		config.write(f)					
@@ -463,6 +469,7 @@ class config(object):
 		config.setstr('DNSExit', 'DNSExit_hname ',self.DNSExit_hname)	
 
 		#[IP CAM]
+		config.setint('IPCam', 'IPCamInterval',self.IPCamInterval)
 		config.setstr('IPCam', 'IPCamCfg',self.IPCamCfg)		
 		config.setstr('IPCam', 'IPCamIP1',self.IPCamIP1)
 		config.setstr('IPCam', 'IPCamUS1',self.IPCamUS1)
@@ -481,6 +488,13 @@ class config(object):
 		config.setstr('IPCam', 'IPCamPosSW',self.IPCamPosSW)		
 		config.setstr('IPCam', 'IPCamPosW',self.IPCamPosW)
 		config.setstr('IPCam', 'IPCamPosNW',self.IPCamPosNW)
+
+		#[LAYOUT]
+		config.setstr('LayOut', 'LayColorTBC',self.LayColorTBC)
+		config.setstr('LayOut', 'LayColorTTC',self.LayColorTTC)
+		config.setstr('LayOut', 'LayColorBBC',self.LayColorBBC)
+		config.setstr('LayOut', 'LayColorBTC',self.LayColorBTC)
+
 		
 		f = open(self.cfgName,"w")
 		config.write(f)			
@@ -546,7 +560,14 @@ class config(object):
 		config.set('Sensors', 'windspeed_gain',str(self.windspeed_gain))
 		f = open(self.cfgName,"w")
 		config.write(f)
-		
+
+	def setIPCamInterval(self,newIPCamInterval):
+		self.IPCamInterval = int(newIPCamInterval)
+		config = ConfigParser.SafeConfigParser()
+		config.read(self.cfgName)
+		config.set('IPCam', 'ipcaminterval',str(self.IPCamInterval))
+		f = open(self.cfgName,"w")
+		config.write(f)	
 		
 	def setCamera_resolution(self,newres):
 		ires = int(newres)

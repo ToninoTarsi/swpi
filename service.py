@@ -47,11 +47,12 @@ class WatchDog(threading.Thread):
         while 1:
             time.sleep(self.cfg.WebCamInterval )
             seconds_elapsed = (datetime.datetime.now() - globalvars.WatchDogTime  ).total_seconds()
-            log("Last main Thread delay ratio: %.1f"%(seconds_elapsed/self.cfg.WebCamInterval))
-            if (seconds_elapsed > (2 * self.cfg.WebCamInterval)  ) :
-                log("General WatchDog : System will Reboot")
-                time.sleep(10)
-                systemRestart()
+            if (self.cfg.WebCamInterval > 0):
+                log("Last main Thread delay ratio: %.1f"%(seconds_elapsed/self.cfg.WebCamInterval))
+                if (seconds_elapsed > (2 * self.cfg.WebCamInterval)):
+                    log("General WatchDog : System will Reboot")
+                    time.sleep(10)
+                    systemRestart()
 
              
 

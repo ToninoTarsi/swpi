@@ -674,8 +674,13 @@ os.system( "sudo chown  pi ./DHT" )
 os.system( "sudo chown  pi ./mcp3002" )
 os.system( "sudo chown  pi ./TX23" )
 os.system( "sudo chown  pi ./wh1080_rf" )
+os.system( "sudo chown -R pi ./jscolor" )
+os.system( "sudo chmod -R 777 ./jscolor" )
 
-
+if(os.path.isfile("webcamtmp")):
+	os.system( "sudo rm ./webcamtmp")
+if(os.path.isfile("wget-log")):
+	os.system( "sudo rm ./wget-log")
 
 
 # Some Globasl :-(
@@ -841,6 +846,10 @@ if ( cfg.usecameradivice ):
 ############################ MAIN  LOOP###############################################
 
 while 1:
+	
+	bipcam1 = False;
+	bipcam2 = False;
+	
 	last_data_time = datetime.datetime.now()
 	
 	if ( plugin_sync != None ):
@@ -1072,6 +1081,12 @@ while 1:
 			if ( tosleep > 0):
 				log("Sleeping %s seconds" % tosleep)
 				time.sleep(tosleep)
+
+		if ( cfg.IPCamInterval != 0):
+			tosleep = cfg.IPCamInterval-(datetime.datetime.now()-last_data_time).seconds
+			if ( tosleep > 0):
+				log("IPCam Sleeping %s seconds" % tosleep)
+				time.sleep(tosleep)				
 		else:
 			log("Sleeping 1000 seconds")
 			time.sleep(1000)	
