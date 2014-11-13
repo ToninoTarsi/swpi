@@ -138,7 +138,7 @@ class PhotoCamera(object):
 
 		
 		self.bCaturing = 1
-		thread.start_new_thread(self.SetTimer,()) 
+		#thread.start_new_thread(self.SetTimer,()) 
 		
 		logFile = datetime.datetime.now().strftime("log/gphoto2_%d%m%Y.log")
 		pictureTaken = []
