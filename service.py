@@ -52,7 +52,7 @@ class WatchDog(threading.Thread):
                 if (seconds_elapsed > (2 * self.cfg.WebCamInterval)):
                     log("General WatchDog : System will Reboot")
                     time.sleep(10)
-                    systemRestart()
+                    #systemRestart()
 
              
 

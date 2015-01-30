@@ -69,6 +69,14 @@ def get_wind_dir16S():
     return [ 180,202.5,157.5,135,247.5,225,270,292.5,67.5,45,90,112.5,0,22.5,337.5,315 ]
 
 
+def get_wind_dir_code16W():
+    return [ 'E','ESE','ENE','NE','SSE','SE','S','SSW','NNW','NW','N','NNE','W','WNW','WSW','SW']
+
+
+def get_wind_dir16W():
+    return [ 90,112.5,67.5,45,157.5,135,180,202.5,337.5,315,0,22.5,270,292.5,247.5,225 ]
+
+
 
 class Sensor_Nevio(sensor.Sensor):
     
@@ -105,6 +113,7 @@ class Sensor_Nevio(sensor.Sensor):
         if ( self.cfg.sensor_type.upper() != "NEVIO4" ) : GPIO.setup(self.__PIN_B3, GPIO.IN)  # B3
         if ( self.cfg.sensor_type.upper() == "NEVIO16" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
         if ( self.cfg.sensor_type.upper() == "NEVIO16S" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
+        if ( self.cfg.sensor_type.upper() == "NEVIO16W" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
         
@@ -170,7 +179,15 @@ class Sensor_Nevio(sensor.Sensor):
             b0 = GPIO.input(self.__PIN_B0)
             wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
             wind_dir = get_wind_dir16S()[wind_dir16]
-            wind_dir_code = get_wind_dir_code16S()[wind_dir16]               
+            wind_dir_code = get_wind_dir_code16S()[wind_dir16]     
+        elif ( self.cfg.sensor_type.upper() == "NEVIO16W" ):
+            b1 = GPIO.input(self.__PIN_B1)
+            b2 = GPIO.input(self.__PIN_B2)
+            b3 = GPIO.input(self.__PIN_B3)
+            b0 = GPIO.input(self.__PIN_B0)
+            wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
+            wind_dir = get_wind_dir16W()[wind_dir16]
+            wind_dir_code = get_wind_dir_code16W()[wind_dir16]                
         
         return wind_dir, wind_dir_code
     
@@ -260,35 +277,11 @@ if __name__ == '__main__':
     if ( cfg.sensor_type.upper() != "NEVIO4" ) : GPIO.setup(__PIN_B3, GPIO.IN)  # B3
     if ( cfg.sensor_type.upper() == "NEVIO16" ) : GPIO.setup(__PIN_B0, GPIO.IN)  # B0
     if ( cfg.sensor_type.upper() == "NEVIO16S" ) : GPIO.setup(__PIN_B0, GPIO.IN)  # B0
-
+    if ( cfg.sensor_type.upper() == "NEVIO16W" ) : GPIO.setup(__PIN_B0, GPIO.IN)  # B0
     
     while ( 1 ) :
 
-        if ( cfg.sensor_type.upper() == "NEVIO4"): 
-            b1 = GPIO.input(__PIN_B1)
-            b2 = GPIO.input(__PIN_B2)
-            wind_dir4  =   b1 + b2*2  
-            wind_dir = get_wind_dir4()[wind_dir4]
-            wind_dir_code = get_wind_dir_code4()[wind_dir4]   
-            print "b1=",b1," b2=",b2
-        elif ( cfg.sensor_type.upper() == "NEVIO8"):
-            b1 = GPIO.input(__PIN_B1)
-            b2 = GPIO.input(__PIN_B2)
-            b3 = GPIO.input(__PIN_B3)
-            wind_dir8  =   b1 + b2*2 + b3*4 
-            wind_dir = get_wind_dir8()[wind_dir8]
-            wind_dir_code = get_wind_dir_code8()[wind_dir8]   
-            print "b1=",b1," b2=",b2," b3=",b3
-        elif ( cfg.sensor_type.upper() == "NEVIO16" or cfg.sensor_type.upper() == "NEVIO16S" ):
-            b1 = GPIO.input(__PIN_B1)
-            b2 = GPIO.input(__PIN_B2)
-            b3 = GPIO.input(__PIN_B3)
-            b0 = GPIO.input(__PIN_B0)
-            wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
-            wind_dir = get_wind_dir16()[wind_dir16]
-            wind_dir_code = get_wind_dir_code16()[wind_dir16]    
-            print "b1=",b1," b2=",b2," b3=",b3," b0=",b0          
-    
+   
 
         #b3 = GPIO.input(22)
  

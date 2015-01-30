@@ -1,5 +1,26 @@
 #! /bin/bash
 
+echo $1
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied"
+	theurl="http://www.vololiberomontecucco.it/swpi/swpi-src.tar.gz"
+	thefile="swpi-src.tar.gz"
+else
+    echo "arguments supplied"
+	theurl="http://www.vololiberomontecucco.it/swpi/swpi_"
+	theurl+=$1
+	theurl+=.tar.gz
+	thefile="swpi_"
+	thefile+=$1
+	thefile+=.tar.gz
+fi
+
+
+echo $theurl
+
+
+
 
 test=`awk '$4~/(^|,)ro($|,)/' /proc/mounts | grep /dev/root`
 if [ -z "$test" ]
@@ -25,9 +46,9 @@ sudo chown  pi ./TX23
 sudo chown  pi ./wh1080_rf
 
 cd /home/pi/
-wget http://www.vololiberomontecucco.it/swpi/swpi-src.tar.gz
-tar xvfz swpi-src.tar.gz
-rm swpi-src.tar.gz
+wget $theurl
+tar -xvf $thefile
+rm $thefile
 cd swpi
 
 echo "Changing permissions"
