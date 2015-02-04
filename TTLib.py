@@ -707,8 +707,12 @@ def UploadData(cfg):
 
     mydata['TempCPU'] =  get_cpu_temperature()
     mydata['freedisk'] = disk_free()
-
-    
+    if ( cfg.sensor_type == "DAVIS-VANTAGE-PRO2"):
+        mydata['RainStorm'] = (globalvars.meteo_data.RainStorm)
+        mydata['RainMonth'] = (globalvars.meteo_data.RainMonth)
+        mydata['RainYear'] = (globalvars.meteo_data.RainYear)
+        mydata['StormStartDate'] = (globalvars.meteo_data.StormStartDate)
+        mydata['BatteryVolts'] = (globalvars.meteo_data.BatteryVolts)    
     
     #print mydata
     
