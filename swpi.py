@@ -1078,7 +1078,7 @@ while 1:
 			
 		if ( cfg.WebCamInterval != 0):
 			tosleep = cfg.WebCamInterval-(datetime.datetime.now()-last_data_time).seconds
-			if ( tosleep > 0):
+			if ( tosleep > 30):
 				log("Sleeping %s seconds" % tosleep)
 				time.sleep(tosleep)
 
@@ -1089,7 +1089,7 @@ while 1:
 # 				time.sleep(tosleep)				
 		else:
 			log("Sleeping 1000 seconds")
-			time.sleep(1000)	
+			time.sleep(30)	
 			
 
 		
