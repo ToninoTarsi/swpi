@@ -78,7 +78,10 @@ class QueueFeeder(threading.Thread):
                 # set timeout
                 input_line = self.ctrl_port.readline() 
                 #print "Debug- QueueFeeder : " +  input_line
-                self.queue.put(input_line)
+                self.queue.put(input_line)  
+            except:
+                log("Error in ctrl_port.readline")    
+                systemRestart()
             finally:
                 self.ctrl_lock.release()
                 # Putting the thread on idle between releasing

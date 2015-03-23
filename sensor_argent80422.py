@@ -28,10 +28,7 @@ import thread
 from ctypes import *
 import intervalmap
 
-def get_wind_dir_text():
-    """Return an array to convert wind direction integer to a string."""
 
-    return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
 
 class Sensor_Argent80422(sensor.Sensor):
@@ -66,26 +63,49 @@ class Sensor_Argent80422(sensor.Sensor):
         
 
         self.map = intervalmap.intervalmap()
-        self.map[0:75]    = 5
-        self.map[75:89]   = 3
-        self.map[89:111]  = 4
-        self.map[111:156] = 7
-        self.map[156:214] = 6
-        self.map[214:264] = 9
-        self.map[264:342] = 8
-        self.map[342:424] = 1
-        self.map[424:514] = 2
-        self.map[514:593] = 11
-        self.map[593:640] = 10
-        self.map[640:712] = 15
-        self.map[712:769] = 0
-        self.map[769:815] = 13
-        self.map[815:870] = 14
-        self.map[870:1024]= 12
-                
+        
+        if ( self.cfg.sensor_type.upper()  == "PCE-SENSOR-C" ):
+            self.map[0:75]    = 7
+            self.map[75:89]   = 5
+            self.map[89:111]  = 6
+            self.map[111:156] = 9
+            self.map[156:214] = 8
+            self.map[214:264] = 11
+            self.map[264:342] = 10
+            self.map[342:424] = 3
+            self.map[424:514] = 4
+            self.map[514:593] = 13
+            self.map[593:640] = 12
+            self.map[640:712] = 1
+            self.map[712:769] = 2
+            self.map[769:815] = 15
+            self.map[815:870] = 0
+            self.map[870:1024]= 14
+        else:
+            self.map[0:75]    = 5
+            self.map[75:89]   = 3
+            self.map[89:111]  = 4
+            self.map[111:156] = 7
+            self.map[156:214] = 6
+            self.map[214:264] = 9
+            self.map[264:342] = 8
+            self.map[342:424] = 1
+            self.map[424:514] = 2
+            self.map[514:593] = 11
+            self.map[593:640] = 10
+            self.map[640:712] = 15
+            self.map[712:769] = 0
+            self.map[769:815] = 13
+            self.map[815:870] = 14
+            self.map[870:1024]= 12
+                            
         self.active = True
         self.start()
 
+
+    def get_wind_dir_text(self):
+        """Return an array to convert wind direction integer to a string."""
+        return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
     
     def run(self):
         sleeptime = self.cfg.windmeasureinterval - self.__MEASURETIME
@@ -115,7 +135,7 @@ class Sensor_Argent80422(sensor.Sensor):
         
         #print "ch0",ch0
         wind_dir = self.map[ch0]
-        winddir_code = get_wind_dir_text()[wind_dir]
+        winddir_code = self.get_wind_dir_text()[wind_dir]
         
         return wind_dir*22.5, winddir_code
     
