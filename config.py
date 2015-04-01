@@ -172,6 +172,8 @@ class config(object):
 		self.number_of_measure_for_wind_average_gust_calculation =  config.getint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',10)
 		self.sensor_temp_out =   config.get('Sensors', 'sensor_temp_out',"Default")
 		self.sensor_temp_in =   config.get('Sensors', 'sensor_temp_in',"Default")
+		self.solarsensor =   config.getboolean('Sensors', 'solarsensor',False)
+		self.uvsensor =   config.getboolean('Sensors', 'uvsensor',False)
 
 		# [Sensor_PCE-FWS20]
 		self.set_system_time_from_WeatherStation = config.getboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',False)
@@ -374,7 +376,9 @@ class config(object):
 		config.setfloat('Sensors', 'wind_trend_limit',self.wind_trend_limit)
 		config.setint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',self.number_of_measure_for_wind_average_gust_calculation)
 		config.setstr('Sensors', 'sensor_temp_out',self.sensor_temp_out)
-		config.setstr('Sensors', 'sensor_temp_in',self.sensor_temp_in)	
+		config.setstr('Sensors', 'sensor_temp_in',self.sensor_temp_in)
+		config.setboolean('Sensors', 'solarsensor',self.solarsensor)
+		config.setboolean('Sensors', 'uvsensor',self.uvsensor)	
 		
 
 		# [Sensor_PCE-FWS20]

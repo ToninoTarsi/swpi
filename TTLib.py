@@ -161,8 +161,15 @@ def swpi_update_old():
 
 def SetTimeFromNTP(ntp_server):
     try:
-        c = ntplib.NTPClient()
-        date_str = c.request(ntp_server, version=3,timeout=10)
+        cfg = config.config('swpi.cfg')        
+        if (cfg.ntp_url!='None'):
+            date_str = requests.get(cfg.ntp_url,timeout=10).text
+            log(date_str)
+            log("adjusted from : " + cfg.ntp_url)
+            return True
+        else:
+            c = ntplib.NTPClient()
+            date_str = c.request(ntp_server, version=3,timeout=10)
         if (date_str != None ):
             os.system("sudo date -s '%s'" %  time.ctime(date_str.tx_time))
             log("System time adjusted from NPT server : " + ntp_server)
@@ -172,6 +179,7 @@ def SetTimeFromNTP(ntp_server):
     except:
         log("ERROR - Failed to set time system from ntp server")
         return False
+
        
 def DNSExit(uname,pwd,hname):
     ip = getPublicIP()
@@ -384,8 +392,11 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
     if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = "{:.2f}".format(( globalvars.meteo_data.dew_point * 1.8 ) + 32)
     if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate  * 0.0393700787)
     if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
+    if ( solarsensor == True ):
+        if globalvars.meteo_data.illuminance != None :  parameters['solarradiation'] = "{:.4f}".globalvars.meteo_data.illuminance
+    if ( uvsensor == True ):
+        if globalvars.meteo_data.uv != None :  parameters['uv'] = "{:.4f}".globalvars.meteo_data.uv
     parameters['softwaretype'] = "Sint Wind PI"
-        
     #print  parameters   
     try:
         r = requests.get(serverfile, params=parameters,timeout=10)
@@ -1015,12 +1026,7 @@ def waitForIP():
     cfg = config.config('swpi.cfg')
     for i in range(1,n):
         theIP = getIP()
-        #log(cfg.ntp_url)
         if ( theIP != None):
-            if (cfg.ntp_url != 'None'):
-                date_str = requests.get(cfg.ntp_url,timeout=10).text
-                log(date_str)
-                os.system("sudo date -s '%s'" % date_str)
             return theIP
         log("No IP yet. Retrying ..%d" % (n-i) )
         time.sleep(2)
