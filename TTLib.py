@@ -378,6 +378,7 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
     parameters['ID'] = ID
     parameters['PASSWORD'] = password
     parameters['dateutc'] = str(datetime.datetime.utcnow())
+    cfg = config.config('swpi.cfg')
     
     if globalvars.meteo_data.wind_dir != None :  parameters['winddir'] = int(globalvars.meteo_data.wind_dir)
     if ( wind_speed_units == "kmh" ):
@@ -392,10 +393,10 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
     if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = "{:.2f}".format(( globalvars.meteo_data.dew_point * 1.8 ) + 32)
     if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate  * 0.0393700787)
     if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
-    if ( solarsensor == True ):
-        if globalvars.meteo_data.illuminance != None :  parameters['solarradiation'] = "{:.4f}".globalvars.meteo_data.illuminance
-    if ( uvsensor == True ):
-        if globalvars.meteo_data.uv != None :  parameters['uv'] = "{:.4f}".globalvars.meteo_data.uv
+    if ( cfg.solarsensor == True ):
+        if globalvars.meteo_data.illuminance != None :  parameters['solarradiation'] = globalvars.meteo_data.illuminance
+    if ( cfg.uvsensor == True ):
+        if globalvars.meteo_data.uv != None :  parameters['uv'] = globalvars.meteo_data.uv
     parameters['softwaretype'] = "Sint Wind PI"
     #print  parameters   
     try:
