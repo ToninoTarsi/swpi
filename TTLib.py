@@ -165,6 +165,7 @@ def SetTimeFromNTP(ntp_server):
         if (cfg.ntp_url!='None'):
             date_str = requests.get(cfg.ntp_url,timeout=10).text
             log(date_str)
+            os.system("sudo date -s '%s'" % date_str)
             log("adjusted from : " + cfg.ntp_url)
             return True
         else:
