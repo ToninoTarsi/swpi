@@ -385,6 +385,20 @@
                     break;
                 }
             }
+			 dd = document.getElementById('solarsensor');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$solarsensor') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+			 dd = document.getElementById('uvsensor');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$uvsensor') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
 
             dd = document.getElementById('use_bmp085');
             for (var i = 0; i < dd.options.length; i++) {
@@ -829,6 +843,13 @@
                     <input id="ntp_server" type="text" name="ntp_server" 
                         value="$ntp_server" style="width: 100%" /></td>
             </tr>
+              <tr>
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Set time by  url for time adjustemnt. (ntp-url).time.php&lt;?=date(&quot;D M j G:i:s Y&quot;);?&gt;</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                  <input id="ntp_url" type="text" name="ntp_url" 
+                        value="$ntp_url" style="width: 100%" /></td>
+            </tr>
             <tr>
                 <td class="style12" width="800" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Activate the config WebServer (<b>config_web_server</b>)</font></td>
@@ -1000,12 +1021,33 @@
                         value="$number_of_measure_for_wind_trend" 
                         style="width: 100%" /></td>
             </tr>
-				<td class="style52" bgcolor="$LayColorBBC">
+            <tr>
+                <td class="style52" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>wind trend limits (<b>wind_trend_limit</b>)</font></td>
                 <td class="style31" bgcolor="$LayColorBBC">
                     <input id="Text2" type="text" name="wind_trend_limit" 
                         value="$wind_trend_limit" 
                         style="width: 100%" /></td>
+            </tr>
+             <tr>   
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Solar Sensor ( <b>Davis-Vantage-Pro2</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
+                    <select id="solarsensor" type="text" name="solarsensor" 
+                        value=$solarsensor style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
+            <tr>   
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>UV Sensor ( <b>Davis-Vantage-Pro2</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
+                    <select id="uvsensor" type="text" name="uvsensor" 
+                        value=$uvsensor style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
             </tr>
             </table> 
     <br />

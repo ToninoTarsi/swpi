@@ -161,8 +161,16 @@ def swpi_update_old():
 
 def SetTimeFromNTP(ntp_server):
     try:
-        c = ntplib.NTPClient()
-        date_str = c.request(ntp_server, version=3,timeout=10)
+        cfg = config.config('swpi.cfg')        
+        if (cfg.ntp_url!='None'):
+            date_str = requests.get(cfg.ntp_url,timeout=10).text
+            log(date_str)
+            os.system("sudo date -s '%s'" % date_str)
+            log("adjusted from : " + cfg.ntp_url)
+            return True
+        else:
+            c = ntplib.NTPClient()
+            date_str = c.request(ntp_server, version=3,timeout=10)
         if (date_str != None ):
             os.system("sudo date -s '%s'" %  time.ctime(date_str.tx_time))
             log("System time adjusted from NPT server : " + ntp_server)
@@ -172,6 +180,7 @@ def SetTimeFromNTP(ntp_server):
     except:
         log("ERROR - Failed to set time system from ntp server")
         return False
+
        
 def DNSExit(uname,pwd,hname):
     ip = getPublicIP()
@@ -370,6 +379,7 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
     parameters['ID'] = ID
     parameters['PASSWORD'] = password
     parameters['dateutc'] = str(datetime.datetime.utcnow())
+    cfg = config.config('swpi.cfg')
     
     if globalvars.meteo_data.wind_dir != None :  parameters['winddir'] = int(globalvars.meteo_data.wind_dir)
     if ( wind_speed_units == "kmh" ):
@@ -384,8 +394,11 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
     if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = "{:.2f}".format(( globalvars.meteo_data.dew_point * 1.8 ) + 32)
     if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate  * 0.0393700787)
     if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
+    if ( cfg.solarsensor == True ):
+        if globalvars.meteo_data.illuminance != None :  parameters['solarradiation'] = globalvars.meteo_data.illuminance
+    if ( cfg.uvsensor == True ):
+        if globalvars.meteo_data.uv != None :  parameters['uv'] = globalvars.meteo_data.uv
     parameters['softwaretype'] = "Sint Wind PI"
-        
     #print  parameters   
     try:
         r = requests.get(serverfile, params=parameters,timeout=10)
@@ -707,8 +720,12 @@ def UploadData(cfg):
 
     mydata['TempCPU'] =  get_cpu_temperature()
     mydata['freedisk'] = disk_free()
-
-    
+    if ( cfg.sensor_type == "DAVIS-VANTAGE-PRO2"):
+        mydata['RainStorm'] = (globalvars.meteo_data.RainStorm)
+        mydata['RainMonth'] = (globalvars.meteo_data.RainMonth)
+        mydata['RainYear'] = (globalvars.meteo_data.RainYear)
+        mydata['StormStartDate'] = (globalvars.meteo_data.StormStartDate)
+        mydata['BatteryVolts'] = (globalvars.meteo_data.BatteryVolts)    
     
     #print mydata
     
@@ -1011,12 +1028,7 @@ def waitForIP():
     cfg = config.config('swpi.cfg')
     for i in range(1,n):
         theIP = getIP()
-        #log(cfg.ntp_url)
         if ( theIP != None):
-            if (cfg.ntp_url != 'None'):
-                date_str = requests.get(cfg.ntp_url,timeout=10).text
-                log(date_str)
-                os.system("sudo date -s '%s'" % date_str)
             return theIP
         log("No IP yet. Retrying ..%d" % (n-i) )
         time.sleep(2)
