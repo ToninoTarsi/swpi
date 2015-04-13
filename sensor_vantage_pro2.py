@@ -126,7 +126,12 @@ class Sensor_VantagePro2(sensor.Sensor):
 
                         globalvars.meteo_data.rain = fields['RainRate']
                         globalvars.meteo_data.rain_rate_24h = fields['RainDay']
-                        globalvars.meteo_data.wind_dir = fields['WindDir']    
+                        globalvars.meteo_data.wind_dir = fields['WindDir']
+                        globalvars.meteo_data.RainStorm = fields['RainStorm']
+                        globalvars.meteo_data.RainMonth = fields['RainMonth']
+                        globalvars.meteo_data.RainYear = fields['RainYear']
+                        globalvars.meteo_data.StormStartDate = fields['StormStartDate']
+                        globalvars.meteo_data.BatteryVolts = fields['BatteryVolts']
 
 
                         globalvars.meteo_data.wind_gust = float(fields['WindSpeed']) *self.cfg.windspeed_gain + self.cfg.windspeed_offset

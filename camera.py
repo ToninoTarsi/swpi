@@ -87,7 +87,22 @@ class PhotoCamera(object):
 				GPIO.output(self.__PIN_RESET, 1)
 			else:
 				GPIO.output(self.__PIN_RESET, 0)
-			
+	def camera_off(self):
+		if ( self.cfg.on_off_camera ):
+			log("Switching off Camera ... ")
+			if self.cfg.camera_resetter_normaly_on :
+				GPIO.output(self.__PIN_RESET, 1)
+			else:
+				GPIO.output(self.__PIN_RESET, 0)
+			time.sleep(5)
+	def camera_on(self):
+		if ( self.cfg.on_off_camera ):
+			log("Switching on Camera ... ")
+			if self.cfg.camera_resetter_normaly_on :
+				GPIO.output(self.__PIN_RESET, 0)
+			else:
+				GPIO.output(self.__PIN_RESET, 1)
+			time.sleep(15)		
 		
 	def detectCameras(self):
 		p = subprocess.Popen("gphoto2 --auto-detect",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -136,7 +151,7 @@ class PhotoCamera(object):
 	def take_pictures(self) :
 		"""Capture from all detected cameras and return a list of stored files"""
 
-		
+		self.camera_on()
 		self.bCaturing = 1
 		#thread.start_new_thread(self.SetTimer,()) 
 		
@@ -151,6 +166,7 @@ class PhotoCamera(object):
 			globalvars.bCapturingCamera = False
 			log( "No digital cameras found" )
 			self.bCaturing = 0
+			self.camera_off()
 			return pictureTaken
 		
 		if ( self.god.daylight() ):
@@ -238,7 +254,7 @@ class PhotoCamera(object):
 		
 		for name in pictureTaken :
 			log("Captured : " + name)
-		
+		self.camera_off()
 		self.bCaturing = 0
 
 		return pictureTaken

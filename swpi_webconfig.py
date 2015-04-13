@@ -39,6 +39,7 @@ def outputPage(cfg):
 	d.update(config_web_server_port=cfg.config_web_server_port)
 	d.update(wind_speed_units=cfg.wind_speed_units)	
 	d.update(set_time_at_boot=cfg.set_time_at_boot)
+	d.update(ntp_url=cfg.ntp_url)
 
 #	if (cfg.set_system_time_from_ntp_server_at_startup ):
 #		d.update(selected_True_set_system_time_from_ntp_server_at_startup='selected')
@@ -81,6 +82,8 @@ def outputPage(cfg):
 	d.update(number_of_measure_for_wind_trend=cfg.number_of_measure_for_wind_trend)
 	d.update(wind_trend_limit=cfg.wind_trend_limit)
 	d.update(number_of_measure_for_wind_average_gust_calculation=cfg.number_of_measure_for_wind_average_gust_calculation)
+	d.update(solarsensor=cfg.solarsensor)
+	d.update(uvsensor=cfg.uvsensor)
 
 	# [Sensor_PCE-FWS20]
 	d.update(set_system_time_from_WeatherStation=cfg.set_system_time_from_WeatherStation)
@@ -121,6 +124,7 @@ def outputPage(cfg):
 	d.update(gphoto2_capture_image_and_download=cfg.gphoto2_capture_image_and_download)
 	d.update(use_camera_resetter=cfg.use_camera_resetter)
 	d.update(camera_resetter_normaly_on=cfg.camera_resetter_normaly_on)
+	d.update(on_off_camera=cfg.on_off_camera)
 
 	#[CameraPI]
 	d.update(use_cameraPI=cfg.use_cameraPI)
@@ -234,7 +238,8 @@ if ( len(request) != 0 ):
 	cfg.location_altitude = request['location_altitude'][0]																 
 	cfg.wifi_reset_if_down = request['wifi_reset_if_down'][0]       
 	cfg.config_web_server_port = request['config_web_server_port'][0]                                                                 
-	cfg.wind_speed_units = request['wind_speed_units'][0]                                                                 
+	cfg.wind_speed_units = request['wind_speed_units'][0]
+	cfg.ntp_url = request['ntp_url'][0]
 
 	# [Dongle]
 	cfg.usedongle = request['usedongle'][0]																		   
@@ -270,7 +275,9 @@ if ( len(request) != 0 ):
 	cfg.dht_type = request['dht_type'][0]		
 	cfg.number_of_measure_for_wind_trend = request['number_of_measure_for_wind_trend'][0]	
 	cfg.wind_trend_limit = request['wind_trend_limit'][0]																		   
-	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]		
+	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]
+	cfg.solarsensor = request['solarsensor'][0]
+	cfg.uvsensor = request['uvsensor'][0]
 	
 	# [Sensor_PCE-FWS20]
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]
@@ -302,7 +309,8 @@ if ( len(request) != 0 ):
 	cfg.start_camera_number = request['start_camera_number'][0]																 
 	cfg.gphoto2_capture_image_and_download = request['gphoto2_capture_image_and_download'][0]											 
 	cfg.use_camera_resetter = request['use_camera_resetter'][0]											 
-	cfg.camera_resetter_normaly_on = request['camera_resetter_normaly_on'][0]											 
+	cfg.camera_resetter_normaly_on = request['camera_resetter_normaly_on'][0]
+	cfg.on_off_camera = request['on_off_camera'][0]
 
 	#[CameraPI]
 	cfg.use_cameraPI = request['use_cameraPI'][0]											 
