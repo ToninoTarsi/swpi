@@ -52,7 +52,7 @@ class webcam(object):
 			elif ( self.cfg.captureprogram == "uvccapture" ):
 				snapCommand = "uvccapture -m -S80 -B80 -C80 -G80 -x" + self.captureresolutionX + "-y" + self.captureresolutionX + " -d" + self.device + " -o " + filename
 			elif ( self.cfg.captureprogram == "fswebcam" ):
-				snapCommand = "fswebcam --quiet --no-subtitle --no-banner --no-timestamp -r %s -d %s -S 15 --save %s" %( self.captureresolution,self.device,filename)
+				snapCommand = "fswebcam -c fswebcam.conf -r %s -d %s --save %s" %( self.captureresolution,self.device,filename)
 			elif ( self.cfg.captureprogram == "ipcam" ):
 				snapCommand ="wget -O " + filename + " " + self.device
 		

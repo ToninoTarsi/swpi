@@ -171,6 +171,14 @@ def SetTimeFromNTP(ntp_server):
         return False
     except:
         log("ERROR - Failed to set time system from ntp server")
+        cfg = config.config('swpi.cfg')
+        if (cfg.ntp_url!='None'):
+                date_str = requests.get(cfg.ntp_url,timeout=10).text
+                if (date_str != None ):
+                    log("Date : " + date_str)
+                    os.system("sudo date -s '%s'" % date_str)
+                    log("adjusted from : " + cfg.ntp_url)
+                    return True
         return False
        
 def DNSExit(uname,pwd,hname):
@@ -384,6 +392,12 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
     if globalvars.meteo_data.dew_point != None :  parameters['dewptf'] = "{:.2f}".format(( globalvars.meteo_data.dew_point * 1.8 ) + 32)
     if globalvars.meteo_data.rain_rate != None :  parameters['dailyrainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate  * 0.0393700787)
     if globalvars.meteo_data.rain_rate_1h != None :  parameters['rainin'] = "{:.4f}".format(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
+    cfg = config.config('swpi.cfg')
+    if ( cfg.solarsensor == True ):
+        if globalvars.meteo_data.illuminance != None :  parameters['solarradiation'] = globalvars.meteo_data.illuminance
+    if ( cfg.uvsensor == True ):
+        if globalvars.meteo_data.uv != None :  parameters['uv'] = globalvars.meteo_data.uv
+    
     parameters['softwaretype'] = "Sint Wind PI"
         
     #print  parameters   
@@ -707,6 +721,12 @@ def UploadData(cfg):
 
     mydata['TempCPU'] =  get_cpu_temperature()
     mydata['freedisk'] = disk_free()
+    if ( cfg.sensor_type == "DAVIS-VANTAGE-PRO2"):
+        mydata['RainStorm'] = (globalvars.meteo_data.RainStorm)
+        mydata['RainMonth'] = (globalvars.meteo_data.RainMonth)
+        mydata['RainYear'] = (globalvars.meteo_data.RainYear)
+        mydata['StormStartDate'] = (globalvars.meteo_data.StormStartDate)
+        mydata['BatteryVolts'] = (globalvars.meteo_data.BatteryVolts)
 
     
     

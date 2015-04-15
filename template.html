@@ -385,6 +385,27 @@
                     break;
                 }
             }
+            dd = document.getElementById('solarsensor');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$solarsensor') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+	    dd = document.getElementById('uvsensor');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$uvsensor') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+            dd = document.getElementById('on_off_camera');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$on_off_camera') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
 
             dd = document.getElementById('use_bmp085');
             for (var i = 0; i < dd.options.length; i++) {
@@ -821,7 +842,14 @@
                          <option value=False >False</option>
                     </select></td>
                     
-            </tr>		
+            </tr>
+            <tr>
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Set time by  url for time adjustemnt. (ntp-url).time.php&lt;?=date(&quot;D M j G:i:s Y&quot;);?&gt;</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                  <input id="ntp_url" type="text" name="ntp_url" 
+                        value="$ntp_url" style="width: 100%" /></td>
+            </tr>
             <tr>
                 <td class="style12" width="800" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>NTP servet for time adjustemnt. (<b>ntp_server</b>)</font></td>
@@ -1006,6 +1034,26 @@
                     <input id="Text2" type="text" name="wind_trend_limit" 
                         value="$wind_trend_limit" 
                         style="width: 100%" /></td>
+            </tr>
+               <tr>   
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Solar Sensor ( <b>Davis-Vantage-Pro2</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
+                    <select id="solarsensor" type="text" name="solarsensor" 
+                        value=$solarsensor style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
+            <tr>   
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>UV Sensor ( <b>Davis-Vantage-Pro2</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
+                    <select id="uvsensor" type="text" name="uvsensor" 
+                        value=$uvsensor style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
             </tr>
             </table> 
     <br />
@@ -1322,6 +1370,16 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                 <td class="style34" bgcolor="$LayColorBBC">
                     <select id="camera_resetter_normaly_on" type="text" name="camera_resetter_normaly_on" 
                         value="$use_camera_resetter" style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
+                <tr>   
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Power On-Off Camera ( <b>on_off_camera</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
+                    <select id="on_off_camera" type="text" name="on_off_camera" 
+                        value=$on_off_camera style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
                     </select></td>

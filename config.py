@@ -172,6 +172,8 @@ class config(object):
 		self.number_of_measure_for_wind_average_gust_calculation =  config.getint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',10)
 		self.sensor_temp_out =   config.get('Sensors', 'sensor_temp_out',"Default")
 		self.sensor_temp_in =   config.get('Sensors', 'sensor_temp_in',"Default")
+		self.solarsensor =   config.getboolean('Sensors', 'solarsensor',False)
+		self.uvsensor =   config.getboolean('Sensors', 'uvsensor',False)
 
 		# [Sensor_PCE-FWS20]
 		self.set_system_time_from_WeatherStation = config.getboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',False)
@@ -212,6 +214,7 @@ class config(object):
 		self.gphoto2_capture_image_and_download = config.getboolean('Camera', 'gphoto2_capture_image_and_download',True)
 		self.use_camera_resetter = config.getboolean('Camera', 'use_camera_resetter',False)
 		self.camera_resetter_normaly_on = config.getboolean('Camera', 'camera_resetter_normaly_on',True)
+		self.on_off_camera = config.getboolean('Camera', 'on_off_camera',False)
 
 		self.webcamdevice1captureresolutionX = int(self.webcamdevice1captureresolution.split('x')[0])
 		self.webcamdevice1captureresolutionY = int(self.webcamdevice1captureresolution.split('x')[1])
@@ -374,7 +377,9 @@ class config(object):
 		config.setfloat('Sensors', 'wind_trend_limit',self.wind_trend_limit)
 		config.setint('Sensors', 'number_of_measure_for_wind_average_gust_calculation',self.number_of_measure_for_wind_average_gust_calculation)
 		config.setstr('Sensors', 'sensor_temp_out',self.sensor_temp_out)
-		config.setstr('Sensors', 'sensor_temp_in',self.sensor_temp_in)	
+		config.setstr('Sensors', 'sensor_temp_in',self.sensor_temp_in)
+		config.setboolean('Sensors', 'solarsensor',self.solarsensor)
+		config.setboolean('Sensors', 'uvsensor',self.uvsensor)
 		
 
 		# [Sensor_PCE-FWS20]
@@ -417,6 +422,7 @@ class config(object):
 		config.setboolean('Camera', 'gphoto2_capture_image_and_download',self.gphoto2_capture_image_and_download)
 		config.setboolean('Camera', 'use_camera_resetter',self.use_camera_resetter)
 		config.setboolean('Camera', 'camera_resetter_normaly_on',self.camera_resetter_normaly_on)
+		config.setboolean('Camera', 'on_off_camera',self.on_off_camera) 
 
 		#[CameraPI]
 		config.setboolean('CameraPI', 'use_cameraPI',self.use_cameraPI)
