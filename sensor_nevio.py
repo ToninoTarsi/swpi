@@ -77,6 +77,16 @@ def get_wind_dir16W():
     return [ 90,112.5,67.5,45,157.5,135,180,202.5,337.5,315,0,22.5,270,292.5,247.5,225 ]
 
 
+def get_wind_dir_code16TT():
+    return [ 'S','SSW','SSE','SE','WSW','SW','W','WNW','ENE','NE','E','ESE','N','NNE','NNW','NW']
+
+
+def get_wind_dir16TT():
+    return [ 180,202.5,157.5,135,247.5,225,270,292.5,67.5,45,90,112.5,0,22.5,337.5,315 ]
+
+
+
+
 
 class Sensor_Nevio(sensor.Sensor):
     
@@ -114,7 +124,8 @@ class Sensor_Nevio(sensor.Sensor):
         if ( self.cfg.sensor_type.upper() == "NEVIO16" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
         if ( self.cfg.sensor_type.upper() == "NEVIO16S" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
         if ( self.cfg.sensor_type.upper() == "NEVIO16W" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
-        
+        if ( self.cfg.sensor_type.upper() == "NEVIO16TT" ) : GPIO.setup(self.__PIN_B0, GPIO.IN)  # B0
+
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
         
         self.active = True
@@ -188,8 +199,16 @@ class Sensor_Nevio(sensor.Sensor):
             wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
             wind_dir = get_wind_dir16W()[wind_dir16]
             wind_dir_code = get_wind_dir_code16W()[wind_dir16]                
+        elif ( self.cfg.sensor_type.upper() == "NEVIO16TT" ):
+            b1 = GPIO.input(self.__PIN_B1)
+            b2 = GPIO.input(self.__PIN_B2)
+            b3 = GPIO.input(self.__PIN_B3)
+            b0 = GPIO.input(self.__PIN_B0)
+            wind_dir16  =   b0 + b1*2 + b2*4 + b3*8
+            wind_dir = get_wind_dir16TT()[wind_dir16]
+            wind_dir_code = get_wind_dir_code16TT()[wind_dir16]     
         
-        return wind_dir, wind_dir_code
+        return wind_dir, wind_dir_code, wind_dir16
     
     def GetCurretWindSpeed(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
@@ -222,7 +241,7 @@ class Sensor_Nevio(sensor.Sensor):
         wind_ave,wind_gust = self.rb_WindSpeed.getMeanMax()
         if ( wind_ave != None) :
 
-            wind_dir, wind_dir_code =  self.GetCurretWindDir()
+            wind_dir, wind_dir_code, wind_int =  self.GetCurretWindDir()
             
             globalvars.meteo_data.status = 0
                         
@@ -252,9 +271,9 @@ if __name__ == '__main__':
     ss.active = False
 
     while (1): 
-        wind_dir, wind_dir_code = ss.GetCurretWindDir()
+        wind_dir, wind_dir_code, wind_int = ss.GetCurretWindDir()
         wind_speed = ss.GetCurretWindSpeed()
-        print "Speed:",wind_speed,"wind_dir:",wind_dir,"wind_dir_code;",wind_dir_code
+        print "Speed:",wind_speed,"wind_dir:",wind_dir,"wind_dir_code:",wind_dir_code,"wind_int:",wind_int
 
     __PIN_A = 23  #Anemometer
     __PIN_B1 = 17 
@@ -287,7 +306,7 @@ if __name__ == '__main__':
  
         #print "GetCurretWindSpeed"
         speed =  ss.GetCurretWindSpeed() 
-        dir =   ss.GetCurretWindDir()
+        dir, wind_dir_code, wind_dir16 =   ss.GetCurretWindDir()
         temp = None
         if ( cfg.use_tmp36 ):
             ch1 = ss.libMCP.read_channel(1)

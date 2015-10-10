@@ -31,11 +31,12 @@ from TTLib import  *
 class swpi_plugin(threading.Thread):  #  do not change the name of the class
     
     def __init__(self,cfg):
+        ###################### Plugin Initialization ################
+
+        log("Intitializing plug-in %s" % sys.modules[__name__])
         self.cfg = cfg
         threading.Thread.__init__(self)
-        
-        ###################### Plugin Initialization ################
-        
+                
         ###################### End Initialization ##################
         
         
@@ -47,10 +48,10 @@ class swpi_plugin(threading.Thread):  #  do not change the name of the class
         ###################### Plugin run
             time.sleep(60-datetime.datetime.now().second)
             if ( globalvars.meteo_data.status == 0 ):
-                logDataToWunderground(self.cfg.WeatherUnderground_ID,self.cfg.WeatherUnderground_password)	
+                #logDataToWunderground(self.cfg.WeatherUnderground_ID,self.cfg.WeatherUnderground_password)	
                 UploadData(self.cfg)
-                if ( i % 5 == 0):
-                    logData(self.cfg.serverfile,self.cfg.SMSPwd)
+#                 if ( i % 5 == 0):
+#                     logData(self.cfg.serverfile,self.cfg.SMSPwd)
             i = i +  1
         ###################### end of Plugin run
 

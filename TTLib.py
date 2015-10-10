@@ -669,56 +669,36 @@ def UploadData(cfg):
     mydata['temp_apparent'] = (globalvars.meteo_data.temp_apparent)
     mydata['dew_point'] = (globalvars.meteo_data.dew_point)
     mydata['cloud_base_altitude'] = (globalvars.meteo_data.cloud_base_altitude)
-
     mydata['uv'] = (globalvars.meteo_data.uv)
     mydata['illuminance'] = (globalvars.meteo_data.illuminance)
     mydata['winDayMin'] = (globalvars.meteo_data.winDayMin)
     mydata['winDayMax'] = (globalvars.meteo_data.winDayMax)
-        
     mydata['winDayGustMin'] = (globalvars.meteo_data.winDayGustMin)
     mydata['winDayGustMax'] = (globalvars.meteo_data.winDayGustMax)
-    
     mydata['TempOutMin'] = (globalvars.meteo_data.TempOutMin)
     mydata['TempOutMax'] = (globalvars.meteo_data.TempOutMax)
-    
     mydata['TempInMin'] = (globalvars.meteo_data.TempInMin)
     mydata['TempInMax'] = (globalvars.meteo_data.TempInMax)
-    
     mydata['UmOutMin'] = (globalvars.meteo_data.UmOutMin)
     mydata['UmOutMax'] = (globalvars.meteo_data.UmOutMax)
-    
     mydata['UmInMin'] = (globalvars.meteo_data.UmInMin)
     mydata['UmInMax'] = (globalvars.meteo_data.UmInMax)
-    
     mydata['PressureMin'] = (globalvars.meteo_data.PressureMin)
     mydata['PressureMax'] = (globalvars.meteo_data.PressureMax)
-    
-       
     mydata['wind_dir_ave'] = (globalvars.meteo_data.wind_dir_ave)
-    
     mydata['rain_rate_24h'] = (globalvars.meteo_data.rain_rate_24h)
     mydata['rain_rate_1h'] = (globalvars.meteo_data.rain_rate_1h)
-    
-
     if ( globalvars.meteo_data.wind_trend != None):
         mydata['wind_trend'] = (globalvars.meteo_data.wind_trend)
     else:
         mydata['wind_trend'] = 0
-
     mydata['station_name'] = (cfg.station_name)
     mydata['location_longitude'] = (cfg.location_longitude)
     mydata['location_latitude'] = (cfg.location_latitude)
     mydata['location_altitude'] = (cfg.location_altitude)
-
     mydata['wind_speed_units'] = (cfg.wind_speed_units)
-    
     mydata['wind_trend_limit'] = (cfg.wind_trend_limit)
-    
     mydata['pressure_trend'] = (globalvars.meteo_data.pressure_trend)
-
-
-    #mydata['swpi_versione'] = swpi_version
-
     mydata['TempCPU'] =  get_cpu_temperature()
     mydata['freedisk'] = disk_free()
     if ( cfg.sensor_type == "DAVIS-VANTAGE-PRO2"):

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 ###########################################################################
 #     Sint Wind PI
 #     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>

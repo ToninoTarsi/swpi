@@ -289,10 +289,10 @@ if __name__ == '__main__':
 	
 	cfg = config.config(configfile)
 	
+	cameras = PhotoCamera(cfg)
+	if ( cfg.usecameradivice ):
+		fotos = cameras.take_pictures()
 	
-	cam = PhotoCamera(cfg)
-	
-	cam.reset_camera()
 #	
 #	GPIO.setmode(GPIO.BCM)
 #	GPIO.setup(24, GPIO.OUT) 

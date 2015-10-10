@@ -64,6 +64,7 @@ class Sensor_Argent80422(sensor.Sensor):
 
         self.map = intervalmap.intervalmap()
         
+        #PCE-SENSOR-C Cucco per oriantare correttamente i sensori
         if ( self.cfg.sensor_type.upper()  == "PCE-SENSOR-C" ):
             self.map[0:75]    = 7
             self.map[75:89]   = 5
