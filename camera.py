@@ -108,14 +108,24 @@ class PhotoCamera(object):
 		p = subprocess.Popen("gphoto2 --auto-detect",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 		(stdout, stderr) = p.communicate()
 		ret = []
+		lineNumber = 0;
 		for line in stdout.split('\n') :
-			if not line : continue
-			words = line.split('usb:')
-			if ( len(words) == 2 ):
-				model = words[0]
-				idd = words[1].split(',')[0]
-				bus = words[1].split(',')[1]
-				camera = [model,idd,bus]
+			lineNumber = lineNumber + 1
+			if not line or lineNumber <= 2 : 
+				continue
+			words = line.split()
+			#words = line.split('usb:')
+			if ( len(words) > 1 ):
+				model = ' '.join(words[0:len(words)-1])
+				port = words[len(words)-1]
+				words = port.split('usb:')
+				idd = "000"
+				bus = "000"
+				if ( len(words) == 2) :
+					idd = words[1].split(',')[0]
+					bus = words[1].split(',')[1]
+				camera = [model,port,idd,bus]
+				#print camera
 				ret.append(camera)
 		return ret
 
@@ -178,7 +188,7 @@ class PhotoCamera(object):
 		
 		log(str(nCameras) + " Cameras found")
 		for i in range(0,nCameras):
-			log("Camera " + str(i+1) + " : "  + camerasInfo[i][0] + "USB : " + camerasInfo[i][1]  + " " + camerasInfo[i][2]  )
+			log("Camera " + str(i+1) + " : "  + camerasInfo[i][0] +  " Port : " + camerasInfo[i][1] + " USB : " + camerasInfo[i][2]  + " " + camerasInfo[i][3]  )
 		 
 		if ( len(gphoto2options) < nCameras ):
 			log("Problem with configuration file !!!. gphoto2options does not have information for all cameras")
@@ -189,9 +199,9 @@ class PhotoCamera(object):
 		# Reset usb to make some Nikon model work. Do not use with Canon Cameras		
 		if ( self.cfg.reset_usb ):
 			for i in range(0,nCameras):
-	
-				usbcamera = "/dev/bus/usb/%s/%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
-				os.system( "./usbreset %s" % (usbcamera) )
+				if ( camerasInfo[i][2] != "000"  and  camerasInfo[i][3]  != "000"  ):
+					usbcamera = "/dev/bus/usb/%s/%s" % (camerasInfo[i][2] , camerasInfo[i][3] )
+					os.system( "./usbreset %s" % (usbcamera) )
 				
 				# whait for the camera to be detected again 
 				for i in range(1,100):
@@ -209,7 +219,7 @@ class PhotoCamera(object):
 		for i in range(0,nCameras):
 			bError = False
 			log("Capturing from Camera : %d = %s" %( i+1,camerasInfo[i][0] ) )
-			usbcamera = "usb:%s,%s" % (camerasInfo[i][1] , camerasInfo[i][2] )
+			usbcamera = camerasInfo[i][1]
 			filename = "./img/camera" + str(i+self.cfg.start_camera_number) + "_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
 
 			if ( not self.cfg.gphoto2_capture_image_and_download ) :
