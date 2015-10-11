@@ -237,14 +237,15 @@ class PhotoCamera(object):
 					bError = False	
 					p = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 					(stdout, stderr) = p.communicate()
-#					for line in stdout.split('\n') :
-#						if ( len(line) != 0 ): log("gphoto2-stdout " + line)
-#						if (line[:3] == "***"):
-#							bError = True
-					for line in stderr.split('\n') :
-						if ( len(line) != 0 ): log(line)
-						if (line[:3] == "***"):
-							bError = True	
+# 					for line in stdout.split('\n') :
+# 						if ( len(line) != 0 ): log("gphoto2-stdout " + line)
+# 						if (line[:3] == "***"):
+# 							bError = True
+					if ( camerasInfo[i][2] != "000" ): 
+						for line in stderr.split('\n') :
+							if ( len(line) != 0 ): log(line)
+							if (line[:3] == "***"):
+								bError = True	
 					nTry = nTry + 1
 					if ( bError ):
 						log("Error capturing camera .. retrying")
