@@ -63,6 +63,7 @@ class IPCam(object):
 				IP_IPCam1 = "http://" + self.cfg.IPCamIP1
 				IP_IPCam2 = "http://" + self.cfg.IPCamIP2
 
+				posCommand = ""
 				#log("PASSAGGIO  " + str(deviceNumber))
 				if(self.cfg.IPCamCfg.upper() == "IPCAM1" or self.cfg.IPCamCfg.upper() == "IPCAM2"):
 					if(globalvars.meteo_data.wind_dir_code == "N" and self.cfg.IPCamPosN != "" and self.cfg.IPCamPosN.upper() != "NONE"):
@@ -104,7 +105,8 @@ class IPCam(object):
 				
 				#Posiziona IPCam
 				#log("Posiziono CAM " + posCommand)
-				os.system(posCommand)
+				if ( posCommand != "" ):
+					os.system(posCommand)
 				time.sleep(self.cfg.IPCamZZZ)
 				
 				if(os.path.isfile("webcamtmp")): 

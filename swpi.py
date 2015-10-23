@@ -1025,6 +1025,8 @@ while 1:
 					publicIP = getPublicIP()
 					log("Public IP : " + publicIP)
 					if ( cfg.use_mail and cfg.mail_ip ):
+						if ( IP == None ):
+							IP = "None" 
 						SendMail(cfg,"My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")
 					if ( cfg.use_DNSExit):
 						DNSExit(cfg.DNSExit_uname,cfg.DNSExit_pwd,cfg.DNSExit_hname)

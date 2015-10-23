@@ -189,7 +189,6 @@ class PhotoCamera(object):
 		log(str(nCameras) + " Cameras found")
 		for i in range(0,nCameras):
 			log("Camera " + str(i+1) + " : "  + camerasInfo[i][0] +  " Port : " + camerasInfo[i][1] + " USB : " + camerasInfo[i][2]  + " " + camerasInfo[i][3]  )
-		 
 		if ( len(gphoto2options) < nCameras ):
 			log("Problem with configuration file !!!. gphoto2options does not have information for all cameras")
 			gphoto2options =[]
@@ -217,6 +216,8 @@ class PhotoCamera(object):
 		# Now Capture and acquire global lock ( to do - replace with thread.lock object )
 		globalvars.bCapturingCamera = True
 		for i in range(0,nCameras):
+			if ( gphoto2options[i] == "none" ):
+				continue
 			bError = False
 			log("Capturing from Camera : %d = %s" %( i+1,camerasInfo[i][0] ) )
 			usbcamera = camerasInfo[i][1]
