@@ -1068,8 +1068,52 @@ def SendMail(cfg, subject, text, attach):
         return False
     
 
+def getCurrentMeteoData():
+    mydata = {} 
+    mydata['last_measure_time'] = (globalvars.meteo_data.last_measure_time.strftime("[%d/%m/%Y-%H:%M:%S]"))
+    mydata['idx'] = (globalvars.meteo_data.idx.strftime("[%d/%m/%Y-%H:%M:%S]"))
+    mydata['wind_dir_code'] = (globalvars.meteo_data.wind_dir_code)
+    mydata['wind_dir'] = (globalvars.meteo_data.wind_dir)
+    mydata['wind_ave'] = (globalvars.meteo_data.wind_ave)
+    mydata['wind_gust'] = (globalvars.meteo_data.wind_gust)
+    mydata['temp_out'] = (globalvars.meteo_data.temp_out)
+    mydata['abs_pressure'] = (globalvars.meteo_data.abs_pressure)
+    mydata['rel_pressure'] = (globalvars.meteo_data.rel_pressure)
+    mydata['hum_out'] = (globalvars.meteo_data.hum_out)
+    mydata['rain'] = (globalvars.meteo_data.rain)
+    mydata['rain_rate'] = (globalvars.meteo_data.rain_rate)
+    mydata['temp_in'] = (globalvars.meteo_data.temp_in)
+    mydata['hum_in'] = (globalvars.meteo_data.hum_in)
+    mydata['wind_chill'] = (globalvars.meteo_data.wind_chill)
+    mydata['temp_apparent'] = (globalvars.meteo_data.temp_apparent)
+    mydata['dew_point'] = (globalvars.meteo_data.dew_point)
+    mydata['cloud_base_altitude'] = (globalvars.meteo_data.cloud_base_altitude)
+    mydata['uv'] = (globalvars.meteo_data.uv)
+    mydata['illuminance'] = (globalvars.meteo_data.illuminance)
+    mydata['winDayMin'] = (globalvars.meteo_data.winDayMin)
+    mydata['winDayMax'] = (globalvars.meteo_data.winDayMax)
+    mydata['winDayGustMin'] = (globalvars.meteo_data.winDayGustMin)
+    mydata['winDayGustMax'] = (globalvars.meteo_data.winDayGustMax)
+    mydata['TempOutMin'] = (globalvars.meteo_data.TempOutMin)
+    mydata['TempOutMax'] = (globalvars.meteo_data.TempOutMax)
+    mydata['TempInMin'] = (globalvars.meteo_data.TempInMin)
+    mydata['TempInMax'] = (globalvars.meteo_data.TempInMax)
+    mydata['UmOutMin'] = (globalvars.meteo_data.UmOutMin)
+    mydata['UmOutMax'] = (globalvars.meteo_data.UmOutMax)
+    mydata['UmInMin'] = (globalvars.meteo_data.UmInMin)
+    mydata['UmInMax'] = (globalvars.meteo_data.UmInMax)
+    mydata['PressureMin'] = (globalvars.meteo_data.PressureMin)
+    mydata['PressureMax'] = (globalvars.meteo_data.PressureMax)
+    mydata['wind_dir_ave'] = (globalvars.meteo_data.wind_dir_ave)
+    mydata['rain_rate_24h'] = (globalvars.meteo_data.rain_rate_24h)
+    mydata['rain_rate_1h'] = (globalvars.meteo_data.rain_rate_1h)
+    return mydata
 
-
+def getCurrentMeteoDataFromUrl(url):
+    data = urllib2.urlopen(url)
+    return json.load(data)
+    
+    
 if __name__ == '__main__':
  
     configfile = 'swpi.cfg'

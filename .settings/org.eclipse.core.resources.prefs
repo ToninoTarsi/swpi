@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//plugins/sync_plugin.py=utf-8
 encoding//plugins/twitter.py=utf-8
 encoding//plugins/whatsapp_echo.py=utf-8
 encoding/intervalmap.py=utf-8
