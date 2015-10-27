@@ -159,6 +159,14 @@ def swpi_update_old():
     os.system( "sudo chown pi TX23/" )
 
 
+def deleteFile(file):
+    try:
+        os.remove(file)
+        log("Deleted file : " + file )
+    except:
+        log("File not found : " + file )
+        pass
+
 def SetTimeFromNTP(ntp_server):
     try:
         c = ntplib.NTPClient()
@@ -936,8 +944,7 @@ def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
         print '%s' % str(err)    
         log("Error sending  file to server : " + name)
         if delete : 
-            os.remove(filename)
-            log("Deleted file : " + filename )
+            deleteFile(filename)
         return False
 
 def sendFileToServer(filename,name,server,destFolder,login,password,delete,usethread):

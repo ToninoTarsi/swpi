@@ -471,6 +471,25 @@ class MeteoData(object):
 #        if conn:
 #            conn.close()                        
 
+class CameraFiles(object):
+    
+    def __init__(self):
+        self.img1FileName = None
+        self.img2FileName = None
+        self.fotos = None
+        self.img1IPFileName = None
+        self.img2IPFileName = None
+        self.cPIFilemane = None
+        
+    def reset(self):
+        self.img1FileName = None
+        self.img2FileName = None
+        self.fotos = None
+        self.img1IPFileName = None
+        self.img2IPFileName = None
+        self.cPIFilemane = None  
+
+
 if __name__ == '__main__':
 
     configfile = 'swpi.cfg'

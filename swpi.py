@@ -688,6 +688,9 @@ if(os.path.isfile("wget-log")):
 globalvars.bAnswering = False
 globalvars.bCapturingCamera = False
 globalvars.meteo_data = meteodata.MeteoData(cfg)
+globalvars.takenPicture = meteodata.CameraFiles()
+
+
 IP = None
 publicIP = None
 
@@ -701,7 +704,8 @@ pl = pluginmanager.PluginLoader("./plugins",cfg)
 pl.loadAll()
 if os.path.exists('./plugins/sync_plugin.py'):
 	log("Loading sync plugin")
-	plugin_sync = pls.swpi_sync_plugin(cfg)
+	from plugins.sync_plugin import *
+	plugin_sync = swpi_sync_plugin(cfg)
 else:
 	plugin_sync = None
 
@@ -848,7 +852,8 @@ if ( cfg.usecameradivice ):
 
 while 1:
 	
-	bipcam1 = False;
+
+	
 	bipcam2 = False;
 	
 	last_data_time = datetime.datetime.now()
@@ -874,6 +879,7 @@ while 1:
 		if ( cfg.webcamDevice1.upper() != "NONE" ):
 			webcam1 =  webcam.webcam(1,cfg)
 			img1FileName = "./img/webcam1_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
+			globalvars.takenPicture.img1FileName = img1FileName
 			waitForHandUP()
 			bwebcam1 = webcam1.capture(img1FileName)
 			if ( bwebcam1 ):
@@ -883,6 +889,7 @@ while 1:
 		if ( cfg.webcamDevice2.upper() != "NONE" ):
 			webcam2 =  webcam.webcam(2,cfg)
 			img2FileName = "./img/webcam2_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
+			globalvars.takenPicture.img2FileName = img2FileName
 			waitForHandUP()
 			bwebcam2 = webcam2.capture(img2FileName)
 			if ( bwebcam2):
@@ -893,6 +900,7 @@ while 1:
 		if ( cfg.usecameradivice ):
 			waitForHandUP()
 			fotos = cameras.take_pictures()
+			globalvars.takenPicture.fotos = fotos
 			for foto in fotos:
 				addTextandResizePhoto(foto,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 
@@ -900,28 +908,31 @@ while 1:
 		if ( cfg.IPCamIP1.upper() != "NONE" ):
 			#if (cfg.IPCamCfg.upper() == "IPCAM1" or cfg.IPCamCfg.upper() == "COMBINED"):
 			IPCam1 =  IPCam.IPCam(1,cfg)
-			img1FileName = "./img/webcam1_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
+			img1IPFileName = "./img/webcam1_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg") 
+			globalvars.takenPicture.img1IPFileName = img1IPFileName
 			waitForHandUP()
-			bipcam1 = IPCam1.IPCamCapture(img1FileName,1)
+			bipcam1 = IPCam1.IPCamCapture(img1IPFileName,1)
 			if ( bipcam1 ):
-				log( "IPcam 1 Captured : ok : "  + img1FileName )
-				addTextandResizePhoto(img1FileName,cfg.webcamdevice1finalresolutionX,cfg.webcamdevice1finalresolutionY,cfg,v)
+				log( "IPcam 1 Captured : ok : "  + img1IPFileName )
+				addTextandResizePhoto(img1IPFileName,cfg.webcamdevice1finalresolutionX,cfg.webcamdevice1finalresolutionY,cfg,v)
 		#else:		
 		# IPCam 2
 		if (cfg.IPCamCfg.upper() == "IPCAM2"):
 			IPCam2 =  IPCam.IPCam(2,cfg)
-			img2FileName = "./img/webcam2_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
+			img2IPFileName = "./img/webcam2_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
+			globalvars.takenPicture.img2IPFileName = img2IPFileName
 			waitForHandUP()
-			bipcam2 = IPCam2.IPCamCapture(img2FileName,2)
+			bipcam2 = IPCam2.IPCamCapture(img2IPFileName,2)
 			if ( bipcam2 ):
-				log( "IPcam 2 Captured : ok : "  + img2FileName	)	
-				addTextandResizePhoto(img2FileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)	
+				log( "IPcam 2 Captured : ok : "  + img2IPFileName	)	
+				addTextandResizePhoto(img2IPFileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)	
 		
 		bcPI = False
 		cPIFilemane =""
 		if ( cfg.use_cameraPI):
 			cPI = cameraPI.cameraPI(cfg)
 			cPIFilemane = "./img/raspi_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
+			globalvars.takenPicture.cPIFilemane = cPIFilemane			
 			bcPI = cPI.capture(cPIFilemane)
 			addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 
@@ -944,44 +955,44 @@ while 1:
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
 						log("Sending to server "+ img1FileName)
-						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
-						sendFileToServer(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 
 				if ( cfg.webcamDevice2.upper() != "NONE" and bwebcam2 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						sendFileToServer(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
-						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 				
 				if ( cfg.IPCamCfg.upper() != "NONE" and bipcam1 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						log("Sending to server "+ img1FileName)
-						sendFileToServer(img1FileName,getFileName(img1FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						log("Sending to server "+ img1IPFileName)
+						sendFileToServer(img1IPFileName,getFileName(img1IPFileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
-						sendFileToServer(img1FileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(img1IPFileName,"current1.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 
 				if (cfg.IPCamCfg.upper() == "IPCAM2" and bipcam2 ):
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						sendFileToServer(img2FileName,getFileName(img2FileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(img2IPFileName,getFileName(img2IPFileName),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
-						sendFileToServer(img2FileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(img2IPFileName,"current2.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 
 				
 				if ( cfg.use_cameraPI and bcPI ): 
 					if (cfg.sendallimagestoserver ):
 						waitForHandUP()
-						sendFileToServer(cPIFilemane,getFileName(cPIFilemane),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(cPIFilemane,getFileName(cPIFilemane),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 					else:
 						waitForHandUP()
-						sendFileToServer(cPIFilemane,"raspi.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+						sendFileToServer(cPIFilemane,"raspi.jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 					
 	
 				if ( cfg.usecameradivice   ):
@@ -991,11 +1002,11 @@ while 1:
 						if (cfg.sendallimagestoserver ):
 							waitForHandUP()
 							log("Sending :" + getFileName(foto))
-							sendFileToServer(foto,getFileName(foto),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)
+							sendFileToServer(foto,getFileName(foto),cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)
 						else:
 							waitForHandUP()
 							log("Sending :" + "camera" + str(nCamera+cfg.start_camera_number-1) + ".jpg")
-							sendFileToServer(foto,"camera"+str(nCamera+cfg.start_camera_number-1)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,cfg.delete_images_on_sd,cfg.use_thread_for_sending_to_server)				
+							sendFileToServer(foto,"camera"+str(nCamera+cfg.start_camera_number-1)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)				
 						
 				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 					log("Logging data ...")
@@ -1079,6 +1090,8 @@ while 1:
 		if ( plugin_sync != None ):
 			plugin_sync.run_after()
 			
+
+			
 		if ( cfg.WebCamInterval != 0):
 			tosleep = cfg.WebCamInterval-(datetime.datetime.now()-last_data_time).seconds
 			if ( tosleep > 30):
@@ -1094,7 +1107,21 @@ while 1:
 			log("Sleeping 1000 seconds")
 			time.sleep(30)	
 			
-
+		# Delete pictures
+		if ( cfg.delete_images_on_sd ) :
+			if  globalvars.takenPicture.img1FileName != None  :
+				deleteFile(globalvars.takenPicture.img1FileName)
+			if  globalvars.takenPicture.img2FileName != None  :
+				deleteFile(globalvars.takenPicture.img2FileName)
+			for foto in globalvars.takenPicture.fotos :
+				deleteFile(foto)
+			if  globalvars.takenPicture.cPIFilemane != None  :
+				deleteFile(globalvars.takenPicture.cPIFilemane)
+			if ( globalvars.takenPicture.img1IPFileName != None ) :
+				deleteFile(globalvars.takenPicture.img1IPFileName)
+			if ( globalvars.takenPicture.img2IPFileName != None ) :
+				deleteFile(globalvars.takenPicture.img2IPFileName)
+			
 		
 	except KeyboardInterrupt:
 		if cfg.usedongle:
