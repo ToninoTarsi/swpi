@@ -41,6 +41,8 @@ import importlib
 import subprocess
 import cameraPI
 import IPCam
+import traceback
+
 
 socket.setdefaulttimeout(30)
 
@@ -1098,11 +1100,7 @@ while 1:
 				log("Sleeping %s seconds" % tosleep)
 				time.sleep(tosleep)
 
-# 		if ( cfg.IPCamInterval != 0):
-# 			tosleep = cfg.IPCamInterval-(datetime.datetime.now()-last_data_time).seconds
-# 			if ( tosleep > 0):
-# 				log("IPCam Sleeping %s seconds" % tosleep)
-# 				time.sleep(tosleep)				
+		
 		else:
 			log("Sleeping 1000 seconds")
 			time.sleep(30)	
@@ -1113,8 +1111,9 @@ while 1:
 				deleteFile(globalvars.takenPicture.img1FileName)
 			if  globalvars.takenPicture.img2FileName != None  :
 				deleteFile(globalvars.takenPicture.img2FileName)
-			for foto in globalvars.takenPicture.fotos :
-				deleteFile(foto)
+			if (  globalvars.takenPicture.fotos != None  ):
+				for foto in globalvars.takenPicture.fotos :
+					deleteFile(foto)
 			if  globalvars.takenPicture.cPIFilemane != None  :
 				deleteFile(globalvars.takenPicture.cPIFilemane)
 			if ( globalvars.takenPicture.img1IPFileName != None ) :
@@ -1130,6 +1129,11 @@ while 1:
 			radio.stop()
 		wind_sensor_thread.stop()
 		exit(0)
+	
+	except Exception,e:
+		print e.message
+		print e.__class__.__name__
+		traceback.print_exc(e)
 			
 	
 

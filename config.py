@@ -227,7 +227,6 @@ class config(object):
 		self.cameradivicefinalresolutionX = int(self.cameradivicefinalresolution.split('x')[0])
 		self.cameradivicefinalresolutionY = int(self.cameradivicefinalresolution.split('x')[1])
 		
-				
 		#[CameraPI]
 		self.use_cameraPI = config.getboolean('CameraPI', 'use_cameraPI',False)
 		self.cameraPI_day_settings = config.get('CameraPI', 'cameraPI_day_settings',"")
@@ -308,8 +307,9 @@ class config(object):
 		self.LayColorBBC = config.get('LayOut', 'LayColorBBC',"FF99FF")
 		self.LayColorBTC = config.get('LayOut', 'LayColorBTC',"0000FF")
 		
-		f = open(self.cfgName,"w")
-		config.write(f)					
+		if ( not os.path.isfile(self.cfgName)  ):
+			f = open(self.cfgName,"w")
+			config.write(f)					
 
 
 	def writeCfg(self):
@@ -388,7 +388,6 @@ class config(object):
 		# [Sensor_serial]
 		config.setstr('Sensor_serial', 'sensor_serial_port',self.sensor_serial_port)
 
-
 		# [Sensor_NEVIO8-16]
 
 		config.setint('RFM01', 'rfm01_frequenzy',self.rfm01_frequenzy)
@@ -410,7 +409,6 @@ class config(object):
 		config.setboolean('WebCam', 'sendallimagestoserver',self.sendallimagestoserver)
 		config.setboolean('WebCam', 'delete_images_on_sd',self.delete_images_on_sd)
 				
-
 		#[Camera]
 		config.setboolean('Camera', 'usecameradivice',self.usecameradivice)
 		config.setstr('Camera', 'cameradivicefinalresolution',self.cameradivicefinalresolution)
@@ -521,7 +519,6 @@ class config(object):
 		f = open(self.cfgName,"w")
 		config.write(f)
 		
-		
 	def setDataLogging(self,LogData):
 		self.logdata = LogData
 		config = ConfigParser.SafeConfigParser()
@@ -529,7 +526,6 @@ class config(object):
 		config.set('DataLogging', 'LogData',LogData)
 		f = open(self.cfgName,"w")
 		config.write(f)		
-		
 		
 	def setDataUpload(self,uploadData):
 		self.upload_data = uploadData
@@ -539,9 +535,6 @@ class config(object):
 		f = open(self.cfgName,"w")
 		config.write(f)		
 
-
-
-		
 	def setUseDongleNet(self,UseDongleNet):
 		self.UseDongleNet = UseDongleNet
 		config = ConfigParser.SafeConfigParser()
@@ -549,7 +542,6 @@ class config(object):
 		config.set('Dongle', 'UseDongleNet',UseDongleNet)
 		f = open(self.cfgName,"w")
 		config.write(f)		
-		
 		
 	def setWindSpeed_offset(self,windspeed_offset):
 		self.windspeed_offset = float(windspeed_offset)

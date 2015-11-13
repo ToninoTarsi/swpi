@@ -375,14 +375,14 @@ class Modem(atc.SetCommands, atc.GetCommands, atc.ShowCommands,
                 #time.sleep( 0.020 )
                 i += 320
             
-            log( "DEBUG : Message sended : " )
+            #log( "DEBUG : Message sended : " )
             time.sleep(1)
             self.hangup()
-            log( "DEBUG : hangup  " )
+            #log( "DEBUG : hangup  " )
             time.sleep(1)
             globalvars.bAnswering = False
             audio_port.close()        
-            log( "DEBUG : audio_port.close  " )
+            #log( "DEBUG : audio_port.close  " )
             
             return True
         except:
