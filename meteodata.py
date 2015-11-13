@@ -301,7 +301,7 @@ class MeteoData(object):
     def LogDataToDB(self):
         
             while globalvars.bAnswering:
-                TTLib.log("DEBUG LogDataToDB... waiting for Calculating Meteo data and statistics")
+                #TTLib.log("DEBUG LogDataToDB... waiting for Calculating Meteo data and statistics")
                 time.sleep(1)
             
             
