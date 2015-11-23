@@ -76,6 +76,7 @@ def outputPage(cfg):
 	d.update(windspeed_gain=cfg.windspeed_gain)
 	d.update(windmeasureinterval=cfg.windmeasureinterval)
 	d.update(use_bmp085=cfg.use_bmp085)
+	d.update(use_bme280=cfg.use_bme280)
 	d.update(use_tmp36=cfg.use_tmp36)
 	d.update(use_dht=cfg.use_dht)
 	d.update(dht_type=cfg.dht_type)
@@ -270,6 +271,7 @@ if ( len(request) != 0 ):
 	cfg.windspeed_gain = request['windspeed_gain'][0]																	  
 	cfg.windmeasureinterval = request['windmeasureinterval'][0]																 
 	cfg.use_bmp085 = request['use_bmp085'][0]																		   
+	cfg.use_bme280 = request['use_bme280'][0]
 	cfg.use_tmp36 = request['use_tmp36'][0]		
 	cfg.use_dht = request['use_dht'][0]		
 	cfg.dht_type = request['dht_type'][0]		
