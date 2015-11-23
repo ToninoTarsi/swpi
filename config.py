@@ -164,6 +164,7 @@ class config(object):
 		self.windspeed_gain = config.getfloat('Sensors', 'windspeed_gain',1)
 		self.windmeasureinterval = config.getint('Sensors', 'windmeasureinterval',5)
 		self.use_bmp085 = config.getboolean('Sensors', 'use_bmp085',False)
+		self.use_bmp280 = config.getboolean('Sensors', 'use_bmp280',False)
 		self.use_tmp36 = config.getboolean('Sensors', 'use_tmp36',False)
 		self.use_dht = config.getboolean('Sensors', 'use_dht',False)
 		self.dht_type = config.get('Sensors', 'dht_type',"DHT11")
@@ -227,6 +228,7 @@ class config(object):
 		self.cameradivicefinalresolutionX = int(self.cameradivicefinalresolution.split('x')[0])
 		self.cameradivicefinalresolutionY = int(self.cameradivicefinalresolution.split('x')[1])
 		
+				
 		#[CameraPI]
 		self.use_cameraPI = config.getboolean('CameraPI', 'use_cameraPI',False)
 		self.cameraPI_day_settings = config.get('CameraPI', 'cameraPI_day_settings',"")
@@ -307,9 +309,8 @@ class config(object):
 		self.LayColorBBC = config.get('LayOut', 'LayColorBBC',"FF99FF")
 		self.LayColorBTC = config.get('LayOut', 'LayColorBTC',"0000FF")
 		
-		if ( not os.path.isfile(self.cfgName)  ):
-			f = open(self.cfgName,"w")
-			config.write(f)					
+		f = open(self.cfgName,"w")
+		config.write(f)					
 
 
 	def writeCfg(self):
@@ -370,6 +371,7 @@ class config(object):
 		config.setfloat('Sensors', 'windspeed_gain',self.windspeed_gain)
 		config.setint('Sensors', 'windmeasureinterval',self.windmeasureinterval)
 		config.setboolean('Sensors', 'use_bmp085',self.use_bmp085)
+		config.setboolean('Sensors', 'use_bmp280',self.use_bmp280)
 		config.setboolean('Sensors', 'use_tmp36',self.use_tmp36)
 		config.setboolean('Sensors', 'use_dht',self.use_dht)
 		config.setstr('Sensors', 'dht_type',self.dht_type)
@@ -387,6 +389,7 @@ class config(object):
 
 		# [Sensor_serial]
 		config.setstr('Sensor_serial', 'sensor_serial_port',self.sensor_serial_port)
+
 
 		# [Sensor_NEVIO8-16]
 
@@ -409,6 +412,7 @@ class config(object):
 		config.setboolean('WebCam', 'sendallimagestoserver',self.sendallimagestoserver)
 		config.setboolean('WebCam', 'delete_images_on_sd',self.delete_images_on_sd)
 				
+
 		#[Camera]
 		config.setboolean('Camera', 'usecameradivice',self.usecameradivice)
 		config.setstr('Camera', 'cameradivicefinalresolution',self.cameradivicefinalresolution)
@@ -519,6 +523,7 @@ class config(object):
 		f = open(self.cfgName,"w")
 		config.write(f)
 		
+		
 	def setDataLogging(self,LogData):
 		self.logdata = LogData
 		config = ConfigParser.SafeConfigParser()
@@ -526,6 +531,7 @@ class config(object):
 		config.set('DataLogging', 'LogData',LogData)
 		f = open(self.cfgName,"w")
 		config.write(f)		
+		
 		
 	def setDataUpload(self,uploadData):
 		self.upload_data = uploadData
@@ -535,6 +541,9 @@ class config(object):
 		f = open(self.cfgName,"w")
 		config.write(f)		
 
+
+
+		
 	def setUseDongleNet(self,UseDongleNet):
 		self.UseDongleNet = UseDongleNet
 		config = ConfigParser.SafeConfigParser()
@@ -542,6 +551,7 @@ class config(object):
 		config.set('Dongle', 'UseDongleNet',UseDongleNet)
 		f = open(self.cfgName,"w")
 		config.write(f)		
+		
 		
 	def setWindSpeed_offset(self,windspeed_offset):
 		self.windspeed_offset = float(windspeed_offset)

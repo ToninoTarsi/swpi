@@ -24,6 +24,7 @@ import subprocess
 import globalvars
 import meteodata
 from BMP085 import BMP085
+from BMP280 import *
 import re
 
 def log(message) :
@@ -55,6 +56,8 @@ class Sensor(threading.Thread):
 		if ( self.cfg.use_dht ):
 			self.ReadDHT()
 			#print "dht read"
+		if ( self.cfg.use_bmp280):
+			self.ReadBMP280()
 		globalvars.meteo_data.CalcStatistics()
 		globalvars.meteo_data.LogDataToDB()
 		
@@ -189,12 +192,99 @@ class Sensor(threading.Thread):
 #				p0 = p
 #			globalvars.meteo_data.rel_pressure = float(p0 / 100.0)
 				
+	def ReadBMP280(self):
+		try:
+			p=0.0
+			temp = None
+			i = 0
+			sensor = BME280(mode=BME280_OSAMPLE_8)
+			while ( p==0.0 and i < 10):
+				i = i+1
+				temp = sensor.read_temperature()
+				p = sensor.read_pressure()
+				#p = pascals / 100
+				humidity = sensor.read_humidity()
+				globalvars.meteo_data.hum_out = humidity
+				
+				#p,temp = self.bmp085.readPressureTemperature()
+				if p == 0.0 :
+					time.sleep(0.5)
+					
+			if ( p != None )  :  
+				abs_pressure = float(p / 100.0) 
+				globalvars.meteo_data.abs_pressure =  abs_pressure
+				
+				
+				if ( self.cfg.sensor_type == "WH1080-RFM01"):
+					if ( self.cfg.sensor_temp_in == "Default"):
+						globalvars.meteo_data.temp_in = temp
+				else:
+					if ( self.cfg.sensor_temp_out == "Default"):
+						globalvars.meteo_data.temp_out = temp
+
+				if ( self.cfg.sensor_temp_out == "BMP085"):
+						globalvars.meteo_data.temp_out = temp	
+				if ( self.cfg.sensor_temp_in == "BMP085"):
+						globalvars.meteo_data.temp_in = temp	
+				
+				log("BMP280 - Temperature: %.1f C Pressure:    %.1f humidity %.0f" % (temp, abs_pressure,humidity) )
+				
+			else:
+				globalvars.meteo_data.abs_pressure = None
+				
+				if ( self.cfg.sensor_type == "WH1080-RFM01"):
+					globalvars.meteo_data.temp_in = None
+				else:
+					globalvars.meteo_data.temp_out = None		
+				return
 			
+
+
+		except:
+			globalvars.meteo_data.abs_pressure = None
+			if ( self.cfg.sensor_type == "WH1080-RFM01"):
+				globalvars.meteo_data.temp_in = None
+			else:
+				globalvars.meteo_data.temp_out = None
+			log("ERROR reading BMP280 sensor")
+
+	def ReadBMP280_temp_in(self):
+		p=0.0
+		temp = None
+		i = 0
+		sensor = BME280(mode=BME280_OSAMPLE_8)
+		while ( p==0.0 and i < 10):
+			temp = sensor.read_temperature()
+			p = sensor.read_pressure()
+			#p = pascals / 100
+			humidity = sensor.read_humidity()
+			globalvars.meteo_data.hum_out = humidity
+			#p,temp = self.bmp085.readPressureTemperature()
+			i = i+1
+			time.sleep(0.02)
+			
+		if ( p != None )  :  
+			globalvars.meteo_data.abs_pressure =  float(p / 100.0) 
+		else:
+			globalvars.meteo_data.abs_pressure = None 
+		
+		
+		globalvars.meteo_data.temp_in = temp
+
+#		if ( p == None):
+#			globalvars.meteo_data.temp_out = None
+#			globalvars.meteo_data.abs_pressure = None
+#		elif ( p != 0.0): 
+#			if ( self.cfg.location_altitude != 0 ):
+#				p0 = p / pow( 1 - (0.225577000e-4*self.cfg.location_altitude ),5.25588 )
+#			else:
+#				p0 = p
+#			globalvars.meteo_data.rel_pressure = float(p0 / 100.0)
+
 	def _report_rain(self,total, rate):
 		#print "report_rain",total, rate
 		globalvars.meteo_data.rain = total
- 
-			
+
 			
 	def _report_wind(self,dir, dirDeg, dirStr, gustSpeed, avgSpeed):
 		#print "report_wind",dirDeg, avgSpeed, gustSpeed	  
@@ -224,7 +314,7 @@ class Sensor(threading.Thread):
 	def _report_humidity(self, hum_in, hum_out):
 		globalvars.meteo_data.hum_out  = hum_out   
 		globalvars.meteo_data.hum_in  = hum_in   
-  
+
 								
 	def _report_uv(self,uv):
 		globalvars.meteo_data.uv = uv	
