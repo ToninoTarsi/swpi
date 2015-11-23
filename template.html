@@ -414,6 +414,14 @@
                     break;
                 }
             }
+            dd = document.getElementById('use_bmp280');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_bmp280') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+
 
             dd = document.getElementById('delete_images_on_sd');
             for (var i = 0; i < dd.options.length; i++) {
@@ -985,6 +993,16 @@
                 <td class="style31" bgcolor="$LayColorBBC">
                     <select id="use_bmp085" type="text" name="use_bmp085" 
                         value=$use_bmp085 style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
+                        <tr>
+                <td class="style52" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use a BMP280 sensor for pressure and temperature and umidity (<b>use_bmp280</b>)</font></td>
+                <td class="style31" bgcolor="$LayColorBBC">
+                    <select id="use_bmp280" type="text" name="use_bmp280" 
+                        value=$use_bmp280 style="width: 100%" >
                         <option value=True >True</option>
                         <option value=False >False</option>
                     </select></td>
