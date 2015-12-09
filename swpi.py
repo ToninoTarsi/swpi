@@ -172,7 +172,7 @@ def process_sms(modem, smsID):
 			tar.close()
 						
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -206,7 +206,7 @@ def process_sms(modem, smsID):
 			tar.add("swpi.cfg")
 			tar.close()
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -244,7 +244,7 @@ def process_sms(modem, smsID):
 				tar.add(filetoadd)				
 				tar.close()
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -279,7 +279,7 @@ def process_sms(modem, smsID):
 			tar.add("log")				
 			tar.close()
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -407,7 +407,7 @@ def process_sms(modem, smsID):
 			modem.sms_del(msgID)
 			
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -723,36 +723,45 @@ if ( cfg.set_system_time_from_ntp_server_at_startup ):
 
 # Init Dongle
 bConnected = False
-modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
 
-if cfg.usedongle :
-	#reset_sms(modem)
-	#modem.enable_textmode(True)
-	#modem.enable_clip(True)	
-	#modem.enable_nmi(True)
-	sms_action = (humod.actions.PATTERN['new sms'], new_sms)
-	call_action = (humod.actions.PATTERN['incoming callclip'], answer_call)
-	actions = [sms_action , call_action]
-	modem.prober.start(actions) # Starts the prober.
-	#modem.enable_nmi(True)
-	reset_sms(modem)
-
+x=os.system("ls " + cfg.dongleDataPort )
+if x==0:
+	dongle_detected = True
+else:
+	dongle_detected = False 
 	
-	print ""
-	log( "Modem Model : "  + modem.show_model())
-	log(  "Revision : "  + modem.show_revision())
-	log(  "Modem Serial Number : " + modem.show_sn())
-	log(  "Pin Status : " + modem.get_pin_status())
-	log(  "Device Center : " + modem.get_service_center()[0] + " " + str(modem.get_service_center()[1]))
-	log(  "Signal quality : " + str(modem.get_rssi()))
+if ( dongle_detected ):
+	modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
+else:
+	modem = None
+	
+if cfg.usedongle  :
+	if ( dongle_detected ):
+		sms_action = (humod.actions.PATTERN['new sms'], new_sms)
+		call_action = (humod.actions.PATTERN['incoming callclip'], answer_call)
+		actions = [sms_action , call_action]
+		modem.prober.start(actions) # Starts the prober.
+		#modem.enable_nmi(True)
+		reset_sms(modem)
+	
+		
+		print ""
+		log( "Modem Model : "  + modem.show_model())
+		log(  "Revision : "  + modem.show_revision())
+		log(  "Modem Serial Number : " + modem.show_sn())
+		log(  "Pin Status : " + modem.get_pin_status())
+		log(  "Device Center : " + modem.get_service_center()[0] + " " + str(modem.get_service_center()[1]))
+		log(  "Signal quality : " + str(modem.get_rssi()))
+	
+		log( "Checking new sms messages...")
+		smslist = modem.sms_list()
+		for message in smslist:
+			smsID = message[0]
+			process_sms(modem,smsID)
+	else:
+		log("3G Dongle not detected")
 
-	log( "Checking new sms messages...")
-	smslist = modem.sms_list()
-	for message in smslist:
-		smsID = message[0]
-		process_sms(modem,smsID)
-
-if ( ( not internet_on()) and cfg.UseDongleNet ):
+if ( ( not internet_on()) and cfg.UseDongleNet and dongle_detected ):
 	log( "Trying to connect to internet with 3G dongle ....")
 	time.sleep(1)
 	modem.connectwvdial()
@@ -779,12 +788,24 @@ if ( cfg.set_time_at_boot.upper() != "NONE"):
 	hours=int((cfg.set_time_at_boot.split(":")[0]))
 	minutes=int((cfg.set_time_at_boot.split(":")[1]))
 	seconds="00"
-	now = datetime.datetime.now()
+	date_file = "/home/pi/swpi/date.txt"
+	if os.path.exists(date_file):
+		in_file = open(date_file,"r")
+		text = in_file.read()
+		in_file.close()
+		now = datetime.datetime.strptime(text, "%Y-%m-%d %H:%M:%S.%f")
+	else:
+		now = datetime.datetime.now()
+		
 	new_date = now + datetime.timedelta(days=1)
 	d = new_date.replace( hour=hours )
 	new_date =  d.replace( minute=minutes )
 	os.system("sudo date -s '%s'" %  new_date)
-
+	in_file = open(date_file,"w")
+	in_file.write(str(new_date))
+	in_file.close()
+	
+	
 # Set Time from NTP ( using a thread to avoid strange freezing )
 if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
@@ -806,7 +827,7 @@ if ( publicIP != None and cfg.use_DNSExit) :
 #		log ("ERROR sending mail" )
 
 # Send SMS with IP information
-if ( publicIP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
+if ( publicIP != None and cfg.usedongle and dongle_detected and cfg.send_IP_by_sms  ):
 	try:
 		modem.sms_send(cfg.number_to_send, publicIP)
 		log ("SMS sent to %s" % cfg.number_to_send)
@@ -942,7 +963,7 @@ while 1:
 		
 		if ( cfg.sendImagesToServer or cfg.logdata or cfg.upload_data or cfg.WeatherUnderground_logdata or cfg.PWS_logdata):
 			waitForHandUP()
-			if ( cfg.UseDongleNet and ( not internet_on())  and modem._pppd_pid == None): # connect if not
+			if ( cfg.UseDongleNet and dongle_detected and ( not internet_on())  and modem._pppd_pid == None): # connect if not
 				log( "Trying to connect to internet with 3G dongle")
 				modem.connectwvdial()
 				IP = waitForIP()
@@ -1073,8 +1094,8 @@ while 1:
 				systemRestart()		
 			
 		#Check disk space
-		disk_space = disk_free()
-		if cfg.usedongle :
+		disk_space = disk_free()/1000000
+		if cfg.usedongle and dongle_detected:
 			#log("alla fine")
 			reset_sms(modem)
 		#modem.enable_nmi(True)
@@ -1085,7 +1106,7 @@ while 1:
 # 		else:
 # 			log("Disk space left = %s" % disk_space)	
 		
-		log("Disk space left = %s" % disk_space)
+		log("Disk space left = %d Mb" % disk_space)
 		
 		globalvars.WatchDogTime = datetime.datetime.now()
 		
@@ -1123,7 +1144,7 @@ while 1:
 			
 		
 	except KeyboardInterrupt:
-		if cfg.usedongle:
+		if cfg.usedongle and dongle_detected:
 			modem.prober.stop()
 		if ( cfg.useradio):
 			radio.stop()

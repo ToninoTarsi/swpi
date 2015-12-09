@@ -43,6 +43,12 @@ def get_cpu_temperature():
     output, _error = process.communicate()
     return float(output[output.index('=') + 1:output.rindex("'")])
 
+def getfiles_bydate(dirpath):
+    a = [s for s in os.listdir(dirpath)
+         if os.path.isfile(os.path.join(dirpath, s))]
+    a.sort(key=lambda s: os.path.getmtime(os.path.join(dirpath, s)))
+    return a
+
 
 def disk_free():
     """Return disk usage statistics about the given path.
@@ -50,7 +56,7 @@ def disk_free():
     Returned valus is a named tuple with attributes 'total', 'used' and
     'free', which are the amount of total, used and free space, in bytes.
     """
-    path = "/"
+    path = "/swpi"
     st = os.statvfs(path)
     free = st.f_bavail * st.f_frsize
     #total = st.f_blocks * st.f_frsize
