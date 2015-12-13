@@ -2,5 +2,6 @@ eclipse.preferences.version=1
 encoding//plugins/jessica/sync_plugin.py=utf-8
 encoding//plugins/twitter.py=utf-8
 encoding//plugins/whatsapp_echo.py=utf-8
+encoding/LICENSE=UTF-8
 encoding/intervalmap.py=utf-8
 encoding/swpi.py=utf-8
