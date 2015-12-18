@@ -49,6 +49,15 @@ def getfiles_bydate(dirpath):
     a.sort(key=lambda s: os.path.getmtime(os.path.join(dirpath, s)))
     return a
 
+def isMountReadonly(mnt):
+    with open('/proc/mounts') as f:
+        for line in f:
+            device, mount_point, filesystem, flags, __, __ = line.split()
+            flags = flags.split(',')
+            if mount_point == mnt:
+                return 'ro' in flags
+        raise ValueError('mount "%s" doesn\'t exist' % mnt)
+
 
 def disk_free():
     """Return disk usage statistics about the given path.
@@ -56,7 +65,11 @@ def disk_free():
     Returned valus is a named tuple with attributes 'total', 'used' and
     'free', which are the amount of total, used and free space, in bytes.
     """
-    path = "/swpi"
+    #print "read only: %s" % isMountReadonly('/mnt')
+    if ( os.path.isdir("/swpi") ):
+        path = "/swpi"
+    else:
+        path = "/"
     st = os.statvfs(path)
     free = st.f_bavail * st.f_frsize
     #total = st.f_blocks * st.f_frsize

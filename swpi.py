@@ -791,18 +791,20 @@ if ( cfg.set_time_at_boot.upper() != "NONE"):
 	date_file = "/home/pi/swpi/date.txt"
 	if os.path.exists(date_file):
 		in_file = open(date_file,"r")
-		text = in_file.read()
+		text = in_file.readline().split("\n")[0]
+		print text
 		in_file.close()
-		now = datetime.datetime.strptime(text, "%Y-%m-%d %H:%M:%S.%f")
+		now = datetime.datetime.strptime(text, "%Y-%m-%d")
 	else:
 		now = datetime.datetime.now()
 		
 	new_date = now + datetime.timedelta(days=1)
+	
 	d = new_date.replace( hour=hours )
 	new_date =  d.replace( minute=minutes )
 	os.system("sudo date -s '%s'" %  new_date)
 	in_file = open(date_file,"w")
-	in_file.write(str(new_date))
+	in_file.write(new_date.strftime("%Y-%m-%d")+"\n")
 	in_file.close()
 	
 	
@@ -956,8 +958,9 @@ while 1:
 			cPI = cameraPI.cameraPI(cfg)
 			cPIFilemane = "./img/raspi_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
 			globalvars.takenPicture.cPIFilemane = cPIFilemane			
-			bcPI = cPI.capture(cPIFilemane)
-			addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
+			bcPI = cPI.capture(cPIFilemane) 
+			if bcPI:
+				addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 
 		bConnected = False
 		

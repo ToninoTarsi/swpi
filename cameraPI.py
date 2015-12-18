@@ -17,6 +17,7 @@ import os
 from TTLib  import *
 import sun
 import math
+import subprocess
 
 class cameraPI(object):
 	"""Class defining generic webcams."""
@@ -25,7 +26,19 @@ class cameraPI(object):
 		self.cfg = cfg
 		self.god=sun.sun(lat=cfg.location_latitude,long=cfg.location_longitude)
 	
+	def detect_cameraPI(self):
+		cmd = ['vcgencmd', 'get_camera']
+		p = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
+		out, err = p.communicate('foo\nfoofoo\n')
+		if ( out.find("detected=1") == -1  ) :
+			return False
+		else:
+			return True
+		
 	def capture(self,filename):
+		if ( not self.detect_cameraPI() ) :
+			log("ERROR CameraPI not detected")
+			return False
 		if ( self.god.daylight() ):
 			options = self.cfg.cameraPI_day_settings
 			log("CameraPI - Using Dayligth settings" + options)
