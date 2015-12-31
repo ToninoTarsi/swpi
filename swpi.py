@@ -869,6 +869,11 @@ if ( cfg.usecameradivice ):
 	if ( cfg.clear_all_sd_cards_at_startup):
 		camera.ClearAllCameraSDCards(cfg)		
 
+if ( cfg.delete_images_on_sd ):
+	filelist = [ f for f in os.listdir("./img") if f.endswith(".jpg") ]
+	for f in filelist:
+		file_to_delete = "./img/" + f
+		os.remove(file_to_delete)
 
 	
 
