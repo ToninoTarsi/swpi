@@ -493,21 +493,52 @@ def answer_call(modem, message):
 		if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
 			listOfMessages.append("./audio/raining.raw")
 		
-		# Wind Speed and Direction
+		# Wind  Direction
 		listOfMessages.append("./audio/winddirection.raw")
-		listOfMessages.append("./audio/" + str(globalvars.meteo_data.wind_dir_code) + ".raw")		
-		listOfMessages.append("./audio/from.raw")
-		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_ave)) + ".raw")
-		listOfMessages.append("./audio/to.raw")
+		listOfMessages.append("./audio/" + str(globalvars.meteo_data.wind_dir_code) + ".raw")	
 		
-		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_gust)) + ".raw")
+		# Wind Speed
+		listOfMessages.append("./audio/from.raw")
+		if ( int(globalvars.meteo_data.wind_ave) <= 120):
+			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_ave)) + ".raw")
+		else:
+			thousands, rem = divmod(round(globalvars.meteo_data.wind_ave), 1000) 
+			thousands = int(thousands * 1000)
+			hundreds, tens = divmod(rem, 100)
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))	
+			if ( thousands != 0):
+				listOfMessages.append("./audio/" + str(thousands) + ".raw")
+			if ( hundreds != 0):
+				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")
+			
+			
+		listOfMessages.append("./audio/to.raw")
+		if ( int(globalvars.meteo_data.wind_gust) <= 120):
+			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_gust)) + ".raw")
+		else:
+			thousands, rem = divmod(round(globalvars.meteo_data.wind_gust), 1000) 
+			thousands = int(thousands * 1000)
+			hundreds, tens = divmod(rem, 100)
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))	
+			if ( thousands != 0):
+				listOfMessages.append("./audio/" + str(thousands) + ".raw")
+			if ( hundreds != 0):
+				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")			
 		listOfMessages.append("./audio/km.raw")
 	
+       	#winf trend
 		if ( globalvars.meteo_data.wind_trend != None ):
 			if ( globalvars.meteo_data.wind_trend < - cfg.wind_trend_limit) :
 				listOfMessages.append("./audio/winddown.raw")
 			if ( globalvars.meteo_data.wind_trend >  cfg.wind_trend_limit) :
 				listOfMessages.append("./audio/windup.raw")	
+				
 		# Temperature
 		if ( globalvars.meteo_data.temp_out != None ):
 			listOfMessages.append("./audio/silence05s.raw") 
@@ -585,11 +616,37 @@ def answer_call(modem, message):
 		# Statistics
 		if ( globalvars.meteo_data.winDayMin != None ):
 			listOfMessages.append("./audio/minday.raw")
-			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")	
+			if ( int(globalvars.meteo_data.winDayMin) <= 120):
+				listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")
+			else:
+				thousands, rem = divmod(round(globalvars.meteo_data.winDayMin), 1000) 
+				thousands = int(thousands * 1000)
+				hundreds, tens = divmod(rem, 100)
+				hundreds = int(hundreds * 100)
+				tens = int(round(tens))	
+				if ( thousands != 0):
+					listOfMessages.append("./audio/" + str(thousands) + ".raw")
+				if ( hundreds != 0):
+					listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+				if ( tens != 0 ):
+					listOfMessages.append("./audio/" + str(tens) + ".raw")
 		
 		if ( globalvars.meteo_data.winDayMax != None ):	
 			listOfMessages.append("./audio/maxday.raw")	
-			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
+			if ( int(globalvars.meteo_data.winDayMax) <= 120):
+				listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
+			else:
+				thousands, rem = divmod(round(globalvars.meteo_data.winDayMax), 1000) 
+				thousands = int(thousands * 1000)
+				hundreds, tens = divmod(rem, 100)
+				hundreds = int(hundreds * 100)
+				tens = int(round(tens))	
+				if ( thousands != 0):
+					listOfMessages.append("./audio/" + str(thousands) + ".raw")
+				if ( hundreds != 0):
+					listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+				if ( tens != 0 ):
+					listOfMessages.append("./audio/" + str(tens) + ".raw")			
 		
 	
 		
