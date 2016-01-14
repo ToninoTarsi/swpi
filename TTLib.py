@@ -946,6 +946,7 @@ def isnumeric(s):
         return False
 
 def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
+    msg = "Sending file to server : " + name
     try:
         s = ftplib.FTP(server,login,password,timeout=30) 	# Connect
         f = open(filename,'rb')                # file to send
@@ -953,14 +954,16 @@ def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
         s.storbinary('STOR ' + name, f)         # Send the file
         f.close()                                # Close file and FTP
         s.quit() 
-        log("Sent file to server : " + name)
+        msg = msg + " OK"
         if delete : 
             os.remove(filename)
             log("Deleted file : " + filename )
+            msg = msg + " Deleted"
+        log(msg)
         return True
     except Exception, err:
-        print "Exception"
-        print '%s' % str(err)    
+        #print "Exception"
+        #print '%s' % str(err)    
         log("Error sending  file to server : " + name)
         if delete : 
             deleteFile(filename)
