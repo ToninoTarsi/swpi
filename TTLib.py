@@ -666,6 +666,47 @@ def logData(serverfile,SMSPwd):
 #        log(  "Error connecting to server : " + serverfile )
 #        pass
 
+
+def sentToWindFinder(WindFinder_ID,WindFinder_password):
+    
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 200 ):
+        return
+    
+    url = "http://www.windfinder.com/wind-cgi/httpload.pl?"
+    url+= "sender_id=" + WindFinder_ID
+    url+= "&password=" + WindFinder_password
+    url+= "&date=" + globalvars.meteo_data.last_measure_time.strftime("%d.%m.%Y")
+    url+= "time=" + globalvars.meteo_data.last_measure_time.strftime("%H:%M")
+    if ( globalvars.meteo_data.wind_ave ) != None :
+        url+= "&windspeed=" +  str( float(globalvars.meteo_data.wind_ave)* 0.539957 ) 
+    if ( globalvars.meteo_data.wind_gust ) != None :
+        url+= "&gust==" +  str( float(globalvars.meteo_data.wind_gust)* 0.539957 ) 
+    if ( globalvars.meteo_data.wind_dir ) != None :
+        url+= "&winddir==" +  str(globalvars.meteo_data.wind_dir)     
+    if ( globalvars.meteo_data.temp_out ) != None :
+        url+= "&airtemp==" +  str(globalvars.meteo_data.temp_out)           
+    if ( globalvars.meteo_data.rel_pressure ) != None :
+        url+= "&pressure==" +  str(globalvars.meteo_data.rel_pressure  )
+        
+    
+        #print  parameters   
+    try:
+        r = requests.get(url,timeout=10)
+        msg = r.text.splitlines()
+        #print r.text
+        if ( "OK" in r.text.upper() ):
+            log("Log to WindFinder : OK" )
+        else:
+            log("Log to WindFinder ERROR "  + r.text)
+    except:
+        log(  "Error Logging to WindFinder : "   )        
+
 def UploadData(cfg):
     
     if ( globalvars.meteo_data.last_measure_time == None):

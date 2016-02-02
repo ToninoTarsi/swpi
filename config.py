@@ -270,6 +270,11 @@ class config(object):
 		self.CWOP_ID = config.get('CWOP', 'CWOP_ID',"EW0000")
 		self.CWOP_password = config.get('CWOP', 'CWOP_password',"-1")
 	
+		#[WindFinder]
+		self.WindFinder_logdata = config.getboolean('WindFinder', 'WindFinder_logdata',False)
+		self.WindFinder_ID = config.get('WindFinder', 'WindFinder_ID',"XXXXXX")
+		self.WindFinder_password = config.get('WindFinder', 'WindFinder_password',"******")
+		
 		#[PWS]
 		self.PWS_logdata = config.getboolean('PWS', 'PWS_logdata',False)
 		self.PWS_ID = config.get('PWS', 'PWS_ID',"KCASANFR5")
@@ -308,9 +313,10 @@ class config(object):
 		self.LayColorBBC = config.get('LayOut', 'LayColorBBC',"FF99FF")
 		self.LayColorBTC = config.get('LayOut', 'LayColorBTC',"0000FF")
 		
-		if ( not os.path.isfile(self.cfgName)  ):
-			f = open(self.cfgName,"w")
-			config.write(f)					
+# 		if ( not os.path.isfile(self.cfgName)  ):
+ 		f = open(self.cfgName,"w")
+ 		config.write(f)		
+ 		f.close()			
 
 
 	def writeCfg(self):
@@ -467,6 +473,12 @@ class config(object):
 		config.setboolean('CWOP', 'CWOP_logdata',self.CWOP_logdata)
 		config.setstr('CWOP', 'CWOP_ID',self.CWOP_ID)		
 		config.setstr('CWOP', 'CWOP_password',self.CWOP_password)	
+		
+		#[WindFinder]
+		config.setboolean('WindFinder', 'WindFinder_logdata',self.WindFinder_logdata)
+		config.setstr('WindFinder', 'WindFinder_ID',self.WindFinder_ID)		
+		config.setstr('WindFinder', 'WindFinder_password',self.WindFinder_password)	
+		
 
 		#[DNS Exit]
 		config.setboolean('DNSExit', 'use_DNSExit',self.use_DNSExit)

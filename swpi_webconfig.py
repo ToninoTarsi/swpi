@@ -164,6 +164,12 @@ def outputPage(cfg):
 	d.update(CWOP_logdata=cfg.CWOP_logdata)
 	d.update(CWOP_ID=cfg.CWOP_ID)
 	d.update(CWOP_password=cfg.CWOP_password)
+	
+	#[WindFinder]
+	d.update(WindFinder_logdata=cfg.WindFinder_logdata)
+	d.update(WindFinder_ID=cfg.WindFinder_ID)
+	d.update(WindFinder_password=cfg.WindFinder_password)
+	
 
 	#[PWS]		
 	d.update(PWS_logdata=cfg.PWS_logdata)
@@ -356,7 +362,13 @@ if ( len(request) != 0 ):
 	#[CWOP]	
 	cfg.CWOP_logdata = request['CWOP_logdata'][0]																	  
 	cfg.CWOP_ID = request['CWOP_ID'][0]	  	
-	cfg.CWOP_password = request['CWOP_password'][0]	  	
+	cfg.CWOP_password = request['CWOP_password'][0]	
+	
+	
+	#[WindFinder]	
+	cfg.WindFinder_logdata = request['WindFinder_logdata'][0]																	  
+	cfg.WindFinder_ID = request['WindFinder_ID'][0]	  	
+	cfg.WindFinder_password = request['WindFinder_password'][0]	    	
 
 	#[PWS]
 	cfg.PWS_logdata = request['PWS_logdata'][0]																	  
