@@ -697,9 +697,10 @@ def sentToWindFinder(WindFinder_ID,WindFinder_password):
     
         #print  parameters   
     try:
+        #log(url)
         r = requests.get(url,timeout=10)
         msg = r.text.splitlines()
-        #print r.text
+        #log(r.text)
         if ( "OK" in r.text.upper() ):
             log("Log to WindFinder : OK" )
         else:
@@ -1173,8 +1174,12 @@ def getCurrentMeteoData():
     return mydata
 
 def getCurrentMeteoDataFromUrl(url):
-    data = urllib2.urlopen(url)
-    return json.load(data)
+    try:
+        data = urllib2.urlopen(url)
+        return json.load(data)
+    except Exception as e:
+        log ("ERROR getCurrentMeteoDataFromUrl" )
+        return None
     
     
 if __name__ == '__main__':
