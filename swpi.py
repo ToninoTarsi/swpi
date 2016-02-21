@@ -108,6 +108,7 @@ def process_sms(modem, smsID):
 		#	MCFG			mail cfg to sender
 		#	MLOG			mail current logfiles
 		#	MALOG			mail all logfiles
+		#	DATE	date	set date ex 01011963
 		#   BCK				backup
 		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
@@ -322,6 +323,20 @@ def process_sms(modem, smsID):
 			conn.commit()		
 			systemRestart()
 		#---------------------------------------------------------------------------------------		
+		elif (len(command) == 3 and cmd == "DATE" ):
+			newdatestr = param
+			theDay = int(param[0:2])
+			theMonth = int(param[2:4])
+			theYear = int(param[4:8])
+			date1 = datetime.date(year=theYear,day=theDay,month=theMonth)
+			new_date = datetime.datetime.combine(date1,datetime.datetime.now().time())
+			os.system("sudo date -s '%s'" %  new_date)
+			date_file = "/home/pi/swpi/date.txt"
+			in_file = open(date_file,"w")
+			in_file.write(new_date.strftime("%Y-%m-%d")+"\n")
+			in_file.close()
+			log( "New DATE set to : " + str(param))
+		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 3 and cmd == "CAM" ):
 			modem.sms_del(msgID)
 			WebCamInterval = int(param)
