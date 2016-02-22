@@ -1174,11 +1174,10 @@ while 1:
 				log("Error : Something wrong with sensors .. restarting ws")
 				systemRestart()		
 			
-		#Check disk space
-		disk_space = disk_free()/1000000
-		if cfg.usedongle and dongle_detected:
+
+		#if cfg.usedongle and dongle_detected:
 			#log("alla fine")
-			reset_sms(modem)
+		#	reset_sms(modem)
 		#modem.enable_nmi(True)
 		#log("reset sms")
 # 		if ( disk_space < 500000000L ):
@@ -1187,6 +1186,8 @@ while 1:
 # 		else:
 # 			log("Disk space left = %s" % disk_space)	
 		
+		#Check disk space
+		disk_space = disk_free()/1000000
 		log("Disk space left = %d Mb" % disk_space)
 		
 		globalvars.WatchDogTime = datetime.datetime.now()
