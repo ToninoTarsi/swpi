@@ -64,6 +64,7 @@ def new_sms(modem, message):
 def process_sms(modem, smsID):
 	"""Parse SMS number smsID"""
 	try:	
+		waitForHandUP()
 		global cfg
 		global logFileDate
 		msgID = smsID
@@ -109,6 +110,9 @@ def process_sms(modem, smsID):
 		#	MLOG			mail current logfiles
 		#	MALOG			mail all logfiles
 		#	DATE	date	set date ex 01011963
+		#	DELIMG			delete images
+		#	DELLOG			delete logs
+		#	DF				Send Disk space to sender
 		#   BCK				backup
 		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
@@ -127,6 +131,23 @@ def process_sms(modem, smsID):
 		#												4	1400x1050
 		#												5	1600x1200
 		#												6	2048x1536
+		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "DF" ):
+			modem.sms_del(msgID)
+			disk_space = disk_free()/1000000
+			msg = "Disk space left = %d MB" % disk_space
+			modem.sms_send(msgSender,msg)
+			log( "SMS sent: " + msg )
+		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "DELIMG" ):
+			modem.sms_del(msgID)
+			os.system('rm -f /swpi/img/*')
+			log( "Detaled alla images  " )
+		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "DELLOG" ):
+			modem.sms_del(msgID)
+			os.system('rm -f /swpi/log/*')
+			log( "Detaled all  logs  " )
 		#---------------------------------------------------------------------------------------	
 		if (len(command) == 2 and cmd == "RBT" ):
 			modem.sms_del(msgID)
