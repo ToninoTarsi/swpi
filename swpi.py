@@ -135,8 +135,10 @@ def process_sms(modem, smsID):
 		if (len(command) == 2 and cmd == "DF" ):
 			modem.sms_del(msgID)
 			disk_space = disk_free()/1000000
-			msg = "Disk space left = %d MB" % disk_space
-			modem.sms_send(msgSender,msg)
+			msg = datetime.datetime.now().strftime("%d%m%Y %H%M")
+			msg += " DF = %d MB" % disk_space
+			log( "Sending SMS : " + msg )
+			modem.sms_send(msgSender,msg )
 			log( "SMS sent: " + msg )
 		#---------------------------------------------------------------------------------------	
 		if (len(command) == 2 and cmd == "DELIMG" ):
@@ -474,13 +476,16 @@ def process_sms(modem, smsID):
 		#log("alla fine  dei messaggi reset sms")
 		reset_sms(modem)	
 		return True
-	except :
+	except Exception as e:
 		log( "D - Exept in MSG" )
 		modem.sms_del(msgID)
 		#log("se errore in sms reset ")
 		reset_sms(modem)	
 		if conn:
 			conn.close()
+		print e.message
+		print e.__class__.__name__
+		log(traceback.format_exc())
 		return False
 		
 	
