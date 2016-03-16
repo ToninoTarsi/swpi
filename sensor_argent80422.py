@@ -9,7 +9,8 @@
 
 """This module defines the base sensor PCE ."""
 
-# sudo pip install spidev --upgrade
+# sudo pip install spidev --upgrade 
+# sudo apt-get clean
 
 
 import threading
