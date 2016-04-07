@@ -64,6 +64,7 @@ def new_sms(modem, message):
 def process_sms(modem, smsID):
 	"""Parse SMS number smsID"""
 	try:	
+		waitForHandUP()
 		global cfg
 		global logFileDate
 		msgID = smsID
@@ -108,6 +109,10 @@ def process_sms(modem, smsID):
 		#	MCFG			mail cfg to sender
 		#	MLOG			mail current logfiles
 		#	MALOG			mail all logfiles
+		#	DATE	date	set date ex 01011963
+		#	DELIMG			delete images
+		#	DELLOG			delete logs
+		#	DF				Send Disk space to sender
 		#   BCK				backup
 		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
@@ -126,6 +131,25 @@ def process_sms(modem, smsID):
 		#												4	1400x1050
 		#												5	1600x1200
 		#												6	2048x1536
+		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "DF" ):
+			modem.sms_del(msgID)
+			disk_space = disk_free()/1000000
+			msg = datetime.datetime.now().strftime("%d%m%Y %H%M")
+			msg += " DF = %d MB" % disk_space
+			log( "Sending SMS : " + msg )
+			modem.sms_send(msgSender,msg )
+			log( "SMS sent: " + msg )
+		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "DELIMG" ):
+			modem.sms_del(msgID)
+			os.system('rm -f /swpi/img/*')
+			log( "Detaled alla images  " )
+		#---------------------------------------------------------------------------------------	
+		if (len(command) == 2 and cmd == "DELLOG" ):
+			modem.sms_del(msgID)
+			os.system('rm -f /swpi/log/*')
+			log( "Detaled all  logs  " )
 		#---------------------------------------------------------------------------------------	
 		if (len(command) == 2 and cmd == "RBT" ):
 			modem.sms_del(msgID)
@@ -172,7 +196,7 @@ def process_sms(modem, smsID):
 			tar.close()
 						
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -206,7 +230,7 @@ def process_sms(modem, smsID):
 			tar.add("swpi.cfg")
 			tar.close()
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -244,7 +268,7 @@ def process_sms(modem, smsID):
 				tar.add(filetoadd)				
 				tar.close()
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -279,7 +303,7 @@ def process_sms(modem, smsID):
 			tar.add("log")				
 			tar.close()
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -322,6 +346,20 @@ def process_sms(modem, smsID):
 			conn.commit()		
 			systemRestart()
 		#---------------------------------------------------------------------------------------		
+		elif (len(command) == 3 and cmd == "DATE" ):
+			newdatestr = param
+			theDay = int(param[0:2])
+			theMonth = int(param[2:4])
+			theYear = int(param[4:8])
+			date1 = datetime.date(year=theYear,day=theDay,month=theMonth)
+			new_date = datetime.datetime.combine(date1,datetime.datetime.now().time())
+			os.system("sudo date -s '%s'" %  new_date)
+			date_file = "/home/pi/swpi/date.txt"
+			in_file = open(date_file,"w")
+			in_file.write(new_date.strftime("%Y-%m-%d")+"\n")
+			in_file.close()
+			log( "New DATE set to : " + str(param))
+		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 3 and cmd == "CAM" ):
 			modem.sms_del(msgID)
 			WebCamInterval = int(param)
@@ -407,7 +445,7 @@ def process_sms(modem, smsID):
 			modem.sms_del(msgID)
 			
 			bbConnected = False
-			if ( ( not internet_on())  and cfg.UseDongleNet ):
+			if ( ( not internet_on())  and cfg.UseDongleNet and dongle_detected):
 				log( "Trying to connect to internet with 3G dongle ....")
 				time.sleep(1)
 				modem.connectwvdial()
@@ -438,13 +476,16 @@ def process_sms(modem, smsID):
 		#log("alla fine  dei messaggi reset sms")
 		reset_sms(modem)	
 		return True
-	except :
+	except Exception as e:
 		log( "D - Exept in MSG" )
 		modem.sms_del(msgID)
 		#log("se errore in sms reset ")
 		reset_sms(modem)	
 		if conn:
 			conn.close()
+		print e.message
+		print e.__class__.__name__
+		log(traceback.format_exc())
 		return False
 		
 	
@@ -493,21 +534,52 @@ def answer_call(modem, message):
 		if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
 			listOfMessages.append("./audio/raining.raw")
 		
-		# Wind Speed and Direction
+		# Wind  Direction
 		listOfMessages.append("./audio/winddirection.raw")
-		listOfMessages.append("./audio/" + str(globalvars.meteo_data.wind_dir_code) + ".raw")		
-		listOfMessages.append("./audio/from.raw")
-		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_ave)) + ".raw")
-		listOfMessages.append("./audio/to.raw")
+		listOfMessages.append("./audio/" + str(globalvars.meteo_data.wind_dir_code) + ".raw")	
 		
-		listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_gust)) + ".raw")
+		# Wind Speed
+		listOfMessages.append("./audio/from.raw")
+		if ( int(globalvars.meteo_data.wind_ave) <= 120):
+			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_ave)) + ".raw")
+		else:
+			thousands, rem = divmod(round(globalvars.meteo_data.wind_ave), 1000) 
+			thousands = int(thousands * 1000)
+			hundreds, tens = divmod(rem, 100)
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))	
+			if ( thousands != 0):
+				listOfMessages.append("./audio/" + str(thousands) + ".raw")
+			if ( hundreds != 0):
+				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")
+			
+			
+		listOfMessages.append("./audio/to.raw")
+		if ( int(globalvars.meteo_data.wind_gust) <= 120):
+			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.wind_gust)) + ".raw")
+		else:
+			thousands, rem = divmod(round(globalvars.meteo_data.wind_gust), 1000) 
+			thousands = int(thousands * 1000)
+			hundreds, tens = divmod(rem, 100)
+			hundreds = int(hundreds * 100)
+			tens = int(round(tens))	
+			if ( thousands != 0):
+				listOfMessages.append("./audio/" + str(thousands) + ".raw")
+			if ( hundreds != 0):
+				listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+			if ( tens != 0 ):
+				listOfMessages.append("./audio/" + str(tens) + ".raw")			
 		listOfMessages.append("./audio/km.raw")
 	
+       	#winf trend
 		if ( globalvars.meteo_data.wind_trend != None ):
 			if ( globalvars.meteo_data.wind_trend < - cfg.wind_trend_limit) :
 				listOfMessages.append("./audio/winddown.raw")
 			if ( globalvars.meteo_data.wind_trend >  cfg.wind_trend_limit) :
 				listOfMessages.append("./audio/windup.raw")	
+				
 		# Temperature
 		if ( globalvars.meteo_data.temp_out != None ):
 			listOfMessages.append("./audio/silence05s.raw") 
@@ -585,11 +657,37 @@ def answer_call(modem, message):
 		# Statistics
 		if ( globalvars.meteo_data.winDayMin != None ):
 			listOfMessages.append("./audio/minday.raw")
-			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")	
+			if ( int(globalvars.meteo_data.winDayMin) <= 120):
+				listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMin)) + ".raw")
+			else:
+				thousands, rem = divmod(round(globalvars.meteo_data.winDayMin), 1000) 
+				thousands = int(thousands * 1000)
+				hundreds, tens = divmod(rem, 100)
+				hundreds = int(hundreds * 100)
+				tens = int(round(tens))	
+				if ( thousands != 0):
+					listOfMessages.append("./audio/" + str(thousands) + ".raw")
+				if ( hundreds != 0):
+					listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+				if ( tens != 0 ):
+					listOfMessages.append("./audio/" + str(tens) + ".raw")
 		
 		if ( globalvars.meteo_data.winDayMax != None ):	
 			listOfMessages.append("./audio/maxday.raw")	
-			listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
+			if ( int(globalvars.meteo_data.winDayMax) <= 120):
+				listOfMessages.append("./audio/" + str(int(globalvars.meteo_data.winDayMax)) + ".raw")
+			else:
+				thousands, rem = divmod(round(globalvars.meteo_data.winDayMax), 1000) 
+				thousands = int(thousands * 1000)
+				hundreds, tens = divmod(rem, 100)
+				hundreds = int(hundreds * 100)
+				tens = int(round(tens))	
+				if ( thousands != 0):
+					listOfMessages.append("./audio/" + str(thousands) + ".raw")
+				if ( hundreds != 0):
+					listOfMessages.append("./audio/" + str(hundreds) + ".raw")
+				if ( tens != 0 ):
+					listOfMessages.append("./audio/" + str(tens) + ".raw")			
 		
 	
 		
@@ -723,36 +821,45 @@ if ( cfg.set_system_time_from_ntp_server_at_startup ):
 
 # Init Dongle
 bConnected = False
-modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
 
-if cfg.usedongle :
-	#reset_sms(modem)
-	#modem.enable_textmode(True)
-	#modem.enable_clip(True)	
-	#modem.enable_nmi(True)
-	sms_action = (humod.actions.PATTERN['new sms'], new_sms)
-	call_action = (humod.actions.PATTERN['incoming callclip'], answer_call)
-	actions = [sms_action , call_action]
-	modem.prober.start(actions) # Starts the prober.
-	#modem.enable_nmi(True)
-	reset_sms(modem)
-
+x=os.system("ls " + cfg.dongleDataPort )
+if x==0:
+	dongle_detected = True
+else:
+	dongle_detected = False 
 	
-	print ""
-	log( "Modem Model : "  + modem.show_model())
-	log(  "Revision : "  + modem.show_revision())
-	log(  "Modem Serial Number : " + modem.show_sn())
-	log(  "Pin Status : " + modem.get_pin_status())
-	log(  "Device Center : " + modem.get_service_center()[0] + " " + str(modem.get_service_center()[1]))
-	log(  "Signal quality : " + str(modem.get_rssi()))
+if ( dongle_detected ):
+	modem = humod.Modem(cfg.dongleDataPort,cfg.dongleAudioPort,cfg.dongleCtrlPort,cfg)
+else:
+	modem = None
+	
+if cfg.usedongle  :
+	if ( dongle_detected ):
+		sms_action = (humod.actions.PATTERN['new sms'], new_sms)
+		call_action = (humod.actions.PATTERN['incoming callclip'], answer_call)
+		actions = [sms_action , call_action]
+		modem.prober.start(actions) # Starts the prober.
+		#modem.enable_nmi(True)
+		reset_sms(modem)
+	
+		
+		print ""
+		log( "Modem Model : "  + modem.show_model())
+		log(  "Revision : "  + modem.show_revision())
+		log(  "Modem Serial Number : " + modem.show_sn())
+		log(  "Pin Status : " + modem.get_pin_status())
+		log(  "Device Center : " + modem.get_service_center()[0] + " " + str(modem.get_service_center()[1]))
+		log(  "Signal quality : " + str(modem.get_rssi()))
+	
+		log( "Checking new sms messages...")
+		smslist = modem.sms_list()
+		for message in smslist:
+			smsID = message[0]
+			process_sms(modem,smsID)
+	else:
+		log("3G Dongle not detected")
 
-	log( "Checking new sms messages...")
-	smslist = modem.sms_list()
-	for message in smslist:
-		smsID = message[0]
-		process_sms(modem,smsID)
-
-if ( ( not internet_on()) and cfg.UseDongleNet ):
+if ( ( not internet_on()) and cfg.UseDongleNet and dongle_detected ):
 	log( "Trying to connect to internet with 3G dongle ....")
 	time.sleep(1)
 	modem.connectwvdial()
@@ -779,12 +886,26 @@ if ( cfg.set_time_at_boot.upper() != "NONE"):
 	hours=int((cfg.set_time_at_boot.split(":")[0]))
 	minutes=int((cfg.set_time_at_boot.split(":")[1]))
 	seconds="00"
-	now = datetime.datetime.now()
+	date_file = "/home/pi/swpi/date.txt"
+	if os.path.exists(date_file):
+		in_file = open(date_file,"r")
+		text = in_file.readline().split("\n")[0]
+		print text
+		in_file.close()
+		now = datetime.datetime.strptime(text, "%Y-%m-%d")
+	else:
+		now = datetime.datetime.now()
+		
 	new_date = now + datetime.timedelta(days=1)
+	
 	d = new_date.replace( hour=hours )
 	new_date =  d.replace( minute=minutes )
 	os.system("sudo date -s '%s'" %  new_date)
-
+	in_file = open(date_file,"w")
+	in_file.write(new_date.strftime("%Y-%m-%d")+"\n")
+	in_file.close()
+	
+	
 # Set Time from NTP ( using a thread to avoid strange freezing )
 if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
@@ -806,7 +927,7 @@ if ( publicIP != None and cfg.use_DNSExit) :
 #		log ("ERROR sending mail" )
 
 # Send SMS with IP information
-if ( publicIP != None and cfg.usedongle and cfg.send_IP_by_sms  ):
+if ( publicIP != None and cfg.usedongle and dongle_detected and cfg.send_IP_by_sms  ):
 	try:
 		modem.sms_send(cfg.number_to_send, publicIP)
 		log ("SMS sent to %s" % cfg.number_to_send)
@@ -846,6 +967,11 @@ if ( cfg.usecameradivice ):
 	if ( cfg.clear_all_sd_cards_at_startup):
 		camera.ClearAllCameraSDCards(cfg)		
 
+if ( cfg.delete_images_on_sd ):
+	filelist = [ f for f in os.listdir("./img") if f.endswith(".jpg") ]
+	for f in filelist:
+		file_to_delete = "./img/" + f
+		os.remove(file_to_delete)
 
 	
 
@@ -935,14 +1061,15 @@ while 1:
 			cPI = cameraPI.cameraPI(cfg)
 			cPIFilemane = "./img/raspi_" + datetime.datetime.now().strftime("%d%m%Y-%H%M%S.jpg")
 			globalvars.takenPicture.cPIFilemane = cPIFilemane			
-			bcPI = cPI.capture(cPIFilemane)
-			addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
+			bcPI = cPI.capture(cPIFilemane) 
+			if bcPI:
+				addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 
 		bConnected = False
 		
 		if ( cfg.sendImagesToServer or cfg.logdata or cfg.upload_data or cfg.WeatherUnderground_logdata or cfg.PWS_logdata):
 			waitForHandUP()
-			if ( cfg.UseDongleNet and ( not internet_on())  and modem._pppd_pid == None): # connect if not
+			if ( cfg.UseDongleNet and dongle_detected and ( not internet_on())  and modem._pppd_pid == None): # connect if not
 				log( "Trying to connect to internet with 3G dongle")
 				modem.connectwvdial()
 				IP = waitForIP()
@@ -1030,7 +1157,8 @@ while 1:
 					log("Logging data to PWS ...")
 					logDataToPWS(cfg.PWS_ID,cfg.PWS_password,cfg.wind_speed_units)	
 					
-			
+				if ( cfg.WindFinder_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
+					sentToWindFinder(cfg.WindFinder_ID,cfg.WindFinder_password)
 			
 				thenewIP = getPublicIP()
 				if ( thenewIP != None and publicIP != thenewIP ):
@@ -1072,11 +1200,10 @@ while 1:
 				log("Error : Something wrong with sensors .. restarting ws")
 				systemRestart()		
 			
-		#Check disk space
-		disk_space = disk_free()
-		if cfg.usedongle :
+
+		#if cfg.usedongle and dongle_detected:
 			#log("alla fine")
-			reset_sms(modem)
+		#	reset_sms(modem)
 		#modem.enable_nmi(True)
 		#log("reset sms")
 # 		if ( disk_space < 500000000L ):
@@ -1085,7 +1212,9 @@ while 1:
 # 		else:
 # 			log("Disk space left = %s" % disk_space)	
 		
-		log("Disk space left = %s" % disk_space)
+		#Check disk space
+		disk_space = disk_free()/1000000
+		log("Disk space left = %d Mb" % disk_space)
 		
 		globalvars.WatchDogTime = datetime.datetime.now()
 		
@@ -1123,7 +1252,7 @@ while 1:
 			
 		
 	except KeyboardInterrupt:
-		if cfg.usedongle:
+		if cfg.usedongle and dongle_detected:
 			modem.prober.stop()
 		if ( cfg.useradio):
 			radio.stop()

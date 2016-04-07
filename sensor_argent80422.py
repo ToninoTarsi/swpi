@@ -7,7 +7,11 @@
 # 
 ##########################################################################
 
-"""This module defines the base sensor Nevio ."""
+"""This module defines the base sensor PCE ."""
+
+# sudo pip install spidev --upgrade 
+# sudo apt-get clean
+
 
 import threading
 import time
@@ -27,7 +31,7 @@ import TTLib
 import thread
 from ctypes import *
 import intervalmap
-
+import spidev
 
 
 
@@ -46,10 +50,25 @@ class Sensor_Argent80422(sensor.Sensor):
 
         sensor.Sensor.__init__(self,cfg )        
         
+        myrevision = getrevision()
         
-        self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
-        if ( self.libMCP.init() != 0 ):
-            log("Error initializing mcp3002 library.Try to continue")
+        if ( myrevision == "a21041" or myrevision == "a01041"  ):
+            self.model = 2
+        else:
+            self.model = 1
+            
+        #print myrevision 
+        
+        if ( self.model == 2 ) :
+            # Open SPI bus
+            log("Initializing SPI")
+            self.spi  = spidev.SpiDev()
+            self.spi.open(0,0)
+        else: 
+            log("Initializing libMCP")
+            self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
+            if ( self.libMCP.init() != 0 ):
+                log("Error initializing mcp3002 library.Try to continue")
         
         self.cfg = cfg
         self.bTimerRun = 0
@@ -124,12 +143,24 @@ class Sensor_Argent80422(sensor.Sensor):
     def SetTimer(self):
         self.bTimerRun = 0
     
+    def ReadChannel(self,channel):
+        data           = 0
+        #adc          = self.spi.xfer2([104,0])
+        adc         = self.spi.xfer2([1,(2+channel)<<6,0])
+        #data         += int(((adc[0]&3) << 8) + adc[1])
+        data        += ((adc[1]&31) << 6) + (adc[2] >> 2)
+        return data
+    
+    
     def GetCurretWindDir(self):
         """Get wind direction reading MCP3002 channel 0."""
         
         ch0 = -1
         while ch0 == -1 :
-            ch0 = self.libMCP.read_channel(0)
+            if ( self.model == 1 ) :
+                ch0 = self.libMCP.read_channel(0)
+            else:
+                ch0 = self.ReadChannel(0)
             if  ( ch0 == -1 ) :
                 log("Error reading mcp3002 channel 0. Retrying ")
                 time.sleep(0.1) 
@@ -224,10 +255,7 @@ if __name__ == '__main__':
         speed =  ss.GetCurretWindSpeed() 
         dir =   ss.GetCurretWindDir()
         temp = None
-        if ( cfg.use_tmp36 ):
-            ch1 = ss.libMCP.read_channel(1)
-            v1 = ch1 * (3300.0/1024.0)
-            temp = (v1 - 500.0) / 10.0
+ 
            
         print "Speed:",speed,"Dir:",dir,"Temp;",temp
 #        ss.GetData()

@@ -43,6 +43,21 @@ def get_cpu_temperature():
     output, _error = process.communicate()
     return float(output[output.index('=') + 1:output.rindex("'")])
 
+def getfiles_bydate(dirpath):
+    a = [s for s in os.listdir(dirpath)
+         if os.path.isfile(os.path.join(dirpath, s))]
+    a.sort(key=lambda s: os.path.getmtime(os.path.join(dirpath, s)))
+    return a
+
+def isMountReadonly(mnt):
+    with open('/proc/mounts') as f:
+        for line in f:
+            device, mount_point, filesystem, flags, __, __ = line.split()
+            flags = flags.split(',')
+            if mount_point == mnt:
+                return 'ro' in flags
+        raise ValueError('mount "%s" doesn\'t exist' % mnt)
+
 
 def disk_free():
     """Return disk usage statistics about the given path.
@@ -50,7 +65,11 @@ def disk_free():
     Returned valus is a named tuple with attributes 'total', 'used' and
     'free', which are the amount of total, used and free space, in bytes.
     """
-    path = "/"
+    #print "read only: %s" % isMountReadonly('/mnt')
+    if ( os.path.isdir("/swpi") ):
+        path = "/swpi"
+    else:
+        path = "/"
     st = os.statvfs(path)
     free = st.f_bavail * st.f_frsize
     #total = st.f_blocks * st.f_frsize
@@ -647,6 +666,48 @@ def logData(serverfile,SMSPwd):
 #        log(  "Error connecting to server : " + serverfile )
 #        pass
 
+
+def sentToWindFinder(WindFinder_ID,WindFinder_password):
+    
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 200 ):
+        return
+    
+    url = "http://www.windfinder.com/wind-cgi/httpload.pl?"
+    url+= "sender_id=" + WindFinder_ID
+    url+= "&password=" + WindFinder_password
+    url+= "&date=" + globalvars.meteo_data.last_measure_time.strftime("%d.%m.%Y")
+    url+= "time=" + globalvars.meteo_data.last_measure_time.strftime("%H:%M")
+    if ( globalvars.meteo_data.wind_ave ) != None :
+        url+= "&windspeed=" +  str( float(globalvars.meteo_data.wind_ave)* 0.539957 ) 
+    if ( globalvars.meteo_data.wind_gust ) != None :
+        url+= "&gust==" +  str( float(globalvars.meteo_data.wind_gust)* 0.539957 ) 
+    if ( globalvars.meteo_data.wind_dir ) != None :
+        url+= "&winddir==" +  str(globalvars.meteo_data.wind_dir)     
+    if ( globalvars.meteo_data.temp_out ) != None :
+        url+= "&airtemp==" +  str(globalvars.meteo_data.temp_out)           
+    if ( globalvars.meteo_data.rel_pressure ) != None :
+        url+= "&pressure==" +  str(globalvars.meteo_data.rel_pressure  )
+        
+    
+        #print  parameters   
+    try:
+        #log(url)
+        r = requests.get(url,timeout=10)
+        msg = r.text.splitlines()
+        #log(r.text)
+        if ( "OK" in r.text.upper() ):
+            log("Log to WindFinder : OK" )
+        else:
+            log("Log to WindFinder ERROR "  + r.text)
+    except:
+        log(  "Error Logging to WindFinder : "   )        
+
 def UploadData(cfg):
     
     if ( globalvars.meteo_data.last_measure_time == None):
@@ -927,6 +988,7 @@ def isnumeric(s):
         return False
 
 def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
+    msg = "Sending file to server : " + name
     try:
         s = ftplib.FTP(server,login,password,timeout=30) 	# Connect
         f = open(filename,'rb')                # file to send
@@ -934,14 +996,16 @@ def sendFileToFTPServer(filename,name,server,destFolder,login,password,delete):
         s.storbinary('STOR ' + name, f)         # Send the file
         f.close()                                # Close file and FTP
         s.quit() 
-        log("Sent file to server : " + name)
+        msg = msg + " OK"
         if delete : 
             os.remove(filename)
             log("Deleted file : " + filename )
+            msg = msg + " Deleted"
+        log(msg)
         return True
     except Exception, err:
-        print "Exception"
-        print '%s' % str(err)    
+        #print "Exception"
+        #print '%s' % str(err)    
         log("Error sending  file to server : " + name)
         if delete : 
             deleteFile(filename)
@@ -1110,8 +1174,12 @@ def getCurrentMeteoData():
     return mydata
 
 def getCurrentMeteoDataFromUrl(url):
-    data = urllib2.urlopen(url)
-    return json.load(data)
+    try:
+        data = urllib2.urlopen(url)
+        return json.load(data)
+    except Exception as e:
+        log ("ERROR getCurrentMeteoDataFromUrl" )
+        return None
     
     
 if __name__ == '__main__':

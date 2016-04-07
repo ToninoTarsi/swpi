@@ -567,6 +567,14 @@
                 }
             }
             
+            
+            dd = document.getElementById('WindFinder_logdata');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$WindFinder_logdata') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
 
             dd = document.getElementById('use_DNSExit');
             for (var i = 0; i < dd.options.length; i++) {
@@ -1753,6 +1761,41 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         value=$CWOP_password style="width: 100%" /></td>
             </tr>
             </table>
+            
+         <br />   
+            
+            <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color:$LayColorTTC;">
+                    Wind Finder</td>
+            </tr>
+            <tr>
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Log data to Wind Finder (WindFinder_logdata)</font></td>
+                <td class="style20" bgcolor="$LayColorBBC">
+                    <select id="WindFinder_logdata" type="text" name="WindFinder_logdata" 
+                        style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
+            <tr> 
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Wind Finder&nbsp; station ID (<b>WindFinder_ID</b>)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
+                    <input id="WindFinder_ID" type="text" name="WindFinder_ID" 
+                        value=$WindFinder_ID style="width: 100%" /></td>
+            </tr>
+            <tr> 
+                <td class="style8" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Wind Finder&nbsp; password (WindFinder_password)</font></td>
+                <td class="style19" bgcolor="$LayColorBBC">
+                    <input id="Text4" type="text" name="WindFinder_password" 
+                        value=$WindFinder_password style="width: 100%" /></td>
+            </tr>
+            </table>
+            
+            
     <br />
 	
         <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
@@ -1779,7 +1822,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr> 
                 <td class="style8" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>CWOP&nbsp; password (PWS_password)</font></td>
+                    <font color=$LayColorBTC>PWS&nbsp; password (PWS_password)</font></td>
                 <td class="style19" bgcolor="$LayColorBBC">
                     <input id="PWS_password" type="text" name="PWS_password" 
                         value=$PWS_password style="width: 100%" /></td>
