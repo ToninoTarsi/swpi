@@ -26,6 +26,7 @@ import sensor
 import sensor_simulator
 import sensor_wh1080
 import sensor_wh1080rf
+import sensor_wh1080rtlsdr
 import sensor_nevio
 import sensor_argent80422
 import sensor_davis
@@ -107,8 +108,11 @@ class WindSensorThread(threading.Thread):
             sensor = sensor_wm918.Sensor_WM918(self.cfg)   
             
         elif ( self.cfg.sensor_type.upper()  == "WH1080-RFM01" ):
-            sensor = sensor_wh1080rf.Sensor_WH1080RF(self.cfg)               
-                       
+		sensor = sensor_wh1080rf.Sensor_WH1080RF(self.cfg)
+
+	elif ( self.cfg.sensor_type.upper()  == "WH1080_RTL-SDR" ):
+		sensor = sensor_wh1080rtlsdr.Sensor_WH1080RTLSDR(self.cfg)
+
         elif ( self.cfg.sensor_type.upper()  == "WS23XX" ):
             sensor = sensor_ws2300.Sensor_WS2300(self.cfg)     
             

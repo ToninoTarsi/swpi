@@ -189,6 +189,12 @@ class config(object):
 		self.rfm01_band = config.getint('RFM01', 'rfm01_band',134)
 		self.rfm01_lna = config.getint('RFM01', 'rfm01_lna',0)
 		self.rfm01_rssi = config.getint('RFM01', 'rfm01_rssi',97)
+		
+		# [RTL-SDR]
+		self.rtlsdr_frequency = config.getint('RTL-SDR', 'rtlsdr_frequency',868)
+		self.rtlsdr_bdl = config.getint('RTL-SDR', 'rtlsdr_bdl',0)
+		self.rtlsdr_ppm = config.getint('RTL-SDR', 'rtlsdr_ppm',0)
+		self.rtlsdr_timesync = config.getboolean('RTL-SDR', 'rtlsdr_timesync',True)
 
 		#[WebCam]
 		self.webcamDevice1 = config.get('WebCam', 'webcamDevice1',"None")
@@ -313,6 +319,8 @@ class config(object):
 		self.LayColorBBC = config.get('LayOut', 'LayColorBBC',"FF99FF")
 		self.LayColorBTC = config.get('LayOut', 'LayColorBTC',"0000FF")
 		
+		
+		
 # 		if ( not os.path.isfile(self.cfgName)  ):
  		f = open(self.cfgName,"w")
  		config.write(f)		
@@ -402,7 +410,13 @@ class config(object):
 		config.setint('RFM01', 'rfm01_band',self.rfm01_band)
 		config.setint('RFM01', 'rfm01_lna',self.rfm01_lna)
 		config.setint('RFM01', 'rfm01_rssi',self.rfm01_rssi)
-
+		
+		# [RTL-SDR]
+		config.setint('RTL-SDR', 'rtlsdr_frequency',self.rtlsdr_frequency)
+		config.setint('RTL-SDR', 'rtlsdr_bdl',self.rtlsdr_bdl)
+		config.setint('RTL-SDR', 'rtlsdr_ppm',self.rtlsdr_ppm)
+		config.setboolean('RTL-SDR', 'rtlsdr_timesync',self.rtlsdr_timesync)
+		
 		#[WebCam]
 		config.setstr('WebCam', 'webcamDevice1',self.webcamDevice1)
 		config.setstr('WebCam', 'webcamDevice2',self.webcamDevice2)
@@ -512,7 +526,7 @@ class config(object):
 		config.setstr('LayOut', 'LayColorTTC',self.LayColorTTC)
 		config.setstr('LayOut', 'LayColorBBC',self.LayColorBBC)
 		config.setstr('LayOut', 'LayColorBTC',self.LayColorBTC)
-
+		
 		
 		f = open(self.cfgName,"w")
 		config.write(f)			

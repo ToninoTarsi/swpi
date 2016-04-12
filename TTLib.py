@@ -783,7 +783,7 @@ def UploadData(cfg):
     
     
     j = json.dumps(mydata)
-    objects_file = './meteo.txt'
+    objects_file = '/dev/shm/meteo.txt'
 
     f = open(objects_file,'w')
     f.write(j + "\n")
@@ -1069,9 +1069,10 @@ def getIP():
 
 def getPublicIP():
     try:
-        ip = requests.get("http://www.vololiberomontecucco.it/ip.php",timeout=10).text
+	ip = requests.get("http://myexternalip.com/raw",timeout=10).text
+        #ip = requests.get("http://www.vololiberomontecucco.it/ip.php",timeout=10).text
         #ip = urllib.urlopen("http://www.vololiberomontecucco.it/ip.php").read()
-        return ip
+	return ip
     except Exception, e:
         return None    
 

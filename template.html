@@ -1,5 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
+
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
+
     <title>Sint wind PI</title>
     <style type="text/css">
         .style2
@@ -632,6 +640,31 @@
                     break;
                 }
             }
+			
+			dd = document.getElementById('rtlsdr_frequency');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$rtlsdr_frequency') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+			
+			dd = document.getElementById('rtlsdr_bdl');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$rtlsdr_bdl') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+			
+			
+			dd = document.getElementById('rtlsdr_timesync');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$rtlsdr_timesync') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
 
             dd = document.getElementById('dht_type');
             for (var i = 0; i < dd.options.length; i++) {
@@ -679,7 +712,47 @@
                     dd.selectedIndex = i;
                     break;
                 }
-            }		
+            }
+				
+			dd = document.getElementById('Plugin_All_Logger_Active');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$Plugin_All_Logger_Active') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+			
+			dd = document.getElementById('Plugin_All_Logger_Wunderground');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$Plugin_All_Logger_Wunderground') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+			
+			dd = document.getElementById('Plugin_All_Logger_FtpUpload');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$Plugin_All_Logger_FtpUpload') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+			
+			dd = document.getElementById('Plugin_All_Logger_PhpLogger');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$Plugin_All_Logger_PhpLogger') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+			
+			dd = document.getElementById('Plugin_IPCamLogger_Active');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$Plugin_IPCamLogger_Active') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
 				
       var tabListItems = document.getElementById('tabs').childNodes;
       for ( var i = 0; i < tabListItems.length; i++ ) {
@@ -725,6 +798,7 @@
 
         function ButtonStatus_onclick() {
             window.location = '/web_status.py'
+
         }
 
         function Button1_onclick() {
@@ -745,18 +819,23 @@
     <div id="Header">
         <img alt="swpi" src="swpi-banner.jpg" width="800" /><br />
         <div id="Buttons" style= "margin-top: 23px">
-            <input id="ButtonLog" type="button" value="Download Log Files" 
+		
+        <input id="ButtonLog" type="button" value="Download Log Files" 
                 onclick="return ButtonLog_onclick()" />
-            <input id="ButtonDownloadCFG" type="button" value="Save Configuration File" 
-                onclick="return ButtonDownloadCFG_onclick()" /><input 
-                id="ButtonUploadCFG" type="button" value="Upload Configuration File" 
-                onclick="return ButtonUploadCFG_onclick()" /><input 
-                id="ButtonReboot" type="button" value="Reboot" onclick="return ButtonReboot_onclick()" /><input 
-                id="ButtonStatus0" type="button" value=" Reset Camera" 
-                onclick="return ButtonResetCamera_onclick()" /><input 
-                id="Button1" type="button" value="Check for Update" onclick="return Button1_onclick()" /><input 
-                id="ButtonStatus" type="button" value="View Status" 
-                onclick="return ButtonStatus_onclick()" /><form id="ConfigForm" action="swpi_webconfig.py" method="post">
+        <input id="ButtonDownloadCFG" type="button" value="Save Configuration File" 
+                onclick="return ButtonDownloadCFG_onclick()" />
+		<input id="ButtonUploadCFG" type="button" value="Upload Configuration File" 
+                onclick="return ButtonUploadCFG_onclick()" />
+		<input id="ButtonReboot" type="button" value="Reboot" 
+				onclick="return ButtonReboot_onclick()" />
+		<input id="ButtonStatus0" type="button" value=" Reset Camera" 
+                onclick="return ButtonResetCamera_onclick()" />
+		<input id="Button1" type="button" value="Check for Update" 
+				onclick="return Button1_onclick()" />				
+		<input id="ButtonStatus" type="button" value="View Status" 
+                onclick="return ButtonStatus_onclick()"/>				
+				
+		<form id="ConfigForm" action="swpi_webconfig.py" method="post">
         </div>       
 	</div>
 
@@ -765,7 +844,8 @@
             <li><a href="#Sensors">Sensors</a></li>
         	<li><a href="#Dongle">Dongle</a></li>
           	<li><a href="#WebCam">WebCams</a></li>
-        	<li><a href="#RFM01">RFM01</a></li>	
+        	<li><a href="#RFM01">RFM01</a></li>
+			<li><a href="#RTL-SDR">RTL-SDR</a></li>			
         	<li><a href="#Security">Security</a></li>	
         	<li><a href="#DataLogging">DataLogging</a></li>
         	<li><a href="#Weather">Weather</a></li>
@@ -773,6 +853,7 @@
         	<li><a href="#Radio">Radio</a></li>
         	<li><a href="#Mail">Mail/SMS</a></li>	 
         	<li><a href="#DynDNS">DynDNS</a></li>
+			<li><a href="#Plugins">Plugins</a></li>
         	<li><a href="#Layout">Layout</a></li>	
         </ul>
 
@@ -940,6 +1021,7 @@
                         <option value="SIMULATE" >SIMULATE</option>
                         <option value="PCE-FWS20" >PCE-FWS20</option>
                         <option value="WH1080-RFM01" >WH1080-RFM01</option>
+						<option value="WH1080_RTL-SDR" >WH1080_RTL-SDR</option>
 						<option value="WMR100" >WMR100</option>
 						<option value="WMR200" >WMR200</option>
 						<option value="WMR918" >WMR918</option>
@@ -1092,7 +1174,7 @@
             </tr>
             <tr>
                 <td class="style2" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>incronize system time from PCE station (<b>set_system_time_from_WeatherStation</b>)</font></td>
+                    <font color=$LayColorBTC>Synchronize system time from PCE station (<b>set_system_time_from_WeatherStation</b>)</font></td>
                 <td class="style32" bgcolor="$LayColorBBC">
                     <select  id="set_system_time_from_WeatherStation" type="text" name="set_system_time_from_WeatherStation" 
                         value=$set_system_time_from_WeatherStation style="width: 100%" >
@@ -1653,6 +1735,58 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         <option value="103">103</option>
                     </select></td>
             </tr>
+			</table>		
+			</div>
+			
+			<div class="tabContent" id="RTL-SDR"> 	     
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">RTL2832-based USB DVB-T DONGLE (WH1080 / PCE-FWS20 protocol)<br><small><small>(reboot after saving to apply changes)</small></small></td>
+            </tr>
+            <tr>
+                <td class="style41" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Band Frequency MHz<br> (<b>rtlsdr_frequency</b>)</font></td>
+                <td class="style17" bgcolor="$LayColorBBC">
+                    <select id="rtlsdr_frequency" type="text" name="rtlsdr_frequency" 
+                        value=$rtlsdr_frequency style="width: 100%" >
+                         <option value=433>433</option>
+                         <option value=868>868</option>
+                         <option value=915>915</option>                                                      
+                    </select></td>
+            </tr>           
+            <tr>
+                <td class="style41" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Bit Detection Level<br>(<b>rtlsdr_bdl</b>)</font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">
+                    <select id="rtlsdr_bdl" type="text" name="rtlsdr_bdl" 
+                        value=$rtlsdr_bdl      style="width: 100%" >
+                        <option value=0>Auto</option>
+                        <option value=4000>4000</option>
+                        <option value=8000>8000</option>
+                        <option value=12000>12000</option>                        
+                        <option value=16000>16000</option>
+                        <option value=24000>24000</option>                        
+                        <option value=32000>32000</option>                            
+                    </select></td>
+            </tr>
+			<tr>
+			<td class="style41" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Tuner frequency offset<br>error correction (default: 0)<br>(<b>rtlsdr_ppm</b>)</font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">                   
+                    <input id="rtlsdr_ppm" type="text" name="rtlsdr_ppm" 
+                        value="$rtlsdr_ppm" style="width: 100%" /></td>
+            </tr>
+            <tr>
+                <td class="style41" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Synchronize system datetime with received DCF77 timesignal<br>(<b>rtlsdr_timesync</b>)</font></td>
+                    <td class="style17" bgcolor="$LayColorBBC">
+                    <select id="rtlsdr_timesync" type="text" name="rtlsdr_timesync" 
+                        value=$rtlsdr_timesync      style="width: 100%" >
+							<option value=True >True</option>
+							<option value=False >False</option>
+                    </select></td>
+            </tr>
+			
             </table>
     <br />
 	</div>
@@ -2061,7 +2195,99 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
                         value=$DNSExit_hname  style="width: 100%" /></td>
             </tr>
             </table>
-   </div>
+			
+			</div>
+			<br>
+			
+			
+	
+
+
+
+
+
+	
+			
+			
+			
+		<div class="tabContent" id="Plugins"> 			   
+        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+            
+			<tr>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    <strong>All Logger plugin</strong><br><small><small><b>Simple plugin to upload data (WeatherUnderground, Ftp Upload and Php Log) every minute,<br>overriding camera's capture time settings.</b><br>
+					Set <b>'Plugin Active'</b> to <b>'True'</b>, then activate each desired function. A reboot is needed after saving to activate settings.</small></small>&nbsp;</td>
+            </tr>
+			
+            
+				<tr>
+					<td class="style41" bgcolor="$LayColorBBC">
+						<font color=$LayColorBTC><b>Plugin active?</b><br><small>(Plugin_All_Logger_Active)</small></font></td>
+					<td class="style17" bgcolor="$LayColorBBC">
+						<select id="Plugin_All_Logger_Active" type="text" name="Plugin_All_Logger_Active" 
+							value=$Plugin_All_Logger_Active style="width: 100%" >
+							 <option value=True>True</option>
+							 <option value=False>False</option>
+						</select></td>
+				</tr>
+				<tr> 
+				   <td class="style41" bgcolor="$LayColorBBC">
+						<font color=$LayColorBTC><b>'WeatherUnderground' function active?</b><br><small>(Plugin_All_Logger_Wunderground)</small></font></td>
+					<td class="style17" bgcolor="$LayColorBBC">
+						<select id="Plugin_All_Logger_Wunderground" type="text" name="Plugin_All_Logger_Wunderground" 
+							value=$Plugin_All_Logger_Wunderground style="width: 100%" >
+							 <option value=True>True</option>
+							 <option value=False>False</option>
+						</select></td>
+				</tr>			
+				<tr> 
+				   <td class="style41" bgcolor="$LayColorBBC">
+						<font color=$LayColorBTC><b>'Ftp Upload' function active?</b><br><small>(Plugin_All_Logger_FtpUpload)</small></font></td>
+					<td class="style17" bgcolor="$LayColorBBC">
+						<select id="Plugin_All_Logger_FtpUpload" type="text" name="Plugin_All_Logger_FtpUpload" 
+							value=$Plugin_All_Logger_FtpUpload style="width: 100%" >
+							 <option value=True>True</option>
+							 <option value=False>False</option>
+						</select></td>
+				</tr>
+				<tr> 
+				   <td class="style41" bgcolor="$LayColorBBC">
+						<font color=$LayColorBTC><b>'Php Logger' function active?</b><br><small>(Plugin_All_Logger_PhpLogger)</small></font></td>
+					<td class="style17" bgcolor="$LayColorBBC">
+						<select id="Plugin_All_Logger_PhpLogger" type="text" name="Plugin_All_Logger_PhpLogger" 
+							value=$Plugin_All_Logger_PhpLogger style="width: 100%" >
+							 <option value=True>True</option>
+							 <option value=False>False</option>
+						</select></td>
+				</tr>
+        </table>            
+		<br />
+		<br>   
+        
+		<table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+            <tr>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
+                    <strong>IPCamLogger plugin</strong><br></td>
+            </tr>
+			
+            
+				<tr>
+					<td class="style41" bgcolor="$LayColorBBC">
+						<font color=$LayColorBTC><b>Plugin active?</b><br><small>(Plugin_IPCamLogger_Active)</small></font></td>
+					<td class="style17" bgcolor="$LayColorBBC">
+						<select id="Plugin_IPCamLogger_Active" type="text" name="Plugin_IPCamLogger_Active" 
+							value=$Plugin_IPCamLogger_Active style="width: 100%" >
+							 <option value=True>True</option>
+							 <option value=False>False</option>
+						</select></td>
+				</tr>
+           
+            </table>
+            
+         <br />   
+            
+        </div>   	
+
    	<div class="tabContent" id="Layout">             
         <br >
         <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
