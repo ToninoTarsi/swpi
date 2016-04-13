@@ -149,7 +149,7 @@ class Sensor_WH1080RTLSDR(sensor.Sensor):
 					except:
 						log("Error while decoding json data!")
 				elif str(line['msg_type']) == '1':
-					if str(self.cfg.rtlsdr_timesync) == '1':						
+					if str(self.cfg.rtlsdr_timesync) == 'True':						
 						print "\n"
 						log("*** WH1080_RTL-SDR: Datetime data received ***")
 						try:
@@ -267,4 +267,3 @@ if __name__ == '__main__':
 	
 	while 1:
 		ss.GetData()
-	
