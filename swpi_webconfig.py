@@ -99,6 +99,12 @@ def outputPage(cfg):
 	d.update(rfm01_band=cfg.rfm01_band)
 	d.update(rfm01_lna=cfg.rfm01_lna)
 	d.update(rfm01_rssi=cfg.rfm01_rssi)
+	
+	# [RTL-SDR]
+	d.update(rtlsdr_frequency=cfg.rtlsdr_frequency)
+	d.update(rtlsdr_bdl=cfg.rtlsdr_bdl)
+	d.update(rtlsdr_ppm=cfg.rtlsdr_ppm)
+	d.update(rtlsdr_timesync=cfg.rtlsdr_timesync)	
 
 	#[WebCam]	
 	d.update(webcamDevice1=cfg.webcamDevice1)
@@ -168,8 +174,7 @@ def outputPage(cfg):
 	#[WindFinder]
 	d.update(WindFinder_logdata=cfg.WindFinder_logdata)
 	d.update(WindFinder_ID=cfg.WindFinder_ID)
-	d.update(WindFinder_password=cfg.WindFinder_password)
-	
+	d.update(WindFinder_password=cfg.WindFinder_password)	
 
 	#[PWS]		
 	d.update(PWS_logdata=cfg.PWS_logdata)
@@ -209,7 +214,7 @@ def outputPage(cfg):
 	d.update(LayColorBBC=cfg.LayColorBBC)
 	d.update(LayColorBTC=cfg.LayColorBTC)
 
-	
+
 	html = html_template.safe_substitute(d)
 
 	print html
@@ -329,7 +334,13 @@ if ( len(request) != 0 ):
 	cfg.rfm01_frequenzy = request['rfm01_frequenzy'][0]											 
 	cfg.rfm01_band = request['rfm01_band'][0]											 
 	cfg.rfm01_lna = request['rfm01_lna'][0]											 
-	cfg.rfm01_rssi = request['rfm01_rssi'][0]											 
+	cfg.rfm01_rssi = request['rfm01_rssi'][0]
+	
+	# [RTL-SDR]
+	cfg.rtlsdr_frequency = request['rtlsdr_frequency'][0]
+	cfg.rtlsdr_bdl = request['rtlsdr_bdl'][0]
+	cfg.rtlsdr_ppm = request['rtlsdr_ppm'][0]
+	cfg.rtlsdr_timesync = request['rtlsdr_timesync'][0]	
 
 	# [ftp]
 	cfg.ftpserver = request['ftpserver'][0]																		   

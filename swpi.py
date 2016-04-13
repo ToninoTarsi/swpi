@@ -759,6 +759,8 @@ except KeyboardInterrupt:
 # Radio Voice output shoud go to the analog device
 os.system( "sudo amixer cset numid=3 1 > /dev/null " )
 
+os.system( "sudo chown -R pi:root /swpi" )
+
 #Make sure every executable is executable
 os.system( "sudo chmod +x ./dwcfg.sh" )
 os.system( "sudo chmod +x ./usbreset" )
