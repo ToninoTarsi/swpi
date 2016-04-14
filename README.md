@@ -33,9 +33,10 @@ sudo apt-get -y install i2c-tools
 
 sudo apt-get -y remove ntp
 
-sudo apt-get -y install gphoto2
+sudo apt-get -y install gphoto2  python-piggyphoto dcraw libgphoto2-port10
 
-sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools libusb-1.0-0-dev cmake
+sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools libusb-1.0-0-dev cmake 
+
 
 
 USB library:
