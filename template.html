@@ -714,46 +714,7 @@
                 }
             }
 				
-			dd = document.getElementById('Plugin_All_Logger_Active');
-            for (var i = 0; i < dd.options.length; i++) {
-                if (dd.options[i].text == '$Plugin_All_Logger_Active') {
-                    dd.selectedIndex = i;
-                    break;
-                }
-            }
-			
-			dd = document.getElementById('Plugin_All_Logger_Wunderground');
-            for (var i = 0; i < dd.options.length; i++) {
-                if (dd.options[i].text == '$Plugin_All_Logger_Wunderground') {
-                    dd.selectedIndex = i;
-                    break;
-                }
-            }
-			
-			dd = document.getElementById('Plugin_All_Logger_FtpUpload');
-            for (var i = 0; i < dd.options.length; i++) {
-                if (dd.options[i].text == '$Plugin_All_Logger_FtpUpload') {
-                    dd.selectedIndex = i;
-                    break;
-                }
-            }
-			
-			dd = document.getElementById('Plugin_All_Logger_PhpLogger');
-            for (var i = 0; i < dd.options.length; i++) {
-                if (dd.options[i].text == '$Plugin_All_Logger_PhpLogger') {
-                    dd.selectedIndex = i;
-                    break;
-                }
-            }
-			
-			dd = document.getElementById('Plugin_IPCamLogger_Active');
-            for (var i = 0; i < dd.options.length; i++) {
-                if (dd.options[i].text == '$Plugin_IPCamLogger_Active') {
-                    dd.selectedIndex = i;
-                    break;
-                }
-            }
-				
+
       var tabListItems = document.getElementById('tabs').childNodes;
       for ( var i = 0; i < tabListItems.length; i++ ) {
         if ( tabListItems[i].nodeName == "LI" ) {
@@ -853,7 +814,6 @@
         	<li><a href="#Radio">Radio</a></li>
         	<li><a href="#Mail">Mail/SMS</a></li>	 
         	<li><a href="#DynDNS">DynDNS</a></li>
-			<li><a href="#Plugins">Plugins</a></li>
         	<li><a href="#Layout">Layout</a></li>	
         </ul>
 
@@ -2199,94 +2159,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
 			</div>
 			<br>
 			
-			
-	
-
-
-
-
-
-	
-			
-			
-			
-		<div class="tabContent" id="Plugins"> 			   
-        <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
-            
-			<tr>
-                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
-                    <strong>All Logger plugin</strong><br><small><small><b>Simple plugin to upload data (WeatherUnderground, Ftp Upload and Php Log) every minute,<br>overriding camera's capture time settings.</b><br>
-					Set <b>'Plugin Active'</b> to <b>'True'</b>, then activate each desired function. A reboot is needed after saving to activate settings.</small></small>&nbsp;</td>
-            </tr>
-			
-            
-				<tr>
-					<td class="style41" bgcolor="$LayColorBBC">
-						<font color=$LayColorBTC><b>Plugin active?</b><br><small>(Plugin_All_Logger_Active)</small></font></td>
-					<td class="style17" bgcolor="$LayColorBBC">
-						<select id="Plugin_All_Logger_Active" type="text" name="Plugin_All_Logger_Active" 
-							value=$Plugin_All_Logger_Active style="width: 100%" >
-							 <option value=True>True</option>
-							 <option value=False>False</option>
-						</select></td>
-				</tr>
-				<tr> 
-				   <td class="style41" bgcolor="$LayColorBBC">
-						<font color=$LayColorBTC><b>'WeatherUnderground' function active?</b><br><small>(Plugin_All_Logger_Wunderground)</small></font></td>
-					<td class="style17" bgcolor="$LayColorBBC">
-						<select id="Plugin_All_Logger_Wunderground" type="text" name="Plugin_All_Logger_Wunderground" 
-							value=$Plugin_All_Logger_Wunderground style="width: 100%" >
-							 <option value=True>True</option>
-							 <option value=False>False</option>
-						</select></td>
-				</tr>			
-				<tr> 
-				   <td class="style41" bgcolor="$LayColorBBC">
-						<font color=$LayColorBTC><b>'Ftp Upload' function active?</b><br><small>(Plugin_All_Logger_FtpUpload)</small></font></td>
-					<td class="style17" bgcolor="$LayColorBBC">
-						<select id="Plugin_All_Logger_FtpUpload" type="text" name="Plugin_All_Logger_FtpUpload" 
-							value=$Plugin_All_Logger_FtpUpload style="width: 100%" >
-							 <option value=True>True</option>
-							 <option value=False>False</option>
-						</select></td>
-				</tr>
-				<tr> 
-				   <td class="style41" bgcolor="$LayColorBBC">
-						<font color=$LayColorBTC><b>'Php Logger' function active?</b><br><small>(Plugin_All_Logger_PhpLogger)</small></font></td>
-					<td class="style17" bgcolor="$LayColorBBC">
-						<select id="Plugin_All_Logger_PhpLogger" type="text" name="Plugin_All_Logger_PhpLogger" 
-							value=$Plugin_All_Logger_PhpLogger style="width: 100%" >
-							 <option value=True>True</option>
-							 <option value=False>False</option>
-						</select></td>
-				</tr>
-        </table>            
-		<br />
-		<br>   
-        
-		<table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
-            <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">
-                    <strong>IPCamLogger plugin</strong><br></td>
-            </tr>
-			
-            
-				<tr>
-					<td class="style41" bgcolor="$LayColorBBC">
-						<font color=$LayColorBTC><b>Plugin active?</b><br><small>(Plugin_IPCamLogger_Active)</small></font></td>
-					<td class="style17" bgcolor="$LayColorBBC">
-						<select id="Plugin_IPCamLogger_Active" type="text" name="Plugin_IPCamLogger_Active" 
-							value=$Plugin_IPCamLogger_Active style="width: 100%" >
-							 <option value=True>True</option>
-							 <option value=False>False</option>
-						</select></td>
-				</tr>
-           
-            </table>
-            
-         <br />   
-            
-        </div>   	
+<!-- Plugins table was here (maybe next time...) -->  	
 
    	<div class="tabContent" id="Layout">             
         <br >
