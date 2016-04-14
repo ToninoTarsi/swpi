@@ -13,7 +13,7 @@ This implementation uses a Raspberry PI with an Huawei 3G dongle. The Sint Wind 
 
 Complete documentation on www.vololiberomontecucco.it
 
-Requirements :
+*Requirements :*
 
 sudo apt-get -y install python-dev
 
