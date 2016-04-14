@@ -37,10 +37,10 @@ sudo apt-get -y install gphoto2
 
 sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools
 
-USB library: 
-•	hidapi
-•	cython-hidapi
-•	cython
+USB library:
+- hidapi
+- cython-hidapi
+- cython
 
 Telegram APIs: (https://github.com/python-telegram-bot/python-telegram-bot.git)
 - cd  python-telegram-bot
