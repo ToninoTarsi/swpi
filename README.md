@@ -37,10 +37,12 @@ sudo apt-get -y install gphoto2
 
 sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools libusb-1.0-0-dev cmake
 
+
 USB library:
 - hidapi
 - cython-hidapi
 - cython
+
 
 RTL-SDR libraries (included):
 - cd rtl-sdr
@@ -50,6 +52,7 @@ RTL-SDR libraries (included):
 - make
 - sudo make install 
  
+
 RTL_433 (included):
 - cd rtl_433
 - mkdir build
@@ -57,6 +60,7 @@ RTL_433 (included):
 - cmake ../
 - make
 - sudo make install
+
 
 Telegram APIs: (https://github.com/python-telegram-bot/python-telegram-bot.git)
 - cd  python-telegram-bot
