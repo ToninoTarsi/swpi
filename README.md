@@ -9,7 +9,7 @@
 
 
 A Sint Wind is a wind condition ( and other meteo data ) telephone answering machine. 
-This implementation uses a Raspberry PI with an Huawei 3G dongle. The Sint Wind is compatible from different kind of Meteo Sensors ( WH1080,Davis,TX32,BMP085 .. ).
+This implementation uses a Raspberry PI with an Huawei 3G dongle. The Sint Wind is compatible with different kind of Meteo Sensors ( WH1080,Davis,TX32,BMP085 .. ).
 
 Complete documentation on www.vololiberomontecucco.it
 
@@ -61,11 +61,6 @@ RTL_433 (included):
 - cmake ../
 - make
 - sudo make install
-
-
-Telegram APIs: (https://github.com/python-telegram-bot/python-telegram-bot.git)
-- cd  python-telegram-bot
-- sudo ./setup.py install
 
 
 Main program start : sudo python swpi.py
