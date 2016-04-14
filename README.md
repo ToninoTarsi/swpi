@@ -35,10 +35,18 @@ sudo apt-get -y remove ntp
 
 sudo apt-get -y install gphoto2
 
+sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools
+
 USB library: 
-•	hidapi
-•	cython-hidapi
-•	cython
+â€¢	hidapi
+â€¢	cython-hidapi
+â€¢	cython
+
+Telegram APIs: (https://github.com/python-telegram-bot/python-telegram-bot.git)
+- cd  python-telegram-bot
+- sudo ./setup.py install
 
 
-Main program : sudo python swpi.py
+Main program start : sudo python swpi.py
+
+
