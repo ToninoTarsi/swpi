@@ -35,12 +35,28 @@ sudo apt-get -y remove ntp
 
 sudo apt-get -y install gphoto2
 
-sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools
+sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools libusb-1.0-0-dev cmake
 
 USB library:
 - hidapi
 - cython-hidapi
 - cython
+
+RTL-SDR libraries (included):
+- cd rtl-sdr
+- mkdir build
+- cd build
+- cmake ../  -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON
+- make
+- sudo make install 
+ 
+RTL_433 (included):
+- cd rtl_433
+- mkdir build
+- cd build
+- cmake ../
+- make
+- sudo make install
 
 Telegram APIs: (https://github.com/python-telegram-bot/python-telegram-bot.git)
 - cd  python-telegram-bot
