@@ -734,7 +734,7 @@ log( "Starting SINT WIND PI  ... ")
 print "************************************************************************"
 print "*                      Sint Wind PI "+v+"                           *"
 print "*                                                                      *"
-print "*          2012-2015 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
+print "*          2012-2016 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
 print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
@@ -1065,8 +1065,10 @@ while 1:
 			globalvars.takenPicture.cPIFilemane = cPIFilemane			
 			bcPI = cPI.capture(cPIFilemane) 
 			if bcPI:
+				globalvars.takenPicture.cPIFilemane = cPIFilemane
 				addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
-
+			else:
+				globalvars.takenPicture.cPIFilemane = None
 		bConnected = False
 		
 		if ( cfg.sendImagesToServer or cfg.logdata or cfg.upload_data or cfg.WeatherUnderground_logdata or cfg.PWS_logdata):
