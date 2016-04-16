@@ -46,6 +46,9 @@ class cameraPI(object):
 			options = self.cfg.cameraPI_night_settings
 			log("CameraPI - Using Nigth settings" + options)
 		try:
+			if options.upper() == "NONE":
+				log("CameraPI not active")
+				return False
 			snapCommand = "raspistill  %s -o %s" %  (options,filename)
 			#log( "Getting images with command : " + snapCommand)
 			os.system(snapCommand )
