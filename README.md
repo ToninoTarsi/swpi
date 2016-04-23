@@ -54,7 +54,7 @@ RTL-SDR libraries (included):
 - sudo make install 
  
 
-RTL_433 (included):
+RTL_433 (included, just a little modified (see /rtl_433/README-SWPI.md)):
 - cd rtl_433
 - mkdir build
 - cd build
