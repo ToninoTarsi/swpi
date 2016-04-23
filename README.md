@@ -46,7 +46,7 @@ sudo apt-get -y install python-requests python-spidev python-pygame python-setup
 - cython
 
 
-**RTL-SDR libraries (included):**
+**RTL-SDR libraries** (included)**:**
 - cd rtl-sdr
 - mkdir build
 - cd build
@@ -55,7 +55,7 @@ sudo apt-get -y install python-requests python-spidev python-pygame python-setup
 - sudo make install 
  
 
-**RTL_433 (included, just a little modified (see /rtl_433/README-SWPI.md)):**
+**RTL_433** (included - just a little modified, see /rtl_433/README-SWPI.md)**:**
 - cd rtl_433
 - mkdir build
 - cd build
@@ -64,6 +64,6 @@ sudo apt-get -y install python-requests python-spidev python-pygame python-setup
 - sudo make install
 
 
-Main program start : sudo python swpi.py
+**Main program start:** sudo python swpi.py
 
 
