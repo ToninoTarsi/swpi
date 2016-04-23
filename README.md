@@ -9,7 +9,7 @@
 
 
 A Sint Wind is a wind condition ( and other meteo data ) telephone answering machine. 
-This implementation uses a Raspberry PI with an Huawei 3G dongle. The Sint Wind is compatible with different kind of Meteo Sensors ( WH1080,Davis,TX32,BMP085 .. ).
+This implementation uses a Raspberry PI with an Huawei 3G dongle. The Sint Wind is compatible with different kind of Meteo Sensors (WH1080, Davis, TX32, BMP085...).
 
 Complete documentation on www.vololiberomontecucco.it
 
@@ -37,15 +37,16 @@ sudo apt-get -y install gphoto2  python-piggyphoto dcraw libgphoto2-port10
 
 sudo apt-get -y install python-requests python-spidev python-pygame python-setuptools libusb-1.0-0-dev cmake 
 
+ 
+  
 
-
-USB library:
+**USB library:**
 - hidapi
 - cython-hidapi
 - cython
 
 
-RTL-SDR libraries (included):
+**RTL-SDR libraries** (included)**:**
 - cd rtl-sdr
 - mkdir build
 - cd build
@@ -54,7 +55,7 @@ RTL-SDR libraries (included):
 - sudo make install 
  
 
-RTL_433 (included):
+**RTL_433** (included - just a little modified, see /rtl_433/README-SWPI.md)**:**
 - cd rtl_433
 - mkdir build
 - cd build
@@ -63,6 +64,6 @@ RTL_433 (included):
 - sudo make install
 
 
-Main program start : sudo python swpi.py
+**Main program start:** sudo python swpi.py
 
 
