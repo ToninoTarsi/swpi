@@ -40,13 +40,13 @@ sudo apt-get -y install python-requests python-spidev python-pygame python-setup
  
   
 
-USB library:
+**USB library:**
 - hidapi
 - cython-hidapi
 - cython
 
 
-RTL-SDR libraries (included):
+**RTL-SDR libraries (included):**
 - cd rtl-sdr
 - mkdir build
 - cd build
@@ -55,7 +55,7 @@ RTL-SDR libraries (included):
 - sudo make install 
  
 
-RTL_433 (included, just a little modified (see /rtl_433/README-SWPI.md)):
+**RTL_433 (included, just a little modified (see /rtl_433/README-SWPI.md)):**
 - cd rtl_433
 - mkdir build
 - cd build
