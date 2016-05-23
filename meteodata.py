@@ -219,8 +219,8 @@ class MeteoData(object):
         
             if ( self.winDayMin == None or self.wind_ave < self.winDayMin ): 
                 self.winDayMin  = self.wind_ave
-            if ( self.winDayMax == None or self.wind_gust > self.winDayMax ) : 
-                self.winDayMax  = self.wind_gust       
+            if ( self.winDayMax == None or self.wind_ave > self.winDayMax ) : 
+                self.winDayMax  = self.wind_ave       
                 
             if ( self.winDayGustMin == None or self.wind_gust < self.winDayGustMin ) : 
                 self.winDayGustMin  = self.wind_gust
