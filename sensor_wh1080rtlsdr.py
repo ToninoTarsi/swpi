@@ -149,9 +149,9 @@ class Sensor_WH1080RTLSDR(sensor.Sensor):
 					except:
 						log("Error while decoding json data!")
 				elif str(line['msg_type']) == '1':
-					if str(self.cfg.rtlsdr_timesync) == '1':						
+					if str(self.cfg.rtlsdr_timesync) == 'True':						
 						print "\n"
-						log("*** WH1080_RTL-SDR: Datetime data received ***")
+						log("Setting system time...")
 						try:
 							t_year = str(line['year'])
 							
@@ -180,7 +180,10 @@ class Sensor_WH1080RTLSDR(sensor.Sensor):
 							log("System time adjusted from WH1080_RTL-SDR.")
 							return "Time",0,0,0,0,"",0,0
 						except:
-							log("Error adjusting system time from WH1080_RTL-SDR")	
+							log("Error adjusting system time from WH1080_RTL-SDR")
+					else:
+						log("WH1080_RTL-SDR: rtlsdr_timesync is disabled.")
+						return "Time",0,0,0,0,"",0,0
 			except:
 					log("Received data are not in json format. Dropped...")
 					return "None",0,0,0,0,"",0,0
@@ -235,14 +238,16 @@ class Sensor_WH1080RTLSDR(sensor.Sensor):
 				time.sleep(10)
 				new_last_data_time = modification_date('/dev/shm/wh1080-rtl_433.txt')
 				
-				
-			log("New data received from WH1080_RTL-SDR station %s. Processing..." % station_id)
+			if station_id != "Time":
+				log("New data received from WH1080_RTL-SDR station %s. Processing..." % station_id)
+			else:
+				log("Datetime signal received from WH1080_RTL-SDR station. Processing...")
 			last_data_time = new_last_data_time
 						
 			station_id,temp,hum,Wind_speed,Gust_Speed,dir_code,dire,rain =  self.ReadData()
 			
 			if ( station_id == "Time"):
-				log("Datetime data received from WH1080_RTL-SDR. Sleeping while waiting for weather data...")
+				log("Sleeping while waiting for weather data...")
 				tosleep = 50-(datetime.datetime.now()-last_data_time).seconds
 				if DEBUG: print "Sleeping  ", tosleep
 				if (tosleep > 0 and tosleep < 50 ):	
