@@ -31,7 +31,10 @@ def log(message) :
 chars = string.ascii_letters + string.digits
 sessionDict = {} # dictionary mapping session id's to session objects
 
-_enabled_path = ("/jscolor/","/reset_camera.py","/","/index.html","/login.py","/swpi_webconfig.py","/swpi-banner.jpg","/log/","/db/","/download_cfg.py","/swpi.cfg","/upload_cfg.py","/upload_cfg.html","/web_reboot.py","/web_status.py","/web_swpi_update.py","/favicon.ico")
+_enabled_path = ("/jscolor/","/reset_camera.py","/","/index.html","/login.py",\
+"/swpi_webconfig.py","/swpi-banner.jpg","/log/","/db/","/download_cfg.py","/swpi.cfg",\
+"/upload_cfg.py","/upload_cfg.html","/web_reboot.py","/web_status.py","/web_swpi_update.py",\
+"/favicon.ico","/web/","/web/meteo.txt","/web/samples/","/web/css/","/web/data/","/web/image/","/web/css/ui-lightness/","/web/js/","/web/dati.py")
 
 
 class SessionElement(object):
@@ -58,7 +61,7 @@ class ScriptRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		#print self.path,fileName, fileExtension
 
 
-		if not self.path.split('?',1)[0] in _enabled_path and fileExtension != ".log" and fileExtension != ".s3db" and fileExtension != ".js" and fileExtension != ".png" and fileExtension != ".gif":
+		if not self.path.split('?',1)[0] in _enabled_path and fileExtension != ".csv" and fileExtension != ".json" and fileExtension != ".log" and fileExtension != ".s3db" and fileExtension != ".js" and fileExtension != ".png" and fileExtension != ".gif" and fileExtension != ".html" and fileExtension != ".css":
 			print "Access denied",self.path.split('?',1)[0]
 			return
 		

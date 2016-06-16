@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Graphs SWPI</title>
+
+	<script type="text/javascript" src="js/simpletabs_1.3.js"></script>
+		<style type="text/css" media="screen">
+			@import "css/simpletabs.css";
+		</style>
+ <link href="css/c3.css" rel="stylesheet" type="text/css">
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script src="js/c3.js"></script>
+    
+      <link rel="stylesheet" href="css/jquery-ui.css">
+      <script src="js/jquery-1.10.2.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  
+  
+    <script>
+var chart = c3.generate({
+padding: {right: 50},
+bindto: '#TemperatureG',
+	       data: {x: 'TIME',
+        xFormat: '%Y-%m-%d %H:%M:%S',
+            url: 'dati.json',
+            mimeType: 'json', 
+		keys: {
+            x: 'TIME',
+            value: ["TEMP","TEMP_APPARENT","TEMPINT","HUMINT","DEW_POINT","WIND_CHILL"]
+        }
+         },  tooltip: {
+        format: {
+            value: function(value) {
+                return d3.format(",.2f")(value)
+            }
+        }
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%H:%M:%S %d-%m-%Y'
+            }
+        }
+    },
+	 zoom: {
+        enabled: true
+    },
+    subchart: {
+        show: true
+    },
+grid: {x:{show:true},y:{show:true}}
+});
+
+var chart = c3.generate({
+padding: {right: 50},
+bindto: '#windG',
+	       data: {x: 'TIME',
+        xFormat: '%Y-%m-%d %H:%M:%S',
+            url: 'dati.json',
+            mimeType: 'json', 
+		keys: {
+            x: 'TIME',
+            value: ["WIND_AVE","WIND_GUST"]
+        }
+         },  tooltip: {
+        format: {
+            value: function(value) {
+                return d3.format(",.2f")(value)
+            }
+        }
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%H:%M:%S %d-%m-%Y'
+            }
+        }
+    },
+	 zoom: {
+        enabled: true
+    },
+    subchart: {
+        show: true
+    },
+grid: {x:{show:true},y:{show:true}}
+});
+
+var chart = c3.generate({
+padding: {right: 50},
+bindto: '#humidityG',
+	       data: {x: 'TIME',
+        xFormat: '%Y-%m-%d %H:%M:%S',
+            url: 'dati.json',
+            mimeType: 'json', 
+		keys: {
+            x: 'TIME',
+            value: ["HUM"]
+        }
+         },  tooltip: {
+        format: {
+            value: function(value) {
+                return d3.format(",.2f")(value)
+            }
+        }
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%H:%M:%S %d-%m-%Y'
+            }
+        }
+    },
+	 zoom: {
+        enabled: true
+    },
+    subchart: {
+        show: true
+    },
+grid: {x:{show:true},y:{show:true}}
+});
+
+var chart = c3.generate({
+padding: {right: 50},
+bindto: '#winddirG',
+	       data: {x: 'TIME',
+        xFormat: '%Y-%m-%d %H:%M:%S',
+            url: 'dati.json',
+            mimeType: 'json', 
+		keys: {
+            x: 'TIME',
+             value: ["WIND_DIR"]
+        }
+         }, 
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%H:%M:%S %d-%m-%Y'
+            }
+        }
+    },
+	 zoom: {
+        enabled: true
+    },
+    subchart: {
+        show: true
+    },
+grid: {x:{show:true},y:{show:true}}
+});
+
+
+var chart = c3.generate({
+padding: {right: 50},
+bindto: '#pressureG',
+	       data: {x: 'TIME',
+        xFormat: '%Y-%m-%d %H:%M:%S',
+            url: 'dati.json',
+            mimeType: 'json', 
+		keys: {
+            x: 'TIME',
+             value: ["PRESSURE"]
+        }
+         },  tooltip: {
+        format: {
+            value: function(value) {
+                return d3.format(",.2f")(value)
+            }
+        }
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%H:%M:%S %d-%m-%Y'
+            }
+        }
+    },
+	 zoom: {
+        enabled: true
+    },
+    subchart: {
+        show: true
+    },
+grid: {x:{show:true},y:{show:true}}
+});
+
+    </script>
+
+  <script>
+$(function() {
+    $("#datepicker1").datepicker({ dateFormat: 'yy-mm-dd 00:00:00' });
+    $("#datepicker2").datepicker({ dateFormat: 'yy-mm-dd 23:59:59' });
+});
+$(document).ready( function() {
+    var now = new Date();
+    var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+    $('#datePicker1').val(today);
+});
+</script>
+</head>
+
+<body>
+<form name="search" action="dati.py" method="post">
+Date start:<input type="text" name="datestart" id="datepicker1" readonly>
+Date stop:<input type="text" name="datestop" id="datepicker2" readonly>
+Interval minute:<select name="interval" id="interval">
+  <option value="1">1</option>
+  <option value="5">5</option>
+  <option value="10" selected>10</option>
+  <option value="15">15</option>
+</select>
+<input type="submit" value="Update">
+<a href="dati.json" download="data.json">download JSON</a>
+</form>
+ <div class="simpleTabs">
+		        <ul class="simpleTabsNavigation">
+		            <li><a href="#">Temperature</a></li>
+		            <li><a href="#">Humidity</a></li>
+		            <li><a href="#">Wind</a></li>
+                    <li><a href="#">Pressure</a></li>
+		        </ul>
+                
+		        <div class="simpleTabsContent"> <div id="TemperatureG"></div></div>
+		        <div class="simpleTabsContent"> <div id="humidityG">  </div></div>
+		        <div class="simpleTabsContent"> <div id="windG"></div><div id="winddirG"></div></div>
+                <div class="simpleTabsContent"> <div id="pressureG">  </div></div>
+               </div>
+</body>
+</html>
+

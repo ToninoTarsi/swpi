@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html>
+<head>
+    <title>Sint Wind PI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+   
+	  <link rel="apple-touch-icon" href="icons/icon_iphone_x1.png" />
+	  <link rel="apple-touch-icon" sizes="72x72" href="icons/icon_ipad_x2.png" />
+	  <link rel="apple-touch-icon" sizes="114x114" href="icons/icon_iphone_x2.png" />
+	  <link rel="apple-touch-icon" sizes="144x144" href="icons/icon_ipad_x2.png" />
+  
+	 <link rel="stylesheet" href="js/jquery.mobile-1.3.1.min.css" />
+	<script src="js/jquery-1.10.0.min.js"></script>
+     <script src="js/jquery.mobile-1.3.1.min.js"></script>
+ 
+	
+	<script type="text/javascript" src="js/tween-min.js"></script>
+	<script type="text/javascript" src="js/mysteelseries-0.11.14.js"></script>
+<style>
+
+ #canvasLedUpdate {
+  position: absolute;
+  top: 5px;
+  right:10px;;
+}  	
+</style>
+
+</head>
+
+<script type="text/javascript">
+
+var data;
+var ledUpdate;
+
+
+function UpdateTime()
+{
+	
+	//alert("pp");
+	
+	if ( data.last_measure_time != null ) {
+		
+		var dif = getLastMeasureDelay(data.last_measure_time);
+		
+		if ( dif > 1000 ) {
+			ledUpdate.setLedColor(steelseries.LedColor.RED_LED);
+			ledUpdate.setLedOnOff(true);
+			ledUpdate.blink(false);
+		}
+		else if ( dif > 180 ) {
+			ledUpdate.setLedColor(steelseries.LedColor.YELLOW_LED);
+			ledUpdate.setLedOnOff(true);
+			ledUpdate.blink(false);
+		}
+		else {
+			ledUpdate.setLedColor(steelseries.LedColor.GREEN_LED);
+			ledUpdate.setLedOnOff(true);
+			ledUpdate.blink(false);
+		}
+		
+		document.getElementById('last_measure_time').innerHTML =lastUpdate(data.last_measure_time)
+
+	}
+}
+	
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+	
+function UpdateData(json){
+
+	//alert("main");
+
+	data = jQuery.parseJSON(json);
+	Update(data)
+
+	//alert("Updated");
+ 
+}	
+	
+function init() {
+	
+
+	ledUpdate = new steelseries.Led('canvasLedUpdate', {
+        width: 40,
+        height: 40,
+        ledColor:steelseries.LedColor.BLUE_LED
+        });  
+	
+	setInterval(function(){UpdateTime()},1000);
+	
+	
+		setInterval(function(){UpdateGauge()()},10000);
+		UpdateGauge();
+
+	
+}
+	
+ function lastUpdate(updatedata) {   
+	//funzione che calcola la differenza dall'ultimo aggiornamento dei dati da last_measure_time
+	//ottieni ora corrente
+	var myDate = new Date();
+	var year = myDate.getFullYear();
+	var month = myDate.getMonth();
+	if(month <= 9)
+		month = '0'+(month+1);
+	var day= myDate.getDate();
+	if(day <= 9)
+		day = '0'+day;
+		var hour= myDate.getHours();
+	if(hour<= 9)
+		hour = '0'+hour;
+	var minutes= myDate.getMinutes();
+	if(minutes<= 9)
+		minutes = '0'+minutes;
+	var seconds= myDate.getSeconds();
+	if(seconds<= 9)
+		seconds = '0'+seconds;
+	//var prettyDate = day +'/'+ month +'/'+ year +'-'+ hour +':'+ minutes +':'+ seconds;
+	//scrivi ora corrente
+	//document.write(prettyDate);
+
+
+	//converto ultimo aggiornamento in data
+
+	//var str="[02/04/2013-17:20:17]";
+	var str=updatedata;
+	var n=str.slice(1,20);
+
+	var n=n.split("-");
+	var daysplit=n[0].split("/");
+	var datesplit=n[1].split(":");
+
+	var day1=daysplit[0];
+	var month1=daysplit[1];
+	var year1=daysplit[2];
+
+
+	var hour1=datesplit[0];
+	var minutes1=datesplit[1];
+	var seconds1=datesplit[2];
+
+	//calcola la differenza
+
+	var date1 = new Date(year1, month1, day1,  hour1, minutes1, seconds1); // ora di lettura
+	var date2 = new Date(year, month, day, hour, minutes, seconds); // ora attuale
+	if (date2 < date1) {
+		date2.setDate(date2.getDate() + 1);
+	}
+	var diff = date2 - date1;
+
+	var msec = diff;
+	var hh = Math.floor(msec / 1000 / 60 / 60);
+	msec -= hh * 1000 * 60 * 60;
+	var mm = Math.floor(msec / 1000 / 60);
+	msec -= mm * 1000 * 60;
+	var ss = Math.floor(msec / 1000);
+	msec -= ss * 1000;
+
+	//scrivi il risultato
+	var result ="";
+	//result += "ultima misura: ";
+	if(hh != 0) {
+		result += hh;
+		result += "h, ";
+		}
+		
+	if(mm != 0) {
+		result +=  mm;
+		result +=  "m e ";
+		}
+	result += ss;
+	result += "s fa";
+
+	return result;
+
+  }  	
+	
+ function getLastMeasureDelay(updatedata) {
+ 	//funzione che calcola la differenza dall'ultimo aggiornamento dei dati da last_measure_time
+ 	//in secondi
+ 	var myDate = new Date();
+ 	var year = myDate.getFullYear();
+ 	var month = myDate.getMonth();
+ 	if(month <= 9)
+ 		month = '0'+(month+1);
+ 	var day= myDate.getDate();
+ 	if(day <= 9)
+ 		day = '0'+day;
+ 		var hour= myDate.getHours();
+ 	if(hour<= 9)
+ 		hour = '0'+hour;
+ 	var minutes= myDate.getMinutes();
+ 	if(minutes<= 9)
+ 		minutes = '0'+minutes;
+ 	var seconds= myDate.getSeconds();
+ 	if(seconds<= 9)
+ 		seconds = '0'+seconds;
+ 	//var prettyDate = day +'/'+ month +'/'+ year +'-'+ hour +':'+ minutes +':'+ seconds;
+ 	//scrivi ora corrente
+ 	//document.write(prettyDate);
+
+
+ 	//converto ultimo aggiornamento in data
+
+ 	//var str="[02/04/2013-17:20:17]";
+ 	var str=updatedata;
+ 	var n=str.slice(1,20);
+
+ 	var n=n.split("-");
+ 	var daysplit=n[0].split("/");
+ 	var datesplit=n[1].split(":");
+
+ 	var day1=daysplit[0];
+ 	var month1=daysplit[1];
+ 	var year1=daysplit[2];
+
+
+ 	var hour1=datesplit[0];
+ 	var minutes1=datesplit[1];
+ 	var seconds1=datesplit[2];
+
+ 	//calcola la differenza
+
+ 	var date1 = new Date(year1, month1, day1,  hour1, minutes1, seconds1); // ora di lettura
+ 	var date2 = new Date(year, month, day, hour, minutes, seconds); // ora attuale
+ 	if (date2 < date1) {
+ 		date2.setDate(date2.getDate() + 1);
+ 	}
+ 	var diff = date2 - date1;
+ 	
+ 	return (diff/1000);
+ 	//alert(diff);
+ }
+
+ 
+function Update(data) {
+	
+	ledUpdate.setLedColor(steelseries.LedColor.BLUE_LED);
+	
+	document.getElementById('lblTitle').innerHTML = data.station_name;
+	document.getElementById('lblUnits1').innerHTML = data.wind_speed_units;
+	document.getElementById('lblUnits2').innerHTML = data.wind_speed_units;
+	document.getElementById('lblUnits3').innerHTML = data.wind_speed_units;
+
+	document.getElementById('wind_ave').innerHTML =	Math.round(data.wind_ave);
+	document.getElementById('wind_gust').innerHTML =	Math.round(data.wind_gust);
+	document.getElementById('wind_dir').innerHTML =	(data.wind_dir_code);
+		
+	document.getElementById('TempOutMin').innerHTML =	(Math.round(data.TempOutMin*10)/10);
+	document.getElementById('TempOutMax').innerHTML =	(Math.round(data.TempOutMax*10)/10);
+	document.getElementById('temp_apparent').innerHTML =	(Math.round(data.temp_apparent*10))/10;
+	document.getElementById('wind_chill').innerHTML =	(Math.round(data.wind_chill*10))/10;
+
+	
+
+	document.getElementById('pressure_trend').innerHTML =	press_trend(data.pressure_trend);
+
+	document.getElementById('dew_point').innerHTML =	(Math.round(data.dew_point*10))/10;
+
+	
+	
+
+	if ( data.wind_trend > 0)
+	{
+		document.getElementById('wind_trend').innerHTML = '+ ' + Math.round(data.wind_trend);
+	}
+	else
+	{
+		document.getElementById('wind_trend').innerHTML = '- ' + Math.abs(Math.round(data.wind_trend));
+	}
+	
+	document.getElementById('temp_out').innerHTML =	 Math.round((data.temp_out * 10 ) ) /  10 ;
+	document.getElementById('pressure').innerHTML =	Math.round((data.rel_pressure * 10 ) ) /  10 ; 
+	document.getElementById('umidity').innerHTML =	Math.round(data.hum_out);
+
+	if ( data.rain_rate != null )
+		document.getElementById('rain_rate').innerHTML =  Math.round((data.rain_rate * 10 )) / 10 ;
+	else
+		document.getElementById('rain_rate').innerHTML = '-';
+	
+	document.getElementById('coudbase').innerHTML = Math.round(data.cloud_base_altitude);
+	
+	document.getElementById('winDayMin').innerHTML = Math.round(data.winDayMin);
+	document.getElementById('winDayMax').innerHTML = Math.round(data.winDayMax);
+
+	document.getElementById('rain_rate_24h').innerHTML = Math.round((data.rain_rate_24h * 10 )) / 10 ;
+	document.getElementById('rain_rate_1h').innerHTML = Math.round((data.rain_rate_1h * 10 )) / 10 ;
+
+	document.getElementById('UmOutMin').innerHTML =	Math.round(data.UmOutMin);
+	document.getElementById('UmOutMax').innerHTML =	Math.round(data.UmOutMax);
+
+	document.getElementById('hum_in').innerHTML =	Math.round((data.freedisk/1073741824)*10)/10;
+	document.getElementById('temp_in').innerHTML =	(data.TempCPU);
+	
+}
+
+function UpdateGauge(){
+	  //alert("Updating");
+      $.getJSON(
+         './meteo.txt',
+         function(data1){
+        	 data = data1
+        	 Update(data1)
+				//alert("Updated");
+         }
+      );
+   }	
+		
+function press_trend(trend) {
+if (trend > 6.0)
+	{
+        return "in aumento molto rapido";
+    }
+    else if (trend > 3.5)
+    {
+        return "in rapido aumento";
+    }
+    else if (trend > 1.5)
+    {
+        return "in aumento";
+    }
+    else if (trend >= 0.1)
+    {
+        return "in lento aumento";
+    }
+    else if (trend < -6.0)
+    {
+        return "in diminuzione molto rapida";
+    }
+    else if (trend < -3.5)
+    {
+        return "in rapida diminuzione";
+    }
+    else if (trend < -1.5)
+    {
+        return "in diminuzione";
+    }
+    else if (trend <= -0.1)
+    {
+        return "in lenta diminuzione";
+    }
+    else
+    {
+   		return "stabile";
+    }
+}	
+</script>
+
+
+
+<body onload="init()">
+  <div data-role="page" data-theme="a">
+    <div data-role="header" style="height:0px">
+      <h1><label id="lblTitle">Sint Wind PI</label></h1>
+    </div>
+    <div data-role="content">
+	
+	
+    <ul data-role="listview" data-inset="true" data-divider-theme="b">
+		<li data-role="list-divider"> 
+			<h1> <span style="font-size:120%"> <label  id="last_measure_time">time</label></h1><canvas  id="canvasLedUpdate" width="40" height="40"></canvas> 
+		</li>
+       <li> <img src="image/thermometer.png">  
+	   		<p><span style="font-size:110%">Estremi di oggi : <label id="TempOutMin">TempOutMin</label>-<label id="TempOutMax">TempOutMax</label>°C</p> 
+			<h1><span style="font-size:100%"> <label id="temp_out">temp</label> °C - Perc. <label id="temp_apparent">wc</label> °C</h1>
+			<p><span style="font-size:110%">Wind Chill: <label id="wind_chill">wind_chill</label> °C</p> 
+		</li>
+		<li> <img src="image/Wind-Flag-Storm-icon.png"> 
+			<p><span style="font-size:110%">Estremi di oggi : <label id="winDayMin">winDayMin</label> -  <label id="winDayMax">winDayMax</label> <label id="lblUnits4"> <label id="lblUnits1">kmh</label></p> 
+			<h1><span style="font-size:120%"> <label id="wind_dir">dir</label> - <label id="wind_ave">ave</label> (<label id="wind_gust">gust</label>) <label id="lblUnits2">kmh</label></label> </h1>
+			<p ><span style="font-size:110%">Tendenza : <label id="wind_trend">trend</label> <label id="lblUnits3">kmh</label>/h </p> 
+		</li>
+ 
+		<li> <img src="image/blood-pressure-icon.png"  >    
+			<h2><span style="font-size:120%"> <label id="pressure">pres</label>  hPa</h2>
+			<p> <span style="font-size:110%"><label id="pressure_trend">pressure_trend</label>  </p> 
+
+		</li>
+		<li> <img src="image/water-icon.png"  > 
+			 <p><span style="font-size:110%">Estremi di oggi : <label id="UmOutMin">UmOutMin</label> -  <label id="UmOutMax">UmOutMax</label> % </p> 
+			<h2><span style="font-size:120%"> <label id="umidity">hum</label>   %</h2>
+			<p><span style="font-size:110%">P. Rugiada : <label id="dew_point">dew_point</label> °C  </p> 
+		</li>
+		<li> <img src="image/rain-icon.png"  > 
+			<p><span style="font-size:110%">Pioggia</p>
+		  <h1><span style="font-size:120%"> Oggi <label id="rain_rate">rain</label>   mm </h1>
+		  <p><span style="font-size:110%">24h : <label id="rain_rate_24h">rain_rate_24h</label>mm - 1h : <label id="rain_rate_1h">rain_rate_1h</label> mm </p>
+		</li>		      
+		<li> <img src="image/Status-weather-many-clouds-icon.png"  > 
+			<p><span style="font-size:110%">Base cumulo</p>
+			<h2><span style="font-size:120%"> <label id="coudbase">cb</label>  metri   </h2>
+		</li>		
+		<li> <img src="image/ic_swpi.png"  > 
+			<p><span style="font-size:110%">Sistema</p>
+			<h1><span style="font-size:120%"> T: <label id="temp_in">temp_in</label> °C - FreeDisk: : <label id="hum_in">hum_in</label> G</h1>
+		</li>		
+			<li> <a href="graph.html" target="_new"><img src="image/grafici2.png"  > 
+			<p><span style="font-size:110%">Grafici</p>
+			<h1><span style="font-size:120%"> Grafici </h1></a>
+		</li>		
+		</ul>
+		
+		</span>
+ </div>
+    <div data-role="footer">
+      <h4>Powered by Sint Wind Pi</h4>
+    </div>
+  </div> 
+</body>
+
+
+
+
+
+
+</html>

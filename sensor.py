@@ -200,7 +200,7 @@ class Sensor(threading.Thread):
 			p=0.0
 			temp = None
 			i = 0
-			sensor = BME280(mode=BME280_OSAMPLE_8)
+			sensor = BME280()
 			while ( p==0.0 and i < 10):
 				i = i+1
 				temp = sensor.read_temperature()
@@ -255,7 +255,7 @@ class Sensor(threading.Thread):
 		p=0.0
 		temp = None
 		i = 0
-		sensor = BME280(mode=BME280_OSAMPLE_8)
+		sensor = BME280()
 		while ( p==0.0 and i < 10):
 			temp = sensor.read_temperature()
 			p = sensor.read_pressure()
