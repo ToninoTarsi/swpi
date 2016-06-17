@@ -1,18 +1,11 @@
-###########################################################################
-#     Sint Wind PI
-#       Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
-#   
-#     Please refer to the LICENSE file for conditions 
-#     Visit http://www.vololiberomontecucco.it
-# 
-##########################################################################
 #coding: utf-8
 
 import smbus
 import time
 
 bus_number  = 1
-i2c_address = 0x77
+
+#i2c_address = 0x77
 
 bus = smbus.SMBus(bus_number)
 
@@ -21,6 +14,13 @@ digP = []
 digH = []
 
 t_fine = 0.0
+try:
+	bus.read_byte_data(0x77,0xF7)
+	i2c_address = 0x77
+	print "i2c=77"
+except:
+	print "i2c=76"
+	i2c_address = 0x76
 
 
 def writeReg(reg_address, data):
@@ -68,11 +68,19 @@ def get_calib_param():
 
 def readData():
 	data = []
-	for i in range (0xF7, 0xF7+8):
-		data.append(bus.read_byte_data(i2c_address,i))
-	pres_raw = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4)
-	temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
-	hum_raw  = (data[6] << 8)  |  data[7]
+	try:
+		for i in range (0xF7, 0xF7+8):
+			data.append(bus.read_byte_data(0x76,i))
+			print i
+		pres_raw = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4)
+		temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
+		hum_raw  = (data[6] << 8)  |  data[7]
+	except:
+		for i in range (0xF7, 0xF7+8):
+			data.append(bus.read_byte_data(0x77,i))
+		pres_raw = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4)
+		temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
+		hum_raw  = (data[6] << 8)  |  data[7]
 	
 	compensate_T(temp_raw)
 	compensate_P(pres_raw)
@@ -141,7 +149,6 @@ def setup():
 	writeReg(0xF2,ctrl_hum_reg)
 	writeReg(0xF4,ctrl_meas_reg)
 	writeReg(0xF5,config_reg)
-
 
 setup()
 get_calib_param()

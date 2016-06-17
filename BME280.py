@@ -35,6 +35,11 @@ class BME280():
 		ctrl_meas_reg = (osrs_t << 5) | (osrs_p << 2) | mode
 		config_reg    = (t_sb << 5) | (filter << 2) | spi3w_en
 		ctrl_hum_reg  = osrs_h
+		try:
+			self.bus.read_byte_data(0x77,0xF7)
+			self.i2c_address = 0x77
+		except:
+			self.i2c_address = 0x76
 		self.bus.write_byte_data(self.i2c_address,0xF2,ctrl_hum_reg)
 		self.bus.write_byte_data(self.i2c_address,0xF4,ctrl_meas_reg)
 		self.bus.write_byte_data(self.i2c_address,0xF5,config_reg)
