@@ -14,7 +14,7 @@ import time
 class BME280():
 	def __init__(self):	
 		bus_number  = 1
-		self.i2c_address = 0x77
+#		self.i2c_address = 0x77
 		self.bus = smbus.SMBus(bus_number)
 
 		self.digT = []
