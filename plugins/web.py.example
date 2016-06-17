@@ -45,7 +45,7 @@ class swpi_plugin(threading.Thread):  #  do not change the name of the class
         i=0
         while 1:
         ###################### Plugin run
-            time.sleep(60-datetime.datetime.now().second)
+            time.sleep(600-datetime.datetime.now().second)
             if ( globalvars.meteo_data.status == 0 ):
                 mydata = getCurrentMeteoData()
 		print "Dati base Generati"
