@@ -114,8 +114,8 @@ class Sensor_Argent80422(sensor.Sensor):
             self.map[514:593] = 11
             self.map[593:640] = 10
             self.map[640:712] = 15
-            self.map[712:769] = 0
-            self.map[769:815] = 13
+            self.map[712:785] = 0
+            self.map[785:815] = 13
             self.map[815:870] = 14
             self.map[870:1024]= 12
                             
@@ -169,7 +169,7 @@ class Sensor_Argent80422(sensor.Sensor):
         wind_dir = self.map[ch0]
         winddir_code = self.get_wind_dir_text()[wind_dir]
         
-        return wind_dir*22.5, winddir_code
+        return wind_dir*22.5, winddir_code 
     
     def GetCurretWindSpeed(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
@@ -187,6 +187,10 @@ class Sensor_Argent80422(sensor.Sensor):
             time.sleep(0.0005)
         return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
+
+
+
+
 
     def GetCurretWindSpeedOld(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
