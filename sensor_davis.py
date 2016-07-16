@@ -26,6 +26,7 @@ import RPi.GPIO as GPIO
 import TTLib
 import thread
 from ctypes import *
+import spidev
 
 def get_wind_dir_text():
     """Return an array to convert wind direction integer to a string."""
@@ -48,10 +49,25 @@ class Sensor_Davis(sensor.Sensor):
 
         sensor.Sensor.__init__(self,cfg )        
         
+        myrevision = getrevision()
         
-        self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
-        if ( self.libMCP.init() != 0 ):
-            log("Error initializing mcp3002 library.Try to continue")
+        if ( myrevision == "a21041" or myrevision == "a01041"  ):
+            self.model = 2
+        else:
+            self.model = 1
+            
+        #print myrevision 
+        
+        if ( self.model == 2 ) :
+            # Open SPI bus
+            log("Initializing SPI")
+            self.spi  = spidev.SpiDev()
+            self.spi.open(0,0)
+        else: 
+            log("Initializing libMCP")
+            self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
+            if ( self.libMCP.init() != 0 ):
+                log("Error initializing mcp3002 library.Try to continue")
         
         self.cfg = cfg
         self.bTimerRun = 0
@@ -89,18 +105,19 @@ class Sensor_Davis(sensor.Sensor):
         
         ch0 = -1
         while ch0 == -1 :
-            ch0 = self.libMCP.read_channel(0)
+            if ( self.model == 1 ) :
+                ch0 = self.libMCP.read_channel(0)
+            else:
+                ch0 = self.ReadChannel(0)
             if  ( ch0 == -1 ) :
                 log("Error reading mcp3002 channel 0. Retrying ")
                 time.sleep(0.1) 
-        
-       #print "ch0",ch0
 
         wind_dir = ((350.0/1023.0)*ch0+5)-self.cfg.davis_error
 
         #log(self.cfg.davis_error)
         if wind_dir<0:
-	    wind_dir=359+wind_dir
+            wind_dir=359+wind_dir
         val=int((wind_dir/22.5)+.5)
         winddir_code = get_wind_dir_text()[val]
 
