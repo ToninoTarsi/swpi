@@ -100,6 +100,14 @@ class Sensor_Davis(sensor.Sensor):
     def SetTimer(self):
         self.bTimerRun = 0
     
+    def ReadChannel(self,channel):
+        data           = 0
+        #adc          = self.spi.xfer2([104,0])
+        adc         = self.spi.xfer2([1,(2+channel)<<6,0])
+        #data         += int(((adc[0]&3) << 8) + adc[1])
+        data        += ((adc[1]&31) << 6) + (adc[2] >> 2)
+        return data
+    
     def GetCurretWindDir(self):
         """Get wind direction reading MCP3002 channel 0."""
         
