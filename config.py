@@ -321,10 +321,10 @@ class config(object):
 		
 		
 		
-# 		if ( not os.path.isfile(self.cfgName)  ):
- 		f = open(self.cfgName,"w")
- 		config.write(f)		
- 		f.close()			
+ 		if ( not os.path.isfile(self.cfgName)  ):
+	 		f = open(self.cfgName,"w")
+ 			config.write(f)		
+ 			f.close()			
 
 
 	def writeCfg(self):
