@@ -15,6 +15,9 @@ import ImageDraw
 import time
 import os
 from TTLib  import *
+import sun
+import math
+import subprocess
 
 class webcam(object):
 	"""Class defining generic webcams."""
@@ -40,12 +43,23 @@ class webcam(object):
 			log( "ERROR Only 2 webcams are allowed in this version of the software"	)
 			
 		self.cfg = cfg
-		
+		self.god=sun.sun(lat=cfg.location_latitude,long=cfg.location_longitude)
+
 	# Old function
 
 
 	def capture(self,filename):
+		if ( self.god.daylight() ):
+			options = self.cfg.cameraPI_day_settings
+			log("Webcam active day")
+		else:
+			options = self.cfg.cameraPI_night_settings
+			log("Webcam active night")
 		try:
+			if options.upper() == "NONE":
+				log("Webcam not active")
+				return False
+#		try:
 
 			if ( self.cfg.captureprogram == "ffmpeg" ):
 				snapCommand = "ffmpeg -loglevel quiet -t 1  -f video4linux2 -vframes 1 -s " + self.captureresolution + " -i " + self.device + " " + filename

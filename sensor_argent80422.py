@@ -177,10 +177,12 @@ class Sensor_Argent80422(sensor.Sensor):
         t = threading.Timer(self.__MEASURETIME, self.SetTimer)
         t.start()
         i = 0
+        lastChange = 0
         o = GPIO.input(self.__PIN_A)
         while self.bTimerRun:
             n = GPIO.input(self.__PIN_A)
-            if ( n != o):
+            if ( n != o and ( time.time()-lastChange > 0.015  )):  # 150kmh
+                lastChange = time.time()
                 i = i+1
                 o = n
                 time.sleep(0.005)
