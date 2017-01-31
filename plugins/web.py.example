@@ -1,0 +1,79 @@
+###########################################################################
+#     Sint Wind PI
+#     Copyright 2012 by Tonino Tarsi <tony.tarsi@gmail.com>
+#   
+#     USB comunication based pywws by 'Jim Easterbrook' <jim@jim-easterbrook.me.uk>
+#     Please refer to the LICENSE file for conditions 
+#     Visit http://www.vololiberomontecucco.it
+# 
+##########################################################################
+
+"""example plugin."""
+
+import threading
+import random
+import datetime
+import sqlite3
+import sys
+import subprocess
+import sys 
+import os
+import thread
+import time
+import json
+import globalvars
+import meteodata
+from TTLib import  *
+import RPi.GPIO as GPIO
+
+
+
+class swpi_plugin(threading.Thread):  #  do not change the name of the class
+    
+    def __init__(self,cfg):
+        self.cfg = cfg
+        threading.Thread.__init__(self)
+        
+        ###################### Plugin Initialization ################
+        
+        ###################### End Initialization ##################
+        
+        
+    def run(self):
+        log("Starting plugin : %s" % sys.modules[__name__])
+        print "Start Plugin Web"
+        i=0
+        while 1:
+        ###################### Plugin run
+            time.sleep(600-datetime.datetime.now().second)
+            if ( globalvars.meteo_data.status == 0 ):
+                mydata = getCurrentMeteoData()
+		print "Dati base Generati"
+
+		if ( globalvars.meteo_data.wind_trend != None):
+        		mydata['wind_trend'] = (globalvars.meteo_data.wind_trend)
+    		else:
+			mydata['wind_trend'] = 0
+		mydata['station_name'] = (self.cfg.station_name)
+		mydata['location_longitude'] = (self.cfg.location_longitude)
+		mydata['location_latitude'] = (self.cfg.location_latitude)
+		mydata['location_altitude'] = (self.cfg.location_altitude)
+		mydata['wind_speed_units'] = (self.cfg.wind_speed_units)
+		mydata['wind_trend_limit'] = (self.cfg.wind_trend_limit)
+    		mydata['pressure_trend'] = (globalvars.meteo_data.pressure_trend)
+		mydata['TempCPU'] =  get_cpu_temperature()
+    		mydata['freedisk'] = disk_free()
+		print "Dati aggiuntivi generati"
+
+
+    		j = json.dumps(mydata)
+    		objects_file = '/swpi/web/meteo.txt'
+    		f = open(objects_file,'w')
+    		f.write(j + "\n")
+    		f.close()
+		print "File creato per Web"
+
+                if ( i % 5 == 0):
+                    logData(self.cfg.serverfile,self.cfg.SMSPwd)
+            i = i +  1
+        ###################### end of Plugin run
