@@ -1019,7 +1019,7 @@ def sendFileToServer(filename,name,server,destFolder,login,password,delete,useth
 
 
 def internet_on():
-    log("Checking internet connetion ...")
+    log("Checking internet connection ...")
     ret = os.system("ping -c 1 8.8.8.8 1> /dev/null")
     if ( ret >= 1 ):
         log("No Internet")    
@@ -1032,7 +1032,7 @@ def internet_on():
 
 def internet_on1():
     try:
-        log("Checking internet connetion ...")
+        log("Checking internet connection ...")
         #urllib2.urlopen('http://74.125.113.99',timeout=10)
         requests.get('http://74.125.113.99',timeout=10)
         log("Internet ok")
@@ -1046,14 +1046,14 @@ def systemRestart():
         log("Rebooting system ..")
         os.system("sudo reboot")
     else:
-        print " Sorry can not rebbot windows"
+        print " Sorry, cannot reboot Windows"
         
 def systemHalt():
     if os.name != 'nt':
         log("Halting system ..")
         os.system("sudo halt")
     else:
-        print " Sorry can not rebbot windows"        
+        print " Sorry, cannot reboot Windows"        
 
 def getIP():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
