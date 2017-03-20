@@ -194,17 +194,17 @@ class Sensor_WH3080RTLSDR(sensor.Sensor):
                             lux = line2['lux']
                             watts_sqmeter = line2['wm']
                         except:
-                            log('Error while decoding json (UV) data, or data not present yet.')
+                            log('Error while decoding json (UV) data, or data not available yet.')
                             uv_index = 0
                             lux = 0
 
                 except:
-                    log('Invalid UV/light data, or data not present yet.')
+                    log('Invalid UV/light data, or data not available yet.')
                     uv_index = None
                     lux = None
 
         except:
-            log('Invalid UV/light data, or data not present yet.')
+            log('Invalid UV/light data, or data not available yet.')
             uv_index = None
             lux = None
 
