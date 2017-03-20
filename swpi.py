@@ -721,7 +721,7 @@ if not os.path.isfile(configfile):
 	cfg = config.config(configfile,False)
 	os.system( "sudo chown pi swpi.cfg" )
 
-	log("Configurantion file created with default option. Now edit the file :  %s and restart with command  : swpi "  % (configfile))
+	log("Configuration file created with default option. Now edit the file :  %s and restart with command  : swpi "  % (configfile))
 	#exit(0)
 else:
 	cfg = config.config(configfile,False)
@@ -734,7 +734,7 @@ log( "Starting SINT WIND PI  ... ")
 print "************************************************************************"
 print "*                      Sint Wind PI "+v+"                           *"
 print "*                                                                      *"
-print "*          2012-2016 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
+print "*          2012-2017 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
 print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
