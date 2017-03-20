@@ -754,7 +754,12 @@
         }
 
         function ButtonReboot_onclick() {
+		var z = confirm("We are going to perform a SWPI system reboot.\n\nDo you confirm?\n");
+		if (z == true) {
             window.location = '/web_reboot.py'
+        } else {
+		alert("SWPI reboot aborted. (whew!...)\n\n");
+		}            
         }
 
         function ButtonStatus_onclick() {
@@ -763,7 +768,12 @@
         }
 
         function Button1_onclick() {
-            window.location = '/web_swpi_update.py'
+		var r = confirm("!!! *** WARNING *** !!!\n\nBy pressing OK you will OVERWRITE any customized SWPI file, replacing it with its original default version.\nAnyway, swpi.cfg should remain safe.\nIf in doubt, you should consider a backup of your whole /swpi directory before to continue.\n\nAre you sure?\n");
+		if (r == true) {
+		window.location = '/web_swpi_update.py'
+		} else {
+		alert("SWPI update aborted. (whew!...)\n\n");
+		}            
         }
 
         function ButtonResetCamera_onclick() {
@@ -982,6 +992,7 @@
                         <option value="PCE-FWS20" >PCE-FWS20</option>
                         <option value="WH1080-RFM01" >WH1080-RFM01</option>
 						<option value="WH1080_RTL-SDR" >WH1080_RTL-SDR</option>
+						<option value="WH3080_RTL-SDR" >WH3080_RTL-SDR</option>
 						<option value="WMR100" >WMR100</option>
 						<option value="WMR200" >WMR200</option>
 						<option value="WMR918" >WMR918</option>
@@ -1701,7 +1712,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
 			<div class="tabContent" id="RTL-SDR"> 	     
         <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">RTL2832-based USB DVB-T DONGLE (WH1080 / PCE-FWS20 protocol)<br><small><small>(reboot after saving to apply changes)</small></small></td>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">RTL2832-based USB DVB-T DONGLE (WH1080-3080 / PCE-FWS20 protocol)<br><small><small>(reboot after saving to apply changes)</small></small></td>
             </tr>
             <tr>
                 <td class="style41" bgcolor="$LayColorBBC">
