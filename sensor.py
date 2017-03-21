@@ -207,7 +207,11 @@ class Sensor(threading.Thread):
 				p = sensor.read_pressure()
 				#p = pascals / 100
 				humidity = sensor.read_humidity()
-				globalvars.meteo_data.hum_out = humidity
+				#globalvars.meteo_data.hum_out = humidity
+				if (self.cfg.sensor_type not in self.implementedStations):
+					globalvars.meteo_data.hum_out = humidity
+				else:
+					globalvars.meteo_data.hum_in = humidity
 				
 				#p,temp = self.bmp085.readPressureTemperature()
 				if p == 0.0 :
