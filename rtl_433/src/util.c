@@ -106,7 +106,7 @@ int byteParity(uint8_t inByte){
 }
 
 
-char* local_time_str(time_t time_secs, char *buf) {
+void local_time_str(time_t time_secs, char *buf) {
 	time_t etime;
 	struct tm *tm_info;
 
