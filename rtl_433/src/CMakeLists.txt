@@ -27,7 +27,8 @@ add_executable(rtl_433
 	devices/acurite.c
 	devices/alecto.c
 	devices/ambient_weather.c
-	devices/brennstuhl_rcs_2044.c
+	devices/blyss.c
+	devices/brennenstuhl_rcs_2044.c
 	devices/calibeur.c
 	devices/cardin.c
 	devices/chuango.c
@@ -40,7 +41,7 @@ add_executable(rtl_433
 	devices/emontx.c
 	devices/esperanza_ews.c
 	devices/fineoffset.c
-	devices/fineoffset_wh1080.c
+	devices/fineoffset_wh1080_wh3080.c
 	devices/generic_remote.c
 	devices/generic_temperature_sensor.c
 	devices/gt_wt_02.c
@@ -48,8 +49,11 @@ add_executable(rtl_433
 	devices/ht680.c
 	devices/inovalley-kw9015b.c
 	devices/intertechno.c
+	devices/kedsum.c
 	devices/lacrosse.c
+	devices/lacrosse_TX141TH_Bv2.c
 	devices/lacrossews.c
+	devices/lightwave_rf.c
 	devices/mebus.c
 	devices/newkaku.c
 	devices/nexus.c
@@ -59,8 +63,10 @@ add_executable(rtl_433
 	devices/prologue.c
 	devices/rubicson.c
 	devices/silvercrest.c
+	devices/springfield.c
 	devices/steffen.c
 	devices/tfa_twin_plus_30.3049.c
+	devices/tfa_pool_thermometer.c
 	devices/valeo.c
 	devices/waveman.c
 	devices/wt450.c
@@ -69,6 +75,21 @@ add_executable(rtl_433
 	devices/akhan_100F14.c
 	devices/quhwa.c
 	devices/proove.c
+	devices/bresser_3ch.c
+	devices/oregon_scientific_sl109h.c
+	devices/steelmate.c
+	devices/schraeder.c
+	devices/elro_db286a.c
+	devices/efergy_optical.c
+	devices/hondaremote.c
+	devices/new_template.c
+	devices/radiohead_ask.c
+	devices/kerui.c
+	devices/fineoffset_wh1050.c
+	devices/honeywell.c
+	devices/maverick_et73x.c
+	devices/rftech.c
+	devices/lacrosse_tx35.c
 
 )
 

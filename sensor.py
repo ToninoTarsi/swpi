@@ -36,7 +36,7 @@ class Sensor(threading.Thread):
 	
 	def __init__(self ,cfg):
 		self.cfg = cfg
-		self.implementedStations = ["WH1080-RFM01","WH1080_RTL-SDR"]
+		self.implementedStations = ["WH1080-RFM01","WH1080_RTL-SDR","WH3080_RTL-SDR"]
 		#self.implementedStations = ["SIMULATE","PCE-FWS20","NEVIO8","NEVIO16","PCE-SENSOR","DAVIS-SENSOR","LACROSS-TX23","WMR100","WMR200","WMR918","WM918","WH1080-RFM01"]
 		
 #		if ( self.cfg.sensor_type not in self.implementedStations  ):
@@ -207,7 +207,11 @@ class Sensor(threading.Thread):
 				p = sensor.read_pressure()
 				#p = pascals / 100
 				humidity = sensor.read_humidity()
-				globalvars.meteo_data.hum_out = humidity
+				#globalvars.meteo_data.hum_out = humidity
+				if (self.cfg.sensor_type not in self.implementedStations):
+					globalvars.meteo_data.hum_out = humidity
+				else:
+					globalvars.meteo_data.hum_in = humidity
 				
 				#p,temp = self.bmp085.readPressureTemperature()
 				if p == 0.0 :

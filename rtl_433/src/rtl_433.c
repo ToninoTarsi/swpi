@@ -35,6 +35,8 @@ static int do_exit = 0;
 static int do_exit_async = 0, frequencies = 0, events = 0;
 uint32_t frequency[MAX_PROTOCOLS];
 time_t rawtime_old;
+int duration = 0;
+time_t stop_time;
 int flag;
 uint32_t samp_rate = DEFAULT_SAMPLE_RATE;
 float sample_file_pos = -1;
@@ -89,22 +91,24 @@ struct dm_state {
 
 void usage(r_device *devices) {
 	int i;
+	char disabledc;
 
 	fprintf(stderr,
             "rtl_433, an ISM band generic data receiver for RTL2832 based DVB-T receivers\n\n"
             "Usage:\t= Tuner options =\n"
-            "\t[-d <device index>] (default: 0)\n"
+            "\t[-d <RTL-SDR USB device index>] (default: 0)\n"
             "\t[-g <gain>] (default: 0 for auto)\n"
             "\t[-f <frequency>] [-f...] Receive frequency(s) (default: %i Hz)\n"
             "\t[-p <ppm_error] Correct rtl-sdr tuner frequency offset error (default: 0)\n"
             "\t[-s <sample rate>] Set sample rate (default: %i Hz)\n"
             "\t[-S] Force sync output (default: async)\n"
             "\t= Demodulator options =\n"
-            "\t[-R <device>] Listen only for the specified remote device (can be used multiple times)\n"
-            "\t[-l <level>] Change detection level used to determine pulses [0-32767] (0 = auto) (default: %i)\n"
+            "\t[-R <device>] Enable only the specified device decoding protocol (can be used multiple times)\n"
+            "\t[-G] Enable all device protocols, included those disabled by default\n"
+            "\t[-l <level>] Change detection level used to determine pulses [0-16384] (0 = auto) (default: %i)\n"
             "\t[-z <value>] Override short value in data decoder\n"
             "\t[-x <value>] Override long value in data decoder\n"
-            "\t[-n <value>]  Specify number of samples to take (each sample is 2 bytes: 1 each of I & Q)\n"
+            "\t[-n <value>] Specify number of samples to take (each sample is 2 bytes: 1 each of I & Q)\n"
             "\t= Analyze/Debug options =\n"
             "\t[-a] Analyze mode. Print a textual description of the signal. Disables decoding\n"
             "\t[-A] Pulse Analyzer. Enable pulse analyzis and decode attempt\n"
@@ -123,15 +127,21 @@ void usage(r_device *devices) {
             "\t\t Note: If output file is specified, input will always be I/Q\n"
             "\t[-F] kv|json|csv Produce decoded output in given format. Not yet supported by all drivers.\n"
             "\t[-C] native|si|customary Convert units in decoded output.\n"
+            "\t[-T] specify number of seconds to run\n"
             "\t[-U] Print timestamps in UTC (this may also be accomplished by invocation with TZ environment variable set).\n"
             "\t[<filename>] Save data stream to output file (a '-' dumps samples to stdout)\n\n",
             DEFAULT_FREQUENCY, DEFAULT_SAMPLE_RATE, DEFAULT_LEVEL_LIMIT);
 
-    fprintf(stderr, "Supported devices:\n");
+    fprintf(stderr, "Supported device protocols:\n");
     for (i = 0; i < num_r_devices; i++) {
-        fprintf(stderr, "\t[%02d] %s\n", i + 1, devices[i].name);
+	if (devices[i].disabled)
+	    disabledc = '*';
+	else
+	    disabledc = ' ';
+
+        fprintf(stderr, "    [%02d]%c %s\n", i + 1, disabledc, devices[i].name);
     }
-    fprintf(stderr, "\n");
+    fprintf(stderr, "\n* Disabled by default, use -R n or -G\n");
 
     exit(1);
 }
@@ -175,11 +185,14 @@ static void register_protocol(struct dm_state *demod, r_device *t_dev) {
     demod->r_dev_num++;
 
     if (!quiet_mode) {
-	fprintf(stderr, "Registering protocol \"%s\"\n", t_dev->name);
+	fprintf(stderr, "Registering protocol [%d] \"%s\"\n", demod->r_dev_num, t_dev->name);
     }
 
-    if (demod->r_dev_num > MAX_PROTOCOLS)
-        fprintf(stderr, "Max number of protocols reached %d\n", MAX_PROTOCOLS);
+    if (demod->r_dev_num > MAX_PROTOCOLS) {
+        fprintf(stderr, "\n\nMax number of protocols reached %d\n", MAX_PROTOCOLS);
+	fprintf(stderr, "Increase MAX_PROTOCOLS and recompile\n");
+	exit(-1);
+    }
 }
 
 
@@ -469,7 +482,7 @@ static void classify_signal() {
 
 static void pwm_analyze(struct dm_state *demod, int16_t *buf, uint32_t len) {
     unsigned int i;
-    int32_t threshold = (demod->level_limit ? demod->level_limit : DEFAULT_LEVEL_LIMIT);	// Fix for auto level
+    int32_t threshold = (demod->level_limit ? demod->level_limit : 8000);	// Does not support auto level. Use old default instead.
 
     for (i = 0; i < len; i++) {
         if (buf[i] > threshold) {
@@ -657,6 +670,9 @@ static void rtlsdr_callback(unsigned char *iq_buf, uint32_t len, void *ctx) {
 						case FSK_PULSE_PCM:
 						case FSK_PULSE_PWM_RAW:
 							break;
+						case FSK_PULSE_MANCHESTER_ZEROBIT:
+							pulse_demod_manchester_zerobit(&demod->pulse_data, demod->r_devs[i]);
+							break;
 						default:
 							fprintf(stderr, "Unknown modulation %d in protocol!\n", demod->r_devs[i]->modulation);
 					}
@@ -682,6 +698,9 @@ static void rtlsdr_callback(unsigned char *iq_buf, uint32_t len, void *ctx) {
 							break;
 						case FSK_PULSE_PWM_RAW:
 							pulse_demod_pwm(&demod->fsk_pulse_data, demod->r_devs[i]);
+							break;
+						case FSK_PULSE_MANCHESTER_ZEROBIT:
+							pulse_demod_manchester_zerobit(&demod->fsk_pulse_data, demod->r_devs[i]);
 							break;
 						default:
 							fprintf(stderr, "Unknown modulation %d in protocol!\n", demod->r_devs[i]->modulation);
@@ -709,9 +728,9 @@ static void rtlsdr_callback(unsigned char *iq_buf, uint32_t len, void *ctx) {
 	if (bytes_to_read > 0)
 		bytes_to_read -= len;
 
+        time_t rawtime;
+        time(&rawtime);
 	if (frequencies > 1) {
-		time_t rawtime;
-		time(&rawtime);
 		if (difftime(rawtime, rawtime_old) > DEFAULT_HOP_TIME || events >= DEFAULT_HOP_EVENTS) {
 			rawtime_old = rawtime;
 			events = 0;
@@ -719,6 +738,11 @@ static void rtlsdr_callback(unsigned char *iq_buf, uint32_t len, void *ctx) {
 			rtlsdr_cancel_async(dev);
 		}
 	}
+    if (duration > 0 && rawtime >= stop_time) {
+      do_exit_async = do_exit = 1;
+      fprintf(stderr, "Time expired, exiting!\n");
+      rtlsdr_cancel_async(dev);
+    }
 }
 
 // find the fields output for CSV
@@ -817,6 +841,7 @@ int main(int argc, char **argv) {
     int device_count;
     char vendor[256], product[256], serial[256];
     int have_opt_R = 0;
+    int register_all = 0;
 
     setbuf(stdout, NULL);
     setbuf(stderr, NULL);
@@ -837,7 +862,7 @@ int main(int argc, char **argv) {
 
     demod->level_limit = DEFAULT_LEVEL_LIMIT;
 
-    while ((opt = getopt(argc, argv, "x:z:p:DtaAqm:r:l:d:f:g:s:b:n:SR:F:C:UW")) != -1) {
+    while ((opt = getopt(argc, argv, "x:z:p:DtaAqm:r:l:d:f:g:s:b:n:SR:F:C:T:UWG")) != -1) {
         switch (opt) {
             case 'd':
                 dev_index = atoi(optarg);
@@ -848,6 +873,9 @@ int main(int argc, char **argv) {
                 break;
             case 'g':
                 gain = (int) (atof(optarg) * 10); /* tenths of a dB */
+                break;
+            case 'G':
+                register_all = 1;
                 break;
             case 'p':
                 ppm_error = atoi(optarg);
@@ -935,13 +963,23 @@ int main(int argc, char **argv) {
         }
         break;
         case 'U':
+        #if !defined(__MINGW32__)
           utc_mode = setenv("TZ", "UTC", 1);
           if(utc_mode != 0) fprintf(stderr, "Unable to set TZ to UTC; error code: %d\n", utc_mode);
+        #endif
         break;
             case 'W':
             overwrite_mode = 1;
         break;
-
+        case 'T':
+          time(&stop_time);
+          duration = atoi(optarg);
+          if (duration < 1) {
+            fprintf(stderr, "Duration '%s' was not positive integer; will continue indefinitely\n", optarg);
+          } else {
+            stop_time += duration;
+          }
+          break;
             default:
                 usage(devices);
                 break;
@@ -959,13 +997,17 @@ int main(int argc, char **argv) {
     }
 
     for (i = 0; i < num_r_devices; i++) {
-        if (!devices[i].disabled) {
+        if (!devices[i].disabled || register_all) {
             register_protocol(demod, &devices[i]);
             if(devices[i].modulation >= FSK_DEMOD_MIN_VAL) {
               demod->enable_FM_demod = 1;
             }
         }
     }
+
+    if (!quiet_mode)
+	fprintf(stderr,"Registered %d out of %d device decoding protocols\n",
+		demod->r_dev_num, num_r_devices);
 
     if (out_block_size < MINIMAL_BUF_LENGTH ||
             out_block_size > MAXIMAL_BUF_LENGTH) {
@@ -1021,7 +1063,7 @@ int main(int argc, char **argv) {
 	else
 	    fprintf(stderr, "Sample rate set to %d.\n", rtlsdr_get_sample_rate(dev)); // Unfortunately, doesn't return real rate
 
-	fprintf(stderr, "Bit detection level set to %d.\n", demod->level_limit);
+	fprintf(stderr, "Bit detection level set to %d%s.\n", demod->level_limit, (demod->level_limit ? "" : " (Auto)"));
 
 	if (0 == gain) {
 	    /* Enable automatic gain */
@@ -1078,7 +1120,7 @@ int main(int argc, char **argv) {
 	    in_file = stdin;
 	    in_filename = "<stdin>";
 	} else {
-	    in_file = fopen(in_filename, "r");
+	    in_file = fopen(in_filename, "rb");
 	    if (!in_file) {
 		fprintf(stderr, "Opening file: %s failed!\n", in_filename);
 		goto out;
@@ -1137,6 +1179,7 @@ int main(int argc, char **argv) {
 	fprintf(stderr, "Reading samples in sync mode...\n");
 	uint8_t *buffer = malloc(out_block_size * sizeof (uint8_t));
 
+      time_t timestamp;
         while (!do_exit) {
             r = rtlsdr_read_sync(dev, buffer, out_block_size, &n_read);
             if (r < 0) {
@@ -1158,6 +1201,14 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Short read, samples lost, exiting!\n");
                 break;
             }
+
+        if (duration > 0) {
+          time(&timestamp);
+          if (timestamp >= stop_time) {
+            do_exit = 1;
+            fprintf(stderr, "Time expired, exiting!\n");
+          }
+        }
 
             if (bytes_to_read > 0)
                 bytes_to_read -= n_read;

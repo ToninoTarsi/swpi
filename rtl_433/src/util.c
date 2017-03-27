@@ -79,6 +79,26 @@ uint16_t crc16(uint8_t const message[], unsigned nBytes, uint16_t polynomial, ui
     return remainder;
 }
 
+uint16_t crc16_ccitt(uint8_t const message[], unsigned nBytes, uint16_t polynomial, uint16_t init) {
+    uint16_t remainder = init;
+    unsigned byte, bit;
+
+    for (byte = 0; byte < nBytes; ++byte) {
+        remainder ^= message[byte] << 8;
+        for (bit = 0; bit < 8; ++bit) {
+            if (remainder & 0x8000) {
+                remainder = (remainder << 1) ^ polynomial;
+            }
+            else {
+                remainder = (remainder << 1);
+            }
+        }
+    }
+    return remainder;
+}
+
+
+
 int byteParity(uint8_t inByte){
     inByte ^= inByte >> 4;
     inByte &= 0xf;
@@ -94,7 +114,7 @@ void local_time_str(time_t time_secs, char *buf) {
 		extern float sample_file_pos;
 		if (sample_file_pos != -1.0) {
 			snprintf(buf, LOCAL_TIME_BUFLEN, "@%fs", sample_file_pos);
-			return;
+			return buf;
 		}
 		time(&etime);
 	} else {
@@ -104,6 +124,7 @@ void local_time_str(time_t time_secs, char *buf) {
 	tm_info = localtime(&etime);
 
 	strftime(buf, LOCAL_TIME_BUFLEN, "%Y-%m-%d %H:%M:%S", tm_info);
+	return buf;
 }
 
 float celsius2fahrenheit(float celsius)
