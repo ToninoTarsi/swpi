@@ -423,7 +423,7 @@ def logDataToWunderground(ID,password,wind_speed_units="kmh"):
     if ( cfg.solarsensor == True ):
         if globalvars.meteo_data.illuminance != None :  parameters['solarradiation'] = globalvars.meteo_data.illuminance
     if ( cfg.uvsensor == True ):
-        if globalvars.meteo_data.uv != None :  parameters['uv'] = globalvars.meteo_data.uv
+        if globalvars.meteo_data.uv != None :  parameters['UV'] = globalvars.meteo_data.uv
     
     parameters['softwaretype'] = "Sint Wind PI"
         
