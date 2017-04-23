@@ -196,17 +196,17 @@ class Sensor_WH3080RTLSDR(sensor.Sensor):
                         except:
                             log('Error while decoding json (UV) data, or data not available yet.')
                             uv_index = 0
-                            lux = 0
+                            watts_sqmeter = 0
 
                 except:
                     log('Invalid UV/light data, or data not available yet.')
                     uv_index = None
-                    lux = None
+                    watts_sqmeter = None
 
         except:
             log('Invalid UV/light data, or data not available yet.')
             uv_index = None
-            lux = None
+            watts_sqmeter = None
 
         return (station_id,
          temp,
@@ -217,7 +217,7 @@ class Sensor_WH3080RTLSDR(sensor.Sensor):
          dire,
          rain,
          uv_index,
-         lux)
+         watts_sqmeter)
 
     def GetData(self):
         good_data = False
@@ -231,7 +231,7 @@ class Sensor_WH3080RTLSDR(sensor.Sensor):
             time.sleep(5)
 
         while not good_data:
-            station_id, temp, hum, Wind_speed, Gust_Speed, dir_code, dire, rain, uv_index, lux = self.ReadData()
+            station_id, temp, hum, Wind_speed, Gust_Speed, dir_code, dire, rain, uv_index, watts_sqmeter = self.ReadData()
             if station_id != 'None' and station_id != 'Time':
                 good_data = True
             elif station_id == 'Time':
@@ -256,7 +256,7 @@ class Sensor_WH3080RTLSDR(sensor.Sensor):
                 globalvars.meteo_data.wind_dir_code = dir_code
                 globalvars.meteo_data.rain = rain
                 globalvars.meteo_data.uv = uv_index
-                globalvars.meteo_data.illuminance = lux
+                globalvars.meteo_data.illuminance = watts_sqmeter
                 sensor.Sensor.GetData(self)
             tosleep = 50 - (datetime.datetime.now() - last_data_time).seconds
             if DEBUG:
@@ -275,7 +275,7 @@ class Sensor_WH3080RTLSDR(sensor.Sensor):
             else:
                 log('Datetime signal received from WH3080_RTL-SDR station. Processing...')
             last_data_time = new_last_data_time
-            station_id, temp, hum, Wind_speed, Gust_Speed, dir_code, dire, rain, uv_index, lux = self.ReadData()
+            station_id, temp, hum, Wind_speed, Gust_Speed, dir_code, dire, rain, uv_index, watts_sqmeter = self.ReadData()
             if station_id == 'Time':
                 log('Sleeping while waiting for weather data...')
                 tosleep = 50 - (datetime.datetime.now() - last_data_time).seconds
