@@ -783,6 +783,19 @@
         function WeatherUnderground_logdata_onclick() {
 
         }
+		
+		function ChangeSolar() {
+		if (document.getElementById("sensor_type").value == "WH3080_RTL-SDR" || document.getElementById("sensor_type").value == "DAVIS-VANTAGE-PRO2") {
+		var r = confirm("Both 'Solar sensor' and 'UV sensor' selectors will be automatically changed to 'True'.\nIf you don't want this, please click Cancel now (or set them to 'False' manually).");
+		if (r == true) {
+        document.getElementById("solarsensor").value = "True";
+		document.getElementById("uvsensor").value = "True";
+		} else {
+        document.getElementById("solarsensor").value = "False";
+		document.getElementById("uvsensor").value = "False";
+		}         
+		}
+		}
 
     </script>
     <script type="text/javascript" src="jscolor/jscolor.js"></script>
@@ -986,7 +999,7 @@
                     <font color=$LayColorBTC>Type of wind sensor connected (<b>sensor_type</b>)</font></td>
                 <td class="style45 bgcolor="$LayColorBBC">
                     <select id="sensor_type" type="text" name="sensor_type" 
-                        value=$sensor_type style="width: 100%" >
+                        value=$sensor_type style="width: 100%" onchange="ChangeSolar()">
                         <option value="NONE" >None</option>                                   
                         <option value="SIMULATE" >SIMULATE</option>
                         <option value="PCE-FWS20" >PCE-FWS20</option>
