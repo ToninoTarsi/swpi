@@ -1,3 +1,4 @@
+
 /*
  * *** Fine Offset WH1080/WH3080 Weather Station ***
  *
@@ -68,10 +69,10 @@
  * The WH3080 Weather Station seems to be basically a WH1080 with the addition of UV/Light sensors onboard. 
  * The weather/datetime radio protocol used for both is identical, the only difference is for the addition in the WH3080
  * of the UV/Light part.
- * UV/Light radio messages are disjointed from (and shorter than) the weather/datetime radio messages and are transmitted 
+ * UV/Light radio messages are disjointed from (and shorter than) weather/datetime radio messages and are transmitted 
  * in a 'once-every-60-seconds' cycle.
  *
- * The module is able to decode all kind of data coming from the WH3080: weather, datetime, UV and light, plus some
+ * The module is able to decode all kind of data coming from the WH3080: weather, datetime, UV and light plus some
  * error/status code.
  *
  * To recognize message type (weather, datetime or UV/light) you can refer to the 'msg_type' field on json output:
@@ -79,8 +80,9 @@
  * msg_type 1 = datetime data
  * msg_type 2 = UV/light data
  * 
- * While sometime the LCD console seems to truncate/round decimals to best fit to the display, this module never truncate 
- * them (but it will correctly rounds if necessary), so you can see -sometimes- some little difference with console's values.
+ * While the LCD console seems to truncate/round values in order to best fit to its display, this module keeps entire values
+ * as received from externals sensors (exception made for some rounding while converting values from lux to watts/m and fc), 
+ * so you can see -sometimes- some little difference between module's output and LCD console's values.
  *
  *
  * 2016-2017 Nicola Quiriti ('ovrheat' - 'seven')
@@ -100,97 +102,94 @@
 
 
 
-char* wind_dir_string[] = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",};
-char* wind_dir_degr[]= {"0", "23", "45", "68", "90", "113", "135", "158", "180", "203", "225", "248", "270", "293", "315", "338",};
+static char* wind_dir_string[] = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",};
+static char* wind_dir_degr[]= {"0", "23", "45", "68", "90", "113", "135", "158", "180", "203", "225", "248", "270", "293", "315", "338",};
 
-unsigned short get_device_id(const uint8_t* br) {
+static unsigned short get_device_id(const uint8_t* br) {
 	return (br[1] << 4 & 0xf0 ) | (br[2] >> 4);
 }
 
-char* get_battery(const uint8_t* br) { 
+static char* get_battery(const uint8_t* br) { 
 	if ((br[9] >> 4) != 1) {
 		return "OK";
 	} else {
 		return "LOW";
 	}	
 }
-
-
+	
 // ------------ WEATHER SENSORS DECODING ----------------------------------------------------
 
-float get_temperature(const uint8_t* br) {
+static float get_temperature(const uint8_t* br) {
     const int temp_raw = (br[2] << 8) + br[3];
     return ((temp_raw & 0x0fff) - 0x190) / 10.0;
 }
 
-int get_humidity(const uint8_t* br) {
+static int get_humidity(const uint8_t* br) {
     return br[4];
 }
 
-char* get_wind_direction_str(const uint8_t* br) {
+static char* get_wind_direction_str(const uint8_t* br) {
     return wind_dir_string[br[9] & 0x0f];
 }
 
-char* get_wind_direction_deg(const uint8_t* br) {
+static char* get_wind_direction_deg(const uint8_t* br) {
     return wind_dir_degr[br[9] & 0x0f];
 }
 
-float get_wind_speed_raw(const uint8_t* br) {
+static float get_wind_speed_raw(const uint8_t* br) {
     return br[5]; // Raw
 }
 
-float get_wind_avg_ms(const uint8_t* br) {
+static float get_wind_avg_ms(const uint8_t* br) {
     return (br[5] * 34.0f) / 100; // Meters/sec.
 }
 
-float get_wind_avg_mph(const uint8_t* br) {
+static float get_wind_avg_mph(const uint8_t* br) {
     return ((br[5] * 34.0f) / 100) * 2.23693629f; // Mph
 }
 
-float get_wind_avg_kmh(const uint8_t* br) {
+static float get_wind_avg_kmh(const uint8_t* br) {
     return ((br[5] * 34.0f) / 100) * 3.6f; // Km/h
 }
 
-float get_wind_avg_knot(const uint8_t* br) {
+static float get_wind_avg_knot(const uint8_t* br) {
     return ((br[5] * 34.0f) / 100) * 1.94384f; // Knots
 }
 
-float get_wind_gust_raw(const uint8_t* br) {
+static float get_wind_gust_raw(const uint8_t* br) {
     return br[6]; // Raw
 }
 
-float get_wind_gust_ms(const uint8_t* br) {
+static float get_wind_gust_ms(const uint8_t* br) {
     return (br[6] * 34.0f) / 100; // Meters/sec.
 }
 
-float get_wind_gust_mph(const uint8_t* br) {
+static float get_wind_gust_mph(const uint8_t* br) {
     return ((br[6] * 34.0f) / 100) * 2.23693629f; // Mph
-
+	
 }
 
-float get_wind_gust_kmh(const uint8_t* br) {
+static float get_wind_gust_kmh(const uint8_t* br) {
     return ((br[6] * 34.0f) / 100) * 3.6f; // Km/h
 }
 
-float get_wind_gust_knot(const uint8_t* br) {
+static float get_wind_gust_knot(const uint8_t* br) {
     return ((br[6] * 34.0f) / 100) * 1.94384f; // Knots
 }
 
-float get_rainfall(const uint8_t* br) {
+static float get_rainfall(const uint8_t* br) {
     unsigned short rain_raw = (((unsigned short)br[7] & 0x0f) << 8) | br[8];
     return (float)rain_raw * 0.3f;
-
-
 }
 
 
 // ------------ WH3080 UV SENSOR DECODING ----------------------------------------------------
 
-unsigned short get_uv_sensor_id(const uint8_t* br) {
+static unsigned short get_uv_sensor_id(const uint8_t* br) {
     return (br[1] << 4 & 0xf0 ) | (br[2] >> 4);
 }
 
-char* get_uvstatus(const uint8_t* br) { 
+static char* get_uvstatus(const uint8_t* br) { 
     if (br[3] == 85) {
     return "OK";
     } else {
@@ -198,21 +197,21 @@ char* get_uvstatus(const uint8_t* br) {
     }
 }
 
-unsigned short wh3080_uvi(const uint8_t* br) {
+static unsigned short wh3080_uvi(const uint8_t* br) {
     return (br[2] & 0x0F );
 }
 
 
-
 // ------------ WH3080 LIGHT SENSOR DECODING -------------------------------------------------
 
-float get_rawlight(const uint8_t* br) {
+static float get_rawlight(const uint8_t* br) {
     return (((((br[4]) << 16) | ((br[5]) << 8) | br[6])));
 }
 
+
 //----------------- TIME DECODING ----------------------------------------------------
 
-char* get_signal(const uint8_t* br) { 
+static char* get_signal(const uint8_t* br) { 
     if ((br[2] & 0x0F) == 10) {
     return "DCF77";
     } else {
@@ -220,28 +219,28 @@ char* get_signal(const uint8_t* br) {
     }
 }
 
-int get_hours(const uint8_t* br) {
-    return ((br[3] >> 4 & 0x03) * 10) + (br[3] & 0x0F);
+static int get_hours(const uint8_t* br) {
+	return ((br[3] >> 4 & 0x03) * 10) + (br[3] & 0x0F);
 }
 
-int get_minutes(const uint8_t* br) {
-    return (((br[4] & 0xF0) >> 4) * 10) + (br[4] & 0x0F);
+static int get_minutes(const uint8_t* br) {
+	return (((br[4] & 0xF0) >> 4) * 10) + (br[4] & 0x0F);
 }
 
-int get_seconds(const uint8_t* br) {
-    return (((br[5] & 0xF0) >> 4) * 10) + (br[5] & 0x0F);
+static int get_seconds(const uint8_t* br) {
+	return (((br[5] & 0xF0) >> 4) * 10) + (br[5] & 0x0F);
 }
 
-int get_year(const uint8_t* br) {
-    return (((br[6] & 0xF0) >> 4) * 10) + (br[6] & 0x0F);
+static int get_year(const uint8_t* br) {
+	return (((br[6] & 0xF0) >> 4) * 10) + (br[6] & 0x0F);
+}
+	
+static int get_month(const uint8_t* br) {
+	return ((br[7] >> 4 & 0x01) * 10) + (br[7] & 0x0F);	
 }
 
-int get_month(const uint8_t* br) {
-    return ((br[7] >> 4 & 0x01) * 10) + (br[7] & 0x0F);	
-}
-
-int get_day(const uint8_t* br) {
-    return (((br[8] & 0xF0) >> 4) * 10) + (br[8] & 0x0F);
+static int get_day(const uint8_t* br) {
+	return (((br[8] & 0xF0) >> 4) * 10) + (br[8] & 0x0F);
 }
 
 //-------------------------------------------------------------------------------------
@@ -253,8 +252,8 @@ static int fineoffset_wh1080_wh3080_callback(bitbuffer_t *bitbuffer) {
     data_t *data;
     char time_str[LOCAL_TIME_BUFLEN];
     const uint8_t *br;
-    int msg_type = 0; // 0=Weather 1=Datetime 2=UV/Light
-    int sens_msg = 0; // 12=Weather/Time sensor  8=UV/Light sensor
+    int msg_type; // 0=Weather 1=Datetime 2=UV/Light
+    int sens_msg = 12; // 12=Weather/Time sensor  8=UV/Light sensor
     int i;
     uint8_t bbuf[sens_msg];
     local_time_str(0, time_str);
@@ -267,21 +266,21 @@ static int fineoffset_wh1080_wh3080_callback(bitbuffer_t *bitbuffer) {
         return 0;
     }
 
-    if(bitbuffer->bits_per_row[0] == 88) {
+    if(bitbuffer->bits_per_row[0] == 88) { // FineOffset WH1080/3080 Weather data msg
 	sens_msg = 12;
         br = bitbuffer->bb[0];
-    } else if(bitbuffer->bits_per_row[0] == 87) {
+    } else if(bitbuffer->bits_per_row[0] == 87) { // FineOffset WH1080/3080 Weather data msg (different version (newest?))
 	sens_msg = 12;
         /* 7 bits of preamble, bit shift the whole buffer and fix the bytestream */
         bitbuffer_extract_bytes(bitbuffer, 0, 7,
         (uint8_t *)&bbuf+1, 10*8);
         br = bbuf;
         bbuf[0] = 0xFF;
-    } else if(bitbuffer->bits_per_row[0] == 64) {
+    } else if(bitbuffer->bits_per_row[0] == 64) {  // FineOffset WH3080 UV/Light data msg
 	sens_msg = 8;
         br = bitbuffer->bb[0];
 
-    } else if(bitbuffer->bits_per_row[0] == 63) {
+    } else if(bitbuffer->bits_per_row[0] == 63) { // FineOffset WH3080 UV/Light data msg (different version (newest?))
 	sens_msg = 8;
         /* 7 bits of preamble, bit shift the whole buffer and fix the bytestream */
         bitbuffer_extract_bytes(bitbuffer, 0, 7,
@@ -315,135 +314,98 @@ static int fineoffset_wh1080_wh3080_callback(bitbuffer_t *bitbuffer) {
 	}
 
     if (br[0] == 0xff && (br[1] >> 4) == 0x0a) {
-    msg_type = 0;
+    msg_type = 0; // WH1080/3080 Weather msg
     } else if (br[0] == 0xff && (br[1] >> 4) == 0x0b) {
-    msg_type = 1;
+    msg_type = 1; // WH1080/3080 Datetime msg
     } else if (br[0] == 0xff && (br[1] >> 4) == 0x07) {
-    msg_type = 2;
+    msg_type = 2; // WH3080 UV/Light msg
     }
+	
 
 
+	
 //---------------------------------------------------------------------------------------	
 //-------- GETTING WEATHER SENSORS DATA -------------------------------------------------
-
+	
     const float temperature = get_temperature(br);
     const int humidity = get_humidity(br);
     const char* direction_str = get_wind_direction_str(br);
-    const char* direction_deg = get_wind_direction_deg(br);	
-
-
-    // Select which metric system for *wind avg speed* and *wind gust* :
-
-    // Wind average speed :
-
-    //const float speed = get_wind_avg_ms((br)   // <--- Data will be shown in Meters/sec.
-    //const float speed = get_wind_avg_mph((br)  // <--- Data will be shown in Mph
-    const float speed = get_wind_avg_kmh(br);  // <--- Data will be shown in Km/h
-    //const float speed = get_wind_avg_knot((br) // <--- Data will be shown in Knots
-
-    // Wind gust speed :
-
+	const char* direction_deg = get_wind_direction_deg(br);	
+	
+	
+	// Select which metric system for *wind avg speed* and *wind gust* :
+	
+	// Wind average speed :
+	
+	//const float speed = get_wind_avg_ms((br)   // <--- Data will be shown in Meters/sec.
+	//const float speed = get_wind_avg_mph((br)  // <--- Data will be shown in Mph
+	const float speed = get_wind_avg_kmh(br);  // <--- Data will be shown in Km/h
+	//const float speed = get_wind_avg_knot((br) // <--- Data will be shown in Knots
+	
+	// Wind gust speed :
+	
     //const float gust = get_wind_gust_ms(br);   // <--- Data will be shown in Meters/sec.
-    //const float gust = get_wind_gust_mph(br);  // <--- Data will be shown in Mph
-    const float gust = get_wind_gust_kmh(br);  // <--- Data will be shown in km/h
-    //const float gust = get_wind_gust_knot(br); // <--- Data will be shown in Knots	
-
+	//const float gust = get_wind_gust_mph(br);  // <--- Data will be shown in Mph
+	const float gust = get_wind_gust_kmh(br);  // <--- Data will be shown in km/h
+	//const float gust = get_wind_gust_knot(br); // <--- Data will be shown in Knots	
+	
     const float rain = get_rainfall(br);
     const int device_id = get_device_id(br);
-    const char* battery = get_battery(br);
-
-
-    //---------------------------------------------------------------------------------------	
+	const char* battery = get_battery(br);
+	
+	
+	//---------------------------------------------------------------------------------------	
     //-------- GETTING UV DATA --------------------------------------------------------------
 
-    int uv_sensor_id = get_uv_sensor_id(br);
-    char* uv_status = get_uvstatus(br);
-    int uv_index = wh3080_uvi(br);
+    const int uv_sensor_id = get_uv_sensor_id(br);
+    const char* uv_status = get_uvstatus(br);
+    const int uv_index = wh3080_uvi(br);
 
 
     //---------------------------------------------------------------------------------------	
     //-------- GETTING LIGHT DATA -----------------------------------------------------------
 
-    float light = get_rawlight(br);
-    float lux = (get_rawlight(br)/10);
-    float wm = (get_rawlight(br)/6830);
-    float fc = ((get_rawlight(br)/10.76)/10.0);
+    const float light = get_rawlight(br);
+    const float lux = (get_rawlight(br)/10);
+    const float wm = (get_rawlight(br)/6830);
+    const float fc = ((get_rawlight(br)/10.76)/10.0);
 
 
-    //---------------------------------------------------------------------------------------	
-    //-------- GETTING TIME DATA ------------------------------------------------------------
 
-    char* signal = get_signal(br);
-    int hours = get_hours(br);
-    int minutes = get_minutes(br);
-    int seconds = get_seconds(br);
-    int year = 2000 + get_year(br);
-    int month = get_month(br);
-    int day = get_day(br);
+	//---------------------------------------------------------------------------------------	
+	//-------- GETTING TIME DATA ------------------------------------------------------------
 
-//--------- SWPI: (over)writing data to files '/dev/shm/wh1080-rtl_433.txt'
-//--------- and '/dev/shm/wh3080-rtl_433.txt'
+	char* signal = get_signal(br);
+	const int hours = get_hours(br);
+	const int minutes =	get_minutes(br);
+	const int seconds = get_seconds(br);
+	const int year = 2000 + get_year(br);
+	const int month = get_month(br);
+	const int day = get_day(br);
+	
 
-if ((msg_type == 0) || (msg_type == 1)) {
-	FILE *fpWH1080;
-	fpWH1080=fopen("/dev/shm/wh1080-rtl_433.txt", "w");
-	if (msg_type == 0) {
-		fprintf(fpWH1080,"{\"time\" : \"%s\", ", time_str);
-		fprintf(fpWH1080,"\"msg_type\" : %01X, ", msg_type);
-		fprintf(fpWH1080,"\"station_id\" : \"%d\", ", device_id);
-		fprintf(fpWH1080,"\"temperature\" : %0.1f, ", temperature);
-		fprintf(fpWH1080,"\"humidity\" : %d, ", humidity);
-		fprintf(fpWH1080,"\"wind_speed\" : %0.2f, ", speed);
-		fprintf(fpWH1080,"\"wind_gust\" : %0.2f, ", gust);
-		fprintf(fpWH1080,"\"wind_dir_str\" : \"%s\", ", direction_str);
-		fprintf(fpWH1080,"\"wind_dir_deg\" : \"%s\", ", direction_deg);
-		fprintf(fpWH1080,"\"total_rain\" : %0.1f}", rain);
-	} else {
-		fprintf(fpWH1080,"{\"time\" : \"%s\", ", time_str);
-		fprintf(fpWH1080,"\"msg_type\" : %01X, ", msg_type);
-		fprintf(fpWH1080,"\"station_id\" : \"%d\", ", device_id);
-		fprintf(fpWH1080,"\"hours\" : \"%02d\", ", hours);
-		fprintf(fpWH1080,"\"minutes\" : \"%02d\", ", minutes);
-		fprintf(fpWH1080,"\"seconds\" : \"%02d\", ", seconds);
-		fprintf(fpWH1080,"\"year\" : \"%02d\", ", year);
-		fprintf(fpWH1080,"\"month\" : \"%02d\", ", month);
-		fprintf(fpWH1080,"\"day\" : \"%02d\"}", day);		
-		}	
-fclose(fpWH1080);
-} else {	
-	FILE *fpWH3080;
-	fpWH3080=fopen("/dev/shm/wh3080-rtl_433.txt", "w");
-	if (msg_type == 2) {
-		fprintf(fpWH3080,"{\"time\" : \"%s\", ", time_str);
-		fprintf(fpWH3080,"\"msg_type\" : %01X, ", msg_type);
-		fprintf(fpWH3080,"\"uv_sensor_id\" : \"%d\", ", uv_sensor_id);
-		fprintf(fpWH3080,"\"uv_status\" : \"%s\", ", uv_status);
-		fprintf(fpWH3080,"\"uv_index\" : %d, ", uv_index);
-		fprintf(fpWH3080,"\"lux\" : %.1f, ", lux);
-		fprintf(fpWH3080,"\"wm\" : %.2f, ", wm);
-		fprintf(fpWH3080,"\"fc\" : %.2f}", fc);
-	}
-fclose(fpWH3080);
-}
-
-//--------- PRESENTING DATA --------------------------------------------------------------
-
+	//--------- PRESENTING DATA --------------------------------------------------------------
+	
 if (msg_type == 0) {
 
     data = data_make(
 			"time", 	"", 		DATA_STRING,					time_str,
-			"model", 	"", 		DATA_STRING,	"Fine Offset WH1080/WH3080 weather station",
+			"model", 	"", 		DATA_STRING,	"Fine Offset Electronics WH1080/WH3080 Weather Station",
 			"msg_type",	"Msg type",	DATA_INT,					msg_type,
-			"id",		"Station ID",	DATA_FORMAT,	"%d",		DATA_INT,	device_id,
-			"temperature_C","Temperature",	DATA_FORMAT,	"%.01f C",	DATA_DOUBLE,	temperature,
+			"station_id",		"Station ID",	DATA_FORMAT,	"%d",		DATA_INT,	device_id,
+			"temperature","Temperature",	DATA_FORMAT,	"%.01f C",	DATA_DOUBLE,	temperature,
 			"humidity",	"Humidity",	DATA_FORMAT,	"%u %%",	DATA_INT,	humidity,
-			"direction_str","Wind string",	DATA_STRING,					direction_str,
-			"direction_deg","Wind degrees",	DATA_STRING,					direction_deg,
-			"speed",	"Wind avg speed",DATA_FORMAT,	"%.02f",	DATA_DOUBLE,	speed,
-			"gust",		"Wind gust",	DATA_FORMAT,	"%.02f",	DATA_DOUBLE, 	gust,
-			"rain",		"Total rainfall",DATA_FORMAT,	"%3.1f",	DATA_DOUBLE, 	rain,
+			"wind_dir_str","Wind string",	DATA_STRING,					direction_str,
+			"wind_dir_deg","Wind degrees",	DATA_STRING,					direction_deg,
+			"wind_speed",	"Wind avg speed",DATA_FORMAT,	"%.02f",	DATA_DOUBLE,	speed,
+			"wind_gust",		"Wind gust",	DATA_FORMAT,	"%.02f",	DATA_DOUBLE, 	gust,
+			"total_rain",		"Total rainfall",DATA_FORMAT,	"%3.1f",	DATA_DOUBLE, 	rain,
 			"battery",	"Battery",	DATA_STRING,					battery,
 		NULL);
+	FILE *fpWH1080;
+	fpWH1080=fopen("/dev/shm/wh1080-rtl_433.txt", "w");	
+	data_print(data, fpWH1080, &data_json_printer, NULL); fprintf(fpWH1080, "\n");
+	fclose(fpWH1080);
     data_acquired_handler(data);
     return 1;
 
@@ -451,7 +413,7 @@ if (msg_type == 0) {
 
     data = data_make(
 			"time",		"",		DATA_STRING,		time_str,
-			"model",	"",		DATA_STRING,	"Fine Offset WH1080/WH3080 weather station",
+			"model",	"",		DATA_STRING,	"Fine Offset Electronics WH1080/WH3080 Weather Station",
 			"msg_type",	"Msg type",	DATA_INT,				msg_type,
 			"id",		"Station ID",	DATA_FORMAT,	"%d",	DATA_INT,	device_id,
 			"signal",	"Signal Type",	DATA_STRING,				signal,
@@ -462,6 +424,10 @@ if (msg_type == 0) {
 			"month",	"Month\t",	DATA_FORMAT,	"%02d",	DATA_INT,	month,
 			"day",		"Day\t",	DATA_FORMAT,	"%02d",	DATA_INT,	day,
 		NULL);
+	FILE *fpWH1080;
+	fpWH1080=fopen("/dev/shm/wh1080-rtl_433.txt", "w");	
+	data_print(data, fpWH1080, &data_json_printer, NULL); fprintf(fpWH1080, "\n");
+	fclose(fpWH1080);
     data_acquired_handler(data);
     return 1;
 
@@ -469,7 +435,7 @@ if (msg_type == 0) {
 
     data = data_make(
 			"time",		"",		DATA_STRING,				time_str,
-			"model",	"",		DATA_STRING,	"Fine Offset WH3080 weather station",
+			"model",	"",		DATA_STRING,	"Fine Offset Electronics WH3080 Weather Station",
 			"msg_type",	"Msg type",	DATA_INT,				msg_type,
 			"uv_sensor_id",	"UV Sensor ID",	DATA_FORMAT,	"%d",	DATA_INT,	uv_sensor_id,
 			"uv_status",	"Sensor Status",DATA_STRING,				uv_status,
@@ -478,6 +444,10 @@ if (msg_type == 0) {
 			"wm",		"Watts/m\t",	DATA_FORMAT,	"%.2f",	DATA_DOUBLE,	wm,
 			"fc",		"Foot-candles",	DATA_FORMAT,	"%.2f",	DATA_DOUBLE,	fc,
 		NULL);
+	FILE *fpWH3080;
+	fpWH3080=fopen("/dev/shm/wh3080-rtl_433.txt", "w");	
+	data_print(data, fpWH3080, &data_json_printer, NULL); fprintf(fpWH3080, "\n");
+	fclose(fpWH3080);
     data_acquired_handler(data);
     return 1; 
     }
@@ -513,7 +483,7 @@ static char *output_fields[] = {
 };
 
 r_device fineoffset_wh1080_wh3080 = {
-    .name           = "Fine Offset WH1080/WH3080 Weather Station",
+    .name           = "Fine Offset Electronics WH1080/WH3080 Weather Station",
     .modulation     = OOK_PULSE_PWM_RAW,
     .short_limit    = 800,
     .long_limit     = 2800,

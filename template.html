@@ -783,6 +783,19 @@
         function WeatherUnderground_logdata_onclick() {
 
         }
+		
+		function ChangeSolar() {
+		if (document.getElementById("sensor_type").value == "WH3080_RTL-SDR" || document.getElementById("sensor_type").value == "DAVIS-VANTAGE-PRO2") {
+		var r = confirm("Both 'Solar sensor' and 'UV sensor' selectors will be automatically changed to 'True'.\nIf you don't want this, please click Cancel now (or set them to 'False' manually).");
+		if (r == true) {
+        document.getElementById("solarsensor").value = "True";
+		document.getElementById("uvsensor").value = "True";
+		} else {
+        document.getElementById("solarsensor").value = "False";
+		document.getElementById("uvsensor").value = "False";
+		}         
+		}
+		}
 
     </script>
     <script type="text/javascript" src="jscolor/jscolor.js"></script>
@@ -900,7 +913,7 @@
             </tr>			
             <tr>
                 <td class="style12" width="800" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>Adjust system time from a NTP internt server at system startup (<b>set_system_time_from_ntp_server_at_startup</b>)</font></td>
+                    <font color=$LayColorBTC>Adjust system time from a NTP Internet server at system startup (<b>set_system_time_from_ntp_server_at_startup</b>)</font></td>
                 <td class="style45" bgcolor="$LayColorBBC">
                     <select id="set_system_time_from_ntp_server_at_startup" 
                         name="set_system_time_from_ntp_server_at_startup" 
@@ -912,14 +925,14 @@
             </tr>
             <tr>
                 <td class="style12" width="800" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>Set time by  url for time adjustemnt. (ntp-url).time.php&lt;?=date(&quot;D M j G:i:s Y&quot;);?&gt;</font></td>
+                    <font color=$LayColorBTC>Set time by url for time adjustement (ntp-url).time.php&lt;?=date(&quot;D M j G:i:s Y&quot;);?&gt;</font></td>
                 <td class="style45" bgcolor="$LayColorBBC">
                   <input id="ntp_url" type="text" name="ntp_url" 
                         value="$ntp_url" style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style12" width="800" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>NTP servet for time adjustemnt. (<b>ntp_server</b>)</font></td>
+                    <font color=$LayColorBTC>NTP server for time adjustement (<b>ntp_server</b>)</font></td>
                 <td class="style45" bgcolor="$LayColorBBC">
                     <input id="ntp_server" type="text" name="ntp_server" 
                         value="$ntp_server" style="width: 100%" /></td>
@@ -972,9 +985,9 @@
                     <font color=$LayColorTTC>Sensors</td>
             </tr>
             <tr>
-                <td class="style52"  bgcolor="$LayColorBBC">
+                <td class="style12"  bgcolor="$LayColorBBC">
                    <font color=$LayColorBTC>Use a wind sensor (<b>use_wind_sensor</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="use_wind_sensor" type="text" name="use_wind_sensor" 
                         value=$use_wind_sensor style="width: 100%" >
                         <option value=True >True</option>
@@ -982,24 +995,24 @@
                     </select></td>
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Type of wind sensor connected (<b>sensor_type</b>)</font></td>
-                <td class="style49" bgcolor="$LayColorBBC">
+                <td class="style45 bgcolor="$LayColorBBC">
                     <select id="sensor_type" type="text" name="sensor_type" 
-                        value=$sensor_type style="width: 100%" >
+                        value=$sensor_type style="width: 100%" onchange="ChangeSolar()">
                         <option value="NONE" >None</option>                                   
                         <option value="SIMULATE" >SIMULATE</option>
                         <option value="PCE-FWS20" >PCE-FWS20</option>
                         <option value="WH1080-RFM01" >WH1080-RFM01</option>
-			<option value="WH1080_RTL-SDR" >WH1080_RTL-SDR</option>
-			<option value="WH3080_RTL-SDR" >WH3080_RTL-SDR</option>
-			<option value="WMR100" >WMR100</option>
-			<option value="WMR200" >WMR200</option>
-			<option value="WMR918" >WMR918</option>
-			<option value="WM918" >WM918</option>		
-			<option value="WS23XX" >WS23XX</option>	
-			<option value="NEVIO2" >NEVIO2</option>			
-			<option value="NEVIO4" >NEVIO4</option>					
+						<option value="WH1080_RTL-SDR" >WH1080_RTL-SDR</option>
+						<option value="WH3080_RTL-SDR" >WH3080_RTL-SDR</option>
+						<option value="WMR100" >WMR100</option>
+						<option value="WMR200" >WMR200</option>
+						<option value="WMR918" >WMR918</option>
+						<option value="WM918" >WM918</option>		
+						<option value="WS23XX" >WS23XX</option>	
+						<option value="NEVIO2" >NEVIO2</option>			
+						<option value="NEVIO4" >NEVIO4</option>					
                         <option value="NEVIO8" >NEVIO8</option>
                         <option value="NEVIO16" >NEVIO16</option>         
                         <option value="NEVIO16S" >NEVIO16S</option>    
@@ -1013,45 +1026,45 @@
                         </select></td>  
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Number of measure for wind average gust calculation. (<b>number_of_measure_for_wind_average_gust_calculation</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="number_of_measure_for_wind_average_gust_calculation" type="text" name="number_of_measure_for_wind_average_gust_calculation" 
                         value="$number_of_measure_for_wind_average_gust_calculation"
                         style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Number of measure for wind dir average calculation. (<b>number_of_measure_for_wind_dir_average</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="number_of_measure_for_wind_dir_average" type="text" name="number_of_measure_for_wind_dir_average" 
                         value="$number_of_measure_for_wind_dir_average" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Calibration gain for wind intensity calculation (<b>windspeed_gain</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="windspeed_gain" type="text" name="windspeed_gain" 
                         value="$windspeed_gain" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Calibration offset for wind intensity calculation (<b>windspeed_offset</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="windspeed_offset" type="text" name="windspeed_offset" 
                         value="$windspeed_offset" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Interval between measurements (<b>windmeasureinterval</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="windmeasureinterval" type="text" name="windmeasureinterval" 
                         value="$windmeasureinterval" style="width: 100%" /></td>
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Use a BMP085 sensor for pressure and temperature (<b>use_bmp085</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="use_bmp085" type="text" name="use_bmp085" 
                         value=$use_bmp085 style="width: 100%" >
                         <option value=True >True</option>
@@ -1060,9 +1073,9 @@
             </tr>
 
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Use a BME280 Pressure-temperature-Umidity (<b>use_bme280</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="use_bme280" type="text" name="use_bme280" 
                         value=$use_bme280 style="width: 100%" >
                         <option value=True >True</option>
@@ -1071,9 +1084,9 @@
             </tr>
 
             <tr>   
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Use a TMP36 sensor for temperature (<b>use_tmp36</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="use_tmp36" type="text" name="use_tmp36" 
                         value=$use_tmp36 style="width: 100%" >
                         <option value=True >True</option>
@@ -1081,9 +1094,9 @@
                     </select></td>
             </tr>
             <tr>   
-                <td class="style52" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>Use DHT humidity-Temperature sensor ( <b>use_dht </b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Use DHT Humidity-Temperature sensor ( <b>use_dht </b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="use_dht" type="text" name="use_dht" 
                         value=$use_tmp36 style="width: 100%" >
                         <option value=True >True</option>
@@ -1091,9 +1104,9 @@
                     </select></td>
             </tr>
             <tr>   
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>DHT type (dht_type)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="dht_type" type="text" name="dht_type" 
                         value=$use_tmp36 style="width: 100%" >
                         <option value="DHT11">DHT11</option>
@@ -1102,24 +1115,24 @@
                     </select></td>
             </tr>
             <tr>
-                <td class="style52" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Number of measure for wind trend calculation. (<b>number_of_measure_for_wind_trend</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="Text1" type="text" name="number_of_measure_for_wind_trend" 
                         value="$number_of_measure_for_wind_trend" 
                         style="width: 100%" /></td>
             </tr>
-				<td class="style52" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>wind trend limits (<b>wind_trend_limit</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+				<td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Wind trend limits (<b>wind_trend_limit</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <input id="Text2" type="text" name="wind_trend_limit" 
                         value="$wind_trend_limit" 
                         style="width: 100%" /></td>
             </tr>
                <tr>   
-                <td class="style52" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>Solar Sensor ( <b>Davis-Vantage-Pro2</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Solar Sensor (<b>Davis-Vantage-Pro2 / WH3080_RTL-SDR</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="solarsensor" type="text" name="solarsensor" 
                         value=$solarsensor style="width: 100%" >
                         <option value=True >True</option>
@@ -1127,9 +1140,9 @@
                     </select></td>
             </tr>
             <tr>   
-                <td class="style52" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>UV Sensor ( <b>Davis-Vantage-Pro2</b>)</font></td>
-                <td class="style31" bgcolor="$LayColorBBC">
+                <td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>UV Sensor (<b>Davis-Vantage-Pro2 / WH3080_RTL-SDR</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
                     <select id="uvsensor" type="text" name="uvsensor" 
                         value=$uvsensor style="width: 100%" >
                         <option value=True >True</option>
@@ -1291,14 +1304,14 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style2" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>Webcam device 1. Tipicaly /dev/video0 or None to not use a webcam (<b>webcamDevice1</b>)</font></td>
+                    <font color=$LayColorBTC>Webcam device 1. Tipically /dev/video0 or None to not use a webcam (<b>webcamDevice1</b>)</font></td>
                 <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamDevice1" type="text" name="webcamDevice1" 
                         value="$webcamDevice1" style="width: 100%" /></td>
             </tr>
             <tr>
                 <td class="style2" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>Webcam device 2. Tipicaly /dev/video1 or None to not use a webcam (<b>webcamDevice2</b>)</font></td>
+                    <font color=$LayColorBTC>Webcam device 2. Tipically /dev/video1 or None to not use a webcam (<b>webcamDevice2</b>)</font></td>
                 <td class="style33" bgcolor="$LayColorBBC">
                     <input id="webcamDevice2" type="text" name="webcamDevice2" 
                         value="$webcamDevice2" style="width: 100%" /></td>
@@ -1667,7 +1680,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
             </tr>
             <tr>
                 <td class="style42" bgcolor="$LayColorBBC">
-                    <font color=$LayColorBTC>low noice amplifier level (<b>rfm01_lna</b>)</font></td>
+                    <font color=$LayColorBTC>low noise amplifier level (<b>rfm01_lna</b>)</font></td>
                 <td class="style17" bgcolor="$LayColorBBC">
                     <select id="rfm01_lna" type="text" name="rfm01_lna" 
                         value=$rfm01_lna style="width: 100%" >
@@ -1712,7 +1725,7 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
 			<div class="tabContent" id="RTL-SDR"> 	     
         <table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
             <tr>
-                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">RTL2832-based USB DVB-T DONGLE (WH1080-3080 / PCE-FWS20 protocol)<br><small><small>(reboot after saving to apply changes)</small></small></td>
+                <td class="style7" colspan="2" style="font-size: large; color: $LayColorTTC;">RTL2832-based USB DVB-T DONGLE (WH1080/ WH3080 / PCE-FWS20 protocol)<br><small><small>(reboot after saving to apply changes)</small></small></td>
             </tr>
             <tr>
                 <td class="style41" bgcolor="$LayColorBBC">

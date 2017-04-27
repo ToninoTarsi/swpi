@@ -348,7 +348,7 @@ class MeteoData(object):
             if self.uv != None :
                 msg = msg + " - UV: %d" % self.uv
             if self.illuminance != None :
-                msg = msg + " - Lux: %.1f" % self.illuminance				
+                msg = msg + " - Watts/m: %.1f" % self.illuminance				
 #            if self.winDayMin != None :
 #                msg = msg + " - winDayMin: %d" % self.winDayMin         
 #            if self.winDayMax != None :
