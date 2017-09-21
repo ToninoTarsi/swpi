@@ -9,7 +9,6 @@
 
 """Convert any file ( and file format )  to PCM 16 bit unsigned file format for huawei 3G Dongle ."""
 
-import serial
 import time
 import sys
 import struct

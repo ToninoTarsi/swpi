@@ -757,7 +757,7 @@ except KeyboardInterrupt:
 	exit(0)
 
 # Radio Voice output shoud go to the analog device
-os.system( "sudo amixer cset numid=3 1 > /dev/null " )
+#os.system( "sudo amixer cset numid=3 1 > /dev/null " )
 
 os.system( "sudo chown -R pi:root /swpi" )
 
@@ -915,7 +915,10 @@ if ( cfg.set_system_time_from_ntp_server_at_startup ):
 	thread.start_new_thread(SetTimeFromNTP, (cfg.ntp_server,)) 
 
 # Send mail with IP information ( using a thread to avoid strange freezing )
-log("Local IP :" + IP + " Public IP : " + publicIP)
+try:
+	log("Local IP :" + IP + " Public IP : " + publicIP)
+except:
+	pass
 if ( publicIP != None and cfg.use_mail and cfg.mail_ip ):
 	thread.start_new_thread(SendMail,(cfg, cfg.station_name + " - My IP has changed","Local IP :" + IP + " Public IP : " + publicIP,"")) 
 	
