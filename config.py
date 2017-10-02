@@ -111,6 +111,7 @@ class config(object):
 			config.read(self.cfgName)
 
 		#[General]
+		self.offline = config.getboolean('General', 'offline',False)
 		self.station_name = config.get('General', 'station_name',"Sint Wind PI")
 		self.config_web_server = config.getboolean('General', 'config_web_server',True)
 		self.config_web_server_port = config.getint('General', 'config_web_server_port',80)
@@ -332,6 +333,7 @@ class config(object):
 		config = myConfigParser()
 		
 		#[General]
+		config.setboolean('General', 'offline',self.offline)
 		config.setstr('General', 'station_name',self.station_name)
 		config.setboolean('General', 'config_web_server',self.config_web_server)
 		config.setboolean('General', 'set_sistem_time_from_ntp_server_at_startup',self.set_system_time_from_ntp_server_at_startup)
