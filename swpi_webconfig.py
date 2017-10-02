@@ -11,6 +11,8 @@
 
 import config
 import string
+import globalvars
+
 
 def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
@@ -25,6 +27,7 @@ def outputPage(cfg):
 	d = dict(location_latitude=cfg.location_latitude)
 
 	#[General]
+	d.update(offline=globalvars.offline)
 	d.update(station_name=cfg.station_name)
 	d.update(config_web_server=cfg.config_web_server)
 	d.update(set_system_time_from_ntp_server_at_startup=cfg.set_system_time_from_ntp_server_at_startup)
@@ -41,12 +44,7 @@ def outputPage(cfg):
 	d.update(set_time_at_boot=cfg.set_time_at_boot)
 	d.update(ntp_url=cfg.ntp_url)
 
-#	if (cfg.set_system_time_from_ntp_server_at_startup ):
-#		d.update(selected_True_set_system_time_from_ntp_server_at_startup='selected')
-#		d.update(selected_False_set_system_time_from_ntp_server_at_startup='')
-#	else:
-#		d.update(selected_True_set_system_time_from_ntp_server_at_startup='')
-#		d.update(selected_False_set_system_time_from_ntp_server_at_startup='selected')
+
 
 	# [Dongle]
 	d.update(usedongle=cfg.usedongle)
@@ -237,6 +235,7 @@ cfg = config.config(configfile,False)
 if ( len(request) != 0 ):
 
 	#[General]
+	cfg.offline = request['offline'][0]	
 	cfg.station_name = request['station_name'][0]
 	cfg.config_web_server = request['config_web_server'][0]																 
 	cfg.set_system_time_from_ntp_server_at_startup = request['set_system_time_from_ntp_server_at_startup'][0]	

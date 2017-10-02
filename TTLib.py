@@ -777,7 +777,10 @@ def UploadData(cfg):
         mydata['StormStartDate'] = (globalvars.meteo_data.StormStartDate)
         mydata['BatteryVolts'] = (globalvars.meteo_data.BatteryVolts)
 
-    
+    if ( globalvars.offline  ):
+        mydata['offline'] = 1
+    else:
+        mydata['offline'] = 0
     
     #print mydata
     

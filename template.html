@@ -34,6 +34,10 @@
         {
             width: 176px;
         }
+        #offline
+        {
+            width: 176px;
+        }
         .style7
         {
             height: 26px;
@@ -313,6 +317,14 @@
                 }
             }
 
+            dd = document.getElementById('offline');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$offline') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+            
             dd = document.getElementById('config_web_server');
             for (var i = 0; i < dd.options.length; i++) {
                 if (dd.options[i].text == '$config_web_server') {
@@ -848,6 +860,18 @@
                     <font color=$LayColorTTC>General</font></td>
             </tr>
             <tr>
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Station OFFLINE (<b>offline</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                    <select id="offline" 
+                        name="offline" 
+                        value=$offline style="width: 100%"> 
+                         <option value=True >True</option>
+                         <option value=False >False</option>
+                    </select></td>
+                    
+            </tr>
+            <tr>
                <td class="style10" width="800" bgcolor="$LayColorBBC">
                     <font color=$LayColorBTC>Station name ( <strong>station_name</strong> )</font></td>
                 <td class="style45" bgcolor="$LayColorBBC">
@@ -1018,7 +1042,7 @@
                         <option value="NEVIO16S" >NEVIO16S</option>    
                         <option value="NEVIO16W" >NEVIO16W</option>    
                         <option value="PCE-SENSOR" >PCE-SENSOR</option>
-						<option value="PCE-SENSOR" >PCE-SENSOR-C</option>
+						<option value="PCE-SENSOR-C" >PCE-SENSOR-C</option>
                         <option value="DAVIS-SENSOR" >DAVIS-SENSOR</option> 
                         <option value="DAVIS-VANTAGE-PRO2" >DAVIS-VANTAGE-PRO2</option>  
                         <option value="LACROSS-TX23" >LACROSS-TX23</option>    

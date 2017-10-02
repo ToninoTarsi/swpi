@@ -6,6 +6,7 @@
 #     Visit http://www.vololiberomontecucco.it
 # 
 ##########################################################################
+import globalvars
 """Classes and methods for handling configurationn file."""
 
 import sys
@@ -18,9 +19,13 @@ import Image
 import ImageFont, ImageDraw, ImageOps
 import urllib2
 import time
+import datetime
 
 def str2bool(v):
 	return str(v).lower() in ("yes", "true", "t", "1")
+
+def log(message) :
+	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
 class myConfigParser(ConfigParser.SafeConfigParser):
 	"""Class extendig  ConfigParser."""
@@ -112,6 +117,10 @@ class config(object):
 
 		#[General]
 		self.offline = config.getboolean('General', 'offline',False)
+		if ( self.offline == "True"):
+			globalvars.offline = True
+		else:
+			globalvars.offline = False
 		self.station_name = config.get('General', 'station_name',"Sint Wind PI")
 		self.config_web_server = config.getboolean('General', 'config_web_server',True)
 		self.config_web_server_port = config.getint('General', 'config_web_server_port',80)
@@ -333,7 +342,13 @@ class config(object):
 		config = myConfigParser()
 		
 		#[General]
+		#print "*****************",self.offline,globalvars.offline
 		config.setboolean('General', 'offline',self.offline)
+		if ( self.offline == "True"):
+			globalvars.offline = True
+		else:
+			globalvars.offline = False
+		#print "*****************",self.offline,globalvars.offline
 		config.setstr('General', 'station_name',self.station_name)
 		config.setboolean('General', 'config_web_server',self.config_web_server)
 		config.setboolean('General', 'set_sistem_time_from_ntp_server_at_startup',self.set_system_time_from_ntp_server_at_startup)
@@ -556,6 +571,16 @@ class config(object):
 		config.set('DataLogging', 'LogData',LogData)
 		f = open(self.cfgName,"w")
 		config.write(f)		
+		
+	def setOffline(self,LogData):
+		if (LogData == '0'):
+			log("Station is now ONLINE")
+			self.offline = "False"
+		if (LogData == '1'):
+			log("Station is now OFFLINE")			
+			self.offline = "True"
+		self.writeCfg()
+			
 		
 	def setDataUpload(self,uploadData):
 		self.upload_data = uploadData
