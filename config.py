@@ -139,6 +139,7 @@ class config(object):
 		self.set_time_at_boot = config.get('General', 'set_time_at_boot',"None")
 		self.wind_speed_units = config.get('General', 'wind_speed_units',"kmh")
 		self.ntp_url=config.get('General', 'ntp_url',"None")
+		self.disable_hdmi = config.getboolean('General', 'disable_hdmi',False)
 		#self.seconds_after_sunset_for_night = config.getint('General', 'seconds_after_sunset_for_night',3600)
 
 		# [Dongle]
@@ -367,6 +368,7 @@ class config(object):
 		config.setstr('General', 'set_time_at_boot',self.set_time_at_boot)
 		config.setstr('General', 'wind_speed_units',self.wind_speed_units)
 		config.setstr('General', 'ntp_url',self.ntp_url)
+		config.setboolean('General', 'disable_hdmi',self.disable_hdmi)
 		#config.setint('General', 'seconds_after_sunset_for_night',self.seconds_after_sunset_for_night)
 
 		# [Dongle]

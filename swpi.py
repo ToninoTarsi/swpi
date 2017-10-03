@@ -769,6 +769,10 @@ except KeyboardInterrupt:
 # Radio Voice output shoud go to the analog device
 #os.system( "sudo amixer cset numid=3 1 > /dev/null " )
 
+
+if ( cfg.disable_hdmi):
+	os.system( "sudo /opt/vc/bin/tvservice -o" )
+
 os.system( "sudo chown -R pi:root /swpi" )
 
 #Make sure every executable is executable
