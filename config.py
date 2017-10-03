@@ -117,10 +117,12 @@ class config(object):
 
 		#[General]
 		self.offline = config.getboolean('General', 'offline',False)
-		if ( self.offline == "True"):
+		#print "*******************self.offline",self.offline
+		if ( self.offline or (self.offline == "True")):
 			globalvars.offline = True
 		else:
 			globalvars.offline = False
+		#print "*******************globalvars.offline",globalvars.offline	
 		self.station_name = config.get('General', 'station_name',"Sint Wind PI")
 		self.config_web_server = config.getboolean('General', 'config_web_server',True)
 		self.config_web_server_port = config.getint('General', 'config_web_server_port',80)
