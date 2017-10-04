@@ -30,10 +30,10 @@ def log(message) :
 
 def systemRestart():
 	if os.name != 'nt':
-        log("Rebooting system ..")
-        os.system("sudo reboot")
-    else:
-        print " Sorry, cannot reboot Windows"
+		log("Rebooting system ..")
+		os.system("sudo reboot")
+	else:
+		print " Sorry, cannot reboot Windows"
 
 class myConfigParser(ConfigParser.SafeConfigParser):
 	"""Class extendig  ConfigParser."""
