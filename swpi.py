@@ -773,12 +773,17 @@ except KeyboardInterrupt:
 # Radio Voice output shoud go to the analog device
 #os.system( "sudo amixer cset numid=3 1 > /dev/null " )
 
-
+myrevision = getrevision()
+log("System revision : " + myrevision)
 if ( cfg.disable_hdmi):
 	os.system( "sudo /opt/vc/bin/tvservice -o" )
-	os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness" )
-	os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness" )
-
+	if ( myrevision == "900092" or myrevision == "900093"  or myrevision == "920093" or myrevision == "9000c1" ): # Raspberry PI Zero
+		os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness" )
+		os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness" )
+	else:
+		os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness" )
+		os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness" )
+		
 os.system( "sudo chown -R pi:root /swpi" )
 
 #Make sure every executable is executable
