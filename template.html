@@ -38,6 +38,10 @@
         {
             width: 176px;
         }
+        #disable_hdmi
+        {
+            width: 176px;
+        }
         .style7
         {
             height: 26px;
@@ -317,6 +321,15 @@
                 }
             }
 
+            
+            dd = document.getElementById('disable_hdmi');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$disable_hdmi') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+            
             dd = document.getElementById('offline');
             for (var i = 0; i < dd.options.length; i++) {
                 if (dd.options[i].text == '$offline') {
@@ -997,6 +1010,18 @@
                          <option value=kmh>kmh</option>
                          <option value=knots>knots</option>
                     </select></td>
+            </tr>
+            <tr>
+                <td class="style12" width="800" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Dasable HDMI (<b>disable_hdmi</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                    <select id="disable_hdmi" 
+                        name="disable_hdmi" 
+                        value=$disable_hdmi style="width: 100%"> 
+                         <option value=True >True</option>
+                         <option value=False >False</option>
+                    </select></td>
+                    
             </tr>
         </table>
 	</div>

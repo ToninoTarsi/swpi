@@ -43,7 +43,7 @@ def outputPage(cfg):
 	d.update(wind_speed_units=cfg.wind_speed_units)	
 	d.update(set_time_at_boot=cfg.set_time_at_boot)
 	d.update(ntp_url=cfg.ntp_url)
-
+	d.update(disable_hdmi=cfg.disable_hdmi)
 
 
 	# [Dongle]
@@ -251,6 +251,8 @@ if ( len(request) != 0 ):
 	cfg.config_web_server_port = request['config_web_server_port'][0]                                                                 
 	cfg.wind_speed_units = request['wind_speed_units'][0]
 	cfg.ntp_url = request['ntp_url'][0]
+	cfg.disable_hdmi = request['disable_hdmi'][0]
+
 
 	# [Dongle]
 	cfg.usedongle = request['usedongle'][0]																		   

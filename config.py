@@ -9,6 +9,7 @@
 import globalvars
 """Classes and methods for handling configurationn file."""
 
+from  TTLib import *
 import sys
 import struct
 import ConfigParser
@@ -26,6 +27,13 @@ def str2bool(v):
 
 def log(message) :
 	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
+
+def systemRestart():
+	if os.name != 'nt':
+        log("Rebooting system ..")
+        os.system("sudo reboot")
+    else:
+        print " Sorry, cannot reboot Windows"
 
 class myConfigParser(ConfigParser.SafeConfigParser):
 	"""Class extendig  ConfigParser."""
@@ -567,6 +575,29 @@ class config(object):
 		config.set('Dongle', 'alwaysoninternet',AlwaysOnInternet)
 		f = open(self.cfgName,"w")
 		config.write(f)
+		
+	def setShutdownTime(self,strTime):
+		strTime = strTime.strip()
+		if ( strTime.upper() != "NONE"):
+			if ( strTime[2] != ":" or len(strTime) != 5  or not strTime[0:2].isdigit() or not strTime[3:5].isdigit()):
+				log("ERORR - bad formatted time")
+				return
+			theHH = int(strTime[0:2])
+			if ( theHH < 0 or theHH >24 ):
+				log("ERORR - bad formatted time")
+				return
+			theMM = int(strTime[3:5])
+			if ( theMM < 0 or theMM >60 ):
+				log("ERORR - bad formatted time")
+				return
+		self.shutdown_at = strTime
+		config = ConfigParser.SafeConfigParser()
+		config.read(self.cfgName)
+		config.set('General', 'shutdown_at',strTime)
+		f = open(self.cfgName,"w")
+		config.write(f)		
+		log( "New Shutdown time set to : " + strTime + "... REBOOTING")
+		systemRestart()
 		
 	def setDataLogging(self,LogData):
 		self.logdata = LogData

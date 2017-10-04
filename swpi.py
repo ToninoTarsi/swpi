@@ -104,6 +104,7 @@ def process_sms(modem, smsID):
 		#
 		#	RBT				reboot
 		#	HLT				halt	
+		#   SHUT    hh:mm   Set Shutdown time 
 		#	MDB				mail database to sender
 		#	RDB				Reset Database
 		#	MCFG			mail cfg to sender
@@ -113,7 +114,7 @@ def process_sms(modem, smsID):
 		#	DELIMG			delete images
 		#	DELLOG			delete logs
 		#	DF				Send Disk space to sender
-		#	OFF	    [0/1]   Set onlne or offline
+		#	OFF	    [0/1]   Set online or offline
 		#   BCK				backup
 		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
@@ -360,6 +361,9 @@ def process_sms(modem, smsID):
 			in_file.write(new_date.strftime("%Y-%m-%d")+"\n")
 			in_file.close()
 			log( "New DATE set to : " + str(param))
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 3 and cmd == "SHUT" ):
+			cfg.setShutdownTime(param)
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 3 and cmd == "CAM" ):
 			modem.sms_del(msgID)
