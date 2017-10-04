@@ -776,13 +776,14 @@ except KeyboardInterrupt:
 myrevision = getrevision()
 log("System revision : " + myrevision)
 if ( cfg.disable_hdmi):
-	os.system( "sudo /opt/vc/bin/tvservice -o" )
+	log("Running  power save ...")
+	os.system( "sudo /opt/vc/bin/tvservice -o > /dev/null" )
 	if ( myrevision == "900092" or myrevision == "900093"  or myrevision == "920093" or myrevision == "9000c1" ): # Raspberry PI Zero
-		os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness" )
-		os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness" )
+		os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness > /dev/null" )
+		os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness > /dev/null" )
 	else:
-		os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness" )
-		os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness" )
+		os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness > /dev/null" )
+		os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness > /dev/null" )
 		
 os.system( "sudo chown -R pi:root /swpi" )
 
