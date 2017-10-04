@@ -776,6 +776,8 @@ except KeyboardInterrupt:
 
 if ( cfg.disable_hdmi):
 	os.system( "sudo /opt/vc/bin/tvservice -o" )
+	os.system( "echo 0 | sudo tee /sys/class/leds/led0/brightness" )
+	os.system( "echo 1 | sudo tee /sys/class/leds/led0/brightness" )
 
 os.system( "sudo chown -R pi:root /swpi" )
 
