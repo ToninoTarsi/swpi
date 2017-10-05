@@ -615,7 +615,34 @@ class config(object):
 			log("Station is now OFFLINE")			
 			self.offline = "True"
 		self.writeCfg()
+
+	def seBMP085(self,LogData):
+		if (LogData == '0'):
+			log("BMP085 disabled")
+			self.use_bmp085 = "False"
+		if (LogData == '1'):
+			log("BMP085 enabled")			
+			self.use_bmp085 = "True"
+		self.writeCfg()		
+		
+	def setBME280(self,LogData):
+		if (LogData == '0'):
+			log("BME280 disabled")
+			self.use_bme280 = "False"
+		if (LogData == '1'):
+			log("BME280 enabled")			
+			self.use_bme280 = "True"
+		self.writeCfg()				
 			
+	def setDHT(self,LogData):
+		if (LogData == '0'):
+			log("DHT disabled")
+			self.use_dht = "False"
+		if (LogData == '1'):
+			log("DHT enabled")			
+			self.use_dht = "True"
+		self.writeCfg()	
+				
 		
 	def setDataUpload(self,uploadData):
 		self.upload_data = uploadData

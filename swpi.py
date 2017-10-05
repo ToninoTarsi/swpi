@@ -115,6 +115,9 @@ def process_sms(modem, smsID):
 		#	DELLOG			delete logs
 		#	DF				Send Disk space to sender
 		#	OFF	    [0/1]   Set online or offline
+		#   BMP085  [0/1]   Use BMP084
+		#   BME280  [0/1]   Use BME280
+		#   DHT     [0/1]   Use DHT
 		#   BCK				backup
 		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
@@ -388,7 +391,22 @@ def process_sms(modem, smsID):
 			modem.sms_del(msgID)
 			if ( param == '0' or param == '1' ):
 				cfg.setOffline(param)
-		#---------------------------------------------------------------------------------------		
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 3 and cmd == "BMP085" ):
+			modem.sms_del(msgID)
+			if ( param == '0' or param == '1' ):
+				cfg.setBMP085(param)
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 3 and cmd == "BME280" ):
+			modem.sms_del(msgID)
+			if ( param == '0' or param == '1' ):
+				cfg.setBME280(param)
+		#---------------------------------------------------------------------------------------			
+		elif (len(command) == 3 and cmd == "DHT" ):
+			modem.sms_del(msgID)
+			if ( param == '0' or param == '1' ):
+				cfg.setDHT(param)
+		#---------------------------------------------------------------------------------------				
 		elif (len(command) == 3 and cmd == "UPL" ):
 			modem.sms_del(msgID)
 			if ( param == '0' or param == '1' ):
