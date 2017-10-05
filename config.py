@@ -616,7 +616,7 @@ class config(object):
 			self.offline = "True"
 		self.writeCfg()
 
-	def seBMP085(self,LogData):
+	def setBMP085(self,LogData):
 		if (LogData == '0'):
 			log("BMP085 disabled")
 			self.use_bmp085 = "False"
