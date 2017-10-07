@@ -35,6 +35,7 @@ import thread
 import os
 import requests
 import subprocess
+import version
 
 socket.setdefaulttimeout(30)
 
@@ -719,7 +720,10 @@ def UploadData(cfg):
     if ( delay_seconds > 120 ):
         return
     
+    ver = version.Version("VERSION").getVersion()
+    
     mydata = {} 
+    mydata['version'] = ver
     mydata['last_measure_time'] = (globalvars.meteo_data.last_measure_time.strftime("[%d/%m/%Y-%H:%M:%S]"))
     mydata['idx'] = (globalvars.meteo_data.idx.strftime("[%d/%m/%Y-%H:%M:%S]"))
     mydata['wind_dir_code'] = (globalvars.meteo_data.wind_dir_code)
@@ -781,6 +785,7 @@ def UploadData(cfg):
         mydata['offline'] = 1
     else:
         mydata['offline'] = 0
+    
     
     #print mydata
     
