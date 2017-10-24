@@ -182,9 +182,9 @@ class Sensor_Argent80422(sensor.Sensor):
         self.revcount = 0
         GPIO.add_event_detect(self.__PIN_A, GPIO.FALLING, callback=self.increaserev,bouncetime=1)
         time.sleep(self.__MEASURETIME)
+        speed = (( self.revcount  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
         GPIO.remove_event_detect(self.__PIN_A)
         self.revcount = 0
-        speed = (( self.revcount / ( self.__MEASURETIME * 2  ) ) * 2.4 ) * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
         return speed
     
     def GetCurretWindSpeed_pooling(self):
