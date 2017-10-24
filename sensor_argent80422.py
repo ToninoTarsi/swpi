@@ -43,6 +43,7 @@ class Sensor_Argent80422(sensor.Sensor):
     
     __PIN_A = 23  #Anemometer
    
+    revcount = 0
     
     def __init__(self,cfg ):
         
@@ -171,7 +172,22 @@ class Sensor_Argent80422(sensor.Sensor):
         
         return wind_dir*22.5, winddir_code 
     
+    def increaserev(self,channel):
+        self.revcount += 1
+        #print time.time(),self.revcount,GPIO.input(self.__PIN_A)
+
+    
     def GetCurretWindSpeed(self):
+        """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
+        self.revcount = 0
+        GPIO.add_event_detect(self.__PIN_A, GPIO.FALLING, callback=self.increaserev,bouncetime=1)
+        time.sleep(self.__MEASURETIME)
+        GPIO.remove_event_detect(self.__PIN_A)
+        self.revcount = 0
+        speed = (( self.revcount / ( self.__MEASURETIME * 2  ) ) * 2.4 ) * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
+        return speed
+    
+    def GetCurretWindSpeed_pooling(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
         self.bTimerRun = 1
         t = threading.Timer(self.__MEASURETIME, self.SetTimer)
@@ -187,26 +203,6 @@ class Sensor_Argent80422(sensor.Sensor):
                 o = n
                 time.sleep(0.005)
             time.sleep(0.005)
-        return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
-    
-
-
-
-
-
-    def GetCurretWindSpeedOld(self):
-        """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
-        self.bTimerRun = 1
-        t = threading.Timer(self.__MEASURETIME, self.SetTimer)
-        t.start()
-        i = 0
-        o = GPIO.input(self.__PIN_A)
-        while self.bTimerRun:
-            #time.sleep(0.010)
-            n = GPIO.input(self.__PIN_A)
-            if ( n != o):
-                i = i+1
-                o = n
         return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
 
