@@ -178,7 +178,7 @@ class Sensor_Argent80422(sensor.Sensor):
 
     
     def GetCurretWindSpeed(self):
-        """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
+        """Get wind speed  __PIN_A """
         self.revcount = 0
         GPIO.add_event_detect(self.__PIN_A, GPIO.FALLING, callback=self.increaserev,bouncetime=1)
         time.sleep(self.__MEASURETIME)
