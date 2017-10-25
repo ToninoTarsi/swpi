@@ -77,7 +77,8 @@ class Sensor_Argent80422(sensor.Sensor):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.__PIN_A, GPIO.IN)   # wind Speed
- 
+        GPIO.add_event_detect(self.__PIN_A, GPIO.FALLING, callback=self.increaserev,bouncetime=1)
+
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
         
@@ -180,10 +181,8 @@ class Sensor_Argent80422(sensor.Sensor):
     def GetCurretWindSpeed(self):
         """Get wind speed  __PIN_A """
         self.revcount = 0
-        GPIO.add_event_detect(self.__PIN_A, GPIO.FALLING, callback=self.increaserev,bouncetime=1)
         time.sleep(self.__MEASURETIME)
         speed = (( self.revcount  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
-        GPIO.remove_event_detect(self.__PIN_A)
         self.revcount = 0
         return speed
     
