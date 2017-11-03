@@ -326,20 +326,20 @@ def logDataToCWOP(CWOP_ID,CWOP_password,location_latitude,location_longitude,swp
 
     # rain last hour -- each count is 0.0204" 
     if (globalvars.meteo_data.rain_rate_1h != None):
-        rain_hr_hundredth_inches = int(globalvars.meteo_data.rain_rate_1h  * 0.0393700787)
+        rain_hr_hundredth_inches = float(globalvars.meteo_data.rain_rate_1h * 3.9370078)
         rain_hr_str = "r" + "%03d" % rain_hr_hundredth_inches
         send += rain_hr_str
 
     # rain last 24 hours -- each count is 0.0204"
     # so the math accidentally scales perfect -- report in hundreths of inches
     if (globalvars.meteo_data.rain_rate_24h != None) :
-        rain_24_hrs_hundredth_inches = int(globalvars.meteo_data.rain_rate_24h  * 0.0393700787)
+        rain_24_hrs_hundredth_inches = float(globalvars.meteo_data.rain_rate_24h * 3.9370078)
         rain_24_hrs_str = "p" + "%03d" % rain_24_hrs_hundredth_inches
         send += rain_24_hrs_str
 
     # skip rain since midnight
     if (globalvars.meteo_data.rain_rate != None ) :
-        rain_today_hundredth_inches = int(globalvars.meteo_data.rain_rate  * 0.0393700787)
+        rain_today_hundredth_inches = float(globalvars.meteo_data.rain_rate * 3.9370078)
         rain_midnight_str = "P" + "%03d" % rain_today_hundredth_inches
         send += rain_midnight_str
 
@@ -349,7 +349,7 @@ def logDataToCWOP(CWOP_ID,CWOP_password,location_latitude,location_longitude,swp
         if rh >= 0.995:
             humid_str = "h00"
         else:
-            humid_str = "h" + "%02.0f" % (rh * 100.0)
+            humid_str = "h" + "%02.0f" % (globalvars.meteo_data.hum_out)
         send += humid_str
 
     # barometric pressure (in tenths of millibars)
