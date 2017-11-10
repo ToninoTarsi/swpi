@@ -54,11 +54,11 @@ class cameraPI(object):
 			os.system(snapCommand )
 
 			if ( not os.path.isfile(filename)):
-				log( "ERROR in capturing webcam image on : " + self.device )
+				log( "ERROR in capturing cameraPI "  )
 				return False
 					
 			return True
 		except ValueError:
-			log( " ERROR in capturing cameraPI image on : " + self.device )
+			log( " ERROR in capturing cameraPI  " + e )
 			return False
 
