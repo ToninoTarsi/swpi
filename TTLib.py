@@ -786,6 +786,11 @@ def UploadData(cfg):
     else:
         mydata['offline'] = 0
     
+    if ( globalvars.meteo_data.last_capture != None ):
+        mydata['last_capture'] = globalvars.meteo_data.last_capture.strftime("[%d/%m/%Y-%H:%M:%S]")
+    else:
+        mydata['last_capture'] = "None"
+
     
     #print mydata
     

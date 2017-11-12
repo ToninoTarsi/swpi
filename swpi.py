@@ -1024,7 +1024,7 @@ if ( cfg.delete_images_on_sd ):
 		file_to_delete = "./img/" + f
 		os.remove(file_to_delete)
 
-	
+globalvars.meteo_data.last_capture = None
 
 # Start main thread
 ############################ MAIN  LOOP###############################################
@@ -1062,6 +1062,7 @@ while 1:
 			waitForHandUP()
 			bwebcam1 = webcam1.capture(img1FileName)
 			if ( bwebcam1 ):
+				globalvars.meteo_data.last_capture = datetime.datetime.now()
 				log( "Webcam 1 Captured : ok : "  + img1FileName )
 				addTextandResizePhoto(img1FileName,cfg.webcamdevice1finalresolutionX,cfg.webcamdevice1finalresolutionY,cfg,v)
 		# WebCam 2
@@ -1072,6 +1073,7 @@ while 1:
 			waitForHandUP()
 			bwebcam2 = webcam2.capture(img2FileName)
 			if ( bwebcam2):
+				globalvars.meteo_data.last_capture = datetime.datetime.now()
 				log( "Webcam 2 Captured : ok : "  + img2FileName	)	
 				addTextandResizePhoto(img2FileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)	
 				
@@ -1081,6 +1083,7 @@ while 1:
 			fotos = cameras.take_pictures()
 			globalvars.takenPicture.fotos = fotos
 			for foto in fotos:
+				globalvars.meteo_data.last_capture = datetime.datetime.now()
 				addTextandResizePhoto(foto,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 
 		# IPCam 1
@@ -1092,6 +1095,7 @@ while 1:
 			waitForHandUP()
 			bipcam1 = IPCam1.IPCamCapture(img1IPFileName,1)
 			if ( bipcam1 ):
+				globalvars.meteo_data.last_capture = datetime.datetime.now()
 				log( "IPcam 1 Captured : ok : "  + img1IPFileName )
 				addTextandResizePhoto(img1IPFileName,cfg.webcamdevice1finalresolutionX,cfg.webcamdevice1finalresolutionY,cfg,v)
 		#else:		
@@ -1103,6 +1107,7 @@ while 1:
 			waitForHandUP()
 			bipcam2 = IPCam2.IPCamCapture(img2IPFileName,2)
 			if ( bipcam2 ):
+				globalvars.meteo_data.last_capture = datetime.datetime.now()
 				log( "IPcam 2 Captured : ok : "  + img2IPFileName	)	
 				addTextandResizePhoto(img2IPFileName,cfg.webcamdevice2finalresolutionX,cfg.webcamdevice2finalresolutionY,cfg,v)	
 		
@@ -1114,6 +1119,7 @@ while 1:
 			globalvars.takenPicture.cPIFilemane = cPIFilemane			
 			bcPI = cPI.capture(cPIFilemane) 
 			if bcPI:
+				globalvars.meteo_data.last_capture = datetime.datetime.now()
 				globalvars.takenPicture.cPIFilemane = cPIFilemane
 				addTextandResizePhoto(cPIFilemane,cfg.cameradivicefinalresolutionX,cfg.cameradivicefinalresolutionY,cfg,v)
 			else:
