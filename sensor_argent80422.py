@@ -175,7 +175,7 @@ class Sensor_Argent80422(sensor.Sensor):
     
     def increaserev(self,channel):
         self.revcount += 1
-        print time.time(),self.revcount,GPIO.input(self.__PIN_A)
+        #print time.time(),self.revcount,GPIO.input(self.__PIN_A)
 
     
     def GetCurretWindSpeed(self):
