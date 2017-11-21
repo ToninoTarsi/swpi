@@ -844,7 +844,7 @@ try:
 	mymodel = dictModel[myrevision]
 except:
 	pass
-log("System revision : " + myrevision + " : " + mymodel)
+log("System revision (" + myrevision + ") : " + mymodel)
 
 if ( cfg.disable_hdmi):
 	log("Running  power save ...")
