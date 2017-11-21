@@ -114,6 +114,7 @@ def process_sms(modem, smsID):
 		#	DELIMG			delete images
 		#	DELLOG			delete logs
 		#	DF				Send Disk space to sender
+		#	MSG	    [0/1]   Disable/Enable message.raw ( restored from message_save.raw )
 		#	OFF	    [0/1]   Set online or offline
 		#   BMP085  [0/1]   Use BMP084
 		#   BME280  [0/1]   Use BME280
@@ -146,17 +147,30 @@ def process_sms(modem, smsID):
 			modem.sms_send(msgSender,msg )
 			log( "SMS sent: " + msg )
 		#---------------------------------------------------------------------------------------	
-		if (len(command) == 2 and cmd == "DELIMG" ):
+		elif (len(command) == 3 and cmd == "MSG" ):
+			modem.sms_del(msgID)
+			if ( param == '0'):
+				if ( os.path.isfile("audio/message.raw")  ):
+					if ( os.path.isfile("audio/message_save.raw")  ):
+						os.remove("audio/message_save.raw")
+					os.rename("audio/message.raw","audio/message_save.raw")
+			if ( param == '1'):			
+				if ( os.path.isfile("audio/message_save.raw")  ):
+					if ( os.path.isfile("audio/message.raw")  ):
+						os.remove("audio/message.raw")
+					os.rename("audio/message_save.raw","audio/message.raw")
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 2 and cmd == "DELIMG" ):
 			modem.sms_del(msgID)
 			os.system('rm -f /swpi/img/*')
 			log( "Detaled alla images  " )
 		#---------------------------------------------------------------------------------------	
-		if (len(command) == 2 and cmd == "DELLOG" ):
+		elif (len(command) == 2 and cmd == "DELLOG" ):
 			modem.sms_del(msgID)
 			os.system('rm -f /swpi/log/*')
 			log( "Detaled all  logs  " )
 		#---------------------------------------------------------------------------------------	
-		if (len(command) == 2 and cmd == "RBT" ):
+		elif (len(command) == 2 and cmd == "RBT" ):
 			modem.sms_del(msgID)
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
