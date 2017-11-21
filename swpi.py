@@ -63,7 +63,7 @@ def new_sms(modem, message):
 
 def process_sms(modem, smsID):
 	"""Parse SMS number smsID"""
-	log( 'Processing: %r' % message)
+	log( 'Processing: %r' % smsID)
 	try:	
 		waitForHandUP()
 		global cfg
