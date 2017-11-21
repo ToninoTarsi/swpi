@@ -56,13 +56,14 @@ def reset_sms(modem):
 
 def new_sms(modem, message):
 	"""Event Function for new incoming SMS"""
-	waitForHandUP()
 	log( 'New message arrived: %r' % message)
+	waitForHandUP()
 	msg_num = int(message[12:].strip())
 	process_sms(modem,msg_num)
 
 def process_sms(modem, smsID):
 	"""Parse SMS number smsID"""
+	log( 'Processing: %r' % message)
 	try:	
 		waitForHandUP()
 		global cfg
