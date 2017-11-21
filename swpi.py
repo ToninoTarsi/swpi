@@ -46,6 +46,39 @@ import traceback
 
 socket.setdefaulttimeout(30)
 
+dictModel = {}
+dictModel[ '0002' ] = 'Raspberry Model B PCB 1.0'
+dictModel[ '0003' ] = 'Raspberry Model B(ECN0001) PCB 1.0'
+dictModel[ '0004' ] = 'Raspberry Model B PCB 2.0'
+dictModel[ '0005' ] = 'Raspberry Model B PCB 2.0'
+dictModel[ '0006' ] = 'Raspberry Model B PCB 2.0'
+dictModel[ '0007' ] = 'Raspberry Model A PCB 2.0'
+dictModel[ '0008' ] = 'Raspberry Model A PCB 2.0'
+dictModel[ '0009' ] = 'Raspberry Model A PCB 2.0'
+dictModel[ '000d' ] = 'Raspberry Model B PCB 2.0'
+dictModel[ '000e' ] = 'Raspberry Model B PCB 2.0'
+dictModel[ '000f' ] = 'Raspberry Model B PCB 2.0'
+dictModel[ '0010' ] = 'Raspberry Model B+ PCB 1.0'
+dictModel[ '0011' ] = 'Raspberry Model ComputeModule1 PCB 1.0'
+dictModel[ '0012' ] = 'Raspberry Model A+ PCB 1.1'
+dictModel[ '0013' ] = 'Raspberry Model B+ PCB 1.2'
+dictModel[ '0014' ] = 'Raspberry Model ComputeModule1 PCB 1.0'
+dictModel[ '0015' ] = 'Raspberry Model A+ PCB 1.1'
+dictModel[ 'a01040' ] = 'Raspberry Model 2ModelB PCB 1.0'
+dictModel[ 'a01041' ] = 'Raspberry Model 2ModelB PCB 1.1'
+dictModel[ 'a21041' ] = 'Raspberry Model 2ModelB PCB 1.1'
+dictModel[ 'a22042' ] = 'Raspberry Model 2ModelB(withBCM2837) PCB 1.2'
+dictModel[ '900021' ] = 'Raspberry Model A+ PCB 1.1'
+dictModel[ '900032' ] = 'Raspberry Model B+ PCB 1.2'
+dictModel[ '900092' ] = 'Raspberry Model Zero PCB 1.2'
+dictModel[ '900093' ] = 'Raspberry Model Zero PCB 1.3'
+dictModel[ '920093' ] = 'Raspberry Model Zero PCB 1.3'
+dictModel[ '9000c1' ] = 'Raspberry Model ZeroW PCB 1.1'
+dictModel[ 'a02082' ] = 'Raspberry Model 3ModelB PCB 1.2'
+dictModel[ 'a020a0' ] = 'Raspberry Model ComputeModule3(andCM3Lite) PCB 1.0'
+dictModel[ 'a22082' ] = 'Raspberry Model 3ModelB PCB 1.2'
+dictModel[ 'a32082' ] = 'Raspberry Model 3ModelB PCB 1.2'
+
 ################################  functions############################
 def reset_sms(modem):
 	modem.enable_textmode(True)
@@ -806,7 +839,13 @@ except KeyboardInterrupt:
 #os.system( "sudo amixer cset numid=3 1 > /dev/null " )
 
 myrevision = getrevision()
-log("System revision : " + myrevision)
+mymodel = ''
+try:
+	mymodel = dictModel[myrevision]
+except:
+	pass
+log("System revision : " + myrevision + " : " + mymodel)
+
 if ( cfg.disable_hdmi):
 	log("Running  power save ...")
 	os.system( "sudo /opt/vc/bin/tvservice -o > /dev/null" )
