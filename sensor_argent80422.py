@@ -80,7 +80,7 @@ class Sensor_Argent80422(sensor.Sensor):
 
         # bouncetime = 960 / MaxSpeedKmh 
         # MaxSpeedKmh = 960 / bouncetime
-        GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=8)   
+        GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=10)   
 
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
