@@ -893,6 +893,7 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
             delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
             delay_seconds = int(delay.total_seconds())
             
+            text = ""
             if (globalvars.meteo_data.wind_dir_code != None and globalvars.meteo_data.wind_ave != None and globalvars.meteo_data.wind_gust != None):    
                 
                 if ( len(globalvars.meteo_data.wind_dir_code) == 3 ):
@@ -902,15 +903,16 @@ def addTextandResizePhoto(filename,finalresolutionX,finalresolutionY,cfg,version
                 else:
                     dir = "  " + globalvars.meteo_data.wind_dir_code
                 text = "Direzione del vento: " + dir + " - Intensita:%5.1f" % globalvars.meteo_data.wind_ave + " km/h  - Raffica:%5.1f" % globalvars.meteo_data.wind_gust  + " km/h" 
-                if (globalvars.meteo_data.temp_out  != None) : 
-                    text = text + " - Temperatura:%4.1f" % globalvars.meteo_data.temp_out + " C"
-                if (globalvars.meteo_data.rel_pressure != None ) : 
-                    text = text + " - Pressione:%6.1f" % globalvars.meteo_data.rel_pressure + " hpa"         
-                if (globalvars.meteo_data.cloud_base_altitude != None ) : 
-                    text = text + " - Base cumulo:%d" % globalvars.meteo_data.cloud_base_altitude + " m"   
                 
-                width, height = font.getsize(text)
-                draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
+            if (globalvars.meteo_data.temp_out  != None) : 
+                text = text + " - Temperatura:%4.1f" % globalvars.meteo_data.temp_out + " C"
+            if (globalvars.meteo_data.rel_pressure != None ) : 
+                text = text + " - Pressione:%6.1f" % globalvars.meteo_data.rel_pressure + " hpa"         
+            if (globalvars.meteo_data.cloud_base_altitude != None ) : 
+                text = text + " - Base cumulo:%d" % globalvars.meteo_data.cloud_base_altitude + " m"   
+                
+            width, height = font.getsize(text)
+            draw.text((32+marginLeft, h-offsetBottom),text,textColor,font=font)
                 
             text = ""
             if (globalvars.meteo_data.hum_out  != None) : 
