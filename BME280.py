@@ -46,12 +46,15 @@ class BME280():
 
 		calib = []
 	
-		for i in range (0x88,0x88+24):
-			calib.append(self.bus.read_byte_data(self.i2c_address,i))
-		calib.append(self.bus.read_byte_data(self.i2c_address,0xA1))
-		for i in range (0xE1,0xE1+7):
-			calib.append(self.bus.read_byte_data(self.i2c_address,i))
-
+		try:
+			for i in range (0x88,0x88+24):
+				calib.append(self.bus.read_byte_data(self.i2c_address,i))
+			calib.append(self.bus.read_byte_data(self.i2c_address,0xA1))
+			for i in range (0xE1,0xE1+7):
+				calib.append(self.bus.read_byte_data(self.i2c_address,i))
+		except:
+			return
+			
 		self.digT.append((calib[1] << 8) | calib[0])
 		self.digT.append((calib[3] << 8) | calib[2])
 		self.digT.append((calib[5] << 8) | calib[4])
