@@ -38,6 +38,8 @@ def dew_point(temp, hum):
         return None
     a = 17.27
     b = 237.7
+    if (hum == 0):
+        return None
     gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
     return (b * gamma) / (a - gamma)
 
