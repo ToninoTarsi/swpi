@@ -165,9 +165,15 @@ if __name__ == '__main__':
 		temp = bmp.read_temperature()
 		pressure = bmp.read_pressure()
 		humidity = bmp.read_humidity()
-
+		
+		if ( temp == None ):
+			temp = 0;
+		if ( pressure == None ):
+			pressure = 0;			
+		if ( humidity == None ):
+			humidity = 0;
 		print "Temperature: %.2f C" % temp + "Pressure:    %.2f hPa" % (pressure / 100.0) + "Hum:    %.2f " % (humidity)
-		time.sleep(1)
+		time.sleep(0.5)
 
 
 
