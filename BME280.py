@@ -154,7 +154,7 @@ if __name__ == '__main__':
 		humidity = bmp.read_humidity()
 
 		print "Temperature: %.2f C" % temp + "Pressure:    %.2f hPa" % (pressure / 100.0) + "Hum:    %.2f " % (humidity)
-		time.sleep(5)
+		time.sleep(1)
 
 
 
