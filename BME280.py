@@ -143,7 +143,17 @@ class BME280():
 		return pressure
 
 
+if __name__ == '__main__':
+	bmp = BME280()
 
+
+	while 1:
+		temp = bmp.read_temperature()
+		p = bmp.read_pressure()
+		humidity = bmp.read_humidity()
+
+		print "Temperature: %.2f C" % temp + "Pressure:    %.2f hPa" % (pressure / 100.0) + "Hum:    %.2f " % (humidity)
+		time.sleep(1)
 
 
 
