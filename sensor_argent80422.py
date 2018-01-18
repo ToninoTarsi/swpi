@@ -33,6 +33,9 @@ from ctypes import *
 import intervalmap
 import spidev
 
+def bitstring(n):
+    s = bin(n)[2:]
+    return '0'*(8-len(s)) + s
 
 
 class Sensor_Argent80422(sensor.Sensor):
@@ -58,13 +61,16 @@ class Sensor_Argent80422(sensor.Sensor):
         else:
             self.model = 1
             
-        #print myrevision 
+        self.model = 2 # ALWAYS USE SPI 
         
         if ( self.model == 2 ) :
             # Open SPI bus
             log("Initializing SPI")
             self.spi  = spidev.SpiDev()
             self.spi.open(0,0)
+            self.spi.max_speed_hz = 1200000  # 1.2 MHz
+            self.spi.mode = 0
+
         else: 
             log("Initializing libMCP")
             self.libMCP = cdll.LoadLibrary('./mcp3002/libMCP3002.so')
@@ -149,12 +155,14 @@ class Sensor_Argent80422(sensor.Sensor):
         self.bTimerRun = 0
     
     def ReadChannel(self,channel):
-        data           = 0
-        #adc          = self.spi.xfer2([104,0])
-        adc         = self.spi.xfer2([1,(2+channel)<<6,0])
-        #data         += int(((adc[0]&3) << 8) + adc[1])
-        data        += ((adc[1]&31) << 6) + (adc[2] >> 2)
-        return data
+        cmd = 192
+        if channel:
+            cmd += 32
+        reply_bytes = self.spi.xfer2([cmd, 0])
+        reply_bitstring = ''.join(bitstring(n) for n in reply_bytes)
+        reply = reply_bitstring[5:15]
+        return int(reply,2)
+
     
     
     def GetCurretWindDir(self):
