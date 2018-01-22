@@ -12,7 +12,6 @@
 # sudo pip install spidev --upgrade 
 # sudo apt-get clean
 
-
 import threading
 import time
 import config
