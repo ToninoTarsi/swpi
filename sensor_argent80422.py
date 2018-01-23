@@ -49,6 +49,8 @@ class Sensor_Argent80422(sensor.Sensor):
     
     def __init__(self,cfg ):
         
+        self.cfg = cfg
+        
         threading.Thread.__init__(self)
 
         sensor.Sensor.__init__(self,cfg )        
@@ -64,9 +66,9 @@ class Sensor_Argent80422(sensor.Sensor):
         
         if ( self.model == 2 ) :
             # Open SPI bus
-            log("Initializing SPI")
+            log("Initializing SPI un device : /dev/spidev%d.0" % (cfg.mcp3002_spiDev) )
             self.spi  = spidev.SpiDev()
-            self.spi.open(0,0)
+            self.spi.open(cfg.mcp3002_spiDev,0)
             self.spi.max_speed_hz = 1200000  # 1.2 MHz
             self.spi.mode = 0
 
@@ -76,7 +78,7 @@ class Sensor_Argent80422(sensor.Sensor):
             if ( self.libMCP.init() != 0 ):
                 log("Error initializing mcp3002 library.Try to continue")
         
-        self.cfg = cfg
+        
         self.bTimerRun = 0
 
         GPIO.setmode(GPIO.BCM)

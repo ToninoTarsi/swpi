@@ -84,6 +84,9 @@ def outputPage(cfg):
 	d.update(solarsensor=cfg.solarsensor)
 	d.update(uvsensor=cfg.uvsensor)
 
+	# [mcp3002]
+	d.update(mcp3002_spiDev=cfg.mcp3002_spiDev)
+
 	# [Sensor_PCE-FWS20]
 	d.update(set_system_time_from_WeatherStation=cfg.set_system_time_from_WeatherStation)
 
@@ -292,6 +295,9 @@ if ( len(request) != 0 ):
 	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]
 	cfg.solarsensor = request['solarsensor'][0]
 	cfg.uvsensor = request['uvsensor'][0]
+	
+	# [mcp3002]
+	cfg.mcp3002_spiDev = request['mcp3002_spiDev'][0]
 	
 	# [Sensor_PCE-FWS20]
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]

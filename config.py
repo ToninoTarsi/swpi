@@ -197,6 +197,9 @@ class config(object):
 		self.solarsensor =   config.getboolean('Sensors', 'solarsensor',False)
 		self.uvsensor =   config.getboolean('Sensors', 'uvsensor',False)
 
+		# [mcp3002]
+		self.mcp3002_spiDev = config.getint('mcp3002', 'mcp3002_spiDev',0)
+		
 		# [Sensor_PCE-FWS20]
 		self.set_system_time_from_WeatherStation = config.getboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',False)
 
@@ -426,6 +429,8 @@ class config(object):
 		config.setboolean('Sensors', 'solarsensor',self.solarsensor)
 		config.setboolean('Sensors', 'uvsensor',self.uvsensor)
 		
+		# [mcp3002]
+		config.setint('mcp3002', 'mcp3002_spiDev',self.mcp3002_spiDev)
 
 		# [Sensor_PCE-FWS20]
 		config.setboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',self.set_system_time_from_WeatherStation)
