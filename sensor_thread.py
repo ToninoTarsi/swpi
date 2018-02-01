@@ -40,6 +40,7 @@ import sensor_ws2300
 import sensor_none
 import sensor_vantage_pro2
 import sensor_W831
+import sensor_LoRa
 
 
 
@@ -128,7 +129,10 @@ class WindSensorThread(threading.Thread):
                 
         elif ( self.cfg.sensor_type.upper()  == "NONE" ):
             sensor = sensor_none.Sensor_None(self.cfg)           
-                                              
+
+        elif ( self.cfg.sensor_type.upper()  == "LORA" ):
+            sensor = sensor_LoRa.Sensor_LoRa(self.cfg)       
+                                                          
         else:
             log("Sensor type not implemented. Exiting ...")
             os.system("sudo ./killswpi.sh")

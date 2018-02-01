@@ -86,6 +86,13 @@ def outputPage(cfg):
 
 	# [mcp3002]
 	d.update(mcp3002_spiDev=cfg.mcp3002_spiDev)
+	
+	# [LoRa]
+	d.update(use_LoRa=cfg.use_LoRa)
+	d.update(LoRa_spiDev=cfg.LoRa_spiDev)
+	d.update(LoRa_frequency=cfg.LoRa_frequency)
+	d.update(LoRa_power=cfg.LoRa_power)
+	d.update(LoRa_ID=cfg.LoRa_ID)
 
 	# [Sensor_PCE-FWS20]
 	d.update(set_system_time_from_WeatherStation=cfg.set_system_time_from_WeatherStation)
@@ -299,6 +306,13 @@ if ( len(request) != 0 ):
 	# [mcp3002]
 	cfg.mcp3002_spiDev = request['mcp3002_spiDev'][0]
 	
+	# [LoRa]
+	cfg.LoRa_spiDev = request['LoRa_spiDev'][0]
+	cfg.use_LoRa = request['use_LoRa'][0]
+	cfg.LoRa_frequency = request['LoRa_frequency'][0]
+	cfg.LoRa_power = request['LoRa_power'][0]
+	cfg.LoRa_ID = request['LoRa_ID'][0]
+
 	# [Sensor_PCE-FWS20]
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]
 	

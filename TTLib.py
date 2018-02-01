@@ -36,8 +36,26 @@ import os
 import requests
 import subprocess
 import version
+import base64
 
 socket.setdefaulttimeout(30)
+
+def encode(key, clear):
+    enc = []
+    for i in range(len(clear)):
+        key_c = key[i % len(key)]
+        enc_c = chr((ord(clear[i]) + ord(key_c)) % 256)
+        enc.append(enc_c)
+    return base64.urlsafe_b64encode("".join(enc))
+
+def decode(key, enc):
+    dec = []
+    enc = base64.urlsafe_b64decode(enc)
+    for i in range(len(enc)):
+        key_c = key[i % len(key)]
+        dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
+        dec.append(dec_c)
+    return "".join(dec)
 
 def get_cpu_temperature():
     process = subprocess.Popen(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE)
@@ -601,72 +619,6 @@ def logData(serverfile,SMSPwd):
         log(  "Error connecting to server : " + serverfile )
     
 
-    
-#    mydata = [] 
-
-#    mydata.append(('pwd', SMSPwd))
-#
-#    
-#    mydata.append(('last_measure_time',NoneToNull(globalvars.meteo_data.last_measure_time)))
-#    mydata.append(('idx',NoneToNull(globalvars.meteo_data.idx)))
-#    mydata.append(('wind_dir_code',NoneToNull(globalvars.meteo_data.wind_dir_code)))
-#    mydata.append(('wind_dir',NoneToNull(globalvars.meteo_data.wind_dir)))
-#    mydata.append(('wind_ave',NoneToNull(globalvars.meteo_data.wind_ave)))
-#    mydata.append(('wind_gust',NoneToNull(globalvars.meteo_data.wind_gust)))
-#    mydata.append(('temp_out',NoneToNull(globalvars.meteo_data.temp_out)))
-#    mydata.append(('abs_pressure',NoneToNull(globalvars.meteo_data.abs_pressure)))
-#    mydata.append(('rel_pressure',NoneToNull(globalvars.meteo_data.rel_pressure)))
-#    mydata.append(('hum_out',NoneToNull(globalvars.meteo_data.hum_out)))
-#    mydata.append(('rain',NoneToNull(globalvars.meteo_data.rain)))
-#    mydata.append(('rain_rate',NoneToNull(globalvars.meteo_data.rain_rate)))
-#    mydata.append(('temp_in',NoneToNull(globalvars.meteo_data.temp_in)))
-#    mydata.append(('hum_in',NoneToNull(globalvars.meteo_data.hum_in)))
-#    mydata.append(('wind_chill',NoneToNull(globalvars.meteo_data.wind_chill)))
-#    mydata.append(('temp_apparent',NoneToNull(globalvars.meteo_data.temp_apparent)))
-#    mydata.append(('dew_point',NoneToNull(globalvars.meteo_data.dew_point)))
-#    mydata.append(('uv',NoneToNull(globalvars.meteo_data.uv)))
-#    mydata.append(('illuminance',NoneToNull(globalvars.meteo_data.illuminance)))
-#    mydata.append(('winDayMin',NoneToNull(globalvars.meteo_data.winDayMin)))
-#    mydata.append(('winDayMax',NoneToNull(globalvars.meteo_data.winDayMax)))
-#        
-#    mydata.append(('winDayGustMin',NoneToNull(globalvars.meteo_data.winDayGustMin)))
-#    mydata.append(('winDayGustMax',NoneToNull(globalvars.meteo_data.winDayGustMax)))
-#    
-#    mydata.append(('TempOutMin',NoneToNull(globalvars.meteo_data.TempOutMin)))
-#    mydata.append(('TempOutMax',NoneToNull(globalvars.meteo_data.TempOutMax)))
-#    
-#    mydata.append(('TempInMin',NoneToNull(globalvars.meteo_data.TempInMin)))
-#    mydata.append(('TempInMax',NoneToNull(globalvars.meteo_data.TempInMax)))
-#    
-#    mydata.append(('UmOutMin',NoneToNull(globalvars.meteo_data.UmOutMin)))
-#    mydata.append(('UmOutMax',NoneToNull(globalvars.meteo_data.UmOutMax)))
-#    
-#    mydata.append(('UmInMin',NoneToNull(globalvars.meteo_data.UmInMin)))
-#    mydata.append(('UmInMax',NoneToNull(globalvars.meteo_data.UmInMax)))
-#    
-#    mydata.append(('PressureMin',NoneToNull(globalvars.meteo_data.PressureMin)))
-#    mydata.append(('PressureMax',NoneToNull(globalvars.meteo_data.PressureMax)))
-#    
-#       
-#    mydata.append(('wind_dir_ave',NoneToNull(globalvars.meteo_data.wind_dir_ave)))
-#
-#    
-#    mydata.append(('rain_rate_24h',NoneToNull(globalvars.meteo_data.rain_rate_24h)))
-#    mydata.append(('rain_rate_1h',NoneToNull(globalvars.meteo_data.rain_rate_1h)))
-#        
-#    
-#    mydata=urllib.urlencode(mydata)
-#    
-#    
-#    try:
-#        req=urllib2.Request(serverfile, mydata)
-#        req.add_header("Content-type", "application/x-www-form-urlencoded")
-#        page=urllib2.urlopen(req,timeout=10).read()
-#        log( "Data sent to server : " + page )
-#    except:
-#        log(  "Error connecting to server : " + serverfile )
-#        pass
-
 
 def sentToWindFinder(WindFinder_ID,WindFinder_password):
     
@@ -709,60 +661,63 @@ def sentToWindFinder(WindFinder_ID,WindFinder_password):
     except:
         log(  "Error Logging to WindFinder : "   )        
 
-def UploadData(cfg):
-    
-    if ( globalvars.meteo_data.last_measure_time == None):
-        return
-    
-    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
-    delay_seconds = int(delay.total_seconds())
-    
-    if ( delay_seconds > 120 ):
-        return
+
+
+def CreateMeteoJson(cfg):
     
     ver = version.Version("VERSION").getVersion()
-    
+
     mydata = {} 
     mydata['version'] = ver
     mydata['last_measure_time'] = (globalvars.meteo_data.last_measure_time.strftime("[%d/%m/%Y-%H:%M:%S]"))
     mydata['idx'] = (globalvars.meteo_data.idx.strftime("[%d/%m/%Y-%H:%M:%S]"))
+    
     mydata['wind_dir_code'] = (globalvars.meteo_data.wind_dir_code)
-    mydata['wind_dir'] = (globalvars.meteo_data.wind_dir)
-    mydata['wind_ave'] = (globalvars.meteo_data.wind_ave)
-    mydata['wind_gust'] = (globalvars.meteo_data.wind_gust)
-    mydata['temp_out'] = (globalvars.meteo_data.temp_out)
-    mydata['abs_pressure'] = (globalvars.meteo_data.abs_pressure)
-    mydata['rel_pressure'] = (globalvars.meteo_data.rel_pressure)
-    mydata['hum_out'] = (globalvars.meteo_data.hum_out)
-    mydata['rain'] = (globalvars.meteo_data.rain)
-    mydata['rain_rate'] = (globalvars.meteo_data.rain_rate)
-    mydata['temp_in'] = (globalvars.meteo_data.temp_in)
-    mydata['hum_in'] = (globalvars.meteo_data.hum_in)
-    mydata['wind_chill'] = (globalvars.meteo_data.wind_chill)
-    mydata['temp_apparent'] = (globalvars.meteo_data.temp_apparent)
-    mydata['dew_point'] = (globalvars.meteo_data.dew_point)
-    mydata['cloud_base_altitude'] = (globalvars.meteo_data.cloud_base_altitude)
-    mydata['uv'] = (globalvars.meteo_data.uv)
-    mydata['illuminance'] = (globalvars.meteo_data.illuminance)
-    mydata['winDayMin'] = (globalvars.meteo_data.winDayMin)
-    mydata['winDayMax'] = (globalvars.meteo_data.winDayMax)
-    mydata['winDayGustMin'] = (globalvars.meteo_data.winDayGustMin)
-    mydata['winDayGustMax'] = (globalvars.meteo_data.winDayGustMax)
-    mydata['TempOutMin'] = (globalvars.meteo_data.TempOutMin)
-    mydata['TempOutMax'] = (globalvars.meteo_data.TempOutMax)
-    mydata['TempInMin'] = (globalvars.meteo_data.TempInMin)
-    mydata['TempInMax'] = (globalvars.meteo_data.TempInMax)
-    mydata['UmOutMin'] = (globalvars.meteo_data.UmOutMin)
-    mydata['UmOutMax'] = (globalvars.meteo_data.UmOutMax)
-    mydata['UmInMin'] = (globalvars.meteo_data.UmInMin)
-    mydata['UmInMax'] = (globalvars.meteo_data.UmInMax)
-    mydata['PressureMin'] = (globalvars.meteo_data.PressureMin)
-    mydata['PressureMax'] = (globalvars.meteo_data.PressureMax)
-    mydata['wind_dir_ave'] = (globalvars.meteo_data.wind_dir_ave)
-    mydata['rain_rate_24h'] = (globalvars.meteo_data.rain_rate_24h)
-    mydata['rain_rate_1h'] = (globalvars.meteo_data.rain_rate_1h)
+    mydata['wind_dir'] = None if (globalvars.meteo_data.wind_dir == None) else float( "%.1f" %  (globalvars.meteo_data.wind_dir) )
+    mydata['wind_dir_ave'] = None if (globalvars.meteo_data.wind_dir_ave == None) else float( "%.1f" %  (globalvars.meteo_data.wind_dir_ave) )
+    mydata['wind_ave'] = None if (globalvars.meteo_data.wind_ave == None) else int(globalvars.meteo_data.wind_ave)
+    mydata['temp_out'] = None if (globalvars.meteo_data.temp_out == None) else float( "%.1f" %  (globalvars.meteo_data.temp_out) )
+    mydata['temp_in'] = None if (globalvars.meteo_data.temp_in == None) else float( "%.1f" %  (globalvars.meteo_data.temp_in) )   
+    mydata['hum_out'] = None if (globalvars.meteo_data.hum_out == None) else int(globalvars.meteo_data.hum_out)   
+    mydata['hum_in'] = None if (globalvars.meteo_data.hum_in == None) else int(globalvars.meteo_data.hum_in)   
+    mydata['abs_pressure'] = None if (globalvars.meteo_data.abs_pressure == None) else int(globalvars.meteo_data.abs_pressure)
+    mydata['rel_pressure'] = None if (globalvars.meteo_data.rel_pressure == None) else int(globalvars.meteo_data.rel_pressure)
+    
+    mydata['rain'] = None if (globalvars.meteo_data.rain == None) else float( "%.1f" %  (globalvars.meteo_data.rain) )   
+    mydata['rain_rate'] = None if (globalvars.meteo_data.rain_rate == None) else float( "%.1f" %  (globalvars.meteo_data.rain_rate) )   
+
+    mydata['wind_chill'] = None if (globalvars.meteo_data.wind_chill == None) else float( "%.1f" %  (globalvars.meteo_data.wind_chill) )
+    mydata['temp_apparent'] = None if (globalvars.meteo_data.temp_apparent == None) else float( "%.1f" %  (globalvars.meteo_data.temp_apparent) )
+    mydata['dew_point'] = None if (globalvars.meteo_data.dew_point == None) else float( "%.1f" %  (globalvars.meteo_data.dew_point) )
+
+    mydata['cloud_base_altitude'] = None if (globalvars.meteo_data.cloud_base_altitude == None) else int(globalvars.meteo_data.cloud_base_altitude)   
+
+    mydata['uv'] = None if (globalvars.meteo_data.uv == None) else float( "%.1f" %  (globalvars.meteo_data.uv) )
+    mydata['illuminance'] = None if (globalvars.meteo_data.illuminance == None) else float( "%.1f" %  (globalvars.meteo_data.illuminance) )
+
+    mydata['winDayMin'] = None if (globalvars.meteo_data.winDayMin == None) else int(globalvars.meteo_data.winDayMin)   
+    mydata['winDayMax'] = None if (globalvars.meteo_data.winDayMax == None) else int(globalvars.meteo_data.winDayMax)   
+    mydata['winDayGustMin'] = None if (globalvars.meteo_data.winDayGustMin == None) else int(globalvars.meteo_data.winDayGustMin)   
+    mydata['winDayGustMax'] = None if (globalvars.meteo_data.winDayGustMax == None) else int(globalvars.meteo_data.winDayGustMax)   
+
+    mydata['TempOutMin'] = None if (globalvars.meteo_data.TempOutMin == None) else float( "%.1f" %  (globalvars.meteo_data.TempOutMin) )   
+    mydata['TempOutMax'] = None if (globalvars.meteo_data.TempOutMax == None) else float( "%.1f" %  (globalvars.meteo_data.TempOutMax) )   
+    mydata['TempInMin'] = None if (globalvars.meteo_data.TempInMin == None) else float( "%.1f" %  (globalvars.meteo_data.TempInMin) )   
+    mydata['TempInMax'] = None if (globalvars.meteo_data.TempInMax == None) else float( "%.1f" %  (globalvars.meteo_data.TempInMax) )   
+
+    mydata['UmOutMin'] = None if (globalvars.meteo_data.UmOutMin == None) else int(globalvars.meteo_data.UmOutMin)   
+    mydata['UmOutMax'] = None if (globalvars.meteo_data.UmOutMax == None) else int(globalvars.meteo_data.UmOutMax)  
+    mydata['UmInMin'] = None if (globalvars.meteo_data.UmInMin == None) else int(globalvars.meteo_data.UmInMin)   
+    mydata['UmInMax'] = None if (globalvars.meteo_data.UmInMax == None) else int(globalvars.meteo_data.UmInMax)   
+
+    mydata['PressureMin'] = None if (globalvars.meteo_data.PressureMin == None) else int(globalvars.meteo_data.PressureMin)    
+    mydata['PressureMax'] = None if (globalvars.meteo_data.PressureMax == None) else int(globalvars.meteo_data.PressureMax) 
+
+    mydata['rain_rate_24h'] = None if (globalvars.meteo_data.rain_rate_24h == None) else int(globalvars.meteo_data.rain_rate_24h)   
+    mydata['rain_rate_1h'] = None if (globalvars.meteo_data.rain_rate_1h == None) else int(globalvars.meteo_data.rain_rate_1h)   
+
     if ( globalvars.meteo_data.wind_trend != None):
-        mydata['wind_trend'] = (globalvars.meteo_data.wind_trend)
+        mydata['wind_trend'] = int((globalvars.meteo_data.wind_trend))
     else:
         mydata['wind_trend'] = 0
     mydata['station_name'] = (cfg.station_name)
@@ -789,15 +744,76 @@ def UploadData(cfg):
     if ( globalvars.meteo_data.last_capture != None ):
         mydata['last_capture'] = globalvars.meteo_data.last_capture.strftime("[%d/%m/%Y-%H:%M:%S]")
     else:
-        mydata['last_capture'] = "None"
+        mydata['last_capture'] = None
 
-    
     #print mydata
     
-    
     j = json.dumps(mydata)
+    return j
+
+def degToCompass(num):
+    val=int((num/22.5)+.5)
+    arr=["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+    return  arr[(val % 16)]
+
+def CheckKeyInDictionary(d,key):
+    if key in d:
+        return d[key]
+    else:
+        None   
+
+def CreateLoRaJson(cfg):
+#    SWPI
+#     ['StationID'] =    1        
+#     ['wind_dir'] =     2
+#     ['wind_ave'] =     3
+#     ['wind_gust'] =    4
+#     ['temp_out'] =     5
+#     ['temp_in'] =      6
+#     ['hum_out'] =      7
+#     ['hum_in'] =       8
+#     ['abs_pressure'] = 9
+#     ['offiline'] =     10 
+
+    
+    if ( globalvars.offline  ):
+#         mydata[9] = 1
+        ol = "1"
+    else:
+#         mydata[9] = 0
+        ol = "0"
+        
+    str_out = ",".join(("SWPI",
+                        cfg.LoRa_ID,
+                       str(globalvars.meteo_data.wind_dir),
+                       str(int(globalvars.meteo_data.wind_ave)),
+                       str(int(globalvars.meteo_data.wind_gust)),
+                       "%.1f" %  (globalvars.meteo_data.temp_out),
+                       "%.1f" %  (globalvars.meteo_data.temp_in),
+                       str(int(globalvars.meteo_data.hum_out)),
+                       str(int(globalvars.meteo_data.hum_in)),
+                       str(int(globalvars.meteo_data.abs_pressure)),
+                       ol))   
+        
+    return str_out
+
+
+    
+def UploadData(cfg):
+    
+    if ( globalvars.meteo_data.last_measure_time == None):
+        return
+    
+    delay = (datetime.datetime.now() - globalvars.meteo_data.last_measure_time)
+    delay_seconds = int(delay.total_seconds())
+    
+    if ( delay_seconds > 120 ):
+        return
+    
+
     objects_file = '/dev/shm/meteo.txt'
 
+    j = CreateMeteoJson(cfg)
     f = open(objects_file,'w')
     f.write(j + "\n")
     f.close()

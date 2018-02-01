@@ -200,6 +200,13 @@ class config(object):
 		# [mcp3002]
 		self.mcp3002_spiDev = config.getint('mcp3002', 'mcp3002_spiDev',0)
 		
+		# [LoRa]
+		self.use_LoRa = config.getboolean('LoRa', 'use_LoRa',False)
+		self.LoRa_spiDev = config.getint('LoRa', 'LoRa_spiDev',1)
+		self.LoRa_frequency = config.getfloat('LoRa', 'LoRa_frequency',868.0)
+		self.LoRa_power = config.getint('LoRa', 'LoRa_power',23) # 23 - max LoRa power ( min = 5 )
+		self.LoRa_ID = config.get('LoRa', 'LoRa_ID',"1")  # station ID ( only one char )
+
 		# [Sensor_PCE-FWS20]
 		self.set_system_time_from_WeatherStation = config.getboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',False)
 
@@ -431,6 +438,13 @@ class config(object):
 		
 		# [mcp3002]
 		config.setint('mcp3002', 'mcp3002_spiDev',self.mcp3002_spiDev)
+		
+		# [LoRa] 
+		config.setboolean('LoRa', 'use_LoRa',self.use_LoRa)
+		config.setint('LoRa', 'LoRa_spiDev',self.LoRa_spiDev)
+		config.setfloat('LoRa', 'LoRa_frequency',self.LoRa_frequency)
+		config.setint('LoRa', 'LoRa_power',self.LoRa_power)
+		config.setstr('LoRa', 'LoRa_ID',self.LoRa_ID)
 
 		# [Sensor_PCE-FWS20]
 		config.setboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',self.set_system_time_from_WeatherStation)

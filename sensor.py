@@ -26,6 +26,7 @@ import meteodata
 from BMP085 import BMP085
 from BME280 import *
 import re
+import rf95
 
 
 
@@ -49,6 +50,18 @@ class Sensor(threading.Thread):
 		else:
 			self.bmp085 = None
 
+		if (self.cfg.use_LoRa):
+			self.lora = rf95.RF95(self.cfg.LoRa_spiDev,0, None,None)
+			if not self.lora.init(): # returns True if found
+				log("RF95 not found")
+				self.lora = None
+				return 
+			self.lora.set_frequency(self.cfg.LoRa_frequency)
+			self.lora.set_tx_power(self.cfg.LoRa_power)
+			#self.lora.set_modem_config(rf95.Bw125Cr48Sf4096)
+		else:
+			self.lora = None
+			
 		object.__init__(self)
 		
 	def GetData(self):
@@ -63,6 +76,22 @@ class Sensor(threading.Thread):
 			self.ReadBME280()
 		globalvars.meteo_data.CalcStatistics()
 		globalvars.meteo_data.LogDataToDB()
+		
+		if (self.cfg.use_LoRa):
+			self.SendToLoRa()
+			
+	def SendToLoRa(self):
+		
+		if ( self.lora == None):
+			log("ERROR sending to LoRA")
+		try:
+			jstr = CreateLoRaJson(self.cfg)
+			self.lora.send(self.lora.str_to_data(jstr))
+			#self.lora.wait_packet_sent()
+			log("SendToLoRa: " + str(jstr))
+		except:
+			log("ERROR sending to LoRA")
+
 		
 	def ReadDHT(self):
 		

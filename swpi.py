@@ -652,7 +652,7 @@ def answer_call(modem, message):
 					listOfMessages.append("./audio/" + str(tens) + ".raw")			
 			listOfMessages.append("./audio/km.raw")
 		
-	       	#winf trend
+			#winf trend
 			if ( globalvars.meteo_data.wind_trend != None ):
 				if ( globalvars.meteo_data.wind_trend < - cfg.wind_trend_limit) :
 					listOfMessages.append("./audio/winddown.raw")
@@ -703,14 +703,14 @@ def answer_call(modem, message):
 				listOfMessages.append("./audio/percent.raw")
 		
 		# 		# Dew point
-			if ( globalvars.meteo_data.dew_point != None ):
-				listOfMessages.append("./audio/silence05s.raw")
-				listOfMessages.append("./audio/dewpoint.raw")
-				if ( globalvars.meteo_data.dew_point < 0) :
-					listOfMessages.append("./audio/minus.raw")
-				intera = int(round( abs(globalvars.meteo_data.dew_point) ))
-				listOfMessages.append("./audio/" + str(intera) + ".raw")
-				listOfMessages.append("./audio/degree.raw")
+# 			if ( globalvars.meteo_data.dew_point != None ):
+# 				listOfMessages.append("./audio/silence05s.raw")
+# 				listOfMessages.append("./audio/dewpoint.raw")
+# 				if ( globalvars.meteo_data.dew_point < 0) :
+# 					listOfMessages.append("./audio/minus.raw")
+# 				intera = int(round( abs(globalvars.meteo_data.dew_point) ))
+# 				listOfMessages.append("./audio/" + str(intera) + ".raw")
+# 				listOfMessages.append("./audio/degree.raw")
 		
 			#Cloud base
 			if (globalvars.meteo_data.cloud_base_altitude != None ) : 

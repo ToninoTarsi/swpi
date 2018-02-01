@@ -353,7 +353,15 @@
                     break;
                 }
             }
-
+            
+            dd = document.getElementById('use_LoRa');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$use_LoRa') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+           
             dd = document.getElementById('usedongle');
             for (var i = 0; i < dd.options.length; i++) {
                 if (dd.options[i].text == '$usedongle') {
@@ -855,6 +863,7 @@
           	<li><a href="#WebCam">WebCams</a></li>
         	<li><a href="#RFM01">RFM01</a></li>
         	<li><a href="#MCP3002">MCP3002</a></li>
+        	<li><a href="#LoRa">LoRa</a></li>
 			<li><a href="#RTL-SDR">RTL-SDR</a></li>			
         	<li><a href="#Security">Security</a></li>	
         	<li><a href="#DataLogging">DataLogging</a></li>
@@ -1072,8 +1081,8 @@
                         <option value="DAVIS-SENSOR" >DAVIS-SENSOR</option> 
                         <option value="DAVIS-VANTAGE-PRO2" >DAVIS-VANTAGE-PRO2</option>  
                         <option value="LACROSS-TX23" >LACROSS-TX23</option>    
-                        <option value="W831" >W831</option>    
-                                                       
+                        <option value="W831" >W831</option>  
+                        <option value="LoRa" >LoRa</option>                 
                         </select></td>  
             </tr>
             <tr>
@@ -1713,7 +1722,6 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
 	</div>
 	
 	<div class="tabContent" id="MCP3002"> 
-	
 		<table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
 				<tr>
 	                <td class="style12" bgcolor="$LayColorBBC">
@@ -1722,10 +1730,59 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
 	                    <input id="mcp3002_spiDev" type="text" name="mcp3002_spiDev" 
 	                        value="$mcp3002_spiDev"
 	                        style="width: 100%" /></td>
-	            </tr>
-	            
+	            </tr>   
 		</table>
+	</div>
 	
+	<div class="tabContent" id="LoRa"> 
+		<table bgcolor=$LayColorTBC border="1" frame="box" width="830px">
+		   <tr>
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>Send data with LoRa(<b>use_LoRa</b>)</font></td>
+                <td class="style37" bgcolor="$LayColorBBC">
+                    <select id="use_LoRa" type="text" name="use_LoRa" 
+                        value=$use_LoRa style="width: 100%" >
+                        <option value=True >True</option>
+                        <option value=False >False</option>
+                    </select></td>
+            </tr>
+			<tr>
+                <td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRa spiDev device[0,1]. (<b>LoRa_spiDev</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                    <input id="LoRa_spiDev" type="text" name="LoRa_spiDev" 
+						value="$LoRa_spiDev"
+						style="width: 100%" /></td>
+            </tr>  
+
+			<tr>
+                <td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRa frequency (<b>LoRa_frequency</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                    <input id="LoRa_frequency" type="text" name="LoRa_frequency" 
+						value="$LoRa_frequency"
+						style="width: 100%" /></td>
+            </tr>             
+
+			<tr>
+                <td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRa Power(5,23) (<b>LoRa_power</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                    <input id="LoRa_power" type="text" name="LoRa_power" 
+						value="$LoRa_power"
+						style="width: 100%" /></td>
+            </tr>  
+            
+            <tr>
+                <td class="style12" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRa station ID(only one char) (<b>LoRa_ID</b>)</font></td>
+                <td class="style45" bgcolor="$LayColorBBC">
+                    <input id="LoRa_ID" type="text" name="LoRa_ID" 
+						value="$LoRa_ID"
+						style="width: 100%" /></td>
+            </tr>  
+             
+		</table>
 	</div>
 	
 	<div class="tabContent" id="RFM01"> 	     

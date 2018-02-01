@@ -51,7 +51,7 @@ class Sensor_Simulator(sensor.Sensor):
         globalvars.meteo_data.wind_ave     = random.randrange(1,50)
         globalvars.meteo_data.wind_gust    = random.randrange(50,100)
         globalvars.meteo_data.wind_dir     = random.randrange(1,360)
-        globalvars.meteo_data.wind_dir_code = random.choice(['N','S','E','W','NW','NE','SW','SE'])
+        globalvars.meteo_data.wind_dir_code = degToCompass(globalvars.meteo_data.wind_dir)
         globalvars.meteo_data.rain  = random.randrange(1,100)      
         globalvars.meteo_data.illuminance = random.randrange(1,100)
         globalvars.meteo_data.uv = random.randrange(1,100)
