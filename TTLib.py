@@ -37,6 +37,7 @@ import requests
 import subprocess
 import version
 import base64
+import re
 
 socket.setdefaulttimeout(30)
 
@@ -783,7 +784,7 @@ def CreateLoRaJson(cfg):
 #         mydata[9] = 0
         ol = "0"
         
-    str_out = ",".join(("SWPI",
+    str_out = ",".join(("$SW",
                         cfg.LoRa_ID,
                        str(globalvars.meteo_data.wind_dir),
                        str(int(globalvars.meteo_data.wind_ave)),
@@ -795,9 +796,41 @@ def CreateLoRaJson(cfg):
                        str(int(globalvars.meteo_data.abs_pressure)),
                        ol))   
         
-    return str_out
+    return addchecksum(str_out)
 
+def addchecksum(sentence):
 
+    """ Remove any newlines """
+    if re.search("\n$", sentence):
+        sentence = sentence[:-1]
+
+    nmeadata = sentence
+
+    calc_cksum = 0
+    for s in nmeadata:
+        calc_cksum ^= ord(s)
+
+    """ Return the nmeadata, the checksum from
+        sentence, and the calculated checksum
+    """
+    return nmeadata + "*" + hex(calc_cksum)[2:]
+
+def checksum(sentence):
+    
+    """ Remove any newlines """
+    if re.search("\n$", sentence):
+        sentence = sentence[:-1]
+
+    nmeadata,cksum = re.split('\*', sentence)
+
+    calc_cksum = 0
+    for s in nmeadata:
+        calc_cksum ^= ord(s)
+
+    """ Return the nmeadata, the checksum from
+        sentence, and the calculated checksum
+    """
+    return nmeadata,'0x'+cksum,hex(calc_cksum)
     
 def UploadData(cfg):
     

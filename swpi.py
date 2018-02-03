@@ -152,6 +152,7 @@ def process_sms(modem, smsID):
 		#   BMP085  [0/1]   Use BMP084
 		#   BME280  [0/1]   Use BME280
 		#   DHT     [0/1]   Use DHT
+		#   LPW		value   Set LoRA Transmition power
 		#   BCK				backup
 		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
@@ -422,6 +423,12 @@ def process_sms(modem, smsID):
 			dbCursor.execute("insert into SMS(Number, Date,Message) values (?,?,?)", (msgSender,msgDate,msgText,))
 			conn.commit()		
 			log( "New CAM interval set to : " + str(cfg.WebCamInterval))
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 3 and cmd == "LTP" ):
+			modem.sms_del(msgID)
+			LoRa_power = int(param)
+			cfg.setLoRa_power(LoRa_power)	
+			log( "New LoRa_power  set to : " + str(cfg.LoRa_power))
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 3 and cmd == "LOG" ):
 			modem.sms_del(msgID)

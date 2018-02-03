@@ -586,6 +586,14 @@ class config(object):
 		config.set('WebCam', 'webcaminterval',str(self.WebCamInterval))
 		f = open(self.cfgName,"w")
 		config.write(f)
+		
+	def setLoRa_power(self,newLoRa_power):
+		self.LoRa_power = int(newLoRa_power)
+		config = ConfigParser.SafeConfigParser()
+		config.read(self.cfgName)
+		config.set('LoRa', 'LoRa_power',str(self.LoRa_power))
+		f = open(self.cfgName,"w")
+		config.write(f)
 
 	def setAlwaysOnInternet(self,AlwaysOnInternet):
 		self.AlwaysOnInternet = AlwaysOnInternet

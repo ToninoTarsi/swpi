@@ -29,7 +29,6 @@ import re
 import rf95
 
 
-
 def log(message) :
 	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
