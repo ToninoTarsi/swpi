@@ -677,6 +677,8 @@ def CreateMeteoJson(cfg):
     mydata['wind_dir'] = None if (globalvars.meteo_data.wind_dir == None) else float( "%.1f" %  (globalvars.meteo_data.wind_dir) )
     mydata['wind_dir_ave'] = None if (globalvars.meteo_data.wind_dir_ave == None) else float( "%.1f" %  (globalvars.meteo_data.wind_dir_ave) )
     mydata['wind_ave'] = None if (globalvars.meteo_data.wind_ave == None) else int(globalvars.meteo_data.wind_ave)
+    mydata['wind_gust'] = None if (globalvars.meteo_data.wind_gust == None) else int(globalvars.meteo_data.wind_gust)
+   
     mydata['temp_out'] = None if (globalvars.meteo_data.temp_out == None) else float( "%.1f" %  (globalvars.meteo_data.temp_out) )
     mydata['temp_in'] = None if (globalvars.meteo_data.temp_in == None) else float( "%.1f" %  (globalvars.meteo_data.temp_in) )   
     mydata['hum_out'] = None if (globalvars.meteo_data.hum_out == None) else int(globalvars.meteo_data.hum_out)   

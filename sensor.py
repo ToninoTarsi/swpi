@@ -76,8 +76,8 @@ class Sensor(threading.Thread):
 		globalvars.meteo_data.CalcStatistics()
 		globalvars.meteo_data.LogDataToDB()
 		
-		if (self.cfg.use_LoRa):
-			self.SendToLoRa()
+		if (self.cfg.use_LoRa and self.lora != None ):
+			thread.start_new_thread(self.SendToLoRa())
 			
 	def SendToLoRa(self):
 		
@@ -86,7 +86,7 @@ class Sensor(threading.Thread):
 		try:
 			jstr = CreateLoRaJson(self.cfg)
 			self.lora.send(self.lora.str_to_data(jstr))
-			#self.lora.wait_packet_sent()
+			self.lora.wait_packet_sent()
 			log("SendToLoRa: " + str(jstr))
 		except:
 			log("ERROR sending to LoRA")
