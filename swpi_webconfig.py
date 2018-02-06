@@ -93,7 +93,12 @@ def outputPage(cfg):
 	d.update(LoRa_frequency=cfg.LoRa_frequency)
 	d.update(LoRa_power=cfg.LoRa_power)
 	d.update(LoRa_ID=cfg.LoRa_ID)
+	d.update(LoRa_BW=cfg.LoRa_BW)
+	d.update(LoRa_CR=cfg.LoRa_CR)
+	d.update(LoRa_SF=cfg.LoRa_SF)
+	d.update(LoRa_mode=cfg.LoRa_mode)
 
+	
 	# [Sensor_PCE-FWS20]
 	d.update(set_system_time_from_WeatherStation=cfg.set_system_time_from_WeatherStation)
 
@@ -312,6 +317,11 @@ if ( len(request) != 0 ):
 	cfg.LoRa_frequency = request['LoRa_frequency'][0]
 	cfg.LoRa_power = request['LoRa_power'][0]
 	cfg.LoRa_ID = request['LoRa_ID'][0]
+	cfg.LoRa_BW = request['LoRa_BW'][0]
+	cfg.LoRa_CR = request['LoRa_CR'][0]
+	cfg.LoRa_SF = request['LoRa_SF'][0]
+	cfg.LoRa_mode = request['LoRa_mode'][0]
+
 
 	# [Sensor_PCE-FWS20]
 	cfg.set_system_time_from_WeatherStation = request['set_system_time_from_WeatherStation'][0]

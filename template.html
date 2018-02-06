@@ -362,6 +362,40 @@
                 }
             }
            
+            dd = document.getElementById('LoRa_BW');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$LoRa_BW') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            dd = document.getElementById('LoRa_CR');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$LoRa_CR') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }           
+            
+            dd = document.getElementById('LoRa_SF');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$LoRa_SF') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }   
+            
+    
+            dd = document.getElementById('LoRa_mode');
+            for (var i = 0; i < dd.options.length; i++) {
+                if (dd.options[i].text == '$LoRa_mode') {
+                    dd.selectedIndex = i;
+                    break;
+                }
+            }             
+            
+            
             dd = document.getElementById('usedongle');
             for (var i = 0; i < dd.options.length; i++) {
                 if (dd.options[i].text == '$usedongle') {
@@ -1781,6 +1815,68 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">thro
 						value="$LoRa_ID"
 						style="width: 100%" /></td>
             </tr>  
+             
+		   <tr>
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRa Bandwidth KHz(<b>LoRa_BW</b>)</font></td>
+                <td class="style37" bgcolor="$LayColorBBC">
+                    <select id="LoRa_BW" type="text" name="LoRa_BW" 
+                        value=$LoRa_BW style="width: 100%" >
+                        <option value="7.8" >7.8</option>
+                        <option value="10.4" >10.4</option>
+                        <option value="10" >10</option>
+                        <option value="15.6" >15.6</option>
+                        <option value="20.8" >20.8</option>
+                        <option value="31.25" >31.25</option>
+                        <option value="41.7" >41.7</option>
+                        <option value="62.5" >62.5</option>
+                        <option value="125" >125</option>
+                        <option value="250" >250</option>
+                        <option value="500" >500</option>
+                    </select></td>
+            </tr>             
+ 
+ 		   <tr>
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRa Coding Rate (<b>LoRa_CR</b>)</font></td>
+                <td class="style37" bgcolor="$LayColorBBC">
+                    <select id="LoRa_CR" type="text" name="LoRa_CR" 
+                        value=$LoRa_CR style="width: 100%" >
+                        <option value="4/5" >4/5</option>
+                        <option value="4/6" >4/6</option>
+                        <option value="4/7" >4/7</option>
+                        <option value="4/8" >4/8</option>
+                    </select></td>
+            </tr>             
+
+ 		   <tr>
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRa SPREADING FACTOR (<b>LoRa_SF</b>)</font></td>
+                <td class="style37" bgcolor="$LayColorBBC">
+                    <select id="LoRa_SF" type="text" name="LoRa_SF" 
+                        value=$LoRa_SF style="width: 100%" >
+                        <option value="6" >6</option>
+                        <option value="7" >7</option>
+                        <option value="8" >8</option>
+                        <option value="9" >9</option>
+                        <option value="10" >10</option>
+                        <option value="11" >11</option>
+                        <option value="12" >12</option>
+                    </select></td>
+            </tr>  
+             
+
+ 		   <tr>
+                <td class="style5" bgcolor="$LayColorBBC">
+                    <font color=$LayColorBTC>LoRaTrasmition mode (<b>LoRa_mode</b>)</font></td>
+                <td class="style37" bgcolor="$LayColorBBC">
+                    <select id="LoRa_mode" type="text" name="LoRa_mode" 
+                        value=$LoRa_mode style="width: 100%" >
+                        <option value="Bidirectional" >Bidirectional</option>
+                        <option value="Unidirectional" >Unidirectional</option>
+                    </select></td>
+            </tr>  
+
              
 		</table>
 	</div>

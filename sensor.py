@@ -28,6 +28,8 @@ from BME280 import *
 import re
 import rf95
 
+current_milli_time = lambda: int(round(time.time() * 1000))
+
 
 def log(message) :
 	print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
@@ -57,7 +59,10 @@ class Sensor(threading.Thread):
 				return 
 			self.lora.set_frequency(self.cfg.LoRa_frequency)
 			self.lora.set_tx_power(self.cfg.LoRa_power)
-			#self.lora.set_modem_config(rf95.Bw125Cr48Sf4096)
+			self.lora.set_modem_config_simple(getLoRaBWCode(cfg.LoRa_BW),
+											getLoRaCRCode(self.cfg.LoRa_CR), 
+											getLoRaSFCode(self.cfg.LoRa_SF))
+			log("LoRa 0K (" +str(cfg.LoRa_frequency)+ "," + cfg.LoRa_BW+","+self.cfg.LoRa_CR+","+self.cfg.LoRa_SF+ "," +cfg.LoRa_mode +")" )
 		else:
 			self.lora = None
 			
@@ -77,19 +82,65 @@ class Sensor(threading.Thread):
 		globalvars.meteo_data.LogDataToDB()
 		
 		if (self.cfg.use_LoRa and self.lora != None ):
-			thread.start_new_thread(self.SendToLoRa())
-			
-	def SendToLoRa(self):
+			log("LoRa : Sending ... ")
+			thread.start_new_thread(self.SendToLoRaThread,())
+	
+	def SendToLoRaThread(self):
 		
 		if ( self.lora == None):
-			log("ERROR sending to LoRA")
+			log("LoRa : ERROR in initilization ")
+			return 
+		sended = False
+		jstr = CreateLoRaJson(self.cfg)
+		start = current_milli_time()
+		
+
+		while ( ( not sended ) and ( current_milli_time()-start) < 40000) :
+			sended = self.SendToLoRa(jstr)
+			time.sleep(0.5)
+			
+		self.lora.set_mode_idle()
+			
+	def SendToLoRa(self,jstr):
+		
+
 		try:
-			jstr = CreateLoRaJson(self.cfg)
+			start_send = current_milli_time()
 			self.lora.send(self.lora.str_to_data(jstr))
+			sent_time = current_milli_time()-start_send
 			self.lora.wait_packet_sent()
-			log("SendToLoRa: " + str(jstr))
+			log("SendToLoRa(" + str(sent_time) + "ms) : "  + str(jstr))
+			
+			if ( self.cfg.LoRa_mode.upper()  != "BIDIRECTIONAL"):
+				return True;
+			else:						# BIDIRECTIONAL
+				count = 0
+				while ( count < 20  and not self.lora.available()):
+					time.sleep(0.1)
+					count = count + 1
+				if (self.lora.available() ): 
+					data = self.lora.recv()
+					rec_str = ""
+					for ch in data:
+						rec_str = rec_str + chr(ch)
+					log ('LoRa ACT RSSI: ' + str(self.lora.last_rssi) + ' Message: ' + rec_str)
+					if ( rec_str == "OK"):
+						return True
+					else:
+						return False
+				else:
+					log ("LoRa : ACT Timeout")
+					return False
+				
+			
+			self.lora.set_mode_idle()
+			
+			
+				
+
 		except:
 			log("ERROR sending to LoRA")
+			return False
 
 		
 	def ReadDHT(self):

@@ -206,6 +206,11 @@ class config(object):
 		self.LoRa_frequency = config.getfloat('LoRa', 'LoRa_frequency',868.0)
 		self.LoRa_power = config.getint('LoRa', 'LoRa_power',23) # 23 - max LoRa power ( min = 5 )
 		self.LoRa_ID = config.get('LoRa', 'LoRa_ID',"1")  # station ID ( only one char )
+		self.LoRa_BW = config.get('LoRa', 'LoRa_BW',"125")  # ["7.8" , "10.4" , "15.6" , "20.8" , "31.23" , "41.7" , "62.5" , "125" , "250" , "500"]
+		self.LoRa_CR = config.get('LoRa', 'LoRa_CR',"4/5") # 4/[5,6,7,8]
+		self.LoRa_SF = config.get('LoRa', 'LoRa_SF',"7") # [6,7,8,9,10,11,12]
+		self.LoRa_mode = config.get('LoRa', 'LoRa_mode',"Bidirectional") # 
+
 
 		# [Sensor_PCE-FWS20]
 		self.set_system_time_from_WeatherStation = config.getboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',False)
@@ -445,6 +450,10 @@ class config(object):
 		config.setfloat('LoRa', 'LoRa_frequency',self.LoRa_frequency)
 		config.setint('LoRa', 'LoRa_power',self.LoRa_power)
 		config.setstr('LoRa', 'LoRa_ID',self.LoRa_ID)
+		config.setstr('LoRa', 'LoRa_BW',self.LoRa_BW)
+		config.setstr('LoRa', 'LoRa_CR',self.LoRa_CR)
+		config.setstr('LoRa', 'LoRa_SF',self.LoRa_SF)
+		config.setstr('LoRa', 'LoRa_mode',self.LoRa_mode)
 
 		# [Sensor_PCE-FWS20]
 		config.setboolean('Sensor_PCE-FWS20', 'set_system_time_from_WeatherStation',self.set_system_time_from_WeatherStation)
@@ -594,6 +603,30 @@ class config(object):
 		config.set('LoRa', 'LoRa_power',str(self.LoRa_power))
 		f = open(self.cfgName,"w")
 		config.write(f)
+		
+	def setLoRa_BW(self,newLoRa_BW):
+		self.LoRa_BW = str(newLoRa_BW)
+		config = ConfigParser.SafeConfigParser()
+		config.read(self.cfgName)
+		config.set('LoRa', 'LoRa_BW',str(self.LoRa_BW))
+		f = open(self.cfgName,"w")
+		config.write(f)		
+		
+	def setLoRa_CR(self,newLoRa_CR):
+		self.LoRa_CR = str(newLoRa_CR)
+		config = ConfigParser.SafeConfigParser()
+		config.read(self.cfgName)
+		config.set('LoRa', 'LoRa_CR',str(self.LoRa_CR))
+		f = open(self.cfgName,"w")
+		config.write(f)				
+		
+	def setLoRa_SF(self,newLoRa_SF):
+		self.LoRa_SF = str(newLoRa_SF)
+		config = ConfigParser.SafeConfigParser()
+		config.read(self.cfgName)
+		config.set('LoRa', 'LoRa_SF',str(self.LoRa_SF))
+		f = open(self.cfgName,"w")
+		config.write(f)	
 
 	def setAlwaysOnInternet(self,AlwaysOnInternet):
 		self.AlwaysOnInternet = AlwaysOnInternet

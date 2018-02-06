@@ -152,7 +152,10 @@ def process_sms(modem, smsID):
 		#   BMP085  [0/1]   Use BMP084
 		#   BME280  [0/1]   Use BME280
 		#   DHT     [0/1]   Use DHT
-		#   LPW		value   Set LoRA Transmition power
+		#   LPW		value   Set LoRA Transmition power ( reboot is neaded )
+		#   LBW		value   Set LoRA Band Width ( reboot is neaded )
+		#   LCR		value   Set LoRA coding rate ( reboot is neaded )
+		#   LSF		value   Set LoRA SPREADING_FACTOR		 ( reboot is neaded )
 		#   BCK				backup
 		#   RST             Restore
 		#	CAM		X		set camera/logging interval to X seconds
@@ -424,12 +427,31 @@ def process_sms(modem, smsID):
 			conn.commit()		
 			log( "New CAM interval set to : " + str(cfg.WebCamInterval))
 		#---------------------------------------------------------------------------------------	
-		elif (len(command) == 3 and cmd == "LTP" ):
+		elif (len(command) == 3 and cmd == "LPW" ):
 			modem.sms_del(msgID)
 			LoRa_power = int(param)
 			cfg.setLoRa_power(LoRa_power)	
 			log( "New LoRa_power  set to : " + str(cfg.LoRa_power))
 		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 3 and cmd == "LBW" ):
+			modem.sms_del(msgID)
+			LoRa_BW = str(param)
+			cfg.setLoRa_BW(LoRa_BW)	
+			log( "New LoRa_BW  set to : " + str(cfg.LoRa_BW))
+		#---------------------------------------------------------------------------------------	
+		elif (len(command) == 3 and cmd == "LCR" ):
+			modem.sms_del(msgID)
+			LoRa_CR = str(param)
+			cfg.setLoRa_CR(LoRa_CR)	
+			log( "New LoRa_BW  set to : " + str(cfg.LoRa_CR))
+		#---------------------------------------------------------------------------------------			
+		elif (len(command) == 3 and cmd == "LSF" ):
+			modem.sms_del(msgID)
+			LoRa_SF = str(param)
+			cfg.setLoRa_SF(LoRa_SF)	
+			log( "New LoRa_BW  set to : " + str(cfg.LoRa_SF))
+		#---------------------------------------------------------------------------------------			
+		
 		elif (len(command) == 3 and cmd == "LOG" ):
 			modem.sms_del(msgID)
 			if ( param == '0' or param == '1' ):
@@ -820,7 +842,7 @@ log( "Starting SINT WIND PI  ... ")
 print "************************************************************************"
 print "*                      Sint Wind PI "+v+"                           *"
 print "*                                                                      *"
-print "*          2012-2017 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
+print "*          2012-2018 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
 print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
@@ -832,6 +854,7 @@ logFileDate = datetime.datetime.now().strftime("%d%m%Y")
 SecondsToWait = 10
 # give 10 seconds for interrupt the application
 try:
+	#print sys.argv
 	if not ( '-i' in sys.argv ) :
 		for i in range(0,SecondsToWait):
 			sys.stdout.write(str(SecondsToWait-i) + ".....")

@@ -817,6 +817,52 @@ def addchecksum(sentence):
     """
     return nmeadata + "*" + hex(calc_cksum)[2:]
 
+
+def getLoRaBWCode(c):
+    options = {  "7.8"  : 0x00,
+                "10.4"  : 0x10,    
+                "15.6"  : 0x20,    
+                "20.8"  : 0x30,    
+                "31.25" : 0x40,    
+                "41.7"  : 0x50,    
+                "62.5"  : 0x60,    
+                "125"   : 0x70,        
+                "250"   : 0x80,       
+                "500"   : 0x90        
+                }
+    if ( c in options.keys()):
+        return options[c]
+    else:
+        return 0x70
+    
+    
+def getLoRaCRCode(c):
+    options = {"4/5"  : 0x02,
+               "4/6"  : 0x04,
+               "4/7"  : 0x06,
+               "4/8"  : 0x08
+                }
+    if ( c in options.keys()):
+        return options[c]
+    else:
+        return 0x02
+    
+    
+def getLoRaSFCode(c):
+    options = { "6"   : 0x60,
+                "7"   : 0x70,
+                "8"   : 0x80,
+                "9"   : 0x90,
+                "10"  : 0xa0,
+                "11"  : 0xb0,
+                "12"  : 0xc0
+                }
+    if ( c in options.keys()):
+        return options[c]
+    else:
+        return 0x70
+
+
 def checksum(sentence):
     
     """ Remove any newlines """
