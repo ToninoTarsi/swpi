@@ -123,7 +123,7 @@ class Sensor(threading.Thread):
 					rec_str = ""
 					for ch in data:
 						rec_str = rec_str + chr(ch)
-					log ('LoRa ACT RSSI: ' + str(self.lora.last_rssi) + ' Message: ' + rec_str)
+					log ('LoRa ACT (' + str(self.lora.last_rssi) + 'dBm) :' + rec_str)
 					if ( rec_str == "OK"):
 						return True
 					else:
