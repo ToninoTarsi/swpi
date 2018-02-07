@@ -716,8 +716,8 @@ def CreateMeteoJson(cfg):
     mydata['PressureMin'] = None if (globalvars.meteo_data.PressureMin == None) else int(globalvars.meteo_data.PressureMin)    
     mydata['PressureMax'] = None if (globalvars.meteo_data.PressureMax == None) else int(globalvars.meteo_data.PressureMax) 
 
-    mydata['rain_rate_24h'] = None if (globalvars.meteo_data.rain_rate_24h == None) else int(globalvars.meteo_data.rain_rate_24h)   
-    mydata['rain_rate_1h'] = None if (globalvars.meteo_data.rain_rate_1h == None) else int(globalvars.meteo_data.rain_rate_1h)   
+    mydata['rain_rate_24h'] = None if (globalvars.meteo_data.rain_rate_24h == None) else float( "%.3f" %  (globalvars.meteo_data.rain_rate_24h) )  
+    mydata['rain_rate_1h'] = None if (globalvars.meteo_data.rain_rate_1h == None) else float( "%.3f" %  (globalvars.meteo_data.rain_rate_1h)  ) 
 
     if ( globalvars.meteo_data.wind_trend != None):
         mydata['wind_trend'] = int((globalvars.meteo_data.wind_trend))
