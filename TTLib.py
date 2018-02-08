@@ -788,14 +788,14 @@ def CreateLoRaJson(cfg):
         
     str_out = ",".join(("$SW",
                         cfg.LoRa_ID,
-                       str(globalvars.meteo_data.wind_dir),
-                       str(int(globalvars.meteo_data.wind_ave)),
-                       str(int(globalvars.meteo_data.wind_gust)),
-                       "%.1f" %  (globalvars.meteo_data.temp_out),
-                       "%.1f" %  (globalvars.meteo_data.temp_in),
-                       str(int(globalvars.meteo_data.hum_out)),
-                       str(int(globalvars.meteo_data.hum_in)),
-                       str(int(globalvars.meteo_data.abs_pressure)),
+                        "" if (globalvars.meteo_data.wind_dir == None) else str(globalvars.meteo_data.wind_dir),
+                        "" if (globalvars.meteo_data.wind_ave == None) else str(int(globalvars.meteo_data.wind_ave)),
+                        "" if (globalvars.meteo_data.wind_gust == None) else str(int(globalvars.meteo_data.wind_gust)),
+                        "" if (globalvars.meteo_data.temp_out == None) else "%.1f" %  (globalvars.meteo_data.temp_out),
+                        "" if (globalvars.meteo_data.temp_in == None) else "%.1f" %  (globalvars.meteo_data.temp_in),
+                        "" if (globalvars.meteo_data.hum_out == None) else str(int(globalvars.meteo_data.hum_out)),
+                        "" if (globalvars.meteo_data.hum_in == None) else str(int(globalvars.meteo_data.hum_in)),
+                        "" if (globalvars.meteo_data.abs_pressure == None) else str(int(globalvars.meteo_data.abs_pressure)),
                        ol))   
         
     return addchecksum(str_out)

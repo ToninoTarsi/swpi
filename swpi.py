@@ -681,7 +681,7 @@ def answer_call(modem, message):
 					listOfMessages.append("./audio/" + str(tens) + ".raw")			
 			listOfMessages.append("./audio/km.raw")
 		
-			#winf trend
+			#wind trend
 			if ( globalvars.meteo_data.wind_trend != None ):
 				if ( globalvars.meteo_data.wind_trend < - cfg.wind_trend_limit) :
 					listOfMessages.append("./audio/winddown.raw")
@@ -723,6 +723,7 @@ def answer_call(modem, message):
 					listOfMessages.append("./audio/" + str(tens) + ".raw")
 				listOfMessages.append("./audio/hpa.raw")	
 		
+			inCloud = False
 			# Humidity
 			if ( globalvars.meteo_data.hum_out != None ):
 				listOfMessages.append("./audio/silence05s.raw") 
@@ -731,6 +732,11 @@ def answer_call(modem, message):
 				listOfMessages.append("./audio/" + str(intera) + ".raw")
 				listOfMessages.append("./audio/percent.raw")
 		
+				if ( globalvars.meteo_data.hum_out >= 100 ):
+					inCloud = True
+					listOfMessages.append("./audio/silence05s.raw")
+					listOfMessages.append("./audio/cloud.raw")
+					
 		# 		# Dew point
 # 			if ( globalvars.meteo_data.dew_point != None ):
 # 				listOfMessages.append("./audio/silence05s.raw")
@@ -742,7 +748,9 @@ def answer_call(modem, message):
 # 				listOfMessages.append("./audio/degree.raw")
 		
 			#Cloud base
-			if (globalvars.meteo_data.cloud_base_altitude != None ) : 
+	
+
+			if (globalvars.meteo_data.cloud_base_altitude != None and not inCloud ) : 
 				if ( globalvars.meteo_data.cloud_base_altitude != -1 ) :
 					thousands, rem = divmod(round(globalvars.meteo_data.cloud_base_altitude), 1000) 
 					thousands = int(thousands * 1000)

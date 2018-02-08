@@ -111,7 +111,7 @@ class Sensor(threading.Thread):
 			self.lora.wait_packet_sent()
 			log("SendToLoRa(" + str(sent_time) + "ms) : "  + str(jstr))
 			
-			if ( self.cfg.LoRa_mode.upper()  != "BIDIRECTIONAL"):
+			if ( self.cfg.LoRa_mode.upper()[0]  != "B"):
 				return True;
 			else:						# BIDIRECTIONAL
 				count = 0
@@ -124,7 +124,8 @@ class Sensor(threading.Thread):
 					for ch in data:
 						rec_str = rec_str + chr(ch)
 					log ('LoRa ACT (' + str(self.lora.last_rssi) + 'dBm) :' + rec_str)
-					if ( rec_str == "OK"):
+					str_act = ",".join(("$SW",self.cfg.LoRa_ID))
+					if ( rec_str == str_act):
 						return True
 					else:
 						return False
