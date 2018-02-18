@@ -772,11 +772,9 @@ def CreateLoRaJson(cfg):
 #     ['wind_ave'] =     3
 #     ['wind_gust'] =    4
 #     ['temp_out'] =     5
-#     ['temp_in'] =      6
-#     ['hum_out'] =      7
-#     ['hum_in'] =       8
-#     ['abs_pressure'] = 9
-#     ['offiline'] =     10 
+#     ['hum_out'] =      6
+#     ['abs_pressure'] = 7
+#     ['offiline'] =     8 
 
     
     if ( globalvars.offline  ):
@@ -792,9 +790,7 @@ def CreateLoRaJson(cfg):
                         "" if (globalvars.meteo_data.wind_ave == None) else str(int(globalvars.meteo_data.wind_ave)),
                         "" if (globalvars.meteo_data.wind_gust == None) else str(int(globalvars.meteo_data.wind_gust)),
                         "" if (globalvars.meteo_data.temp_out == None) else "%.1f" %  (globalvars.meteo_data.temp_out),
-                        "" if (globalvars.meteo_data.temp_in == None) else "%.1f" %  (globalvars.meteo_data.temp_in),
                         "" if (globalvars.meteo_data.hum_out == None) else str(int(globalvars.meteo_data.hum_out)),
-                        "" if (globalvars.meteo_data.hum_in == None) else str(int(globalvars.meteo_data.hum_in)),
                         "" if (globalvars.meteo_data.abs_pressure == None) else str(int(globalvars.meteo_data.abs_pressure)),
                        ol))   
         
