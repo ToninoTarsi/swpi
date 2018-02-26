@@ -683,8 +683,8 @@ def CreateMeteoJson(cfg):
     mydata['temp_in'] = None if (globalvars.meteo_data.temp_in == None) else float( "%.1f" %  (globalvars.meteo_data.temp_in) )   
     mydata['hum_out'] = None if (globalvars.meteo_data.hum_out == None) else int(globalvars.meteo_data.hum_out)   
     mydata['hum_in'] = None if (globalvars.meteo_data.hum_in == None) else int(globalvars.meteo_data.hum_in)   
-    mydata['abs_pressure'] = None if (globalvars.meteo_data.abs_pressure == None) else int(globalvars.meteo_data.abs_pressure)
-    mydata['rel_pressure'] = None if (globalvars.meteo_data.rel_pressure == None) else int(globalvars.meteo_data.rel_pressure)
+    mydata['abs_pressure'] = None if (globalvars.meteo_data.abs_pressure == None) else float( "%.1f" %  (globalvars.meteo_data.abs_pressure) )  
+    mydata['rel_pressure'] = None if (globalvars.meteo_data.rel_pressure == None) else float( "%.1f" %  (globalvars.meteo_data.rel_pressure) )  
     
     mydata['rain'] = None if (globalvars.meteo_data.rain == None) else float( "%.1f" %  (globalvars.meteo_data.rain) )   
     mydata['rain_rate'] = None if (globalvars.meteo_data.rain_rate == None) else float( "%.1f" %  (globalvars.meteo_data.rain_rate) )   
