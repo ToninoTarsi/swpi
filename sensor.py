@@ -124,7 +124,7 @@ class Sensor(threading.Thread):
 					for ch in data:
 						rec_str = rec_str + chr(ch)
 					log ('LoRa ACT (' + str(self.lora.last_rssi) + 'dBm) :' + rec_str)
-					str_act = ",".join(("$SW",self.cfg.LoRa_ID))
+					str_act = ",".join(("$SWACT",self.cfg.LoRa_ID))
 					if ( rec_str == str_act):
 						return True
 					else:
