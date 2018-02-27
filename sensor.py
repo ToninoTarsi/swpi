@@ -92,7 +92,6 @@ class Sensor(threading.Thread):
 		globalvars.meteo_data.LogDataToDB()
 		
 		if (self.cfg.use_LoRa and self.lora != None ):
-			log("LoRa : Sending ... ")
 			thread.start_new_thread(self.SendToLoRaThread,())
 	
 	def SendToLoRaThread(self):
@@ -103,8 +102,6 @@ class Sensor(threading.Thread):
 		sended = False
 		jstr = CreateLoRaJson(self.cfg)
 		start = current_milli_time()
-		
-
 		while ( ( not sended ) and ( current_milli_time()-start) < 40000) :
 			sended = self.SendToLoRa(jstr)
 			time.sleep(5)
@@ -124,9 +121,10 @@ class Sensor(threading.Thread):
 	def SendToLoRa(self,jstr):
 		try:
 			
-			start_send = current_milli_time()
 			self.sending_to_lora = True
 			thread.start_new_thread(self.checkSendedThread,())
+			log("LoRa : Sending ... ")
+			start_send = current_milli_time()
 			self.lora.send(self.lora.str_to_data(jstr))
 			self.lora.wait_packet_sent()
 			self.sending_to_lora = False
