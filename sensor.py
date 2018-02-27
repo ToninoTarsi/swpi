@@ -46,6 +46,8 @@ class Sensor(threading.Thread):
 #			log("Implemented sensors are :")
 #			print self.implementedStations
 			
+		self.sending_to_lora = False
+		
 		if ( self.cfg.use_bmp085 ):
 			self.bmp085 = BMP085(0x77,3)  
 		else:
@@ -95,20 +97,30 @@ class Sensor(threading.Thread):
 		start = current_milli_time()
 		
 
-		while ( ( not sended ) and ( current_milli_time()-start) < 20000) :
+		while ( ( not sended ) and ( current_milli_time()-start) < 40000) :
 			sended = self.SendToLoRa(jstr)
-			time.sleep(1)
+			time.sleep(5)
 			
 		self.lora.set_mode_idle()
 			
+	def checkSendedThread(self):
+		start_send = current_milli_time()
+		while ( self.sending_to_lora and current_milli_time()-start_send < 2000 ):
+			time.sleep(0.1)
+		if ( self.sending_to_lora  ):
+			log("Lora ERROR: Sending toke more than 2 seconds .. try to reset")
+			self.lora.reset()
+			
 	def SendToLoRa(self,jstr):
-		
-
 		try:
+			
 			start_send = current_milli_time()
+			self.sending_to_lora = True
+			thread.start_new_thread(self.checkSendedThread,())
 			self.lora.send(self.lora.str_to_data(jstr))
-			sent_time = current_milli_time()-start_send
 			self.lora.wait_packet_sent()
+			self.sending_to_lora = False
+			sent_time = current_milli_time()-start_send
 			log("SendToLoRa(" + str(sent_time) + "ms) : "  + str(jstr))
 			
 			if ( self.cfg.LoRa_mode.upper()[0]  != "B"):
