@@ -71,10 +71,10 @@ class Sensor(threading.Thread):
 			return 
 		self.lora.set_frequency(self.cfg.LoRa_frequency)
 		self.lora.set_tx_power(self.cfg.LoRa_power)
-		self.lora.set_modem_config_simple(getLoRaBWCode(cfg.LoRa_BW),
+		self.lora.set_modem_config_simple(getLoRaBWCode(self.cfg.LoRa_BW),
 										getLoRaCRCode(self.cfg.LoRa_CR), 
 										getLoRaSFCode(self.cfg.LoRa_SF))
-		log("LoRa 0K (" +str(cfg.LoRa_frequency)+ "," + cfg.LoRa_BW+","+self.cfg.LoRa_CR+","+self.cfg.LoRa_SF+ "," +cfg.LoRa_mode +")" )
+		log("LoRa 0K (" +str(self.cfg.LoRa_frequency)+ "," + self.cfg.LoRa_BW+","+self.cfg.LoRa_CR+","+self.cfg.LoRa_SF+ "," +self.cfg.LoRa_mode +")" )
 	
 		
 		
