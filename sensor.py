@@ -46,7 +46,7 @@ class Sensor(threading.Thread):
 #			log("Implemented sensors are :")
 #			print self.implementedStations
 			
-		self.sending_to_lora = False
+
 		
 		if ( self.cfg.use_bmp085 ):
 			self.bmp085 = BMP085(0x77,3)  
@@ -54,21 +54,29 @@ class Sensor(threading.Thread):
 			self.bmp085 = None
 
 		if (self.cfg.use_LoRa):
-			self.lora = rf95.RF95(self.cfg.LoRa_spiDev,0, None,None)
-			if not self.lora.init(): # returns True if found
-				log("RF95 not found")
-				self.lora = None
-				return 
-			self.lora.set_frequency(self.cfg.LoRa_frequency)
-			self.lora.set_tx_power(self.cfg.LoRa_power)
-			self.lora.set_modem_config_simple(getLoRaBWCode(cfg.LoRa_BW),
-											getLoRaCRCode(self.cfg.LoRa_CR), 
-											getLoRaSFCode(self.cfg.LoRa_SF))
-			log("LoRa 0K (" +str(cfg.LoRa_frequency)+ "," + cfg.LoRa_BW+","+self.cfg.LoRa_CR+","+self.cfg.LoRa_SF+ "," +cfg.LoRa_mode +")" )
+			self.init_LoRa()
 		else:
-			self.lora = None
-			
+			self.lora = None		
+					
 		object.__init__(self)
+	
+	def init_LoRa(self):
+		
+		self.sending_to_lora = False
+		
+		self.lora = rf95.RF95(self.cfg.LoRa_spiDev,0, None,None)
+		if not self.lora.init(): # returns True if found
+			log("RF95 not found")
+			self.lora = None
+			return 
+		self.lora.set_frequency(self.cfg.LoRa_frequency)
+		self.lora.set_tx_power(self.cfg.LoRa_power)
+		self.lora.set_modem_config_simple(getLoRaBWCode(cfg.LoRa_BW),
+										getLoRaCRCode(self.cfg.LoRa_CR), 
+										getLoRaSFCode(self.cfg.LoRa_SF))
+		log("LoRa 0K (" +str(cfg.LoRa_frequency)+ "," + cfg.LoRa_BW+","+self.cfg.LoRa_CR+","+self.cfg.LoRa_SF+ "," +cfg.LoRa_mode +")" )
+	
+		
 		
 	def GetData(self):
 		#print "GetData"
@@ -110,6 +118,8 @@ class Sensor(threading.Thread):
 		if ( self.sending_to_lora  ):
 			log("Lora ERROR: Sending toke more than 2 seconds .. try to reset")
 			self.lora.reset()
+			time.sleep(0.1)
+			self.init_LoRa()
 			
 	def SendToLoRa(self,jstr):
 		try:
