@@ -104,7 +104,7 @@ class Sensor(threading.Thread):
 		start = current_milli_time()
 		while ( ( not sended ) and ( current_milli_time()-start) < 40000) :
 			sended = self.SendToLoRa(jstr)
-			time.sleep(5)
+			time.sleep(10)
 			
 		self.lora.set_mode_idle()
 			
