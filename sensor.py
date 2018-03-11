@@ -64,7 +64,7 @@ class Sensor(threading.Thread):
 		
 		self.sending_to_lora = False
 		
-		self.lora = rf95.RF95(self.cfg.LoRa_spiDev,0, None,None)
+		self.lora = rf95.RF95(self.cfg.LoRa_spiDev,0, int_pin=None,reset_pin=5)
 		if not self.lora.init(): # returns True if found
 			log("RF95 not found")
 			self.lora = None
@@ -120,7 +120,6 @@ class Sensor(threading.Thread):
 			
 	def SendToLoRa(self,jstr):
 		try:
-			
 			self.sending_to_lora = True
 			thread.start_new_thread(self.checkSendedThread,())
 			log("LoRa : Sending ... ")
