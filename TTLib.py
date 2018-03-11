@@ -811,7 +811,7 @@ def addchecksum(sentence):
     """ Return the nmeadata, the checksum from
         sentence, and the calculated checksum
     """
-    return nmeadata + "*" + (hex(calc_cksum)[2:]).upper()
+    return nmeadata + "*" + "{:02x}".format(calc_cksum).upper() # (hex(calc_cksum)[2:]).upper()
 
 
 def getLoRaBWCode(c):
@@ -868,13 +868,13 @@ def checksum(sentence):
     nmeadata,cksum = re.split('\*', sentence)
 
     calc_cksum = 0
-    for s in nmeadata:
+    for s in nmeadata[1:]:
         calc_cksum ^= ord(s)
 
     """ Return the nmeadata, the checksum from
         sentence, and the calculated checksum
     """
-    return nmeadata,'0x'+cksum,hex(calc_cksum)
+    return nmeadata,'0x'+cksum,"{:02x}".format(calc_cksum).upper()   # hex(calc_cksum).upper()
     
 def UploadData(cfg):
     
