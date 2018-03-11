@@ -811,7 +811,7 @@ def addchecksum(sentence):
     """ Return the nmeadata, the checksum from
         sentence, and the calculated checksum
     """
-    return nmeadata + "*" + hex(calc_cksum)[2:]
+    return nmeadata + "*" + hex(calc_cksum)[2:]upper()
 
 
 def getLoRaBWCode(c):
