@@ -805,7 +805,7 @@ def addchecksum(sentence):
     nmeadata = sentence
 
     calc_cksum = 0
-    for s in nmeadata:
+    for s in nmeadata[1:]:
         calc_cksum ^= ord(s)
 
     """ Return the nmeadata, the checksum from
