@@ -118,6 +118,7 @@ class MeteoData(object):
         
         self.wind_dir_ave = None
         
+        self.battery = None
                                     
         if ( not self.getLastTodayFromDB() ):
             
@@ -428,53 +429,7 @@ class MeteoData(object):
             conn.close()
             
         return True
-            
-            
-#    def getLastFromDB(self):
-#        conn = sqlite3.connect('db/swpi.s3db',200)
-#        dbCursor = conn.cursor()
-#        dbCursor.execute('SELECT * FROM METEO order by rowid desc limit 1')
-#        data = dbCursor.fetchall()
-#        if ( len(data) != 1):
-#            if conn:
-#                conn.close()
-#            return   
-#
-#        self.last_measure_time = data[0][0]
-#        self.idx = data[0][1]
-#        self.wind_dir_code = data[0][2]
-#        self.wind_dir = data[0][3]
-#        self.wind_ave = data[0][4]
-#        self.wind_gust = data[0][5]
-#        self.temp_out = data[0][6]
-#        self.abs_pressure = data[0][7]
-#        self.hum_out = data[0][8]
-#        self.rain = data[0][9]
-#        self.rain_rate = data[0][10]
-#        self.temp_in = data[0][11]
-#        self.hum_in = data[0][12]
-#        self.wind_chill = data[0][13]
-#        self.temp_apparent = data[0][14]
-#        self.dew_point = data[0][15]
-#        self.uv = data[0][16]
-#        self.illuminance = data[0][17]
-#        self.winDayMin = data[0][18]
-#        self.winDayMax = data[0][19]
-#        self.TempOutMin = data[0][20]
-#        self.TempOutMax = data[0][21]
-#        self.TempInMin = data[0][22]
-#        self.TempInMax = data[0][23]
-#        self.UmOutMin = data[0][24]
-#        self.UmOutMax = data[0][25]
-#        self.UmInMin = data[0][26]
-#        self.UmInMax = data[0][27]
-#        self.PressureMin = data[0][28]
-#        self.PressureMax = data[0][29]
-#
-#        self.previous_rain = self.rain
-#
-#        if conn:
-#            conn.close()                        
+                 
 
 class CameraFiles(object):
     

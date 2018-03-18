@@ -74,6 +74,7 @@ class Sensor(threading.Thread):
 		self.lora.set_modem_config_simple(getLoRaBWCode(self.cfg.LoRa_BW),
 										getLoRaCRCode(self.cfg.LoRa_CR), 
 										getLoRaSFCode(self.cfg.LoRa_SF))
+		self.lora.sleep()
 		log("LoRa 0K (" +str(self.cfg.LoRa_frequency)+ "," + self.cfg.LoRa_BW+","+self.cfg.LoRa_CR+","+self.cfg.LoRa_SF+ "," +self.cfg.LoRa_mode +")" )
 	
 		
@@ -95,7 +96,7 @@ class Sensor(threading.Thread):
 			thread.start_new_thread(self.SendToLoRaThread,())
 	
 	def SendToLoRaThread(self):
-		
+		self.lora.set_mode_idle()
 		if ( self.lora == None):
 			log("LoRa : ERROR in initilization ")
 			return 
@@ -106,7 +107,7 @@ class Sensor(threading.Thread):
 			sended = self.SendToLoRa(jstr)
 			time.sleep(10)
 			
-		self.lora.set_mode_idle()
+		self.lora.sleep()
 			
 	def checkSendedThread(self):
 		start_send = current_milli_time()

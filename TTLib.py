@@ -247,33 +247,6 @@ def DNSExit(uname,pwd,hname):
         log("Error DNS Exit"  ) 
         return False   
         
-    
-#    posturl = posturl + "?"
-#    for key in params:
-#        posturl = (posturl + "&" + str(key) + "=" +  str(params[key]) )
-#    req = urllib2.Request(posturl)
-#    #print req
-#    try:
-#        resp= urllib2.urlopen(req,timeout=10)
-#        page= resp.read()
-#        tolog = True
-#        status,msg = page.split('\n')
-#        status_code = status.split()[1]
-#        msg_code,msg_content = msg.split('=')
-#        if msg_code == "0":
-#            log("DNS Exit - Successfully Updated IP for host:%s"%hname)
-#            return True
-#        elif msg_code in ["2","3","10"]:
-#            log("DNS Exit -Error Updating Dynamic IP:%s"%msg_content)
-#            return False
-#        else:
-#            log("DNS Exit - Error with Connection:%s"%msg_content)
-#            return False
-#
-#    except Exception,err:
-#        log("DNS Exit - Unexpected Error occured with the service")
-#        return False
-        
     return True
 
 def logDataToCWOP(CWOP_ID,CWOP_password,location_latitude,location_longitude,swpi_version=""):
@@ -399,8 +372,6 @@ def logDataToCWOP(CWOP_ID,CWOP_password,location_latitude,location_longitude,swp
         log(CWOP_ID + " ERROR")
         s.close()
         return False
-
-
 
     return True
 
@@ -718,6 +689,7 @@ def CreateMeteoJson(cfg):
 
     mydata['rain_rate_24h'] = None if (globalvars.meteo_data.rain_rate_24h == None) else float( "%.3f" %  (globalvars.meteo_data.rain_rate_24h) )  
     mydata['rain_rate_1h'] = None if (globalvars.meteo_data.rain_rate_1h == None) else float( "%.3f" %  (globalvars.meteo_data.rain_rate_1h)  ) 
+    mydata['battery'] = None if (globalvars.meteo_data.battery == None) else float( "%.1f" %  (globalvars.meteo_data.battery)  ) 
 
     if ( globalvars.meteo_data.wind_trend != None):
         mydata['wind_trend'] = int((globalvars.meteo_data.wind_trend))
