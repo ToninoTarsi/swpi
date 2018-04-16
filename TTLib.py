@@ -846,7 +846,7 @@ def checksum(sentence):
     """ Return the nmeadata, the checksum from
         sentence, and the calculated checksum
     """
-    return nmeadata,'0x'+cksum,"{:02x}".format(calc_cksum).upper()   # hex(calc_cksum).upper()
+    return nmeadata,cksum.upper(),"{:02x}".format(calc_cksum).upper()   # hex(calc_cksum).upper()
     
 def UploadData(cfg):
     

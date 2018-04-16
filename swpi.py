@@ -1287,28 +1287,7 @@ while 1:
 							log("Sending :" + "camera" + str(nCamera+cfg.start_camera_number-1) + ".jpg")
 							sendFileToServer(foto,"camera"+str(nCamera+cfg.start_camera_number-1)+".jpg",cfg.ftpserver,cfg.ftpserverDestFolder,cfg.ftpserverLogin,cfg.ftpserverPassowd,False,cfg.use_thread_for_sending_to_server)				
 						
-				if ( cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
-					log("Logging data ...")
-					logData(cfg.serverfile,cfg.SMSPwd)
-					
-				if ( cfg.WeatherUnderground_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
-					log("Logging data to Wunderground ...")
-					logDataToWunderground(cfg.WeatherUnderground_ID,cfg.WeatherUnderground_password,cfg.wind_speed_units)	
-					
 
-				if ( cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
-					log("Uploading data ...")
-					UploadData(cfg)		
-					
-				if ( cfg.CWOP_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
-					logDataToCWOP(cfg.CWOP_ID,cfg.CWOP_password,cfg.location_latitude,cfg.location_longitude,v)
-			
-				if ( cfg.PWS_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
-					log("Logging data to PWS ...")
-					logDataToPWS(cfg.PWS_ID,cfg.PWS_password,cfg.wind_speed_units)	
-					
-				if ( cfg.WindFinder_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
-					sentToWindFinder(cfg.WindFinder_ID,cfg.WindFinder_password)
 			
 				thenewIP = getPublicIP()
 				if ( thenewIP != None and publicIP != thenewIP ):

@@ -92,6 +92,31 @@ class Sensor(threading.Thread):
 		globalvars.meteo_data.CalcStatistics()
 		globalvars.meteo_data.LogDataToDB()
 		
+		
+		if ( self.cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+			log("Logging data ...")
+			logData(self.cfg.serverfile,self.cfg.SMSPwd)
+			
+		if ( self.cfg.WeatherUnderground_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+			log("Logging data to Wunderground ...")
+			logDataToWunderground(self.cfg.WeatherUnderground_ID,self.cfg.WeatherUnderground_password,self.cfg.wind_speed_units)	
+			
+
+		if ( self.cfg.upload_data and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+			log("Uploading data ...")
+			UploadData(self.cfg)		
+			
+		if ( self.cfg.CWOP_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
+			logDataToCWOP(self.cfg.CWOP_ID,self.cfg.CWOP_password,self.cfg.location_latitude,self.cfg.location_longitude,v)
+	
+		if ( self.cfg.PWS_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
+			log("Logging data to PWS ...")
+			logDataToPWS(self.cfg.PWS_ID,self.cfg.PWS_password,self.cfg.wind_speed_units)	
+			
+		if ( self.cfg.WindFinder_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
+			sentToWindFinder(self.cfg.WindFinder_ID,self.cfg.WindFinder_password)
+		
+		
 		if (self.cfg.use_LoRa and self.lora != None ):
 			thread.start_new_thread(self.SendToLoRaThread,())
 	
