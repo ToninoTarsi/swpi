@@ -186,8 +186,8 @@ class Sensor_WH1080(sensor.Sensor):
                             if ( self.cfg.use_bmp085 ):
                                 sensor.Sensor.ReadBMP085_temp_in(self)
                  
-                            globalvars.meteo_data.CalcStatistics()
-                            globalvars.meteo_data.LogDataToDB()
+                            sensor.Sensor.GetData(self)
+
                         else:
                             log("Meteo : Error in getting data - status = " +  str(globalvars.meteo_data.status))
                         

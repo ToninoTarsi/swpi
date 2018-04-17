@@ -39,6 +39,7 @@ def get_wind_dir_text():
 	return [ 'N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW' ]
 
 
+
 class Sensor_VantagePro2(sensor.Sensor):
     
     #port='/dev/ttyUSB0' 
@@ -154,10 +155,8 @@ class Sensor_VantagePro2(sensor.Sensor):
                             globalvars.meteo_data.illuminance = fields['SolarRad']
                             
 
+                        sensor.Sensor.GetData(self)
                         
-                        globalvars.meteo_data.CalcStatistics()
-                        
-                        globalvars.meteo_data.LogDataToDB()
                                    
                                      
                     else:
