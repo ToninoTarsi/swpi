@@ -107,7 +107,7 @@ class Sensor(threading.Thread):
 			UploadData(self.cfg)		
 			
 		if ( self.cfg.CWOP_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) : 
-			logDataToCWOP(self.cfg.CWOP_ID,self.cfg.CWOP_password,self.cfg.location_latitude,self.cfg.location_longitude,v)
+			logDataToCWOP(self.cfg.CWOP_ID,self.cfg.CWOP_password,self.cfg.location_latitude,self.cfg.location_longitude)
 	
 		if ( self.cfg.PWS_logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
 			log("Logging data to PWS ...")
