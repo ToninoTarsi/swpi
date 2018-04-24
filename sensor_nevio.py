@@ -208,7 +208,7 @@ class Sensor_Nevio(sensor.Sensor):
             wind_dir = get_wind_dir16TT()[wind_dir16]
             wind_dir_code = get_wind_dir_code16TT()[wind_dir16]     
         
-        return wind_dir, wind_dir_code, wind_dir16
+        return wind_dir, wind_dir_code
     
     def GetCurretWindSpeed(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
@@ -241,7 +241,7 @@ class Sensor_Nevio(sensor.Sensor):
         wind_ave,wind_gust = self.rb_WindSpeed.getMeanMax()
         if ( wind_ave != None) :
 
-            wind_dir, wind_dir_code, wind_int =  self.GetCurretWindDir()
+            wind_dir, wind_dir_code =  self.GetCurretWindDir()
             
             globalvars.meteo_data.status = 0
                         
