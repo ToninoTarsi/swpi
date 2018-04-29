@@ -190,7 +190,7 @@ class Sensor_Argent80422(sensor.Sensor):
         #print time.time(),self.revcount,GPIO.input(self.__PIN_A)
 
     
-    def GetCurretWindSpeed(self):
+    def GetCurretWindSpeed_int(self):
         """Get wind speed  __PIN_A """
         self.revcount = 0
         time.sleep(self.__MEASURETIME)
@@ -198,7 +198,7 @@ class Sensor_Argent80422(sensor.Sensor):
         self.revcount = 0
         return speed
     
-    def GetCurretWindSpeed_pooling(self):
+    def GetCurretWindSpeed(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
         self.bTimerRun = 1
         t = threading.Timer(self.__MEASURETIME, self.SetTimer)
