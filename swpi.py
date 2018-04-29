@@ -417,6 +417,7 @@ def process_sms(modem, smsID):
 			log( "New DATE set to : " + str(param))
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 3 and cmd == "SHUT" ):
+			modem.sms_del(msgID)
 			cfg.setShutdownTime(param)
 		#---------------------------------------------------------------------------------------	
 		elif (len(command) == 3 and cmd == "CAM" ):
