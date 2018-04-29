@@ -47,7 +47,11 @@ class Sensor_Argent80422(sensor.Sensor):
    
     revcount = 0
     
+    windspeed_interrupt_mode = 0
+
+    
     def __init__(self,cfg ):
+        
         
         self.cfg = cfg
         
@@ -87,7 +91,11 @@ class Sensor_Argent80422(sensor.Sensor):
 
         # bouncetime = 960 / MaxSpeedKmh 
         # MaxSpeedKmh = 960 / bouncetime
-        GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=12)   
+        if ( self.windspeed_interrupt_mode == 1 ):
+            log("Sendor Argentine: Using  Interrupt mode ")
+            GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=12)   
+        else:
+            log("Sendor Argentine: Using  pooling  mode ")
 
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
@@ -190,7 +198,13 @@ class Sensor_Argent80422(sensor.Sensor):
         #print time.time(),self.revcount,GPIO.input(self.__PIN_A)
 
     
-    def GetCurretWindSpeed_int(self):
+    def GetCurretWindSpeed(self):
+        if ( self.GetCurretWindSpeed_interrupt == 0 ):
+            return self.GetCurretWindSpeed_interrupt()
+        else:
+            return self.GetCurretWindSpeed_pooling()
+                
+    def GetCurretWindSpeed_interrupt(self):
         """Get wind speed  __PIN_A """
         self.revcount = 0
         time.sleep(self.__MEASURETIME)
@@ -198,7 +212,7 @@ class Sensor_Argent80422(sensor.Sensor):
         self.revcount = 0
         return speed
     
-    def GetCurretWindSpeed(self):
+    def GetCurretWindSpeed_pooling(self):
         """Get wind speed pooling __PIN_A ( may be an interrupt version later )."""
         self.bTimerRun = 1
         t = threading.Timer(self.__MEASURETIME, self.SetTimer)
@@ -208,7 +222,7 @@ class Sensor_Argent80422(sensor.Sensor):
         o = GPIO.input(self.__PIN_A)
         while self.bTimerRun:
             n = GPIO.input(self.__PIN_A)
-            if ( n != o and ( time.time()-lastChange > 0.015  )):  # 150kmh
+            if ( n != o and ( time.time()-lastChange > 0.020  )):  # 150kmh
                 lastChange = time.time()
                 i = i+1
                 o = n
