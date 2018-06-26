@@ -89,8 +89,9 @@ class Sensor(threading.Thread):
 			#print "dht read"
 		if ( self.cfg.use_bme280):
 			self.ReadBME280()
-		globalvars.meteo_data.CalcStatistics()
-		globalvars.meteo_data.LogDataToDB()
+		if ( self.cfg.sensor_type.upper()  != "EXTERNAL" ):
+			globalvars.meteo_data.CalcStatistics()
+			globalvars.meteo_data.LogDataToDB()
 		
 		
 		if ( self.cfg.logdata and  globalvars.meteo_data.last_measure_time != None and  globalvars.meteo_data.status == 0 ) :
