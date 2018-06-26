@@ -83,6 +83,7 @@ def outputPage(cfg):
 	d.update(number_of_measure_for_wind_average_gust_calculation=cfg.number_of_measure_for_wind_average_gust_calculation)
 	d.update(solarsensor=cfg.solarsensor)
 	d.update(uvsensor=cfg.uvsensor)
+	d.update(external_sensor_path=cfg.external_sensor_path)
 
 	# [mcp3002]
 	d.update(mcp3002_spiDev=cfg.mcp3002_spiDev)
@@ -307,6 +308,8 @@ if ( len(request) != 0 ):
 	cfg.number_of_measure_for_wind_average_gust_calculation = request['number_of_measure_for_wind_average_gust_calculation'][0]
 	cfg.solarsensor = request['solarsensor'][0]
 	cfg.uvsensor = request['uvsensor'][0]
+	cfg.external_sensor_path = request['external_sensor_path'][0]
+
 	
 	# [mcp3002]
 	cfg.mcp3002_spiDev = request['mcp3002_spiDev'][0]

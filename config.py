@@ -196,6 +196,7 @@ class config(object):
 		self.sensor_temp_in =   config.get('Sensors', 'sensor_temp_in',"Default")
 		self.solarsensor =   config.getboolean('Sensors', 'solarsensor',False)
 		self.uvsensor =   config.getboolean('Sensors', 'uvsensor',False)
+		self.external_sensor_path = config.get('Sensors', 'external_sensor_path',"http://yoursite.com/meteo.txt")
 
 		# [mcp3002]
 		self.mcp3002_spiDev = config.getint('mcp3002', 'mcp3002_spiDev',0)
@@ -440,6 +441,7 @@ class config(object):
 		config.setstr('Sensors', 'sensor_temp_in',self.sensor_temp_in)
 		config.setboolean('Sensors', 'solarsensor',self.solarsensor)
 		config.setboolean('Sensors', 'uvsensor',self.uvsensor)
+		config.setstr('Sensors', 'external_sensor_path',self.external_sensor_path)
 		
 		# [mcp3002]
 		config.setint('mcp3002', 'mcp3002_spiDev',self.mcp3002_spiDev)
