@@ -51,9 +51,9 @@ class Sensor_External(sensor.Sensor):
                 self.offline = False
                 
                 
-            globalvars.meteo_data.last_measure_time = mydata["last_measure_time"]
-            globalvars.meteo_data.idx = mydata["idx"]
-            globalvars.meteo_data.statusn = 0
+            globalvars.meteo_data.last_measure_time = datetime.datetime.strptime(mydata["last_measure_time"],"[%d/%m/%Y-%H:%M:%S]")
+            globalvars.meteo_data.idx = datetime.datetime.strptime(mydata["idx"],"[%d/%m/%Y-%H:%M:%S]")
+            globalvars.meteo_data.status = 0
             globalvars.meteo_data.hum_in  = mydata["hum_in"]
             globalvars.meteo_data.temp_in  = mydata["temp_in"]    
             globalvars.meteo_data.hum_out  = mydata["hum_out"]    
