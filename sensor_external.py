@@ -35,6 +35,7 @@ class Sensor_External(sensor.Sensor):
     
     def GetData(self):
              
+        print "GetData"
             
         mydata = getCurrentMeteoDataFromUrl(self.cfg.external_sensor_path)
         
@@ -42,6 +43,7 @@ class Sensor_External(sensor.Sensor):
         
         if ( self.last_time == None or self.last_time != thetime):
         
+            print "last_time"
         
             if (mydata["offline"] == 1):
                 self.offline = True
@@ -51,6 +53,7 @@ class Sensor_External(sensor.Sensor):
                 
             globalvars.meteo_data.last_measure_time = mydata["last_measure_time"]
             globalvars.meteo_data.idx = mydata["idx"]
+            globalvars.meteo_data.statusn = 0
             globalvars.meteo_data.hum_in  = mydata["hum_in"]
             globalvars.meteo_data.temp_in  = mydata["temp_in"]    
             globalvars.meteo_data.hum_out  = mydata["hum_out"]    
