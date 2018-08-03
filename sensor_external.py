@@ -38,9 +38,9 @@ class Sensor_External(sensor.Sensor):
             
         mydata = getCurrentMeteoDataFromUrl(self.cfg.external_sensor_path)
         
-        time = mydata["last_measure_time"]
+        thetime = mydata["last_measure_time"]
         
-        if ( self.last_time == None or self.last_time != time):
+        if ( self.last_time == None or self.last_time != thetime):
         
         
             if (mydata["offline"] == 1):
