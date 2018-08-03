@@ -51,7 +51,6 @@ class Sensor_External(sensor.Sensor):
             
         globalvars.meteo_data.last_measure_time = mydata["last_measure_time"]
         globalvars.meteo_data.idx = mydata["idx"]
-        globalvars.meteo_data.status  = mydata["status"]
         globalvars.meteo_data.delay = mydata["delay"]       
         globalvars.meteo_data.hum_in  = mydata["hum_in"]
         globalvars.meteo_data.temp_in  = mydata["temp_in"]    
@@ -68,7 +67,7 @@ class Sensor_External(sensor.Sensor):
         
             
      
-        #sensor.Sensor.GetData(self)
+        sensor.Sensor.GetData(self)
 
             
 
