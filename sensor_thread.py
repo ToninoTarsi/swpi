@@ -49,7 +49,7 @@ import sensor_external
 
 
 def log(message) :
-     print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
+    print datetime.datetime.now().strftime("[%d/%m/%Y-%H:%M:%S]") , message
 
 
 class WindSensorThread(threading.Thread):

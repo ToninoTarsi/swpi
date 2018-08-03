@@ -28,49 +28,56 @@ class Sensor_External(sensor.Sensor):
     
     def __init__(self,cfg ):
         sensor.Sensor.__init__(self,cfg )
+        self.last_time = None;
         
     def Detect(self):
         return True,"","",""
     
     def GetData(self):
              
-        seconds = datetime.datetime.now().second
-        if ( seconds < 30 ):
-            time.sleep(30-seconds)
-        else:
-            time.sleep(90-seconds)
-        time.sleep(10)      
             
         mydata = getCurrentMeteoDataFromUrl(self.cfg.external_sensor_path)
         
-        if (mydata["offline"] == 1):
-            self.offline = True
-        else:
-            self.offline = False
-            
-            
-        globalvars.meteo_data.last_measure_time = mydata["last_measure_time"]
-        globalvars.meteo_data.idx = mydata["idx"]
-        globalvars.meteo_data.delay = mydata["delay"]       
-        globalvars.meteo_data.hum_in  = mydata["hum_in"]
-        globalvars.meteo_data.temp_in  = mydata["temp_in"]    
-        globalvars.meteo_data.hum_out  = mydata["hum_out"]    
-        globalvars.meteo_data.temp_out   = mydata["temp_out"]  
-        globalvars.meteo_data.abs_pressure = mydata["abs_pressure"]
-        globalvars.meteo_data.wind_ave     = mydata["wind_ave"]
-        globalvars.meteo_data.wind_gust    = mydata["wind_gust"]
-        globalvars.meteo_data.wind_dir     = mydata["wind_dir"]
-        globalvars.meteo_data.wind_dir_code = mydata["wind_dir_code"]
-        globalvars.meteo_data.rain  = mydata["rain"]      
-        globalvars.meteo_data.illuminance = mydata["illuminance"]
-        globalvars.meteo_data.uv = mydata["uv"]
+        time = mydata["last_measure_time"]
         
+        if ( self.last_time == None or self.last_time != time):
+        
+        
+            if (mydata["offline"] == 1):
+                self.offline = True
+            else:
+                self.offline = False
+                
+                
+            globalvars.meteo_data.last_measure_time = mydata["last_measure_time"]
+            globalvars.meteo_data.idx = mydata["idx"]
+            globalvars.meteo_data.hum_in  = mydata["hum_in"]
+            globalvars.meteo_data.temp_in  = mydata["temp_in"]    
+            globalvars.meteo_data.hum_out  = mydata["hum_out"]    
+            globalvars.meteo_data.temp_out   = mydata["temp_out"]  
+            globalvars.meteo_data.abs_pressure = mydata["abs_pressure"]
+            globalvars.meteo_data.wind_ave     = mydata["wind_ave"]
+            globalvars.meteo_data.wind_gust    = mydata["wind_gust"]
+            globalvars.meteo_data.wind_dir     = mydata["wind_dir"]
+            globalvars.meteo_data.wind_dir_code = mydata["wind_dir_code"]
+            globalvars.meteo_data.rain  = mydata["rain"]      
+            globalvars.meteo_data.illuminance = mydata["illuminance"]
+            globalvars.meteo_data.uv = mydata["uv"]
             
-     
-        sensor.Sensor.GetData(self)
-
+            self.last_time = globalvars.meteo_data.last_measure_time
             
+            sensor.Sensor.GetData(self)
+                        
+            seconds = datetime.datetime.now().second
+            if ( seconds < 30 ):
+                time.sleep(30-seconds)
+            else:
+                time.sleep(90-seconds)
+            time.sleep(10)
 
+
+        else:
+            time.sleep(10)
 
 if __name__ == '__main__':
 
