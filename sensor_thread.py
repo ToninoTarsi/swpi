@@ -133,6 +133,7 @@ class WindSensorThread(threading.Thread):
 
         elif ( self.cfg.sensor_type.upper()  == "LORA" ):
             sensor = sensor_LoRa.Sensor_LoRa(self.cfg)       
+            
         elif ( self.cfg.sensor_type.upper()  == "EXTERNAL" ):
             sensor = sensor_external.Sensor_External(self.cfg)                                                 
         else:

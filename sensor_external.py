@@ -43,12 +43,14 @@ class Sensor_External(sensor.Sensor):
         
         if ( self.last_time == None or self.last_time != thetime):
         
-            print "last_time"
+            log( "Newdata from External meteo.txt %s", mydata["last_measure_time"] )
         
             if (mydata["offline"] == 1):
                 self.offline = True
+                self.cfg.setOffline("1")
             else:
                 self.offline = False
+                self.cfg.setOffline("0")
                 
                 
             globalvars.meteo_data.last_measure_time = datetime.datetime.strptime(mydata["last_measure_time"],"[%d/%m/%Y-%H:%M:%S]")
@@ -66,6 +68,7 @@ class Sensor_External(sensor.Sensor):
             globalvars.meteo_data.rain  = mydata["rain"]      
             globalvars.meteo_data.illuminance = mydata["illuminance"]
             globalvars.meteo_data.uv = mydata["uv"]
+            globalvars.meteo_data.battery = mydata["battery"]
             
             self.last_time = globalvars.meteo_data.last_measure_time
             

@@ -170,6 +170,9 @@ class MeteoData(object):
       
     def CalcStatistics(self):
         
+        if ( self.cfg.sensor_type.upper()  == "EXTERNAL" ):
+            return
+        
         while globalvars.bAnswering:
             #TTLib.log("DEBUG ... waiting for Calculating Meteo data and statistics")
             time.sleep(1)
@@ -179,6 +182,8 @@ class MeteoData(object):
         ############## Calucelated parameters
         #
  
+
+            
         self.wind_chill = wind_chill(self.temp_out, self.wind_ave)
         self.temp_apparent = apparent_temp(self.temp_out, self.hum_out, self.wind_ave)
         self.dew_point = dew_point(self.temp_out, self.hum_out)
