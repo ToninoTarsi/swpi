@@ -43,7 +43,7 @@ class Sensor_External(sensor.Sensor):
         
         if ( self.last_time == None or self.last_time != thetime):
         
-            log( "Newdata from External meteo.txt %s", mydata["last_measure_time"] )
+            log( "Newdata from External meteo.txt %s" % mydata["last_measure_time"] )
         
             if (mydata["offline"] == 1):
                 self.offline = True
