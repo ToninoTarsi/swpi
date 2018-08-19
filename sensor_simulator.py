@@ -39,6 +39,7 @@ class Sensor_Simulator(sensor.Sensor):
             time.sleep(30-seconds)
         else:
             time.sleep(90-seconds)  
+            
         globalvars.meteo_data.last_measure_time = datetime.datetime.now()
         globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
         globalvars.meteo_data.status  = 0

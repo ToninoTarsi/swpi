@@ -47,10 +47,12 @@ class Sensor_External(sensor.Sensor):
         
             if (mydata["offline"] == 1):
                 self.offline = True
-                self.cfg.setOffline("1")
+                if ( self.cfg.offline == "False" ):
+                    self.cfg.setOffline("1")
             else:
                 self.offline = False
-                self.cfg.setOffline("0")
+                if ( self.cfg.offline == "True" ):
+                    self.cfg.setOffline("0")
                 
                 
             globalvars.meteo_data.last_measure_time = datetime.datetime.strptime(mydata["last_measure_time"],"[%d/%m/%Y-%H:%M:%S]")
