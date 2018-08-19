@@ -15,6 +15,7 @@ import time
 import config
 import random
 import datetime
+import _strptime
 import sqlite3
 from TTLib import  *
 import sys
@@ -54,7 +55,8 @@ class Sensor_External(sensor.Sensor):
                 if ( self.cfg.offline == "True" ):
                     self.cfg.setOffline("0")
                 
-                
+            
+            
             globalvars.meteo_data.last_measure_time = datetime.datetime.strptime(mydata["last_measure_time"],"[%d/%m/%Y-%H:%M:%S]")
             globalvars.meteo_data.idx = datetime.datetime.strptime(mydata["idx"],"[%d/%m/%Y-%H:%M:%S]")
             globalvars.meteo_data.status = 0
