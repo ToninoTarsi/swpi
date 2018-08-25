@@ -73,6 +73,7 @@ class Sensor_External(sensor.Sensor):
             globalvars.meteo_data.illuminance = mydata["illuminance"]
             globalvars.meteo_data.uv = mydata["uv"]
             globalvars.meteo_data.battery = mydata["battery"]
+            globalvars.meteo_data.wind_dir_ave = mydata["wind_dir_ave"]
             
             self.last_time = globalvars.meteo_data.last_measure_time
             
