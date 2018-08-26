@@ -376,7 +376,7 @@ class MeteoData(object):
             dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','localtime') order by rowid desc limit 1")
         except sqlite3.Error:
             TTLib.log("Ripristino Database")
-	    os.system( "sudo cp -f db/swpiori.s3db db/swpi.s3db" )
+            os.system( "sudo cp -f db/swpiori.s3db db/swpi.s3db" )
             os.system("sudo reboot")
         data = dbCursor.fetchall()
         if ( len(data) != 1):
