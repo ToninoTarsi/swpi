@@ -386,49 +386,52 @@ class MeteoData(object):
 
 # "2012-10-19 11:15:50.375000"
 
-        self.previous_measure_time = datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")   
-#        self.idx = datetime.datetime.strptime(data[0][1],"%Y-%m-%d %H:%M:%S.%f")
-#        self.wind_dir_code = (data[0][2])
-#        self.wind_dir = (data[0][3])
-#        self.wind_ave = (data[0][4])
-#        self.wind_gust = (data[0][5])
-#        self.temp_out = (data[0][6])
-#        self.abs_pressure = (data[0][7])
-#        self.hum_out = (data[0][8])
-        self.rain = (data[0][9])
-        #print "-----------------------------------------",self.rain
-        self.rain_rate = (data[0][10])
-#        self.temp_in = (data[0][11])
-#        self.hum_in = (data[0][12])
-#        self.wind_chill = (data[0][13])
-#        self.temp_apparent = (data[0][14])
-#        self.dew_point = (data[0][15])
-#        self.uv = (data[0][16])
-#        self.illuminance = (data[0][17])
-        self.winDayMin = (data[0][18])
-        self.winDayMax = (data[0][19])
-        self.winDayGustMin = (data[0][20])
-        self.winDayGustMax = (data[0][21]     )   
-        self.TempOutMin = (data[0][22])
-        self.TempOutMax = (data[0][23])
-        self.TempInMin = (data[0][24])
-        self.TempInMax = (data[0][25])
-        self.UmOutMin = (data[0][26])
-        self.UmOutMax = (data[0][27])
-        self.UmInMin = (data[0][28])
-        self.UmInMax = (data[0][29])
-        self.PressureMin = (data[0][30])
-        self.PressureMax = (data[0][31])
+        try:
+            self.previous_measure_time = datetime.datetime.strptime(data[0][0],"%Y-%m-%d %H:%M:%S.%f")   
+    #        self.idx = datetime.datetime.strptime(data[0][1],"%Y-%m-%d %H:%M:%S.%f")
+    #        self.wind_dir_code = (data[0][2])
+    #        self.wind_dir = (data[0][3])
+    #        self.wind_ave = (data[0][4])
+    #        self.wind_gust = (data[0][5])
+    #        self.temp_out = (data[0][6])
+    #        self.abs_pressure = (data[0][7])
+    #        self.hum_out = (data[0][8])
+            self.rain = (data[0][9])
+            #print "-----------------------------------------",self.rain
+            self.rain_rate = (data[0][10])
+    #        self.temp_in = (data[0][11])
+    #        self.hum_in = (data[0][12])
+    #        self.wind_chill = (data[0][13])
+    #        self.temp_apparent = (data[0][14])
+    #        self.dew_point = (data[0][15])
+    #        self.uv = (data[0][16])
+    #        self.illuminance = (data[0][17])
+            self.winDayMin = (data[0][18])
+            self.winDayMax = (data[0][19])
+            self.winDayGustMin = (data[0][20])
+            self.winDayGustMax = (data[0][21]     )   
+            self.TempOutMin = (data[0][22])
+            self.TempOutMax = (data[0][23])
+            self.TempInMin = (data[0][24])
+            self.TempInMax = (data[0][25])
+            self.UmOutMin = (data[0][26])
+            self.UmOutMax = (data[0][27])
+            self.UmInMin = (data[0][28])
+            self.UmInMax = (data[0][29])
+            self.PressureMin = (data[0][30])
+            self.PressureMax = (data[0][31])
+    
+    
+            dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','localtime') order by rowid asc limit 1")
+            data = dbCursor.fetchall()
+            if ( len(data) == 1):
+                self.previous_rain = (data[0][9])
+            else:
+                self.previous_rain = None
+    #        self.previous_measure_time = self.last_measure_time
 
-
-        dbCursor.execute("SELECT * FROM METEO where date(TIMESTAMP_LOCAL) = date('now','localtime') order by rowid asc limit 1")
-        data = dbCursor.fetchall()
-        if ( len(data) == 1):
-            self.previous_rain = (data[0][9])
-        else:
-            self.previous_rain = None
-#        self.previous_measure_time = self.last_measure_time
-
+        except:
+            pass
         
         if conn:
             conn.close()
