@@ -36,7 +36,7 @@ class Sensor_External(sensor.Sensor):
     
     def GetData(self):
              
-        print "GetData"
+        #print "GetData"
             
         mydata = getCurrentMeteoDataFromUrl(self.cfg.external_sensor_path)
         
@@ -120,7 +120,7 @@ class Sensor_External(sensor.Sensor):
 
 
         else:
-            time.sleep(10)
+            time.sleep(20)
 
 if __name__ == '__main__':
 
