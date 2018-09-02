@@ -105,7 +105,8 @@ class Sensor_External(sensor.Sensor):
             globalvars.meteo_data.rain_rate_24h = mydata["rain_rate_24h"]         
             globalvars.meteo_data.rain_rate_1h = mydata["rain_rate_1h"]         
             globalvars.meteo_data.wind_trend = mydata["wind_trend"]         
-       
+            globalvars.meteo_data.rssi = mydata["rssi"]         
+
 
             
             

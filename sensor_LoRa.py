@@ -155,6 +155,7 @@ class Sensor_LoRa(sensor.Sensor):
                 globalvars.meteo_data.hum_in = None
                 globalvars.meteo_data.abs_pressure   = abs_pressure
                 globalvars.meteo_data.battery   = battery
+                globalvars.meteo_data.rssi = self.lora.last_rssi
                 
                 globalvars.meteo_data.wind_dir_code = wind_dir_code
                 if ( setOffline == 1 ):
