@@ -62,54 +62,53 @@ class Sensor_External(sensor.Sensor):
             globalvars.meteo_data.last_measure_time = datetime.datetime.strptime(mydata["last_measure_time"],"[%d/%m/%Y-%H:%M:%S]")
             globalvars.meteo_data.idx = datetime.datetime.strptime(mydata["idx"],"[%d/%m/%Y-%H:%M:%S]")
             globalvars.meteo_data.status = 0
+            
+            
             globalvars.meteo_data.hum_in  = mydata["hum_in"]
-            globalvars.meteo_data.temp_in  = mydata["temp_in"]    
-            globalvars.meteo_data.hum_out  = mydata["hum_out"]    
-            globalvars.meteo_data.temp_out   = mydata["temp_out"]  
+            globalvars.meteo_data.temp_in  = mydata["temp_in"]  
             globalvars.meteo_data.abs_pressure = mydata["abs_pressure"]
             globalvars.meteo_data.wind_ave     = mydata["wind_ave"]
             globalvars.meteo_data.wind_gust    = mydata["wind_gust"]
             globalvars.meteo_data.wind_dir     = mydata["wind_dir"]
             globalvars.meteo_data.wind_dir_code = mydata["wind_dir_code"]
-            globalvars.meteo_data.rain  = mydata["rain"]      
-            globalvars.meteo_data.illuminance = mydata["illuminance"]
-            globalvars.meteo_data.uv = mydata["uv"]
             globalvars.meteo_data.battery = mydata["battery"]
-            globalvars.meteo_data.wind_dir_ave = mydata["wind_dir_ave"]
-            
-            globalvars.meteo_data.rel_pressure = mydata["rel_pressure"]
-   
-
-            globalvars.meteo_data.rain = mydata["rain"]         
-            globalvars.meteo_data.rain_rate = mydata["rain_rate"]         
-            globalvars.meteo_data.wind_chill = mydata["wind_chill"]         
-            globalvars.meteo_data.temp_apparent = mydata["temp_apparent"]         
-            globalvars.meteo_data.dew_point = mydata["dew_point"]         
-            globalvars.meteo_data.cloud_base_altitude = mydata["cloud_base_altitude"]         
-            globalvars.meteo_data.uv = mydata["uv"]         
-            globalvars.meteo_data.illuminance = mydata["illuminance"]         
-            globalvars.meteo_data.winDayMin = mydata["winDayMin"]         
-            globalvars.meteo_data.winDayMax = mydata["winDayMax"]         
-            globalvars.meteo_data.winDayGustMin = mydata["winDayGustMin"]         
-            globalvars.meteo_data.winDayGustMax = mydata["winDayGustMax"]         
-            globalvars.meteo_data.TempOutMin = mydata["TempOutMin"]         
-            globalvars.meteo_data.TempOutMax = mydata["TempOutMax"]         
-            globalvars.meteo_data.TempInMin = mydata["TempInMin"]         
-            globalvars.meteo_data.TempInMax = mydata["TempInMax"]         
-            globalvars.meteo_data.UmOutMin = mydata["UmOutMin"]         
-            globalvars.meteo_data.UmOutMax = mydata["UmOutMax"]         
-            globalvars.meteo_data.UmInMin = mydata["UmInMin"]         
-            globalvars.meteo_data.UmInMax = mydata["UmInMax"]         
-            globalvars.meteo_data.PressureMin = mydata["PressureMin"]         
-            globalvars.meteo_data.PressureMax = mydata["PressureMax"]         
-            globalvars.meteo_data.rain_rate_24h = mydata["rain_rate_24h"]         
-            globalvars.meteo_data.rain_rate_1h = mydata["rain_rate_1h"]         
-            globalvars.meteo_data.wind_trend = mydata["wind_trend"]         
             globalvars.meteo_data.rssi = mydata["rssi"]         
+            
+            if ( self.cfg.sensor_type.upper()  == "EXTERNAL"):
+                globalvars.meteo_data.hum_out  = mydata["hum_out"]    
+                globalvars.meteo_data.temp_out   = mydata["temp_out"]  
+                globalvars.meteo_data.rain  = mydata["rain"]      
+                globalvars.meteo_data.illuminance = mydata["illuminance"]
+                globalvars.meteo_data.uv = mydata["uv"]
+                globalvars.meteo_data.wind_dir_ave = mydata["wind_dir_ave"]
+                globalvars.meteo_data.rel_pressure = mydata["rel_pressure"]
+                globalvars.meteo_data.rain = mydata["rain"]         
+                globalvars.meteo_data.rain_rate = mydata["rain_rate"]         
+                globalvars.meteo_data.wind_chill = mydata["wind_chill"]         
+                globalvars.meteo_data.temp_apparent = mydata["temp_apparent"]         
+                globalvars.meteo_data.dew_point = mydata["dew_point"]         
+                globalvars.meteo_data.cloud_base_altitude = mydata["cloud_base_altitude"]         
+                globalvars.meteo_data.uv = mydata["uv"]         
+                globalvars.meteo_data.illuminance = mydata["illuminance"]         
+                globalvars.meteo_data.winDayMin = mydata["winDayMin"]         
+                globalvars.meteo_data.winDayMax = mydata["winDayMax"]         
+                globalvars.meteo_data.winDayGustMin = mydata["winDayGustMin"]         
+                globalvars.meteo_data.winDayGustMax = mydata["winDayGustMax"]         
+                globalvars.meteo_data.TempOutMin = mydata["TempOutMin"]         
+                globalvars.meteo_data.TempOutMax = mydata["TempOutMax"]         
+                globalvars.meteo_data.TempInMin = mydata["TempInMin"]         
+                globalvars.meteo_data.TempInMax = mydata["TempInMax"]         
+                globalvars.meteo_data.UmOutMin = mydata["UmOutMin"]         
+                globalvars.meteo_data.UmOutMax = mydata["UmOutMax"]         
+                globalvars.meteo_data.UmInMin = mydata["UmInMin"]         
+                globalvars.meteo_data.UmInMax = mydata["UmInMax"]         
+                globalvars.meteo_data.PressureMin = mydata["PressureMin"]         
+                globalvars.meteo_data.PressureMax = mydata["PressureMax"]         
+                globalvars.meteo_data.rain_rate_24h = mydata["rain_rate_24h"]         
+                globalvars.meteo_data.rain_rate_1h = mydata["rain_rate_1h"]         
+                globalvars.meteo_data.wind_trend = mydata["wind_trend"]         
 
 
-            
-            
             sensor.Sensor.GetData(self)
                         
             seconds = datetime.datetime.now().second
