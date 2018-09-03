@@ -689,10 +689,18 @@ def CreateMeteoJson(cfg):
 
     mydata['rain_rate_24h'] = None if (globalvars.meteo_data.rain_rate_24h == None) else float( "%.3f" %  (globalvars.meteo_data.rain_rate_24h) )  
     mydata['rain_rate_1h'] = None if (globalvars.meteo_data.rain_rate_1h == None) else float( "%.3f" %  (globalvars.meteo_data.rain_rate_1h)  ) 
-    mydata['battery'] = None if (globalvars.meteo_data.battery == None) else float( "%.1f" %  (globalvars.meteo_data.battery)  ) 
+    
+    try:
+        globalvars.meteo_data.battery
+        mydata['battery'] = None if (globalvars.meteo_data.battery == None) else float( "%.1f" %  (globalvars.meteo_data.battery)  ) 
+    except NameError:
+        mydata['battery'] = None
 
-    mydata['rssi'] = None if (globalvars.meteo_data.rssi == None) else int(globalvars.meteo_data.rssi)   
-
+    try:
+        globalvars.meteo_data.battery
+        mydata['rssi'] = None if (globalvars.meteo_data.rssi == None) else int(globalvars.meteo_data.rssi)   
+    except NameError:
+        mydata['rssi'] = None
 
     if ( globalvars.meteo_data.wind_trend != None):
         mydata['wind_trend'] = int((globalvars.meteo_data.wind_trend))
