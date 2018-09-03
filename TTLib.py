@@ -693,13 +693,13 @@ def CreateMeteoJson(cfg):
     try:
         globalvars.meteo_data.battery
         mydata['battery'] = None if (globalvars.meteo_data.battery == None) else float( "%.1f" %  (globalvars.meteo_data.battery)  ) 
-    except NameError:
+    except :
         pass
 
     try:
         globalvars.meteo_data.rssi
         mydata['rssi'] = None if (globalvars.meteo_data.rssi == None) else int(globalvars.meteo_data.rssi)   
-    except NameError:
+    except :
         pass
 
     if ( globalvars.meteo_data.wind_trend != None):
