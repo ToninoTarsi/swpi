@@ -64,8 +64,8 @@ class Sensor_External(sensor.Sensor):
             globalvars.meteo_data.status = 0
             
             
-            globalvars.meteo_data.hum_in  = mydata["hum_in"]
-            globalvars.meteo_data.temp_in  = mydata["temp_in"]  
+            globalvars.meteo_data.hum_out  = mydata["hum_out"]
+            globalvars.meteo_data.temp_out  = mydata["temp_out"]  
             globalvars.meteo_data.abs_pressure = mydata["abs_pressure"]
             globalvars.meteo_data.wind_ave     = mydata["wind_ave"]
             globalvars.meteo_data.wind_gust    = mydata["wind_gust"]
