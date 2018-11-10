@@ -630,15 +630,15 @@ def answer_call(modem, message):
 		# Message
 		listOfMessages.append("./audio/message.raw")
 		
-		if ( globalvars.offline ):
+		if ( globalvars.offline or delay_seconds > 600):
 			listOfMessages.append("./audio/offline.raw")
 		else:
 					
 			if ( cfg.sensor_type.upper() == "SIMULATE" ):
 				listOfMessages.append("./audio/simulate.raw")
 				
-			if (delay_seconds > 600 ):
-				listOfMessages.append("./audio/some_problem.raw") 
+#			if (delay_seconds > 600 ):
+# 				listOfMessages.append("./audio/some_problem.raw") 
 		
 			if( globalvars.meteo_data.rain_rate_1h != None and globalvars.meteo_data.rain_rate_1h >= 0.001 ):
 				listOfMessages.append("./audio/raining.raw")
