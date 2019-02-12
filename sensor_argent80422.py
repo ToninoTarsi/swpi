@@ -43,7 +43,7 @@ class Sensor_Argent80422(sensor.Sensor):
     
     # Connections PIN - USING BCM numbering convention !!!!!!
     
-    __PIN_A = 23  #Anemometer
+    __PIN_A = 23  #Anemometer 24 Jessica
    
     revcount = 0
     
