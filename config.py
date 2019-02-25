@@ -197,6 +197,7 @@ class config(object):
 		self.solarsensor =   config.getboolean('Sensors', 'solarsensor',False)
 		self.uvsensor =   config.getboolean('Sensors', 'uvsensor',False)
 		self.external_sensor_path = config.get('Sensors', 'external_sensor_path',"http://yoursite.com/meteo.txt")
+		self.anemometer_pin = config.getint('Sensors', 'anemometer_pin',23)
 
 		# [mcp3002]
 		self.mcp3002_spiDev = config.getint('mcp3002', 'mcp3002_spiDev',0)
@@ -442,7 +443,8 @@ class config(object):
 		config.setboolean('Sensors', 'solarsensor',self.solarsensor)
 		config.setboolean('Sensors', 'uvsensor',self.uvsensor)
 		config.setstr('Sensors', 'external_sensor_path',self.external_sensor_path)
-		
+		config.setint('Sensors', 'anemometer_pin',self.anemometer_pin)
+
 		# [mcp3002]
 		config.setint('mcp3002', 'mcp3002_spiDev',self.mcp3002_spiDev)
 		
