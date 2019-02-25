@@ -84,6 +84,8 @@ def outputPage(cfg):
 	d.update(solarsensor=cfg.solarsensor)
 	d.update(uvsensor=cfg.uvsensor)
 	d.update(external_sensor_path=cfg.external_sensor_path)
+	d.update(anemometer_pin=cfg.anemometer_pin)
+
 
 	# [mcp3002]
 	d.update(mcp3002_spiDev=cfg.mcp3002_spiDev)
@@ -309,6 +311,7 @@ if ( len(request) != 0 ):
 	cfg.solarsensor = request['solarsensor'][0]
 	cfg.uvsensor = request['uvsensor'][0]
 	cfg.external_sensor_path = request['external_sensor_path'][0]
+	cfg.anemometer_pin = request['anemometer_pin'][0]																 
 
 	
 	# [mcp3002]

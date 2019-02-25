@@ -95,7 +95,7 @@ class Sensor_Argent80422(sensor.Sensor):
         # MaxSpeedKmh = 960 / bouncetime
         if ( self.windspeed_interrupt_mode == 1 ):
             log("Sendor Argentine: Using  Interrupt mode ")
-            GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=12)   
+            GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=5)   
         else:
             log("Sendor Argentine: Using  pooling  mode ")
 
