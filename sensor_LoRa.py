@@ -111,7 +111,7 @@ class Sensor_LoRa(sensor.Sensor):
             log("LoRA - Wrong checksum")
             return
 
-        nfields = str_json.split(',')
+        nfields = len(str_json.split(','))
         code = str_json.split(',')[0]
         StationID = str_json.split(',')[1]
         if ( code == "$SW" and StationID == self.cfg.LoRa_ID):
@@ -127,6 +127,7 @@ class Sensor_LoRa(sensor.Sensor):
                 setOffline = 1
             if ( not globalvars.offline and  str_json.split(',')[8] == "1"):
                 setOffline = 2
+
 
             if ( nfields > 9 ):
                 battery = None if (str_json.split(',')[9] == "" ) else  float(str_json.split(',')[9])
