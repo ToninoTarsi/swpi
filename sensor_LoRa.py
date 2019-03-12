@@ -103,71 +103,71 @@ class Sensor_LoRa(sensor.Sensor):
             time.sleep(60)
             return
         
-#        try:
-        str_received = self.receive_data()
-        str_json,cksum,calc_cksum = checksum(str_received)
-        #print "cksum",cksum,"calc_cksum",calc_cksum
-        if cksum != calc_cksum:
-            log("LoRA - Wrong checksum")
-            return
-
-        nfields = len(str_json.split(','))
-        code = str_json.split(',')[0]
-        StationID = str_json.split(',')[1]
-        if ( code == "$SW" and StationID == self.cfg.LoRa_ID):
-            wind_dir =  None if (str_json.split(',')[2] == "" ) else float(str_json.split(',')[2])
-            wind_ave =  None if (str_json.split(',')[3] == "" ) else int(str_json.split(',')[3])
-            wind_gust = None if (str_json.split(',')[4] == "" ) else int(str_json.split(',')[4])
-            temp_out =  None if (str_json.split(',')[5] == "" ) else float(str_json.split(',')[5])
-            hum_out =   None if (str_json.split(',')[6] == "" ) else int(str_json.split(',')[6])
-            abs_pressure = None if (str_json.split(',')[7] == "" ) else  int(str_json.split(',')[7])
-
-            setOffline = 0
-            if ( globalvars.offline and  str_json.split(',')[8] == "0"):
-                setOffline = 1
-            if ( not globalvars.offline and  str_json.split(',')[8] == "1"):
-                setOffline = 2
-
-
-            if ( nfields > 9 ):
-                battery = None if (str_json.split(',')[9] == "" ) else  float(str_json.split(',')[9])
-            else:
-                battery = None
-                
-            if (wind_dir!=None): wind_dir_code = degToCompass(wind_dir)
-        
-            time.sleep(0.100)
-            if ( self.cfg.LoRa_mode.upper()[0]  == "B"):
-                str_act = ",".join(("$SWACT",self.cfg.LoRa_ID))
-                self.lora.send(self.lora.str_to_data(str_act))
-                self.lora.wait_packet_sent()
-        
-        
-            globalvars.meteo_data.last_measure_time = datetime.datetime.now()
-            globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
-            globalvars.meteo_data.status  = 0
-        
-            globalvars.meteo_data.wind_dir = wind_dir
-            globalvars.meteo_data.wind_ave = wind_ave
-            globalvars.meteo_data.wind_gust = wind_gust
-            globalvars.meteo_data.temp_out = temp_out
-            globalvars.meteo_data.temp_in = None
-            globalvars.meteo_data.hum_out = hum_out
-            globalvars.meteo_data.hum_in = None
-            globalvars.meteo_data.abs_pressure   = abs_pressure
-            globalvars.meteo_data.battery   = battery
-            globalvars.meteo_data.rssi = self.lora.last_rssi
-            
-            globalvars.meteo_data.wind_dir_code = wind_dir_code
-            if ( setOffline == 1 ):
-                self.cfg.setOffline("0")
-            if ( setOffline == 2 ):
-                self.cfg.setOffline("1")
-                
-            sensor.Sensor.GetData(self)               
+        try:
+            str_received = self.receive_data()
+            str_json,cksum,calc_cksum = checksum(str_received)
+            #print "cksum",cksum,"calc_cksum",calc_cksum
+            if cksum != calc_cksum:
+                log("LoRA - Wrong checksum")
+                return
     
-#         except:
-#             log("ERROR in getting LoRa data")
+            nfields = len(str_json.split(','))
+            code = str_json.split(',')[0]
+            StationID = str_json.split(',')[1]
+            if ( code == "$SW" and StationID == self.cfg.LoRa_ID):
+                wind_dir =  None if (str_json.split(',')[2] == "" ) else float(str_json.split(',')[2])
+                wind_ave =  None if (str_json.split(',')[3] == "" ) else int(str_json.split(',')[3])
+                wind_gust = None if (str_json.split(',')[4] == "" ) else int(str_json.split(',')[4])
+                temp_out =  None if (str_json.split(',')[5] == "" ) else float(str_json.split(',')[5])
+                hum_out =   None if (str_json.split(',')[6] == "" ) else int(str_json.split(',')[6])
+                abs_pressure = None if (str_json.split(',')[7] == "" ) else  int(str_json.split(',')[7])
+    
+                setOffline = 0
+                if ( globalvars.offline and  str_json.split(',')[8] == "0"):
+                    setOffline = 1
+                if ( not globalvars.offline and  str_json.split(',')[8] == "1"):
+                    setOffline = 2
+    
+    
+                if ( nfields > 9 ):
+                    battery = None if (str_json.split(',')[9] == "" ) else  float(str_json.split(',')[9])
+                else:
+                    battery = None
+                    
+                if (wind_dir!=None): wind_dir_code = degToCompass(wind_dir)
+            
+                time.sleep(0.100)
+                if ( self.cfg.LoRa_mode.upper()[0]  == "B"):
+                    str_act = ",".join(("$SWACT",self.cfg.LoRa_ID))
+                    self.lora.send(self.lora.str_to_data(str_act))
+                    self.lora.wait_packet_sent()
+            
+            
+                globalvars.meteo_data.last_measure_time = datetime.datetime.now()
+                globalvars.meteo_data.idx = globalvars.meteo_data.last_measure_time
+                globalvars.meteo_data.status  = 0
+            
+                globalvars.meteo_data.wind_dir = wind_dir
+                globalvars.meteo_data.wind_ave = wind_ave
+                globalvars.meteo_data.wind_gust = wind_gust
+                globalvars.meteo_data.temp_out = temp_out
+                globalvars.meteo_data.temp_in = None
+                globalvars.meteo_data.hum_out = hum_out
+                globalvars.meteo_data.hum_in = None
+                globalvars.meteo_data.abs_pressure   = abs_pressure
+                globalvars.meteo_data.battery   = battery
+                globalvars.meteo_data.rssi = self.lora.last_rssi
+                
+                globalvars.meteo_data.wind_dir_code = wind_dir_code
+                if ( setOffline == 1 ):
+                    self.cfg.setOffline("0")
+                if ( setOffline == 2 ):
+                    self.cfg.setOffline("1")
+                    
+                sensor.Sensor.GetData(self)               
+    
+        except:
+            log("ERROR in getting LoRa data")
             
 
             
