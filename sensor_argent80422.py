@@ -105,7 +105,8 @@ class Sensor_Argent80422(sensor.Sensor):
 
         self.map = intervalmap.intervalmap()
         
-        #PCE-SENSOR-C Cucco per oriantare correttamente i sensori
+        #PCE-SENSOR-C Cucco per oriantare correttamente i sensori 
+        #PCE-SENSOR-A Cucco antenne per oriantare correttamente i sensori 
         if ( self.cfg.sensor_type.upper()  == "PCE-SENSOR-C" ):
             self.map[0:75]    = 7
             self.map[75:89]   = 5
@@ -123,6 +124,23 @@ class Sensor_Argent80422(sensor.Sensor):
             self.map[769:815] = 15
             self.map[815:870] = 0
             self.map[870:1024]= 14
+        elif ( self.cfg.sensor_type.upper()  == "PCE-SENSOR-A" ):
+            self.map[0:75]    = 6
+            self.map[75:89]   = 4
+            self.map[89:111]  = 5
+            self.map[111:156] = 8
+            self.map[156:214] = 7
+            self.map[214:264] = 10
+            self.map[264:342] = 9
+            self.map[342:424] = 2
+            self.map[424:514] = 3
+            self.map[514:593] = 12
+            self.map[593:640] = 11
+            self.map[640:712] = 0
+            self.map[712:769] = 1
+            self.map[769:815] = 14
+            self.map[815:870] = 15
+            self.map[870:1024]= 13
         else:
             self.map[0:75]    = 5
             self.map[75:89]   = 3
