@@ -139,8 +139,8 @@ class Sensor_Argent80422(sensor.Sensor):
             self.map[640:712] = 0
             self.map[712:769] = 1
             self.map[769:815] = 14
-            self.map[815:870] = 15
-            self.map[870:1024]= 0
+            self.map[815:870] = 0
+            self.map[870:1024]= 13
             # self.map[0:75]    = 6
             # self.map[75:89]   = 4
             # self.map[89:111]  = 5
