@@ -68,7 +68,7 @@ class Sensor_Argent80422(sensor.Sensor):
         else:
             self.model = 1
             
-        self.model = 2 # ALWAYS USE SPI 
+        #self.model = 2 # ALWAYS USE SPI 
         
         if ( self.model == 2 ) :
             # Open SPI bus
