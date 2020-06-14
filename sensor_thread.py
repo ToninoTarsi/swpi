@@ -89,7 +89,7 @@ class WindSensorThread(threading.Thread):
             if self.cfg.set_system_time_from_WeatherStation :
                 sensor.SetTimeFromWeatherStation()
                 
-        elif ( self.cfg.sensor_type.upper()  == "PCE-SENSOR" or self.cfg.sensor_type.upper()  == "PCE-SENSOR-C" or self.cfg.sensor_type.upper()  == "PCE-SENSOR-A"):
+        elif ( self.cfg.sensor_type.upper()  == "PCE-SENSOR" or self.cfg.sensor_type.upper()  == "PCE-SENSOR-C" or self.cfg.sensor_type.upper()  == "PCE-SENSOR-A" or self.cfg.sensor_type.upper()  == "PCE-SENSOR-AA"):
             sensor = sensor_argent80422.Sensor_Argent80422(self.cfg)
             
         elif ( self.cfg.sensor_type.upper()  == "DAVIS-SENSOR" ):
