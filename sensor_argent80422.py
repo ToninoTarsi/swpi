@@ -94,10 +94,10 @@ class Sensor_Argent80422(sensor.Sensor):
         # bouncetime = 960 / MaxSpeedKmh 
         # MaxSpeedKmh = 960 / bouncetime
         if ( self.windspeed_interrupt_mode == 1 ):
-            log("Sendor Argentine: Using  Interrupt mode on pin " % (self.__PIN_A ))
+            log("Sendor Argentine: Using  Interrupt mode on pin " % (str(self.__PIN_A )))
             GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=5)   
         else:
-            log("Sendor Argentine: Using  pooling  mode on pin " % (self.__PIN_A ))
+            log("Sendor Argentine: Using  pooling  mode on pin " % (str(self.__PIN_A )))
 
         
         self.rb_WindSpeed = TTLib.RingBuffer(self.cfg.number_of_measure_for_wind_average_gust_calculation)            
