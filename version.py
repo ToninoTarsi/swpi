@@ -12,8 +12,8 @@ import struct
 import ConfigParser
 import os
 import ftplib
-import Image
-import ImageFont, ImageDraw, ImageOps
+# import Image
+# import ImageFont, ImageDraw, ImageOps
 import urllib2
 import time
 
