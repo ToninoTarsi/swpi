@@ -237,7 +237,7 @@ class Sensor_Argent80422(sensor.Sensor):
                 i = i+1
                 o = n
                 #time.sleep(0.005)
-            time.sleep(0.010) # 100kmh
+            time.sleep(0.010) # 100kmh  Argentine=2.4 thiesclima=2.88 (4.3515.30.000  https://www.thiesclima.com/en/Products/Wind-Small-wind-transmitters/ )
         return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
     
 
