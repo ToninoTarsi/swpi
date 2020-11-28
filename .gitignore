@@ -8,3 +8,6 @@
 .mr.developer.cfg
 .project
 .pydevproject
+
+*~
+cscope.out
