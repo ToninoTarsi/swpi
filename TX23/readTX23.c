@@ -20,8 +20,10 @@ TX23 Wires:
 #include <time.h>
 #include "RPi_TX23.h"
 #include <string.h>
+#include <getopt.h>
+#include <libgen.h>
 
-
+char *myname;
 
 void printWindSpeedAndDirection(void)
 {
@@ -50,29 +52,53 @@ void printWindSpeedAndDirection(void)
 	}
 }
 
-
+void
+usage()
+{
+  printf("Usage: %s [OPTION]\nRead data from a La Crosse TX23U Anemometer.\n", myname);
+  printf("  -v --verbose: Give detailed error messages\n");
+  printf("  -d --debug: Show times and pin state changes only\n");
+  printf("  -?|h --help: Show usage information\n");
+  exit(0);
+}
 
 int main (int argc, char *argv[])
 {
-	//Check for debugging flags
+  int c;
 	int i;
 	int debugMode = 0;
-	for (i = 1; i < argc ; i++)
-	{
-		if ((strcmp(argv[i],"--debug") == 0) || (strcmp(argv[i],"-d") == 0))
-			debugMode = 1;
-		else if ((strcmp(argv[i],"--verbose") == 0) || (strcmp(argv[i],"-v") == 0))
-			Rpi_TX23_Option_Verbose = 1;
-		else if ((strcmp(argv[i],"--help") == 0) || (strcmp(argv[i],"-?") == 0))
-		{
-			printf("Usage: readTX23 [OPTION]\nRead data from a La Crosse TX23U Anemometer.\n");
-			printf("\t-v, --verbose\t\tGive detailed error messages\n");
-			printf("\t-d, --debug\t\tShow times and pin state changes only\n");
-			printf("\t-?, --help\t\tShow usage information\n\n");
-			exit(0);
-		}
-	}
-	
+
+  myname = basename(argv[0]);
+
+  for (;;) {
+    int option_index = 0;
+    static struct option long_options[] = {
+      {"debug",   no_argument, 0,  'd'},
+      {"verbose", no_argument, 0,  'v'},
+      {"help",    no_argument, 0,  'h'},
+      {0,         0,                 0,  0 }
+    };
+
+    c = getopt_long(argc, argv, "dvh",
+		    long_options, &option_index);
+    if (c == -1)
+      break;
+
+    switch (c) {
+    case 'v':
+      Rpi_TX23_Option_Verbose = 1;
+      break;
+    case 'd':
+      debugMode = 1;
+      break;
+    case 'h':
+    case '?':
+    default:
+      usage();
+      break;
+    }
+  }
+
 	//Initialise the Raspberry Pi GPIO
 	if(!bcm2835_init())
 		exit(1);
