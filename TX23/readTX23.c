@@ -19,7 +19,7 @@ TX23 Wires:
 #include <stdio.h>
 #include <time.h>
 #include "RPi_TX23.h"
-
+#include <string.h>
 
 
 
