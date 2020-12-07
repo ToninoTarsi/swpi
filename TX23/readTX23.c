@@ -26,6 +26,7 @@ TX23 Wires:
 #include <stdbool.h>
 
 char *myname;
+bool json_format = false;
 
 bool
 printWindSpeedAndDirection(void)
@@ -35,23 +36,37 @@ printWindSpeedAndDirection(void)
 	char thetime[32];
 	int WindDirection = 0;
 	int WindSpeed = 0;
-	
+	char *p;
+	double mph;
 		
 	// Set up the TX23 Pins
 	RPi_TX23_InitPins();
 
-	//Read from the TX23
-	if (RPi_TX23_GetReading(&WindDirection,&WindSpeed)==TRUE)
-	{
-		RPi_TX23_GetDateTimeLocal(thetime);
-		printf("(%d , %d )", WindDirection, WindSpeed);
+	if (json_format) {
+	  RPi_TX23_GetDateTimeUTC(thetime);
+	  p = strchr(thetime, 'T');
+	  if (p)
+	    *p = ' ';
+	  p = strrchr(thetime, 'Z');
+	  if (p)
+	    *p = '\0';
+	  mph = (double)WindSpeed / 10 * 3600 / 1609.344;
+	  printf("{\"time\" : \"%s\", \"model\" : \"TX23U\", \"wind_avg_mi_h\" : %f, \"wind_dir_deg\" : %.1f, \"mic\" : \"CRC\"}\n",
+		 thetime,
+		 mph,
+		 (double)WindDirection*22.5);
+	} else {
+	  //Read from the TX23
+	  if (RPi_TX23_GetReading(&WindDirection, &WindSpeed) == TRUE) {
+	      RPi_TX23_GetDateTimeLocal(thetime);
+	      printf("(%d , %d )", WindDirection, WindSpeed);
 //		printf("%s,Wind Direction,%0.1f\n",thetime,((double)WindDirection)*22.5);
 //		printf("%s,Wind Speed,%d\n",thetime,WindSpeed);
-		fflush(stdout);
+	  } else
+	    return false;
 	}
-	else
-	  return false;
 
+	fflush(stdout);
 	return true;
 }
 
@@ -79,6 +94,7 @@ usage()
   printf("Usage: %s [OPTION]\nRead data from a La Crosse TX23U Anemometer.\n", myname);
   printf("  -c --count count: How many times to read.\n");
   printf("  -i --interval sec: read every sec seconds.\n");
+  printf("  -j --json: report in json format.\n");
   printf("  -v --verbose: Give detailed error messages\n");
   printf("  -d --debug: Show times and pin state changes only\n");
   printf("  -?|h --help: Show usage information\n");
@@ -100,13 +116,14 @@ int main (int argc, char *argv[])
     static struct option long_options[] = {
       {"count",   required_argument, 0,  'c'},
       {"interval", required_argument, 0,  'i'},
+      {"json",    no_argument, 0,  'j'},
       {"debug",   no_argument, 0,  'd'},
       {"verbose", no_argument, 0,  'v'},
       {"help",    no_argument, 0,  'h'},
       {0,         0,                 0,  0 }
     };
 
-    c = getopt_long(argc, argv, "c:i:dvh",
+    c = getopt_long(argc, argv, "c:i:jdvh",
 		    long_options, &option_index);
     if (c == -1)
       break;
@@ -117,6 +134,9 @@ int main (int argc, char *argv[])
       break;
     case 'i':
       interval = atoi(optarg);
+      break;
+    case 'j':
+      json_format = true;
       break;
     case 'v':
       Rpi_TX23_Option_Verbose = 1;
