@@ -22,10 +22,13 @@ TX23 Wires:
 #include <string.h>
 #include <getopt.h>
 #include <libgen.h>
+#include <unistd.h>
+#include <stdbool.h>
 
 char *myname;
 
-void printWindSpeedAndDirection(void)
+bool
+printWindSpeedAndDirection(void)
 {
 	
 	// Local variables
@@ -44,18 +47,38 @@ void printWindSpeedAndDirection(void)
 		printf("(%d , %d )", WindDirection, WindSpeed);
 //		printf("%s,Wind Direction,%0.1f\n",thetime,((double)WindDirection)*22.5);
 //		printf("%s,Wind Speed,%d\n",thetime,WindSpeed);
-
+		fflush(stdout);
 	}
 	else
-	{
-		exit(1);
-	}
+	  return false;
+
+	return true;
+}
+
+void
+repeat_read(int count, int interval)
+{
+  int i;
+
+  if (count <= 0) {
+    for (;;) {
+      printWindSpeedAndDirection();
+      sleep(interval);
+    }
+  } else {
+    for (i = 0; i++ < count; ) {
+      printWindSpeedAndDirection();
+      sleep(interval);
+    }
+  }
 }
 
 void
 usage()
 {
   printf("Usage: %s [OPTION]\nRead data from a La Crosse TX23U Anemometer.\n", myname);
+  printf("  -c --count count: How many times to read.\n");
+  printf("  -i --interval sec: read every sec seconds.\n");
   printf("  -v --verbose: Give detailed error messages\n");
   printf("  -d --debug: Show times and pin state changes only\n");
   printf("  -?|h --help: Show usage information\n");
@@ -65,6 +88,8 @@ usage()
 int main (int argc, char *argv[])
 {
   int c;
+  int iteration_count = 1;
+  int interval = 1; /* 1 sec */
 	int i;
 	int debugMode = 0;
 
@@ -73,18 +98,26 @@ int main (int argc, char *argv[])
   for (;;) {
     int option_index = 0;
     static struct option long_options[] = {
+      {"count",   required_argument, 0,  'c'},
+      {"interval", required_argument, 0,  'i'},
       {"debug",   no_argument, 0,  'd'},
       {"verbose", no_argument, 0,  'v'},
       {"help",    no_argument, 0,  'h'},
       {0,         0,                 0,  0 }
     };
 
-    c = getopt_long(argc, argv, "dvh",
+    c = getopt_long(argc, argv, "c:i:dvh",
 		    long_options, &option_index);
     if (c == -1)
       break;
 
     switch (c) {
+    case 'c':
+      iteration_count = atoi(optarg);
+      break;
+    case 'i':
+      interval = atoi(optarg);
+      break;
     case 'v':
       Rpi_TX23_Option_Verbose = 1;
       break;
@@ -107,7 +140,7 @@ int main (int argc, char *argv[])
 	if (debugMode)
 		RPi_TX23_debug();
 	else	
-		printWindSpeedAndDirection();
+	  repeat_read(iteration_count, interval);
 
 	return 0;
 }
