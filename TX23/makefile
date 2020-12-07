@@ -12,22 +12,19 @@ all : readTX23 libTX23.so
 clean :
 	rm *.o readTX23 libTX23.so
 
-readTX23 : bcm2835.o RPi_TX23.o readTX23.o
-	gcc -o readTX23 bcm2835.o RPi_TX23.o readTX23.o -lrt
+readTX23 : RPi_TX23.o readTX23.o
+	gcc -o readTX23 RPi_TX23.o readTX23.o -lbcm2835 -lrt
 
-libTX23.so : libTX23.o bcm2835.o RPi_TX23.o 
-	gcc --shared -o libTX23.so libTX23.o bcm2835.o RPi_TX23.o  -lrt
+libTX23.so : libTX23.o RPi_TX23.o 
+	gcc --shared -o libTX23.so libTX23.o RPi_TX23.o -lbcm2835 -lrt
 
 # The next lines generate the various object files
 
-libTX23.o : libTX23.c  RPi_TX23.c RPi_TX23.h bcm2835.h bcm2835.c
+libTX23.o : libTX23.c  RPi_TX23.c RPi_TX23.h
 	gcc -c libTX23.c
      
-bcm2835.o : bcm2835.h bcm2835.c
-	gcc -c bcm2835.c
-
-RPi_TX23.o : RPi_TX23.c RPi_TX23.h bcm2835.h bcm2835.c
+RPi_TX23.o : RPi_TX23.c RPi_TX23.h
 	gcc -c RPi_TX23.c
 
-readTX23.o : readTX23.c RPi_TX23.h bcm2835.h bcm2835.c
+readTX23.o : readTX23.c RPi_TX23.h
 	gcc -c readTX23.c
