@@ -22,7 +22,7 @@ extern int Rpi_TX23_Option_Verbose;
 #define	FALSE	0
 
 #define TX23_DELAY_MicroSeconds 10
-#define TX23_TIMEOUT_COMMS_LOOP 10000 //Timeout is this times Delay_MicroSeconds
+#define TX23_TIMEOUT_COMMS_LOOP 30000 //Timeout is this times Delay_MicroSeconds
 
 // Define the Raspberry Pi GPIO Pins for the TX23
 #define RPI_GPIO_TX23_DATA RPI_GPIO_P1_15
