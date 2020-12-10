@@ -42,6 +42,9 @@ printWindSpeedAndDirection(void)
 	// Set up the TX23 Pins
 	RPi_TX23_InitPins();
 
+	//Read from the TX23
+	if (RPi_TX23_GetReading(&WindDirection, &WindSpeed) != TRUE)
+	  return false;
 	if (json_format) {
 	  RPi_TX23_GetDateTimeUTC(thetime);
 	  p = strchr(thetime, 'T');
@@ -56,14 +59,10 @@ printWindSpeedAndDirection(void)
 		 mph,
 		 (double)WindDirection*22.5);
 	} else {
-	  //Read from the TX23
-	  if (RPi_TX23_GetReading(&WindDirection, &WindSpeed) == TRUE) {
-	      RPi_TX23_GetDateTimeLocal(thetime);
-	      printf("(%d , %d )", WindDirection, WindSpeed);
-//		printf("%s,Wind Direction,%0.1f\n",thetime,((double)WindDirection)*22.5);
-//		printf("%s,Wind Speed,%d\n",thetime,WindSpeed);
-	  } else
-	    return false;
+	  RPi_TX23_GetDateTimeLocal(thetime);
+	  printf("(%d , %d )", WindDirection, WindSpeed);
+//	    printf("%s,Wind Direction,%0.1f\n",thetime,((double)WindDirection)*22.5);
+//	    printf("%s,Wind Speed,%d\n",thetime,WindSpeed);
 	}
 
 	fflush(stdout);
