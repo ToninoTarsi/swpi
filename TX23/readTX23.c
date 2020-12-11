@@ -24,6 +24,7 @@ TX23 Wires:
 #include <libgen.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <signal.h>
 
 char *myname;
 bool json_format = false;
@@ -87,6 +88,11 @@ repeat_read(int count, int interval)
   }
 }
 
+void sighdl(int sig)
+{
+  exit(0);
+}
+
 void
 usage()
 {
@@ -109,6 +115,8 @@ int main (int argc, char *argv[])
 	int debugMode = 0;
 
   myname = basename(argv[0]);
+
+  signal(SIGPIPE, sighdl);
 
   for (;;) {
     int option_index = 0;
