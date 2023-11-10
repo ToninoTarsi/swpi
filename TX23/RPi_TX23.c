@@ -75,7 +75,7 @@ unsigned char RPi_TX23_GetReading(int *iDir, int *iSpeed )
 	
 	unsigned int timeout;			// Timeout for reading the port
 	struct timeval start, stop;		// Used to calculate the baud rate
-	unsigned int bitLength;	// The length of each bit in uSec
+	int bitLength;	// The length of each bit in uSec
 
 	// Local Variables
 	int startframe = 6;	//Start with binary 110
@@ -164,7 +164,10 @@ unsigned char RPi_TX23_GetReading(int *iDir, int *iSpeed )
 	gettimeofday(&delayStart,NULL);
 	delayTargetuSec = 0;
 
-	bitLength = (int)((stop.tv_usec-start.tv_usec)/3);
+	bitLength = stop.tv_usec - start.tv_usec;
+	if (bitLength < 0) /* wrap around */
+	  bitLength += 1000000;
+	bitLength /= 3;
 	bitLength += 5;
 	// Wait for a little bit to make sure we're getting the stable values
 	delayTargetuSec += (bitLength/2);TX23_DoDelay;
