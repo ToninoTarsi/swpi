@@ -182,7 +182,6 @@ class Sensor_Argent80422(sensor.Sensor):
         return int(reply,2)
 
     
-    
     def GetCurretWindDir(self):
         """Get wind direction reading MCP3002 channel 0."""
         
