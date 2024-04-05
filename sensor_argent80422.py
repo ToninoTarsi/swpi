@@ -193,7 +193,7 @@ class Sensor_Argent80422(sensor.Sensor):
                 ch0 = self.ReadChannel(0)
             if  ( ch0 == -1 ) :
                 log("Error reading mcp3002 channel 0. Retrying ")
-                time.sleep(0.1) 
+                time.sleep(0.001) 
         
         #print "ch0",ch0
         wind_dir = (self.map[ch0] + self.sensorRotation) % 16
