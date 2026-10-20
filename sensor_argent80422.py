@@ -39,7 +39,7 @@ def bitstring(n):
 
 class Sensor_Argent80422(sensor.Sensor):
     
-    __MEASURETIME = 2 # Number of seconds for pulse recording
+    __MEASURETIME = 10 # Number of seconds for pulse recording
     
     # Connections PIN - USING BCM numbering convention !!!!!!
     
