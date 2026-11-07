@@ -851,7 +851,7 @@ log( "Starting SINT WIND PI  ... ")
 print "************************************************************************"
 print "*                      Sint Wind PI "+v+"                           *"
 print "*                                                                      *"
-print "*          2012-2018 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
+print "*          2012-2026 by Tonino Tarsi  <tony.tarsi@gmail.com>           *"
 print "*                                                                      *"
 print "*     System will start in 10 seconds - Press Ctrl-C to cancel         *"
 print "************************************************************************"
