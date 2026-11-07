@@ -250,11 +250,9 @@ class Sensor_Argent80422(sensor.Sensor):
                 o = n
                 #time.sleep(0.005)
             time.sleep(0.002) # 100kmh  Argentine=2.4 thiesclima=2.88 (4.3515.30.000  https://www.thiesclima.com/en/Products/Wind-Small-wind-transmitters/ )
-        tempspeed =  (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
-        # if tempspeed < 100:
-        return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
-        # else:
-        #    return (( i  / ( self.__MEASURETIME * 2 )) * 2.4 )  * 1.5 * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
+        speed = ((float(i) / (self.__MEASURETIME * 2)) * 2.4)
+        speed = speed * self.cfg.windspeed_gain + self.cfg.windspeed_offset
+        return speed
 
 
     def GetData(self):
@@ -313,5 +311,3 @@ if __name__ == '__main__':
 #        ss.GetData()
 #        log( "Meteo Data -  D : " + globalvars.meteo_data.wind_dir_code + " S : " + str(globalvars.meteo_data.wind_ave) +   + " G : " + str(globalvars.meteo_data.wind_gust) )
 #        #print logData("http://localhost/swpi_logger.php")
-
-
