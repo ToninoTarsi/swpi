@@ -207,7 +207,7 @@ class Sensor_Argent80422(sensor.Sensor):
 
     
     def GetCurretWindSpeed(self):
-        if ( self.GetCurretWindSpeed_interrupt == 0 ):
+        if self.windspeed_interrupt_mode == 1:
             return self.GetCurretWindSpeed_interrupt()
         else:
             return self.GetCurretWindSpeed_pooling()
