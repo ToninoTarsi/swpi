@@ -45,8 +45,6 @@ class Sensor_Argent80422(sensor.Sensor):
     
     #__PIN_A = 23  #Anemometer 24 -->> 25 Jessica  >> 2 Jessica
    
-    revcount = 0
-    
     windspeed_interrupt_mode = 0
 
     
@@ -54,6 +52,8 @@ class Sensor_Argent80422(sensor.Sensor):
         
 
         self.cfg = cfg
+        self.revcount = 0
+        self.revcount_lock = threading.Lock()
         
         self.__PIN_A = cfg.anemometer_pin
         
@@ -95,7 +95,12 @@ class Sensor_Argent80422(sensor.Sensor):
         # MaxSpeedKmh = 960 / bouncetime
         if ( self.windspeed_interrupt_mode == 1 ):
             log("Sendor Argentine: Using  Interrupt mode on pin %d" % (self.__PIN_A ))
-            GPIO.add_event_detect(self.__PIN_A, GPIO.BOTH, callback=self.increaserev,bouncetime=5)   
+            GPIO.add_event_detect(
+                self.__PIN_A,
+                GPIO.FALLING,
+                callback=self.increaserev,
+                bouncetime=5
+            )   
         else:
             log("Sendor Argentine: Using  pooling  mode on pin %d" % (self.__PIN_A ))
 
@@ -202,7 +207,8 @@ class Sensor_Argent80422(sensor.Sensor):
         return wind_dir*22.5, winddir_code 
     
     def increaserev(self,channel):
-        self.revcount += 1
+        with self.revcount_lock:
+            self.revcount += 1
         #print time.time(),self.revcount,GPIO.input(self.__PIN_A)
 
     
@@ -214,10 +220,17 @@ class Sensor_Argent80422(sensor.Sensor):
                 
     def GetCurretWindSpeed_interrupt(self):
         """Get wind speed  __PIN_A """
-        self.revcount = 0
+        with self.revcount_lock:
+            self.revcount = 0
+
         time.sleep(self.__MEASURETIME)
-        speed = (( self.revcount  / ( self.__MEASURETIME * 2 )) * 2.4 )  * self.cfg.windspeed_gain    + self.cfg.windspeed_offset
-        self.revcount = 0
+
+        with self.revcount_lock:
+            count = self.revcount
+            self.revcount = 0
+
+        speed = (float(count) / self.__MEASURETIME) * 2.4
+        speed = speed * self.cfg.windspeed_gain + self.cfg.windspeed_offset
         return speed
     
     def GetCurretWindSpeed_pooling(self):
@@ -300,6 +313,5 @@ if __name__ == '__main__':
 #        ss.GetData()
 #        log( "Meteo Data -  D : " + globalvars.meteo_data.wind_dir_code + " S : " + str(globalvars.meteo_data.wind_ave) +   + " G : " + str(globalvars.meteo_data.wind_gust) )
 #        #print logData("http://localhost/swpi_logger.php")
-     
-    
-    
+
+
