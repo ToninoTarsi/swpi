@@ -45,7 +45,7 @@ class Sensor_Argent80422(sensor.Sensor):
     
     #__PIN_A = 23  #Anemometer 24 -->> 25 Jessica  >> 2 Jessica
    
-    windspeed_interrupt_mode = 0
+    windspeed_interrupt_mode = 1
 
     
     def __init__(self,cfg ):
@@ -99,7 +99,7 @@ class Sensor_Argent80422(sensor.Sensor):
                 self.__PIN_A,
                 GPIO.FALLING,
                 callback=self.increaserev,
-                bouncetime=5
+                bouncetime=20
             )   
         else:
             log("Sendor Argentine: Using  pooling  mode on pin %d" % (self.__PIN_A ))
